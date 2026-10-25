@@ -348,6 +348,46 @@
           "id": "drones"
         }
       ]
+    },
+    {
+      "id": "decor_bench",
+      "name_key": "TECH_DECOR_BENCH",
+      "desc_key": "TECH_DECOR_BENCH_DESC",
+      "cost_bolts": 150,
+      "cost_items": {
+        "wood": 10,
+        "stone": 10
+      },
+      "time_s": 20,
+      "requires": [
+        "chest"
+      ],
+      "effects": [
+        {
+          "type": "unlock_feature",
+          "id": "decor"
+        }
+      ]
+    },
+    {
+      "id": "museum",
+      "name_key": "TECH_MUSEUM",
+      "desc_key": "TECH_MUSEUM_DESC",
+      "cost_bolts": 400,
+      "cost_items": {
+        "iron_bar": 10,
+        "plastic_sheet": 5
+      },
+      "time_s": 40,
+      "requires": [
+        "decor_bench"
+      ],
+      "effects": [
+        {
+          "type": "unlock_building",
+          "id": "museum"
+        }
+      ]
     }
   ]
 }

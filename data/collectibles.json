@@ -1,0 +1,15 @@
+{
+  "_comment": "Fundstücke (Phase 2, MS15): einzigartige Objekte, eines je Zone. Position deterministisch aus Zone und Seed. Rusty sammelt sie beim Darüberfahren. xp = Belohnung.",
+  "xp": 60,
+  "collectibles": [
+    { "id": "gnome", "zone": "z01", "name_key": "COL_GNOME", "text_key": "COL_GNOME_TEXT", "sprite": "res://assets/sprites/collectibles/gnome.svg" },
+    { "id": "guitar", "zone": "z11", "name_key": "COL_GUITAR", "text_key": "COL_GUITAR_TEXT", "sprite": "res://assets/sprites/collectibles/guitar.svg" },
+    { "id": "coffee", "zone": "z10", "name_key": "COL_COFFEE", "text_key": "COL_COFFEE_TEXT", "sprite": "res://assets/sprites/collectibles/coffee.svg" },
+    { "id": "duck", "zone": "z00", "name_key": "COL_DUCK", "text_key": "COL_DUCK_TEXT", "sprite": "res://assets/sprites/collectibles/duck.svg" },
+    { "id": "octopus", "zone": "z20", "name_key": "COL_OCTOPUS", "text_key": "COL_OCTOPUS_TEXT", "sprite": "res://assets/sprites/collectibles/octopus.svg" },
+    { "id": "snowglobe", "zone": "z21", "name_key": "COL_SNOWGLOBE", "text_key": "COL_SNOWGLOBE_TEXT", "sprite": "res://assets/sprites/collectibles/snowglobe.svg" },
+    { "id": "trophy", "zone": "z22", "name_key": "COL_TROPHY", "text_key": "COL_TROPHY_TEXT", "sprite": "res://assets/sprites/collectibles/trophy.svg" },
+    { "id": "glasses", "zone": "z12", "name_key": "COL_GLASSES", "text_key": "COL_GLASSES_TEXT", "sprite": "res://assets/sprites/collectibles/glasses.svg" },
+    { "id": "musicbox", "zone": "z02", "name_key": "COL_MUSICBOX", "text_key": "COL_MUSICBOX_TEXT", "sprite": "res://assets/sprites/collectibles/musicbox.svg" }
+  ]
+}

@@ -378,6 +378,7 @@ Umsetzung: `data/nature.json` steuert Dichten je Stufe (Gras ab Stufe 1, Blumen 
 - Weiches Wetter und Tageszeit ohne dunkle Nacht; Regen lässt Natur schneller nachwachsen.
 
 ### C. Erkundung und Cozy-Inhalte
+Stand v1.4.0 (MS15): Fundstücke und Dekoration sind umgesetzt (`data/collectibles.json`, Deko-Einträge in `buildings.json` mit `category: "decor"` und `requires_feature: "decor"`; Techs Deko-Werkbank und Museum; Tab „Journal“). Fundstücke liegen deterministisch je Zone, werden beim Darüberfahren gesammelt (60 XP) und stehen als IDs im Spielstand. Besucher, Fischen, Fahrzeuge, Zen/Foto und Rat sind noch offen.
 - **Fundstücke** (einzigartige Objekte: alte Gitarre, Gartenzwerg, Kaffeemaschine mit Charakter): verwerten oder im Museum ausstellen; Journal mit humorvollen Texten. Daten: `collectibles.json`.
 - **Dekoration** aus Stein, Holz, Schrott ohne Spielnutzen (Möbel, Lampen, Zäune, Schilder), Platzieren per Rastercursor wie Maschinen. Daten: `decor.json`.
 - **Besucher** in sauberen Zonen (Händler, Tourist, Forscher) mit optionalen Aufträgen und Tauschwaren, ohne Timer. Daten: `visitors.json`.

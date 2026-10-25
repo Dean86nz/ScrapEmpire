@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.4.0] – 2026-10-25 – MS15 Deko und Fundstücke (Phase 2, Teil 3)
+
+### Hinzugefügt
+- **Tech „Deko-Werkbank“** (nach Kiste, 150 Bolts, 10 Holz, 10 Stein) schaltet Dekoration frei; **Tech „Museum“** (nach Deko-Werkbank, 400 Bolts, 10 Eisenbarren, 5 Plastikplatten) das Museum-Gebäude. Damit 20 Techknoten
+- **Dekoration** ohne Spielnutzen, Kosten in Holz, Stein, Schrott: Laterne, Bank (2×1), Blumenkasten, Schrott-Skulptur, Holzschild, Steinkreis. Das Baumenü hat dafür eine zweite Seite „Deko“ (LB/RB wechselt, nur mit Werkbank sichtbar)
+- **Fundstücke:** neun einzigartige Objekte, eines je Zone (Gartenzwerg Gunther, Alte Gitarre, Kaffeemaschine Kurt, Gummiente, Plüschkrake, Schneekugel, Rostige Trophäe, Lesebrille, Spieluhr). Sie funkeln und schweben, Rusty sammelt sie beim Darüberfahren: Konfetti, Spruch, 60 XP, Hinweis oben. Position deterministisch je Zone; gefundene stehen im Spielstand und tauchen nie wieder auf
+- **Tab „Journal“** im Fortschritts-Menü: Zähler, Museum-Status, je Fundstück Name und humorvoller Text; noch nicht gefundene zeigen „???“ und die Zone oder das Kapitel. Tab „Kapitel“ zeigt „Fundstücke: n / 9“
+- `data/collectibles.json`, `src/sim/collectible.gd`, `src/world/collectible_view.gd`; Gebäudedefinitionen kennen `category` und `requires_feature`; Spielstand-Version 6 (gefundene Fundstücke), Migration 5 → 6
+- Tests: `tests/test_cozy.gd` (Deko-Sperre und Kosten, Museum per Tech, deterministisches Platzieren, Einsammeln mit XP, Speichern ohne Respawn, Migration). Dev-Szenario `cozy`, Screenshot-Cheat `goto_collectible=`
+
 ## [1.3.0] – 2026-10-25 – MS14 Logistik-Drohnen (Phase 2, Teil 2)
 
 ### Hinzugefügt

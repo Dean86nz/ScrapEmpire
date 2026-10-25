@@ -146,6 +146,120 @@
       "cost_growth": 1.0,
       "sprite": "res://assets/sprites/buildings/chest.svg",
       "ports": []
+    },
+    {
+      "id": "lantern",
+      "name_key": "BLD_LANTERN",
+      "size": [
+        1,
+        1
+      ],
+      "cost": {
+        "wood": 5,
+        "copper": 2
+      },
+      "cost_growth": 1.0,
+      "sprite": "res://assets/sprites/decor/lantern.svg",
+      "ports": [],
+      "category": "decor",
+      "requires_feature": "decor"
+    },
+    {
+      "id": "bench",
+      "name_key": "BLD_BENCH",
+      "size": [
+        2,
+        1
+      ],
+      "cost": {
+        "wood": 10
+      },
+      "cost_growth": 1.0,
+      "sprite": "res://assets/sprites/decor/bench.svg",
+      "ports": [],
+      "category": "decor",
+      "requires_feature": "decor"
+    },
+    {
+      "id": "planter",
+      "name_key": "BLD_PLANTER",
+      "size": [
+        1,
+        1
+      ],
+      "cost": {
+        "stone": 5,
+        "wood": 3
+      },
+      "cost_growth": 1.0,
+      "sprite": "res://assets/sprites/decor/planter.svg",
+      "ports": [],
+      "category": "decor",
+      "requires_feature": "decor"
+    },
+    {
+      "id": "sculpture",
+      "name_key": "BLD_SCULPTURE",
+      "size": [
+        1,
+        1
+      ],
+      "cost": {
+        "scrap": 20
+      },
+      "cost_growth": 1.0,
+      "sprite": "res://assets/sprites/decor/sculpture.svg",
+      "ports": [],
+      "category": "decor",
+      "requires_feature": "decor"
+    },
+    {
+      "id": "sign",
+      "name_key": "BLD_SIGN",
+      "size": [
+        1,
+        1
+      ],
+      "cost": {
+        "wood": 4
+      },
+      "cost_growth": 1.0,
+      "sprite": "res://assets/sprites/decor/sign.svg",
+      "ports": [],
+      "category": "decor",
+      "requires_feature": "decor"
+    },
+    {
+      "id": "stone_ring",
+      "name_key": "BLD_STONE_RING",
+      "size": [
+        1,
+        1
+      ],
+      "cost": {
+        "stone": 6
+      },
+      "cost_growth": 1.0,
+      "sprite": "res://assets/sprites/decor/stone_ring.svg",
+      "ports": [],
+      "category": "decor",
+      "requires_feature": "decor"
+    },
+    {
+      "id": "museum",
+      "name_key": "BLD_MUSEUM",
+      "size": [
+        2,
+        2
+      ],
+      "cost": {
+        "stone": 30,
+        "wood": 20,
+        "iron_bar": 5
+      },
+      "cost_growth": 1.5,
+      "sprite": "res://assets/sprites/buildings/museum.svg",
+      "ports": []
     }
   ]
 }

@@ -81,6 +81,13 @@ func _process(_delta: float) -> bool:
 					clock.world.zones.refresh(clock.world.nodes)
 				"rain":
 					current_scene.get_node("Sky").start_rain_now()
+				"goto_collectible":  # goto_collectible=gnome stellt Rusty neben das Fundstück
+					for c in clock.world.collectibles.values():
+						if c.def_id == kv[1]:
+							var player: Node2D = get_nodes_in_group("player")[0]
+							player.global_position = Vector2(c.center_px()) + Vector2(-90, 0)
+							player.get_node("Camera2D").reset_smoothing()
+							break
 				"unlock":  # unlock=z11 schaltet eine Zone frei (Tor öffnet sich)
 					clock.world.zones.unlocked[kv[1]] = true
 					clock.world.zone_unlocked.emit(kv[1])

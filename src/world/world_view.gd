@@ -8,6 +8,7 @@ var _loose_views: Dictionary = {}     # loose id → LooseItemView
 var _building_views: Dictionary = {}  # building id → BuildingView
 var _helper_views: Dictionary = {}    # helper id → HelperView
 var _drone_views: Dictionary = {}     # drone id → DroneView
+var _collectible_views: Dictionary = {}  # collectible id → CollectibleView
 var _zone_tints: Dictionary = {}      # zone id → Polygon2D
 const ZONE_TINTS := [Color(0.35, 0.22, 0.1, 0.28), Color(0.4, 0.4, 0.35, 0.18), Color(0.5, 0.85, 0.3, 0.16), Color(0.25, 0.8, 0.35, 0.26)]
 const LOCKED_TINT := Color(0.15, 0.15, 0.22, 0.5)
@@ -48,6 +49,10 @@ func bind(world: SimWorld, player: Node2D) -> void:
 	world.helper_removed.connect(_on_helper_removed)
 	for d: Drone in world.drones.values():
 		_on_drone_added(d)
+	for c: Collectible in world.collectibles.values():
+		_on_collectible_added(c)
+	world.collectible_added.connect(_on_collectible_added)
+	world.collectible_found.connect(_on_collectible_found)
 	world.drone_added.connect(_on_drone_added)
 	world.drone_removed.connect(_on_drone_removed)
 	world.helper_quip.connect(_on_helper_quip)
@@ -84,6 +89,25 @@ func _on_helper_added(h: Helper) -> void:
 	view.setup(h, _world.helper_cfg.get("names", []), _world.helper_cfg.get("colors", []))
 	add_child(view)
 	_helper_views[h.id] = view
+
+
+func _on_collectible_added(c: Collectible) -> void:
+	var view := CollectibleView.new()
+	view.setup(c, str(_world.collectible_def(c.def_id).get("sprite", "")))
+	add_child(view)
+	_collectible_views[c.id] = view
+
+
+func _on_collectible_found(c: Collectible, _def: Dictionary) -> void:
+	var view: Node2D = _collectible_views.get(c.id)
+	_collectible_views.erase(c.id)
+	if view == null:
+		return
+	var tw := create_tween()
+	tw.tween_property(view, "position", view.position + Vector2(0, -60), 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.parallel().tween_property(view, "scale", Vector2(1.4, 1.4), 0.5)
+	tw.parallel().tween_property(view, "modulate:a", 0.0, 0.5)
+	tw.tween_callback(view.queue_free)
 
 
 func _on_drone_added(d: Drone) -> void:

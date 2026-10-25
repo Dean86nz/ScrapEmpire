@@ -9,6 +9,8 @@ var cost: Dictionary = {}        # item_id → Basis-Menge
 var cost_growth := 1.0           # Faktor pro bereits gebautem Exemplar
 var sprite := ""
 var ports: Array = []            # [{side, dir, cell}] – relevant ab MS4 (Bänder)
+var category := "building"       # "building" oder "decor"
+var requires_feature := ""       # z. B. "decor": baubar, sobald das Feature frei ist (statt per unlock_building)
 
 
 static func from_dict(d: Dictionary) -> BuildingDef:
@@ -22,6 +24,8 @@ static func from_dict(d: Dictionary) -> BuildingDef:
 	def.cost_growth = float(d.get("cost_growth", 1.0))
 	def.sprite = str(d.get("sprite", ""))
 	def.ports = d.get("ports", [])
+	def.category = str(d.get("category", "building"))
+	def.requires_feature = str(d.get("requires_feature", ""))
 	return def
 
 

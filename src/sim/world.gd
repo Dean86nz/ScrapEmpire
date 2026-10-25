@@ -38,6 +38,8 @@ signal drone_removed(id: int)
 signal drone_changed(drone: Drone)
 signal drone_failed(reason: String)
 signal drone_upgrade_bought(id: String, level: int)
+signal collectible_added(c: Collectible)
+signal collectible_found(c: Collectible, def: Dictionary)
 signal zone_unlocked(zone_id: String)
 
 const TILE := 64
@@ -86,6 +88,9 @@ var blocked_tiles: Dictionary = {}  # Zaun-Kacheln (nicht bebaubar)
 var drones: Dictionary = {}          # id → Drone
 var drone_cfg: Dictionary = {}
 var drone_upgrades: Dictionary = {}  # id → level
+var collectible_cfg: Dictionary = {}       # data/collectibles.json
+var collectibles: Dictionary = {}          # id → Collectible (noch nicht gefunden, in der Welt)
+var collectibles_found: Dictionary = {}    # def_id → true
 
 
 func _init() -> void:
@@ -109,7 +114,12 @@ func setup_progression_data(tech_defs: Array, skill_data: Dictionary) -> void:
 
 
 func is_building_unlocked(def_id: String) -> bool:
-	return not gate_buildings or unlocked_buildings.has(def_id)
+	if not gate_buildings:
+		return true
+	var def: BuildingDef = defs.get(def_id)
+	if def != null and def.requires_feature != "":
+		return unlocked_features.has(def.requires_feature)
+	return unlocked_buildings.has(def_id)
 
 
 func recompute_modifiers() -> void:
@@ -271,6 +281,7 @@ func tick() -> void:
 	tasks.tick(self, player)
 	_tick_helpers()
 	_tick_drones()
+	_tick_collectibles()
 	_tick_suction()
 	_tick_magnet()
 	_tick_hammer()
@@ -346,6 +357,62 @@ func add_helper(zone_tile: Vector2i, depot_tile: Vector2i, name_index: int = -1,
 	helpers[h.id] = h
 	helper_added.emit(h)
 	return h
+
+
+# --- Fundstücke -------------------------------------------------------------
+
+## Platziert alle noch nicht gefundenen Fundstücke deterministisch in ihren Zonen.
+func spawn_collectibles() -> void:
+	var occupied := {}
+	for n: ResourceNode in nodes.values():
+		for dx in 2:
+			for dy in 2:
+				occupied[n.tile + Vector2i(dx, dy)] = true
+	for bld: Building in buildings.values():
+		for c in bld.cells():
+			occupied[c] = true
+	for c: Collectible in collectibles.values():
+		occupied[c.tile] = true
+	var present := {}
+	for c: Collectible in collectibles.values():
+		present[c.def_id] = true
+	for def: Dictionary in collectible_cfg.get("collectibles", []):
+		var def_id := str(def.get("id", ""))
+		if collectibles_found.has(def_id) or present.has(def_id):
+			continue
+		var z := zones.zone_by_id(str(def.get("zone", "")))
+		if z.is_empty():
+			continue
+		var c := Collectible.new()
+		c.id = next_id()
+		c.def_id = def_id
+		c.tile = Collectible.pick_tile(def, z["rect"], occupied)
+		occupied[c.tile] = true
+		collectibles[c.id] = c
+		collectible_added.emit(c)
+
+
+func collectible_def(def_id: String) -> Dictionary:
+	for def: Dictionary in collectible_cfg.get("collectibles", []):
+		if str(def.get("id", "")) == def_id:
+			return def
+	return {}
+
+
+func collectible_total() -> int:
+	return collectible_cfg.get("collectibles", []).size()
+
+
+func _tick_collectibles() -> void:
+	if collectibles.is_empty():
+		return
+	for c: Collectible in collectibles.values():
+		if Vector2(c.center_px() - player.pos).length() <= float(Collectible.PICKUP_PX):
+			collectibles.erase(c.id)
+			collectibles_found[c.def_id] = true
+			progression.add_xp(int(collectible_cfg.get("xp", 60)))
+			collectible_found.emit(c, collectible_def(c.def_id))
+			return
 
 
 # --- Logistik-Drohnen -------------------------------------------------------

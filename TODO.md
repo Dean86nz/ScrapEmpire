@@ -2,13 +2,21 @@
 
 ## Jetzt
 
+- [x] MS15 Deko und Fundstücke (v1.4.0): Deko-Werkbank, sechs Deko-Objekte, Museum, neun Fundstücke, Journal
 - [x] MS14 Logistik-Drohnen (v1.3.0): Hangar-Tech, Drohnen mit Quelle, Ziel, Material, Limit, Upgrades, Tab, Save v5
 - [x] MS13 Zonen-Heilung (v1.2.0): Gras, Blumen, Büsche, Teiche, Tiere, Tageslicht, Regen, Kartenlegende
 - [x] MS12 Gameplay-Klarheit (v1.1.0): Kapitel mit Toren, Nebel auf der Karte, Kapitel-Tab, Rezept-Hinweise, Titelbildschirm, Produkte als Baustoff, Zonen-Auffüllung alter Spielstände
-- [ ] Phase 2 weiter: (3) Deko und Fundstücke (MS15), (4) Rest (Besucher, Fischen, Fahrzeuge, Zen/Foto, Rat)
+- [ ] Phase 2 Rest (MS16+): Besucher mit Tauschaufträgen, Scrap-Fischen, Fahrzeuge, Zen- und Fotomodus, Planeten-Rat-Aufgaben, Offline-Progression
 - [ ] Auftraggeber prüft am Laptop: Titelbildschirm, Kapitel-Tab (Select), Tor nach 50 % Startlager, Maschinen-Hinweis am Schmelzofen, alter Spielstand hat wieder Objekte in allen Zonen
 - [ ] NIE wieder user://saves ohne Backup anfassen: Screenshot-Läufe nur über tests/shot.sh, Datei-Tests mit use_directory
 - [ ] Auftraggeber testet MS4–MS7 am Laptop / später am Ally: Speichern (F5 oder Pause), Beenden, Neustart, Sprache wechseln, Neues Spiel; Perf-Szenario F6 + F3
+
+## MS15 Deko und Fundstücke (erledigt, selbst getestet)
+
+- [x] Deko-Seite im Baumenü, Museum, Fundstücke mit Journal, Save v6, 6 Tests, Szenario cozy
+- [ ] Museum zeigt die Fundstücke noch nicht als kleine Figuren um das Gebäude (nur Zähler im Journal)
+- [ ] Laterne leuchtet nicht abhängig vom Tageslicht
+- [ ] Deko ist fest (blockiert Rusty) wie Maschinen; begehbare Deko (Wege) fehlt
 
 ## MS14 Logistik-Drohnen (erledigt, selbst getestet)
 
