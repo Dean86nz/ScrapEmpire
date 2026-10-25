@@ -320,10 +320,13 @@ func _rebuild_network() -> void:
 				straight = true
 			else:
 				side_feeders.append(a)
+		var old_shape := b.shape
 		b.shape = Conveyor.Shape.STRAIGHT
 		if not straight and side_feeders.size() == 1:
 			var a := side_feeders[0]
 			b.shape = Conveyor.Shape.TURN_FROM_LEFT if a.tile == b.tile + b.left_dir() else Conveyor.Shape.TURN_FROM_RIGHT
+		if b.shape != old_shape:
+			building_changed.emit(b)
 	conveyor_order.clear()
 	var visited: Dictionary = {}
 	for b in belts:

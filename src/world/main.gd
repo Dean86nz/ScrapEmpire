@@ -63,6 +63,12 @@ func _unhandled_input(event: InputEvent) -> void:
 	if InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("build_menu"):
 		_build_menu.open()
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("debug_perf"):
+		debug_scenario("perf")
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("debug_chain"):
+		debug_scenario("chain")
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("debug_cheat"):
 		# Dev-Cheat bis MS6 (Skilltree): Werkzeug-Stufen +1, etwas Material.
 		_world.player.suction_tier = mini(_world.player.suction_tier + 1, 5)
@@ -71,6 +77,46 @@ func _unhandled_input(event: InputEvent) -> void:
 		_world.player.inventory.add("copper", 10)
 		EventBus.quip.emit("DEBUG_TIER_UP")
 		get_viewport().set_input_as_handled()
+
+
+## Dev-Szenarien (kostenlos platziert): "chain" = Haufen → Saugstation → Band → Ofen → Band → Terminal
+## unterhalb des Starts; "perf" = ~480 Bänder in Schleifen mit ~1.900 Items für den FPS-Test.
+func debug_scenario(name: String) -> void:
+	match name:
+		"chain":
+			_world.place_free("extractor", Vector2i(14, 18), 0)
+			for x in [15, 16]:
+				_world.place_free("conveyor", Vector2i(x, 18), 0)
+			_world.place_free("furnace", Vector2i(17, 18), 0)
+			for x in [19, 20]:
+				_world.place_free("conveyor", Vector2i(x, 18), 0)
+			_world.place_free("sell_terminal", Vector2i(21, 18), 0)
+			EventBus.quip.emit("DEBUG_CHAIN")
+		"perf":
+			var kinds := ["scrap", "copper", "plastic"]
+			var n := 0
+			for k in 6:
+				var x0 := 2 + 2 * k
+				var y0 := 2 + 2 * k
+				var x1 := 37 - 2 * k
+				var y1 := 27 - 2 * k
+				var ring: Array = []
+				for x in range(x0, x1):
+					ring.append([Vector2i(x, y0), 0])
+				for y in range(y0, y1):
+					ring.append([Vector2i(x1, y), 1])
+				for x in range(x1, x0, -1):
+					ring.append([Vector2i(x, y1), 2])
+				for y in range(y1, y0, -1):
+					ring.append([Vector2i(x0, y), 3])
+				for entry in ring:
+					var c := _world.place_free("conveyor", entry[0], entry[1])
+					if c == null:
+						continue
+					for i in 4:
+						(c as Conveyor).try_insert(kinds[(n + i) % 3], i * Conveyor.SPACING)
+						n += 1
+			EventBus.quip.emit("DEBUG_PERF")
 
 
 func _on_level_up(_level: int, _points: int) -> void:

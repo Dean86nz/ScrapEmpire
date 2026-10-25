@@ -71,3 +71,7 @@ QUIP_LEVEL_UP_2,Ding! Ein Skillpunkt. Nicht ausgeben. Doch.,Ding! A skill point.
 QUIP_LEVEL_UP_3,Ich wachse. Nicht körperlich. Innerlich.,I'm growing. Not physically. Inside.
 QUIP_FIRST_CHROME,Chrom! Ich kann mich drin spiegeln. Hübsch.,Chrome! I can see myself in it. Handsome.
 DEBUG_TIER_UP,[DEV] Werkzeug-Stufe +1,[DEV] Tool tier +1
+BLD_CONVEYOR,Förderband,Conveyor belt
+BLD_EXTRACTOR,Saugstation,Suction station
+DEBUG_PERF,[DEV] Perf-Szenario: ~480 Bänder gelegt,[DEV] Perf scenario: ~480 belts placed
+DEBUG_CHAIN,[DEV] Beispielkette unterhalb gebaut,[DEV] Demo chain built below

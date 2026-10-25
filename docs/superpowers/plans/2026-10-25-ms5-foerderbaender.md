@@ -23,12 +23,12 @@
 
 ### Task 1: Sim (Tests)
 **Files:** Create `src/sim/buildings/conveyor.gd`, `src/sim/buildings/extractor.gd`, `src/sim/conveyor_network.gd`, `tests/test_conveyor.gd`; Modify `data/buildings.json`, `src/sim/buildings/building.gd` (create, `port_tiles()`, `pop_output_one`), `src/sim/buildings/machine.gd` (`pop_output_one`), `src/sim/buildings/sell_terminal.gd` (`BELT_MAX`), `src/sim/world.gd` (Netzwerk, Befehle rotate, place_free)
-- [ ] Tests: Item wandert 26/Tick und stoppt bei 255; Abstand 64 erzwungen; Übergabe Band→Band; Stau wenn Ziel voll; Band→Ofen bis 10; Ofen→Band; Kurvenerkennung; Reihenfolge über 3 Bänder ohne Lücke; Saugstation zieht aus Haufen; Terminal nimmt per Band max 10; Kette Haufen→…→Terminal erzeugt Bolts.
-- [ ] Commit.
+- [x] Tests: Item wandert 26/Tick und stoppt bei 255; Abstand 64 erzwungen; Übergabe Band→Band; Stau wenn Ziel voll; Band→Ofen bis 10; Ofen→Band; Kurvenerkennung; Reihenfolge über 3 Bänder ohne Lücke; Saugstation zieht aus Haufen; Terminal nimmt per Band max 10; Kette Haufen→…→Terminal erzeugt Bolts.
+- [x] Commit.
 
 ### Task 2: Darstellung und Bedienung
 **Files:** Create `assets/sprites/buildings/{conveyor,conveyor_turn,extractor}.svg`, `src/world/conveyor_renderer.gd`; Modify `src/world/building_view.gd`, `src/world/world_view.gd`, `src/world/build_cursor.gd` (Ziehen), `src/world/main.gd` (F6 Perf, Szenario), `locale/strings.csv`, `tests/screenshot.gd` (Szenario-Cheat)
-- [ ] Screenshots: Kette läuft, Kurve, Stau; Perf-Szenario mit FPS im Overlay. Commit.
+- [x] Screenshots: Kette läuft, Kurve, Stau; Perf-Szenario mit FPS im Overlay. Commit.
 
 ### Task 3: Doku und Build
-- [ ] CHANGELOG 0.5.0, TODO, GDD (Saugstation), Version, Build.
+- [x] CHANGELOG 0.5.0, TODO, GDD (Saugstation), Version, Build.

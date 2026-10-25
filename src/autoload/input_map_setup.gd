@@ -64,6 +64,8 @@ static var ACTIONS: Dictionary = {
 	# Entwickler
 	"debug_overlay": [_key(KEY_F3)],
 	"debug_cheat": [_key(KEY_F4)],
+	"debug_perf": [_key(KEY_F6)],
+	"debug_chain": [_key(KEY_F7)],
 	"toggle_fullscreen": [_key(KEY_F11)],
 }
 

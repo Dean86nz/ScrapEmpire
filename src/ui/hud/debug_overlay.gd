@@ -20,11 +20,16 @@ func _process(_delta: float) -> void:
 	if not visible:
 		return
 	var w := SimClock.world
-	_label.text = "FPS %d\nTick %.2f ms\nTicks %d\nItems %d\n%s\nSauger T%d  Hammer T%d\nXP %d" % [
+	var belt_items := 0
+	for b: Building in w.buildings.values():
+		if b is Conveyor:
+			belt_items += (b as Conveyor).items.size()
+	_label.text = "FPS %d\nTick %.2f ms\nTicks %d\nItems %d (Band %d)\n%s\nSauger T%d  Hammer T%d\nXP %d" % [
 		Engine.get_frames_per_second(),
 		SimClock.last_tick_ms,
 		w.tick_count,
-		w.loose.size() + item_count,
+		w.loose.size() + belt_items + item_count,
+		belt_items,
 		"Gamepad" if InputRouter.is_gamepad else "Tastatur/Maus",
 		w.player.suction_tier, w.player.hammer_tier,
 		w.progression.total_xp,

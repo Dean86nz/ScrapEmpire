@@ -71,7 +71,8 @@ Wertschöpfungsregel: Produktwert = Summe Inputwerte × 1,5 bis 1,8 (gerundet). 
 | Schmelzofen | 2×2 | 40 Schrott, 10 Kupfer | siehe Rezept | 1 Eingang (links), 1 Ausgang (rechts) | Rezept wird automatisch nach Input gewählt |
 | Presse | 2×2 | 60 Schrott, 20 Plastik | siehe Rezept | 2 Eingänge (links, oben), 1 Ausgang (rechts) | Zahnrad/Schaltkreis nur nach Tech |
 | Verkaufsterminal | 2×2 | 30 Schrott | 1 Item/0,5 s | 1 Eingang (links), kein Ausgang | Zeigt Bolts/min als schwebende Zahl |
-| Förderband | 1×1 | 1 Schrott pro Stück | 2 Kacheln/s | gerade, Kurve L/R | Kapazität 4 Items pro Kachel |
+| Förderband | 1×1 | 1 Schrott pro Stück | 2 Kacheln/s | gerade, Kurve L/R, Seiteneinspeisung in der Mitte | Kapazität 4 Items pro Kachel; blockiert Rusty nicht; A legt ein Item auf, A mit leerem Slot nimmt vorne eines herunter |
+| Saugstation | 1×1 | 20 Schrott, 5 Kupfer | 1 Item / 3 s | Ausgang vorne (drehbar) | zieht aus einem angrenzenden Haufen (Tier 1) dauerhaft, der Füllstand des Haufens bleibt (sie gräbt tiefer); Puffer 5 |
 | Kiste | 1×1 | 10 Schrott | – | von allen Seiten | 12 Slots × 20, Puffer für Routinen |
 
 Maschinen haben Puffer: Eingang max. 10 Items pro Typ, Ausgang max. 10 Items. Voller Ausgang stoppt die Maschine (visuell: Maschine „schnauft“, Items hüpfen am Band). Ausnahme Verkaufsterminal: beim manuellen Einlegen nimmt es bis zu 40 Items (ein ganzer Stack passt hinein), Bänder (MS4) halten sich an 10.

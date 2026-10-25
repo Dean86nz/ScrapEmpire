@@ -7,11 +7,14 @@ var _node_views: Dictionary = {}      # node id → ResourceNodeView
 var _loose_views: Dictionary = {}     # loose id → LooseItemView
 var _building_views: Dictionary = {}  # building id → BuildingView
 var _player: Node2D
+var conveyor_renderer := ConveyorRenderer.new()
 
 
 func bind(world: SimWorld, player: Node2D) -> void:
 	_world = world
 	_player = player
+	add_child(conveyor_renderer)
+	conveyor_renderer.bind(world)
 	for n: ResourceNode in world.nodes.values():
 		_on_node_added(n)
 	for item: LooseItem in world.loose.values():

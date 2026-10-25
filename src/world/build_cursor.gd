@@ -25,6 +25,8 @@ var _outline := Line2D.new()
 var _repeat_timer := 0.0
 var _stick_timer := 0.0
 var _last_dir := Vector2i.ZERO
+## Ziehen von Bändern: zuletzt bebaute Kachel, solange A/LMB gehalten wird.
+var _drag_prev := Vector2i(-9999, -9999)
 
 
 func _ready() -> void:
@@ -97,7 +99,29 @@ func _process(delta: float) -> void:
 		return
 	_handle_movement(delta)
 	_clamp_tile()
+	_handle_drag()
 	_update_visuals()
+
+
+## Band-Ziehen: A/LMB gehalten und Cursor auf eine Nachbarkachel bewegt → Band in Laufrichtung
+## legen und das vorherige Band mitdrehen.
+func _handle_drag() -> void:
+	if mode != Mode.PLACE or def == null or def.id != "conveyor":
+		return
+	var held := Input.is_action_pressed("interact") or Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
+	if not held:
+		_drag_prev = Vector2i(-9999, -9999)
+		return
+	if _drag_prev.x == -9999 or tile == _drag_prev:
+		return
+	var delta := tile - _drag_prev
+	if absi(delta.x) + absi(delta.y) == 1:
+		rot = Conveyor.DIRS.find(delta)
+		var w := SimClock.world
+		if w.grid.at(_drag_prev) is Conveyor:
+			w.queue_command({"type": "rotate", "tile": _drag_prev, "rot": rot})
+	SimClock.world.queue_command({"type": "place", "def_id": def.id, "tile": tile, "rot": rot})
+	_drag_prev = tile
 
 
 func _handle_movement(delta: float) -> void:
@@ -164,6 +188,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact") or mouse_left:
 		if mode == Mode.PLACE:
 			w.queue_command({"type": "place", "def_id": def.id, "tile": tile, "rot": rot})
+			_drag_prev = tile
 		else:
 			w.queue_command({"type": "remove", "tile": tile})
 		get_viewport().set_input_as_handled()
