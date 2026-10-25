@@ -33,3 +33,12 @@ theme/custom="res://src/ui/theme/scrap_theme.tres"
 renderer/rendering_method="mobile"
 textures/canvas_textures/default_texture_filter=1
 environment/defaults/default_clear_color=Color(0.96, 0.87, 0.55, 1)
+
+[autoload]
+
+GameConfig="*res://src/autoload/game_config.gd"
+EventBus="*res://src/autoload/event_bus.gd"
+DataRegistry="*res://src/autoload/data_registry.gd"
+SimClock="*res://src/autoload/sim_clock.gd"
+SaveManager="*res://src/autoload/save_manager.gd"
+InputRouter="*res://src/autoload/input_router.gd"
