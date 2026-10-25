@@ -131,7 +131,7 @@ func test_save_roundtrip_keeps_tasks() -> void:
 	w.flags["tutorial_done"] = true
 	w.flags["gate_open"] = true
 	var data := SaveCodec.encode(w, "main", Vector2(320, 320), 0)
-	assert_eq(int(data["version"]), 2)
+	assert_eq(int(data["version"]), SaveCodec.VERSION)
 	var w2 := _world()
 	w2.setup_progression_data(TechState.load_defs("res://data/tech.json"), SkillState.load_file("res://data/skills.json"))
 	SaveCodec.decode(JSON.parse_string(JSON.stringify(data)), w2)

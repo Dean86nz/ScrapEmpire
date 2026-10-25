@@ -21,6 +21,7 @@ const LOOSE_PICKUP_TICKS := 100   # nach dem Hämmern lose Items einsammeln
 var steps: Array[Dictionary] = []  # {type: Type, tile: Vector2i, item: String}
 var active := false
 var index := 0
+var loops := 0  # zählt, wie oft die Liste von vorne begann
 var wait_ticks := 0
 var _progress_ticks := 0
 var _last_progress_marker := 0
@@ -110,7 +111,10 @@ func _enter_step(i: int, body: WorkerBody) -> void:
 func _next_step(body: WorkerBody) -> void:
 	_last_wait_reason = ""
 	_wait_repeats = 0
-	_enter_step((index + 1) % steps.size(), body)
+	var next := (index + 1) % steps.size()
+	if next == 0:
+		loops += 1
+	_enter_step(next, body)
 
 
 func _fail(body: WorkerBody, reason: String) -> void:
