@@ -157,7 +157,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if mode == Mode.OFF:
 		return
 	var w := SimClock.world
-	if event.is_action_pressed("interact"):
+	# Maus: linke Taste platziert/reißt ab, rechte Taste bricht ab.
+	var mb := event as InputEventMouseButton
+	var mouse_left: bool = mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT
+	var mouse_right: bool = mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_RIGHT
+	if event.is_action_pressed("interact") or mouse_left:
 		if mode == Mode.PLACE:
 			w.queue_command({"type": "place", "def_id": def.id, "tile": tile, "rot": rot})
 		else:
@@ -166,7 +170,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("tool_swap") and mode == Mode.PLACE:
 		rot = (rot + 1) % 4
 		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("cancel"):
+	elif event.is_action_pressed("cancel") or mouse_right:
 		stop()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("build_menu"):

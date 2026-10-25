@@ -63,20 +63,22 @@ func _on_build_selected(def_id: String) -> void:
 	_cursor.start_place(DataRegistry.building_defs[def_id])
 
 
+## Hinweiszeile je nach Kontext und Eingabegerät (Gamepad-Tasten oder Tastatur/Maus).
 func _current_hint() -> String:
+	var kb := "" if InputRouter.is_gamepad else "_KB"
 	match InputRouter.context:
 		InputRouter.Context.BUILD:
-			return tr("HINT_DEMOLISH") if _cursor.mode == BuildCursor.Mode.DEMOLISH else tr("HINT_PLACE")
+			return tr(("HINT_DEMOLISH" if _cursor.mode == BuildCursor.Mode.DEMOLISH else "HINT_PLACE") + kb)
 		InputRouter.Context.MENU:
-			return tr("HINT_MENU")
+			return tr("HINT_MENU" + kb)
 	var b := _player.nearby_building()
 	if b != null:
 		var slot: Dictionary = _world.player.inventory.slots[_player.selected_slot]
 		if slot["item"] != "":
-			return tr("HINT_DEPOSIT") % [slot["count"], DataRegistry.item_name(slot["item"]), tr(b.def.name_key)]
+			return tr("HINT_DEPOSIT" + kb) % [slot["count"], DataRegistry.item_name(slot["item"]), tr(b.def.name_key)]
 		if not b.contents().is_empty():
-			return tr("HINT_WITHDRAW") % tr(b.def.name_key)
-	return tr("HUD_HINT_GAME")
+			return tr("HINT_WITHDRAW" + kb) % tr(b.def.name_key)
+	return tr("HUD_HINT_GAME" + kb)
 
 
 func _on_item_collected(item_id: String, _from: Vector2i) -> void:

@@ -2,6 +2,14 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [0.2.1] – 2026-10-25 – Maus im Baumodus
+
+### Behoben
+- Verkaufsterminal ließ sich per Mausklick nicht platzieren: linke Maustaste platziert/reißt ab, rechte Maustaste bricht ab (Feedback aus MS2-Test)
+
+### Geändert
+- Hinweiszeile zeigt je nach Eingabegerät Gamepad-Tasten oder Maus/Tastatur-Belegung
+
 ## [0.2.0] – 2026-10-25 – MS2 Bauen und Verkaufen
 
 ### Hinzugefügt

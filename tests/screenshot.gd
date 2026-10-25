@@ -61,6 +61,18 @@ func _process(_delta: float) -> bool:
 ## Schickt ein echtes InputEventAction durch die Eingabekette, damit auch
 ## _unhandled_input-Handler (z. B. Menüs) reagieren, nicht nur Input.is_action_pressed.
 func _send_action(action: String, pressed: bool) -> void:
+	# Sonderfall Maus: "lmb"/"rmb" klicken in der Bildschirmmitte rechts neben Rusty.
+	if action == "lmb" or action == "rmb":
+		var pos := Vector2(1150, 560)
+		if pressed:
+			Input.warp_mouse(pos)
+		var mb := InputEventMouseButton.new()
+		mb.button_index = MOUSE_BUTTON_LEFT if action == "lmb" else MOUSE_BUTTON_RIGHT
+		mb.pressed = pressed
+		mb.position = pos
+		mb.global_position = pos
+		Input.parse_input_event(mb)
+		return
 	var ev := InputEventAction.new()
 	ev.action = action
 	ev.pressed = pressed
