@@ -13,8 +13,10 @@ func _initialize() -> void:
 		if not file.begins_with("test_") or not file.ends_with(".gd"):
 			continue
 		var script: GDScript = load("res://tests/" + file)
-		if script == null:
-			failed.append(file + ": konnte nicht geladen werden")
+		if script == null or not script.can_instantiate():
+			# Parse-Fehler: zählt als Fehlschlag, darf den Runner aber nicht hängen lassen.
+			failed.append(file + ": konnte nicht geladen werden (Parse-Fehler?)")
+			total += 1
 			continue
 		var case: TestCase = script.new()
 		for m in script.get_script_method_list():

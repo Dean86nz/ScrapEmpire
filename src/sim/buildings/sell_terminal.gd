@@ -3,8 +3,16 @@ extends Building
 ## Verkaufsterminal: nimmt Items in einen FIFO-Puffer und verkauft alle 10 Ticks eines.
 ## Die Bolts bucht SimWorld (liest `take_sold()` nach dem Tick).
 
-const BUFFER_MAX := 40     # manuelles Einlegen; Bänder (MS4) halten sich an 10
+const BUFFER_MAX := 40     # manuelles Einlegen
+const BELT_MAX := 10       # Bänder füllen nur bis 10 (GDD Kap. 6)
 const SELL_INTERVAL := 10  # 1 Item / 0,5 s
+
+
+func accept_from_belt(item_id: String) -> bool:
+	if buffer.size() >= BELT_MAX:
+		return false
+	buffer.append(item_id)
+	return true
 
 var buffer: Array[String] = []
 var _cooldown := 0

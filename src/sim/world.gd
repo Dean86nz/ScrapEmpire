@@ -43,6 +43,8 @@ var unlocked_tech: Dictionary = {}  # tech_id → true (ab MS6 befüllt)
 var bolts: int = 0
 var progression := Progression.new()
 var respawns: Array[Dictionary] = []  # [{kind, tile, ticks_left}]
+var conveyor_order: Array[Conveyor] = []  # Tick-Reihenfolge: Ziel vor Quelle
+var _network_dirty := true
 
 var _commands: Array[Dictionary] = []
 var _next_id: int = 1
@@ -127,6 +129,12 @@ func tick() -> void:
 		if n.tick():
 			node_changed.emit(n)
 
+	if _network_dirty:
+		_rebuild_network()
+	_tick_conveyors()
+	_tick_outputs()
+	_tick_extractors()
+
 	for b: Building in buildings.values():
 		if b.tick():
 			if b is SellTerminal:
@@ -194,6 +202,8 @@ func _apply(cmd: Dictionary) -> void:
 			_cmd_deposit(cmd)
 		"withdraw":
 			_cmd_withdraw(cmd)
+		"rotate":
+			_cmd_rotate(cmd)
 
 
 # --- Bauen ----------------------------------------------------------------
@@ -255,8 +265,150 @@ func _cmd_place(cmd: Dictionary) -> void:
 		(b as Machine).recipes = available_recipes(def.id)
 	grid.place(b)
 	buildings[b.id] = b
+	_network_dirty = true
 	progression.on_build()
 	building_placed.emit(b)
+
+
+## Platziert ohne Kosten und Reichweite (Tests, Dev-Szenarien).
+func place_free(def_id: String, tile: Vector2i, rot: int = 0) -> Building:
+	var def: BuildingDef = defs[def_id]
+	if not can_place_def(def, tile, rot):
+		return null
+	var b := Building.create(next_id(), def, tile, rot)
+	if b is Machine:
+		(b as Machine).recipes = available_recipes(def.id)
+	grid.place(b)
+	buildings[b.id] = b
+	_network_dirty = true
+	building_placed.emit(b)
+	return b
+
+
+func _cmd_rotate(cmd: Dictionary) -> void:
+	var b := grid.at(cmd.get("tile", Vector2i.ZERO))
+	if b == null or not (b is Conveyor or b is Extractor):
+		return
+	b.rot = posmod(int(cmd.get("rot", 0)), 4)
+	_network_dirty = true
+	building_changed.emit(b)
+
+
+# --- Förderbänder ---------------------------------------------------------
+
+## Kurvenformen und Tick-Reihenfolge neu berechnen (nach jeder Bauänderung).
+func _rebuild_network() -> void:
+	_network_dirty = false
+	var belts: Array[Conveyor] = []
+	for b: Building in buildings.values():
+		if b is Conveyor:
+			belts.append(b)
+	var out_tiles: Dictionary = {}  # Kacheln, auf die ein Maschinen-Ausgang zeigt
+	for b: Building in buildings.values():
+		if b is Conveyor:
+			continue
+		for p in b.ports_world():
+			if p["dir"] == "out":
+				out_tiles[p["outside"]] = true
+	for b in belts:
+		var straight := out_tiles.has(b.tile)
+		var side_feeders: Array[Conveyor] = []
+		for a in belts:
+			if a == b or a.front_tile() != b.tile or b.front_tile() == a.tile:
+				continue
+			if a.tile == b.back_tile():
+				straight = true
+			else:
+				side_feeders.append(a)
+		b.shape = Conveyor.Shape.STRAIGHT
+		if not straight and side_feeders.size() == 1:
+			var a := side_feeders[0]
+			b.shape = Conveyor.Shape.TURN_FROM_LEFT if a.tile == b.tile + b.left_dir() else Conveyor.Shape.TURN_FROM_RIGHT
+	conveyor_order.clear()
+	var visited: Dictionary = {}
+	for b in belts:
+		_visit_belt(b, visited)
+
+
+func _visit_belt(b: Conveyor, visited: Dictionary) -> void:
+	if visited.has(b.id):
+		return
+	visited[b.id] = true
+	var n := grid.at(b.front_tile())
+	if n is Conveyor and n != b and (n as Conveyor).front_tile() != b.tile:
+		_visit_belt(n, visited)
+	conveyor_order.append(b)
+
+
+func _tick_conveyors() -> void:
+	for c in conveyor_order:
+		if c.front_wants_transfer():
+			_try_transfer(c)
+		c.advance()
+
+
+func _try_transfer(c: Conveyor) -> void:
+	var item: String = str(c.front_item()["item"])
+	var target := grid.at(c.front_tile())
+	if target == null:
+		return
+	if target is Conveyor:
+		var t := target as Conveyor
+		if t.front_tile() == c.tile:
+			return  # frontal
+		var off := 0
+		if t.back_tile() != c.tile:
+			var curve_feed := (t.shape == Conveyor.Shape.TURN_FROM_LEFT and c.tile == t.tile + t.left_dir()) \
+				or (t.shape == Conveyor.Shape.TURN_FROM_RIGHT and c.tile == t.tile + t.right_dir())
+			off = 0 if curve_feed else Conveyor.SIDE_OFFSET
+		if t.try_insert(item, off):
+			c.pop_front()
+		return
+	var accepted := false
+	if target is Chest:
+		accepted = target.accept_stack(item, 1) == 1
+	elif target is SellTerminal:
+		accepted = (target as SellTerminal).accept_from_belt(item)
+	elif target.accepts_from_belt(c.tile, c.front_tile()):
+		accepted = target.accept_stack(item, 1) == 1
+	if accepted:
+		c.pop_front()
+		building_changed.emit(target)
+
+
+## Maschinen- und Stationsausgänge legen je Tick höchstens ein Item auf das Band vor dem Port.
+func _tick_outputs() -> void:
+	for b: Building in buildings.values():
+		if b is Conveyor or not b.has_output():
+			continue
+		for p in b.ports_world():
+			if p["dir"] != "out":
+				continue
+			var t := grid.at(p["outside"])
+			if t is Conveyor and (t as Conveyor).front_tile() != p["cell"] and (t as Conveyor).rear_free():
+				var item := b.pop_output_one()
+				if item != "":
+					(t as Conveyor).try_insert(item, 0)
+					building_changed.emit(b)
+				break
+
+
+func _tick_extractors() -> void:
+	for b: Building in buildings.values():
+		if not (b is Extractor):
+			continue
+		var e := b as Extractor
+		if not e.tick_extract():
+			continue
+		for d: Vector2i in Conveyor.DIRS:
+			var nid: int = _node_tiles.get(e.tile + d, -1)
+			if nid < 0 or not nodes.has(nid):
+				continue
+			var n: ResourceNode = nodes[nid]
+			if n.is_pile() and n.tier <= Extractor.TIER:
+				e.buffer.append(n.item_id())
+				building_changed.emit(e)
+				break
 
 
 ## Rezepte einer Maschinenart, die ohne Tech oder mit freigeschalteter Tech verfügbar sind.
@@ -281,6 +433,7 @@ func _cmd_remove(cmd: Dictionary) -> void:
 		return
 	grid.remove(b)
 	buildings.erase(b.id)
+	_network_dirty = true
 	var to_refund: Dictionary = b.paid_cost.duplicate()
 	for item in b.contents():
 		to_refund[item] = to_refund.get(item, 0) + b.contents()[item]
