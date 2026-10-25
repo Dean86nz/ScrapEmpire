@@ -148,7 +148,7 @@ func test_migration_callable_is_applied() -> void:
 
 func test_file_rotation_and_meta() -> void:
 	var sm: Node = load("res://src/autoload/save_manager.gd").new()
-	sm._ready()
+	sm.use_directory("user://saves_test/")  # NIE der echte Ordner
 	sm.delete_all()
 	assert_false(sm.has_save())
 	assert_true(sm.write({"version": 1, "bolts": 1}))
@@ -158,7 +158,7 @@ func test_file_rotation_and_meta() -> void:
 	assert_eq(int(sm.read()["bolts"]), 3, "Meta zeigt auf den neuesten Stand")
 	# Neuester Stand kaputt → der ältere wird genommen
 	var latest: String = sm._latest_file()
-	var f := FileAccess.open(sm.SAVE_DIR + latest, FileAccess.WRITE)
+	var f := FileAccess.open(sm.save_dir + latest, FileAccess.WRITE)
 	f.store_string("{kaputt")
 	f.close()
 	assert_eq(int(sm.read()["bolts"]), 2, "Fallback auf die andere Datei")
