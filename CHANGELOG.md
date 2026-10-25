@@ -2,6 +2,21 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [0.7.0] – 2026-10-25 – MS7 Speichern und Pause
+
+### Hinzugefügt
+- Versionierter JSON-Spielstand (`SaveCodec`, Version 1): Welt mit Objekten, losen Items, Gebäuden samt Puffern, Fortschritt und Band-Items, Respawn-Timer, Spieler, Inventar, Bolts, XP/Level/Skillpunkte, Skills, laufende Forschung, Zufallszustand
+- Zwei rotierende Dateien plus Meta-Datei unter `user://saves/`; eine kaputte Datei fällt auf die andere zurück (Test); Migrationsgerüst mit Tests
+- Autosave alle 60 s, beim Öffnen des Pause-Menüs, beim Beenden über das Menü und beim Schließen des Fensters; „Gespeichert ✔“ als Sprechblase
+- Laden beim Start, wenn ein Spielstand existiert; Rusty begrüßt mit „Alles noch da. Ich habe aufgepasst.“
+- Pause-Menü: Sprache Deutsch/English (wird gespeichert, Szene lädt neu), Neues Spiel (zweimal A zur Bestätigung), Speichern und Beenden
+- Dev: F5 speichert sofort
+- Determinismus-Test: gespeicherte und geladene Welt verhalten sich über 300 Ticks identisch
+- 6 neue Tests (134 gesamt)
+
+### Geändert
+- Spracheinstellung liegt im SaveManager (Autoload-Reihenfolge), nicht mehr in GameConfig
+
 ## [0.6.0] – 2026-10-25 – MS6 Fortschritts-Menü (Techbaum, Skilltree, Nächste Ziele)
 
 ### Hinzugefügt

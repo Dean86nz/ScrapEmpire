@@ -4,30 +4,36 @@ extends RefCounted
 ## Liefert die Startposition des Spielers in Pixeln (Kachelmitte).
 
 
-static func load_into(world: SimWorld, path: String) -> Vector2i:
+static func read(path: String) -> Dictionary:
 	var text := FileAccess.get_file_as_string(path)
 	assert(text != "", "Karte nicht lesbar: " + path)
 	var data: Dictionary = JSON.parse_string(text)
 	assert(data != null, "Karte ist kein gültiges JSON: " + path)
-	return apply(world, data)
+	return data
 
 
-static func apply(world: SimWorld, data: Dictionary) -> Vector2i:
+static func load_into(world: SimWorld, path: String) -> Vector2i:
+	return apply(world, read(path))
+
+
+## with_nodes = false: nur Größe und Seed (beim Laden eines Spielstands, der die Knoten selbst mitbringt).
+static func apply(world: SimWorld, data: Dictionary, with_nodes: bool = true) -> Vector2i:
 	world.set_size(int(data.get("width", 40)), int(data.get("height", 30)))
 	world.rng = SimRng.new(int(data.get("seed", 0)))
-	for entry: Dictionary in data.get("nodes", []):
-		var kind := str(entry.get("kind", ""))
-		var tile := Vector2i(int(entry.get("x", 0)), int(entry.get("y", 0)))
-		if entry.has("loot") and (kind == ResourceNode.KIND_WRECK or ResourceNode.has_kind(kind)):
-			# Explizite Ausbeute überschreibt die Definition (alte Karten, Sonderfälle).
-			var loot: Dictionary = {}
-			for k in entry["loot"]:
-				loot[str(k)] = int(entry["loot"][k])
-			world.add_wreck(tile, loot, kind)
-		elif ResourceNode.has_kind(kind):
-			world.add_object(kind, tile, int(entry.get("amount", -1)))
-		else:
-			push_warning("Karte: unbekannter Knotentyp '%s' übersprungen" % kind)
+	if with_nodes:
+		for entry: Dictionary in data.get("nodes", []):
+			var kind := str(entry.get("kind", ""))
+			var tile := Vector2i(int(entry.get("x", 0)), int(entry.get("y", 0)))
+			if entry.has("loot") and (kind == ResourceNode.KIND_WRECK or ResourceNode.has_kind(kind)):
+				# Explizite Ausbeute überschreibt die Definition (alte Karten, Sonderfälle).
+				var loot: Dictionary = {}
+				for k in entry["loot"]:
+					loot[str(k)] = int(entry["loot"][k])
+				world.add_wreck(tile, loot, kind)
+			elif ResourceNode.has_kind(kind):
+				world.add_object(kind, tile, int(entry.get("amount", -1)))
+			else:
+				push_warning("Karte: unbekannter Knotentyp '%s' übersprungen" % kind)
 	var start: Dictionary = data.get("player_start", {"x": world.width_tiles / 2, "y": world.height_tiles / 2})
 	var half := ResourceNode.TILE / 2
 	return Vector2i(int(start["x"]), int(start["y"])) * ResourceNode.TILE + Vector2i(half, half)

@@ -79,3 +79,10 @@ func total_levels() -> int:
 
 func to_dict() -> Dictionary:
 	return levels.duplicate()
+
+
+func from_dict(d: Dictionary) -> void:
+	levels.clear()
+	for k in d:
+		if by_id.has(str(k)):
+			levels[str(k)] = clampi(int(d[k]), 0, max_level(str(k)))

@@ -2,26 +2,26 @@
 
 ## Jetzt
 
-- [ ] MS7 Speichern und Pause umsetzen
-- [ ] Auftraggeber testet MS4–MS6 später auf dem Ally: Perf-Szenario F6 + F3 (FPS, Tick-Zeit) im 15-W-Modus; Lesbarkeit der Menü-Karten
+- [ ] Go des Auftraggebers für MS8 (Tutorial und Autopilot) abwarten
+- [ ] Auftraggeber testet MS4–MS7 am Laptop / später am Ally: Speichern (F5 oder Pause), Beenden, Neustart, Sprache wechseln, Neues Spiel; Perf-Szenario F6 + F3
 
-## MS6 Fortschritts-Menü (erledigt, selbst getestet)
+## MS7 Speichern und Pause (erledigt, selbst getestet)
 
-- [x] data/tech.json (17 Knoten), TechState mit Forschungstimer
-- [x] data/skills.json (4 Äste, 13 Skills), SkillState, Modifiers
-- [x] Modifiers wirken: Tempo, Drehen, Boost, Slots, Stapel, Magnet, Verkaufspreise, Werkzeug-Stufen, Abbau-Tempo, Reichweite
-- [x] Menü (Select / T) mit Tabs Techbaum / Skilltree / Nächste Ziele, Fokus-Raster, LB/RB wechselt
-- [x] Forschungsbalken im HUD, Freischaltungen wirken sofort
-- [x] F4-Cheat angepasst (Werkzeug-Stufen nur noch über Skills)
+- [x] Versioniertes JSON-Save mit zwei rotierenden Dateien + Meta-Datei
+- [x] Serialisierung: Welt, Spieler, Progression, Skills, Tech, Bolts, RNG-Zustand
+- [x] Autosave 60 s, beim Pausieren und beim Beenden; Laden beim Start
+- [x] Migrationsgerüst mit Tests
+- [x] Pause-Menü: Sprache DE/EN, Neues Spiel, Speichern und Beenden
+- [ ] Englische Texte einmal komplett gegenlesen (Politur MS10)
 
-## MS7 Speichern und Pause
+## MS8 Tutorial und Autopilot (nächster Meilenstein)
 
-- [ ] Versioniertes JSON-Save mit zwei rotierenden Dateien + Meta-Datei
-- [ ] Serialisierung: Welt (Knoten, lose Items, Gebäude mit Puffern/Bändern, Respawns), Spieler, Progression, Skills, Tech, Bolts, RNG-Zustand
-- [ ] Autosave 60 s, beim Pausieren und beim Beenden; Laden beim Start
-- [ ] Migrationsgerüst mit Test-Fixtures
-- [ ] Pause-Menü: Sprache DE/EN, Neues Spiel, Speichern und Beenden
-- [ ] Alle sichtbaren Strings lokalisiert prüfen
+- [ ] Fünf Tutorial-Schritte mit Belohnungen (Sprechblasen, Konfetti)
+- [ ] Gebietsöffnung nach Osten, Hauptgebiet-Map (120×90) mit allen Tiers
+- [ ] WorkerBrain (gehe zu, sammle, hämmere, lege ab, nimm, warte)
+- [ ] Aufgaben-Editor (Y lang): Schritt hinzufügen, Ziel per Cursor, sortieren, löschen, starten
+- [ ] Aufgaben-HUD, Unterbrechen per Stick, Timeout und Warte-Sprüche, Autopilot v0.2 Tempo
+- [ ] Tech Autopilot als Voraussetzung; Save-Format um Aufgaben und Tutorial-Schritt erweitern (Version 2)
 
 ## Bekannte Kleinigkeiten
 
@@ -32,6 +32,7 @@
 - Band-Items am Bandende werden bei Stau mit Interpolation leicht „gestaucht“ dargestellt (kosmetisch)
 - Lange Tech-/Skill-Beschreibungen werden am Kartenrand abgeschnitten (Texte kurz halten)
 - Boost hat keine HUD-Anzeige (Rusty leuchtet nur kurz gelb)
+- Sprachwechsel lädt die Szene neu (kurzer Schwarzbild-Moment), Spielstand wird vorher gesichert
 
 ## Offene Fragen an den Auftraggeber
 
@@ -39,7 +40,7 @@
 
 ## Vorgemerkt (nach MVP, nicht bauen)
 
-- Offline-Progression (Fabrik und Helfer laufen bei geschlossenem Spiel weiter, 8-h-Grenze)
+- Offline-Progression (Fabrik und Helfer laufen bei geschlossenem Spiel weiter, 8-h-Grenze; `saved_at_unix` ist bereits im Spielstand)
 - Skill-Respec gegen Bolts
 - Tier 4/5-Materialien (Titan, Sternenstaub) und zugehörige Maschinen
 - Sound und Musik
@@ -49,5 +50,6 @@
 - Prestige-System, Forschungslabore
 - Splitter/Merger, unterirdische Bänder, Band-Animation (laufende Pfeile)
 - Mehrere Aufgabenlisten mit Bedingungen
+- Mehrere Spielstand-Slots
 - Echte Assets, eigene Schrift
 - Icon in der EXE einbetten (rcedit konfigurieren)

@@ -101,3 +101,14 @@ func resize(new_slots: int, new_stack: int) -> void:
 
 func to_dict() -> Dictionary:
 	return {"slot_count": slot_count, "stack_size": stack_size, "slots": slots.duplicate(true)}
+
+
+func from_dict(d: Dictionary) -> void:
+	slot_count = maxi(int(d.get("slot_count", slot_count)), 1)
+	stack_size = maxi(int(d.get("stack_size", stack_size)), 1)
+	slots.clear()
+	for s in d.get("slots", []):
+		slots.append({"item": str(s.get("item", "")), "count": int(s.get("count", 0))})
+	while slots.size() < slot_count:
+		slots.append({"item": "", "count": 0})
+	changed.emit()

@@ -15,8 +15,7 @@ const FEATURE_TECH := false
 
 func _ready() -> void:
 	InputMapSetup.apply()
-	# Sprache: Deutsch, wenn das System deutsch ist, sonst Englisch. Umschaltbar ab MS6.
-	TranslationServer.set_locale("de" if OS.get_locale_language() == "de" else "en")
+	# Sprache wird vom SaveManager gesetzt (lädt die gespeicherte Einstellung).
 	# Exportierte Builds (Ally) starten im Vollbild; im Editor bleibt es ein Fenster.
 	if OS.has_feature("template"):
 		get_window().mode = Window.MODE_FULLSCREEN

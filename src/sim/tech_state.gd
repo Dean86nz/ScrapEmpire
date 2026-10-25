@@ -119,3 +119,16 @@ func effects_of(id: String) -> Array:
 
 func to_dict() -> Dictionary:
 	return {"unlocked": unlocked.keys(), "current": current_id, "remaining_ticks": remaining_ticks, "total_ticks": total_ticks}
+
+
+func from_dict(d: Dictionary) -> void:
+	for id in d.get("unlocked", []):
+		if by_id.has(str(id)):
+			unlocked[str(id)] = true
+	current_id = str(d.get("current", ""))
+	if current_id != "" and (not by_id.has(current_id) or unlocked.has(current_id)):
+		current_id = ""
+	remaining_ticks = int(d.get("remaining_ticks", 0))
+	total_ticks = int(d.get("total_ticks", 0))
+	if current_id != "" and remaining_ticks <= 0:
+		current_id = ""

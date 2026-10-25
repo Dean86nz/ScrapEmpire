@@ -169,3 +169,10 @@ QUIP_SKILL_2,Skill gekauft. Keine Rückgabe.,Skill bought. No refunds.
 DEBUG_CHEAT,"[DEV] +500 Bolts, Material, Chrom, 100 XP","[DEV] +500 bolts, material, chrome, 100 XP"
 HUD_HINT_GAME,"Stick: bewegen   ·   RT: saugen   ·   LT: hämmern   ·   Y: bauen   ·   Select: Fortschritt   ·   LB/RB: Slot   ·   Start: Menü","Stick: move   ·   RT: suck   ·   LT: hammer   ·   Y: build   ·   Select: progress   ·   LB/RB: slot   ·   Start: menu"
 HUD_HINT_GAME_KB,"WASD: bewegen   ·   LMB: saugen   ·   RMB: hämmern   ·   Tab: bauen   ·   T: Fortschritt   ·   Mausrad: Slot   ·   E: einlegen   ·   Esc: Menü","WASD: move   ·   LMB: suck   ·   RMB: hammer   ·   Tab: build   ·   T: progress   ·   wheel: slot   ·   E: insert   ·   Esc: menu"
+MENU_LANGUAGE,Sprache: %s,Language: %s
+MENU_NEW_GAME,Neues Spiel,New game
+MENU_NEW_GAME_CONFIRM,Wirklich? Alles weg. Nochmal A,Really? Everything gone. Press A again
+MENU_SAVE_QUIT,Speichern und Beenden,Save and quit
+HUD_SAVED,Gespeichert ✔,Saved ✔
+QUIP_LOADED_1,Alles noch da. Ich habe aufgepasst.,Everything still here. I kept watch.
+QUIP_LOADED_2,Willkommen zurück. Nichts explodiert.,Welcome back. Nothing exploded.

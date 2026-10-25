@@ -55,15 +55,29 @@ text = "Pause"
 horizontal_alignment = 1
 
 [node name="ResumeButton" type="Button" parent="Dim/Center/Panel/VBox"]
-custom_minimum_size = Vector2(420, 80)
+custom_minimum_size = Vector2(520, 80)
 layout_mode = 2
 focus_neighbor_top = NodePath("../QuitButton")
-focus_neighbor_bottom = NodePath("../QuitButton")
+focus_neighbor_bottom = NodePath("../LanguageButton")
 text = "Fortsetzen"
 
-[node name="QuitButton" type="Button" parent="Dim/Center/Panel/VBox"]
-custom_minimum_size = Vector2(420, 80)
+[node name="LanguageButton" type="Button" parent="Dim/Center/Panel/VBox"]
+custom_minimum_size = Vector2(520, 80)
 layout_mode = 2
 focus_neighbor_top = NodePath("../ResumeButton")
+focus_neighbor_bottom = NodePath("../NewGameButton")
+text = "Sprache: Deutsch"
+
+[node name="NewGameButton" type="Button" parent="Dim/Center/Panel/VBox"]
+custom_minimum_size = Vector2(520, 80)
+layout_mode = 2
+focus_neighbor_top = NodePath("../LanguageButton")
+focus_neighbor_bottom = NodePath("../QuitButton")
+text = "Neues Spiel"
+
+[node name="QuitButton" type="Button" parent="Dim/Center/Panel/VBox"]
+custom_minimum_size = Vector2(520, 80)
+layout_mode = 2
+focus_neighbor_top = NodePath("../NewGameButton")
 focus_neighbor_bottom = NodePath("../ResumeButton")
-text = "Spiel beenden"
+text = "Speichern und Beenden"

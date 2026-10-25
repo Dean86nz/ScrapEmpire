@@ -31,7 +31,7 @@ var tier: int = 1
 var tool: String = "suction"
 var respawn_ticks: int = 0
 var _pile_item: String = ""
-var _regen_counter: int = 0
+var regen_counter: int = 0
 
 
 ## Lädt data/scrap_objects.json über die eingebauten Definitionen.
@@ -126,11 +126,11 @@ func is_depleted() -> bool:
 ## Liefert true, wenn sich amount geändert hat.
 func tick() -> bool:
 	if regen_ticks <= 0 or amount >= max_amount:
-		_regen_counter = 0
+		regen_counter = 0
 		return false
-	_regen_counter += 1
-	if _regen_counter >= regen_ticks:
-		_regen_counter = 0
+	regen_counter += 1
+	if regen_counter >= regen_ticks:
+		regen_counter = 0
 		amount += 1
 		return true
 	return false
