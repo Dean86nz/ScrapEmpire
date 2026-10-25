@@ -29,6 +29,13 @@ Stand: **MVP (Version 1.0.0)**, Meilensteine 0 bis 11 fertig. Siehe `CHANGELOG.m
 
 Entwickler-Tasten: F3 Debug-Overlay, F4 Cheat (Bolts, Material, XP), F5 speichern, F6 Perf-Szenario, F7 Beispielkette.
 
+## Spielablauf in Kürze
+
+1. **Startlager (Kapitel 1):** Schrott saugen, Terminal bauen, verkaufen, Schmelzofen erforschen. Der Ofen macht aus 3 Schrott einen Eisenbarren; Barren sind Baustoff für Förderband und Saugstation.
+2. **Zone säubern:** Müll-Objekte (Toaster, Kühlschränke …) zerhämmern. Ab 50 % Reinigungsgrad öffnet sich das Tor zur nächsten Zone. Minimap und Karte zeigen nur entdeckte Zonen; der Boden wird mit jeder Stufe grüner.
+3. **Automatisieren:** Saugstation an einen Haufen, Band zum Ofen, Band zum Terminal. Später Autopilot (Aufgabenliste für Rusty) und Helfer-Roboter, die Zonen allein aufräumen.
+4. **Weiterkommen:** Forschung kostet Bolts und Produkte (Barren, Platten, Zahnräder, Schaltkreise, Chrom), Skills kosten Skillpunkte aus Leveln. Tab „Kapitel“ (Select) zeigt immer die nächsten Ziele.
+
 ## Entwickeln
 
 Die Engine liegt in `Godot_v4.7.2-stable_win64.exe/` (nicht im Repo).

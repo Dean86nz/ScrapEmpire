@@ -12,6 +12,7 @@ var _world: SimWorld
 var _player: Node2D
 var _summary: Array[Dictionary] = []
 var _selected := 0
+var _initial_done := false
 var _zoom_index := 0
 var _offset := Vector2.ZERO
 var _timer := 0.0
@@ -29,6 +30,12 @@ func refresh() -> void:
 	_summary = _world.zones.summary(_world.nodes)
 	if _selected >= _summary.size():
 		_selected = 0
+	if not _initial_done:
+		_initial_done = true
+		var cur := _world.zones.current_chapter_zone()
+		for i in _summary.size():
+			if str(_summary[i]["id"]) == cur:
+				_selected = i
 	if not _summary.is_empty():
 		zone_selected.emit(_summary[_selected])
 	queue_redraw()
@@ -114,12 +121,15 @@ func _draw() -> void:
 		var z := _summary[i]
 		var r: Rect2i = z["rect"]
 		var rect := Rect2(_offset + Vector2(r.position) * s, Vector2(r.size) * s)
-		draw_rect(rect, STAGE_COLORS[int(z["stage"])])
+		var known := _world.zones.is_unlocked(str(z["id"]))
+		draw_rect(rect, STAGE_COLORS[int(z["stage"])] if known else Color(0.25, 0.25, 0.3))
 		draw_rect(rect, Color(0.95, 0.55, 0.16) if i == _selected else Color(0.165, 0.165, 0.2), false, 6.0 if i == _selected else 2.0)
-		var label := "%s  %d %%" % [z["name"], int(round(float(z["cleanliness"]) * 100.0))]
-		draw_string(font, rect.position + Vector2(10, 30), label, HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 20, 22, Color(0.165, 0.165, 0.2))
+		var label := ("%s  %d %%" % [z["name"], int(round(float(z["cleanliness"]) * 100.0))]) if known else ("%s %d" % [tr("CH_CHAPTER"), _world.zones.chapter_index(str(z["id"])) + 1])
+		draw_string(font, rect.position + Vector2(10, 30), label, HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 20, 22, Color(0.165, 0.165, 0.2) if known else Color(0.75, 0.75, 0.8))
+		if not known:
+			draw_string(font, rect.position + rect.size * 0.5 + Vector2(-14, 16), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 48, Color(0.7, 0.7, 0.75))
 	for n: ResourceNode in _world.nodes.values():
-		if n.is_wreck() and not n.is_resource():
+		if n.is_wreck() and not n.is_resource() and _world.zones.is_unlocked(_world.zones.zone_id_at(n.tile)):
 			draw_circle(_offset + (Vector2(n.tile) + Vector2(0.5, 0.5)) * s, maxf(s * 0.5, 2.0), Color(0.3, 0.25, 0.2))
 	for b: Building in _world.buildings.values():
 		var br := b.rect_px()

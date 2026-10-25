@@ -63,7 +63,7 @@
         2
       ],
       "cost": {
-        "scrap": 60,
+        "iron_bar": 5,
         "plastic": 20
       },
       "cost_growth": 1.35,
@@ -117,7 +117,7 @@
         1
       ],
       "cost": {
-        "scrap": 20,
+        "iron_bar": 5,
         "copper": 5
       },
       "cost_growth": 1.0,

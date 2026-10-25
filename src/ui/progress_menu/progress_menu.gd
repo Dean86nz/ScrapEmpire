@@ -2,7 +2,7 @@ extends CanvasLayer
 ## Fortschritts-Menü (Select / T) mit drei Tabs: Techbaum, Skilltree, Nächste Ziele.
 ## LB/RB wechseln den Tab, D-Pad bewegt den Fokus, A forscht / kauft, B schließt.
 
-enum Tab { TECH, SKILLS, GOALS, MAP, HELPERS }
+enum Tab { GOALS, TECH, SKILLS, MAP, HELPERS }
 const TAB_COUNT := 5
 
 signal helper_purchase_requested
@@ -10,7 +10,7 @@ signal helper_purchase_requested
 const CARD_SCENE_MIN := Vector2(362, 150)
 const REFRESH_SECONDS := 0.5
 
-@onready var _tab_labels: Array[Label] = [$Center/Panel/VBox/Tabs/TabTech, $Center/Panel/VBox/Tabs/TabSkills, $Center/Panel/VBox/Tabs/TabGoals, $Center/Panel/VBox/Tabs/TabMap, $Center/Panel/VBox/Tabs/TabHelpers]
+@onready var _tab_labels: Array[Label] = [$Center/Panel/VBox/Tabs/TabGoals, $Center/Panel/VBox/Tabs/TabTech, $Center/Panel/VBox/Tabs/TabSkills, $Center/Panel/VBox/Tabs/TabMap, $Center/Panel/VBox/Tabs/TabHelpers]
 @onready var _helpers_tab: Control = $Center/Panel/VBox/Content/HelpersTab
 @onready var _buy_btn: Button = $Center/Panel/VBox/Content/HelpersTab/Left/BuyButton
 @onready var _helper_list: VBoxContainer = $Center/Panel/VBox/Content/HelpersTab/Left/HelperList
@@ -56,6 +56,23 @@ func bind(world: SimWorld) -> void:
 		_upgrade_list.add_child(btn)
 		_upgrade_cards[id] = btn
 	_tab_labels[Tab.HELPERS].text = tr("MENU_TAB_HELPERS")
+	_tab_labels[Tab.GOALS].text = tr("MENU_TAB_CHAPTER")
+	_tab_labels[Tab.TECH].text = tr("MENU_TAB_TECH")
+	_tab_labels[Tab.SKILLS].text = tr("MENU_TAB_SKILLS")
+	_tab_labels[Tab.MAP].text = tr("MENU_TAB_MAP")
+
+
+func _tab_enabled(t: int) -> bool:
+	return t != Tab.HELPERS or _world.unlocked_features.has("helpers")
+
+
+func _next_tab(dir: int) -> void:
+	var t := int(_tab)
+	for i in TAB_COUNT:
+		t = (t + dir + TAB_COUNT) % TAB_COUNT
+		if _tab_enabled(t):
+			_tab = t as Tab
+			return
 
 
 func _on_buy_pressed() -> void:
@@ -68,6 +85,13 @@ func bind_player(player: Node2D) -> void:
 
 
 func _on_zone_selected(info: Dictionary) -> void:
+	if not _world.zones.is_unlocked(str(info["id"])):
+		_map_info.text = "%s %d
+
+%s
+
+%s" % [tr("CH_CHAPTER"), _world.zones.chapter_index(str(info["id"])) + 1, tr("ZONE_UNKNOWN"), tr("ZONE_HELP")]
+		return
 	var stage_key: String = ["ZONE_STAGE_0", "ZONE_STAGE_1", "ZONE_STAGE_2", "ZONE_STAGE_3"][int(info["stage"])]
 	var tiers: Array[String] = []
 	var by_tier: Dictionary = info["trash_by_tier"]
@@ -82,7 +106,7 @@ func _on_zone_selected(info: Dictionary) -> void:
 		tr("ZONE_HELP")]
 
 
-func open(tab: Tab = Tab.TECH) -> void:
+func open(tab: Tab = Tab.GOALS) -> void:
 	_tab = tab
 	visible = true
 	InputRouter.context = InputRouter.Context.MENU
@@ -111,11 +135,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		close()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("hotbar_next"):
-		_tab = (_tab + 1) % TAB_COUNT as Tab
+		_next_tab(1)
 		_show_tab()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("hotbar_prev"):
-		_tab = (_tab + TAB_COUNT - 1) % TAB_COUNT as Tab
+		_next_tab(-1)
 		_show_tab()
 		get_viewport().set_input_as_handled()
 	elif _tab == Tab.MAP and _map_view.handle_input(event):
@@ -337,6 +361,26 @@ func _refresh_goals() -> void:
 	for c in _goals_list.get_children():
 		c.queue_free()
 	var lines: Array[String] = []
+	# Kapitel: aktuelle Zone, Sauberkeitsziel, Tutorial, Tipp, nächste Zone
+	var cur := _world.zones.current_chapter_zone()
+	if cur != "":
+		var z := _world.zones.zone_by_id(cur)
+		var idx := _world.zones.chapter_index(cur) + 1
+		var pct := int(round(_world.zones.cleanliness(cur, _world.nodes) * 100.0))
+		var goal_pct := int(round(_world.zones.unlock_cleanliness * 100.0))
+		lines.append("📍 %s %d: %s" % [tr("CH_CHAPTER"), idx, str(z.get("name", cur))])
+		if not bool(_world.flags.get("tutorial_done", false)):
+			lines.append("☐ " + tr("CH_GOAL_TUTORIAL"))
+		var next := _world.zones.next_chapter_zone()
+		if next != "":
+			lines.append("%s %s" % ["☑" if pct >= goal_pct else "☐", tr("CH_GOAL_CLEAN") % [goal_pct, pct]])
+			lines.append("🚪 " + tr("CH_NEXT") % str(_world.zones.zone_by_id(next).get("name", next)))
+		else:
+			lines.append("☑ " + tr("CH_GOAL_CLEAN_LAST") % pct)
+		var tip_key := _chapter_tip(cur)
+		if tip_key != "":
+			lines.append("💡 " + tr(tip_key))
+	lines.append("")
 	# Forschung
 	var avail := _world.tech.available()
 	if _world.tech.is_researching():
@@ -366,10 +410,29 @@ func _refresh_goals() -> void:
 	if not _world.progression.is_max_level():
 		lines.append("⭐ %s: %d / %d XP" % [tr("HUD_LEVEL") % (_world.progression.level + 1), _world.progression.xp, _world.progression.xp_needed()])
 	for text in lines:
+		if text == "":
+			var gap := Control.new()
+			gap.custom_minimum_size = Vector2(0, 14)
+			_goals_list.add_child(gap)
+			continue
 		var card := _make_card(text)
-		card.custom_minimum_size = Vector2(1360, 72)
+		var long_text := text.length() > 80
+		card.custom_minimum_size = Vector2(1360, 110 if long_text else 72)
+		var title := card.get_node("Box/Title") as Label
+		title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		(card.get_node("Box/Detail") as Label).visible = false
 		_goals_list.add_child(card)
+
+
+func _chapter_tip(zone_id: String) -> String:
+	var text := FileAccess.get_file_as_string("res://data/chapters.json")
+	var parsed: Variant = JSON.parse_string(text) if text != "" else null
+	if parsed == null:
+		return ""
+	for c: Dictionary in parsed.get("chapters", []):
+		if str(c.get("zone", "")) == zone_id:
+			return str(c.get("tip_key", ""))
+	return ""
 
 
 ## Nächstes Objekt in der Welt, dessen Stufe über dem passenden Werkzeug liegt.
@@ -394,6 +457,7 @@ func _show_tab() -> void:
 	_map_tab.visible = _tab == Tab.MAP
 	_helpers_tab.visible = _tab == Tab.HELPERS
 	for i in _tab_labels.size():
+		_tab_labels[i].visible = _tab_enabled(i)
 		_tab_labels[i].add_theme_color_override("font_color", Color(0.95, 0.55, 0.16) if i == _tab else Color(0.165, 0.165, 0.2))
 	if _tab == Tab.MAP:
 		_map_view.refresh()

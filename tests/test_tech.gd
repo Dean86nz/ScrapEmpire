@@ -14,7 +14,12 @@ func _world() -> SimWorld:
 	return w
 
 
-func _research(w: SimWorld, id: String) -> void:
+## Startet eine Forschung; give=true legt die benötigten Produkte (nicht Chrom) vorher ins Inventar.
+func _research(w: SimWorld, id: String, give: bool = true) -> void:
+	if give and w.tech.by_id.has(id):
+		for item in w.tech.by_id[id].get("cost_items", {}):
+			if str(item) != "chrome":
+				w.player.inventory.add(str(item), int(w.tech.by_id[id]["cost_items"][item]))
 	w.queue_command({"type": "research", "id": id})
 	w.tick()
 
@@ -85,7 +90,7 @@ func test_recipe_tech_unlocks_recipe_in_existing_press() -> void:
 		_research(w, id)
 		for i in 400:
 			w.tick()
-	w.player.inventory.add("scrap", 100)
+	w.player.inventory.add("iron_bar", 5)
 	w.player.inventory.add("plastic", 20)
 	w.queue_command({"type": "place", "def_id": "press", "tile": Vector2i(7, 5)})
 	w.tick()
@@ -107,10 +112,11 @@ func test_chrome_cost() -> void:
 			w.tick()
 	var fails := []
 	w.research_failed.connect(func(r: String) -> void: fails.append(r))
-	_research(w, "autopilot")
+	w.player.inventory.add("circuit", 5)
+	_research(w, "autopilot", false)
 	assert_eq(fails, ["items"], "10 Chrom fehlen")
 	w.player.inventory.add("chrome", 10)
-	_research(w, "autopilot")
+	_research(w, "autopilot", false)
 	assert_eq(w.player.inventory.count_of("chrome"), 0)
 	assert_true(w.tech.is_researching())
 

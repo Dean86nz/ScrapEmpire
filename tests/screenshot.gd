@@ -30,9 +30,12 @@ func _initialize() -> void:
 			var hold := int(parts[2]) if parts.size() >= 3 else 2
 			_sequence.append({"frame": f, "action": parts[1], "pressed": true})
 			_sequence.append({"frame": f + hold, "action": parts[1], "pressed": false})
-	if args.size() >= 5:
+	if args.size() >= 5 and args[4] != "-":
 		_cheat = args[4]
-	change_scene_to_file("res://src/world/main.tscn")
+	var scene := "res://src/world/main.tscn"
+	if args.size() >= 6:
+		scene = args[5]  # z. B. res://src/ui/title/title.tscn
+	change_scene_to_file(scene)
 
 
 func _process(_delta: float) -> bool:
@@ -64,6 +67,20 @@ func _process(_delta: float) -> bool:
 					current_scene.debug_scenario(kv[1])
 				"feature":
 					clock.world.unlocked_features[kv[1]] = true
+				"unlock":  # unlock=z11 schaltet eine Zone frei (Tor öffnet sich)
+					clock.world.zones.unlocked[kv[1]] = true
+					clock.world.zone_unlocked.emit(kv[1])
+				"tech":  # tech=furnace erforscht sofort
+					clock.world.tech.unlocked[kv[1]] = true
+					clock.world._apply_tech_effects(kv[1])
+				"goto":  # goto=furnace stellt Rusty links neben das erste Gebäude dieser Art
+					for b in clock.world.buildings.values():
+						if b.def.id == kv[1]:
+							var player: Node2D = get_nodes_in_group("player")[0]
+							var r: Rect2i = b.rect_px()
+							player.global_position = Vector2(r.get_center().x, r.end.y + 44)
+							player.get_node("Camera2D").reset_smoothing()
+							break
 				_:
 					clock.world.player.inventory.add(kv[0], int(kv[1]))
 	for step in _sequence:

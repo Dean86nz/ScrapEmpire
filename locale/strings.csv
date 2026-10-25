@@ -167,8 +167,6 @@ QUIP_RESEARCH_REQUIRES,Erst die Grundlagen. Dann das.,Basics first. Then this.
 QUIP_SKILL_1,Ich fühle mich… verbessert.,I feel… improved.
 QUIP_SKILL_2,Skill gekauft. Keine Rückgabe.,Skill bought. No refunds.
 DEBUG_CHEAT,"[DEV] +500 Bolts, Material, Chrom, 100 XP","[DEV] +500 bolts, material, chrome, 100 XP"
-HUD_HINT_GAME,"Stick: bewegen   ·   RT: saugen   ·   LT: hämmern   ·   Y: bauen   ·   Select: Fortschritt   ·   LB/RB: Slot   ·   Start: Menü","Stick: move   ·   RT: suck   ·   LT: hammer   ·   Y: build   ·   Select: progress   ·   LB/RB: slot   ·   Start: menu"
-HUD_HINT_GAME_KB,"WASD: bewegen   ·   LMB: saugen   ·   RMB: hämmern   ·   Tab: bauen   ·   T: Fortschritt   ·   Mausrad: Slot   ·   E: einlegen   ·   Esc: Menü","WASD: move   ·   LMB: suck   ·   RMB: hammer   ·   Tab: build   ·   T: progress   ·   wheel: slot   ·   E: insert   ·   Esc: menu"
 MENU_LANGUAGE,Sprache: %s,Language: %s
 MENU_NEW_GAME,Neues Spiel,New game
 MENU_NEW_GAME_CONFIRM,Wirklich? Alles weg. Nochmal A,Really? Everything gone. Press A again
@@ -281,3 +279,39 @@ Rusty says: Thanks. I will carry on then. Alone. As planned.
 
 Everything after this is phase 2: zone healing, drones, decoration, collectibles, visitors."
 END_CLOSE,Weiterspielen,Keep playing
+HUD_HINT_GAME,"Stick: bewegen   ·   RT: saugen   ·   LT: hämmern   ·   Y: bauen   ·   Select: Kapitel und Forschung","Stick: move   ·   RT: suck   ·   LT: hammer   ·   Y: build   ·   Select: chapter and research"
+HUD_HINT_GAME_KB,"WASD: bewegen   ·   LMB: saugen   ·   RMB: hämmern   ·   Tab: bauen   ·   T: Kapitel und Forschung   ·   E: einlegen","WASD: move   ·   LMB: suck   ·   RMB: hammer   ·   Tab: build   ·   T: chapter and research   ·   E: insert"
+HINT_DEPOSIT_SHORT,A: %d %s einlegen,A: put %d %s in
+HINT_DEPOSIT_SHORT_KB,E: %d %s einlegen,E: put %d %s in
+HINT_WITHDRAW_SHORT,A: entnehmen (leerer Slot),A: take out (empty slot)
+HINT_WITHDRAW_SHORT_KB,E: entnehmen (leerer Slot),E: take out (empty slot)
+BUILD_MAKES,macht:,makes:
+MENU_TAB_CHAPTER,Kapitel,Chapter
+MENU_TAB_TECH,Forschung,Research
+MENU_TAB_SKILLS,Skills,Skills
+MENU_TAB_MAP,Karte,Map
+CH_CHAPTER,Kapitel,Chapter
+CH_HUD,Kapitel %d · %s · %d %% sauber,Chapter %d · %s · %d %% clean
+CH_HUD_GATE,Tor öffnet bei %d %%,Gate opens at %d %%
+CH_HUD_LAST,Letzte Zone: alles sauber machen!,Last zone: clean it all!
+CH_UNLOCKED,Tor offen! Neues Kapitel: %s,Gate open! New chapter: %s
+CH_GOAL_TUTORIAL,Tutorial abschließen,Finish the tutorial
+CH_GOAL_CLEAN,Zone zu %d %% säubern (jetzt %d %%),Clean the zone to %d %% (now %d %%)
+CH_GOAL_CLEAN_LAST,Zone komplett säubern (jetzt %d %%),Clean the zone completely (now %d %%)
+CH_NEXT,Dann öffnet sich das Tor nach: %s,Then the gate opens to: %s
+CH_TIP_Z01,"Dein Lager: Terminal bauen, Schmelzofen erforschen, Schrott zu Eisenbarren schmelzen. Barren brauchst du für Förderband und Saugstation.","Your camp: build a terminal, research the furnace, smelt scrap into iron bars. You need bars for conveyor and suction station."
+CH_TIP_Z11,"Mehr Kupfer: Presse erforschen, Plastikplatten pressen. Platten und Barren werden zu Zahnrädern und Denkbrettern, die Forschung braucht.","More copper: research the press, press plastic sheets. Sheets and bars become gears and thinkboards that research needs."
+CH_TIP_Z00,"Erste Saugstation an einen Haufen, Band zum Ofen, Band zum Terminal: die Fabrik läuft ohne dich.","First suction station at a pile, belt to the furnace, belt to the terminal: the factory runs without you."
+CH_TIP_Z10,"Kühlschränke sind Stufe 2: Skill Schlagkraft kaufen (Skillpunkte aus Leveln).","Fridges are tier 2: buy the Smash skill (skill points from levels)."
+CH_TIP_Z21,"Satelliten liefern Chrom (Saugkraft Stufe 2). Chrom braucht der Autopilot.","Satellites give chrome (Suction power 2). The autopilot needs chrome."
+CH_TIP_Z20,"Autopilot erforschen, Aufgabenliste anlegen (Y lang): Rusty arbeitet allein.","Research the autopilot, create a task list (hold Y): Rusty works on his own."
+CH_TIP_Z02,"Helfer-Werkstatt erforschen und Helfer kaufen. Sie räumen Zonen auf, während du baust.","Research the helper workshop and buy helpers. They clean zones while you build."
+CH_TIP_Z12,"Mit Helfern und Bändern mehrere Ketten parallel. Großhändler-Skill lohnt sich jetzt.","With helpers and belts run several chains in parallel. The Wholesaler skill pays off now."
+CH_TIP_Z22,"Die letzte Zone. Monolith und Roboter-Arm warten auf Phase 2.","The last zone. Monolith and robot arm wait for phase 2."
+ZONE_UNLOCKED,Das Tor ist offen! Da hinten liegt noch mehr Müll. Herrlich.,The gate is open! More trash out there. Lovely.
+QUIP_HELPER_ZONE_LOCKED,Da darf noch keiner hin. Erst das Tor öffnen.,Nobody goes there yet. Open the gate first.
+TITLE_TAGLINE,Ein kleiner Roboter. Ein vermüllter Planet. Viel Arbeit.,A small robot. A trashed planet. Lots of work.
+TITLE_CONTINUE,Weiterspielen,Continue
+TITLE_NEW,Neues Spiel,New game
+TITLE_QUIT,Beenden,Quit
+ZONE_UNKNOWN,Noch unentdeckt. Erst das Tor davor öffnen.,Not discovered yet. Open the gate before it first.

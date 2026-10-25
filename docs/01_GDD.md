@@ -351,6 +351,16 @@ Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten 
 
 **Definition:** Jede Karte hat Zonen (Rechtecke mit Namen in der Karten-JSON). `reinigungsgrad = 1 − müll_jetzt / müll_start` (Items in Müll-Objekten, nicht Objekte). Stufen: vermüllt (< 25 %), unordentlich (< 50 %), aufgeräumt (< 90 %), sauber (≥ 90 %). Die Stufe steht auf Minimap und Karte und ist der sichtbare Fortschrittsbalken des Planeten. Visuelle Heilung des Bodens folgt in Phase 2 (Kap. 25).
 
+### 23a. Kapitel und Tore (MS12, umgesetzt)
+
+- Die Zonen einer Karte haben eine feste Reihenfolge (`zone_order` in der Karten-JSON); jede Zone ist ein **Kapitel**. Nur die erste Zone ist zu Beginn freigeschaltet.
+- Jede Zone ist von einem Schrottzaun umgeben. Zwischen zwei benachbarten Zonen liegt ein sechs Kacheln breites Tor. Ein Tor öffnet sich, wenn beide Zonen freigeschaltet sind.
+- **Freischaltung:** Die nächste Zone wird freigeschaltet, sobald die aktuelle Kapitel-Zone den Reinigungsgrad `unlock_cleanliness` (50 %) erreicht hat. Freigeschaltete Zonen stehen im Spielstand (`unlocked_zones`, Save v4).
+- Nicht freigeschaltete Zonen sind auf Minimap und Karte **Nebel**: dunkelgrau, „?“, Name nur „Kapitel N“, keine Müll-Punkte. Helfer dürfen dort nicht eingesetzt werden.
+- `data/chapters.json` ordnet jeder Zone einen Tipp zu (was in diesem Kapitel sinnvoll ist). Tab „Kapitel“ zeigt Zone, Ziele mit Haken, nächstes Tor und Tipp; nach dem Tutorial zeigt das HUD die Kapitelzeile.
+- **Produkte als Baustoff:** Tech- und Gebäudekosten enthalten Maschinenprodukte (Eisenbarren für Band und Saugstation, Platten für den Rucksack, Zahnräder und Schaltkreise für höhere Forschung). Das beantwortet „was macht der Schmelzofen“: Barren sind das Material für alles Weitere, nicht nur Verkaufsware.
+- Bodenfärbung je Zone (unentdeckt dunkel, vermüllt braun, unordentlich grau, aufgeräumt hellgrün, sauber grün) ist die Basis der Zonen-Heilung in Phase 2.
+
 ## 24. Minimap und Karte
 
 - **Minimap:** unten rechts, 280 × 200 px, mit Select-lang oder im Pause-Menü ausblendbar. Zeigt Zonen in ihrer Stufenfarbe (braun → grau → hellgrün → grün), Rusty als Punkt mit Richtung, Gebäude als kleine Quadrate, Müll-Objekte als Punkte.

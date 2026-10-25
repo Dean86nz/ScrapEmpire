@@ -169,7 +169,7 @@ func test_save_roundtrip_with_helpers() -> void:
 	w.helper_upgrades["helper_speed"] = 2
 	w.recompute_modifiers()
 	var data := SaveCodec.encode(w, "main", Vector2(32, 32), 0)
-	assert_eq(int(data["version"]), 3)
+	assert_eq(int(data["version"]), SaveCodec.VERSION)
 	var w2 := _world()
 	SaveCodec.decode(JSON.parse_string(JSON.stringify(data)), w2)
 	assert_eq(w2.helpers.size(), 1)

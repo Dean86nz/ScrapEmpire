@@ -2,6 +2,31 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.1.0] – 2026-10-25 – MS12 Gameplay-Klarheit und Design
+
+Antwort auf die Rückmeldung „Karte deckt nicht auf, keine Ressourcen in den anderen Kapiteln, zu kompliziert“.
+
+### Hinzugefügt
+- **Kapitel-System:** Die neun Zonen sind Kapitel in fester Reihenfolge (Startlager → Kabelsenke → Nordstrand → …). Jede Zone ist von einem Schrottzaun umgeben; das Tor zur nächsten Zone öffnet sich, sobald die aktuelle Zone zu 50 % sauber ist (Konfetti, Spruch, Hinweis oben)
+- **Nebel auf Minimap und Karte:** nicht freigeschaltete Zonen sind dunkelgrau mit „?“ und heißen nur „Kapitel N“; Müll-Punkte erscheinen erst nach dem Aufdecken. Die Bodenfarbe im Spiel zeigt den Zustand: dunkel (unentdeckt), braun (vermüllt), grau, hellgrün, grün (sauber)
+- **Tab „Kapitel“** zuerst im Fortschritts-Menü: aktuelle Zone, Ziele mit Haken (Tutorial, 50 % sauber), nächstes Tor, Tipp je Kapitel, darunter wie bisher Forschung, Objekte, Level. Tabs heißen jetzt Kapitel, Forschung, Skills, Karte, Helfer (Helfer erst nach der Werkstatt-Forschung sichtbar)
+- **Kapitel-Zeile im HUD** nach dem Tutorial: „Kapitel 1 · Startlager · 30 % sauber · Tor öffnet bei 50 %“
+- **Rezepte sichtbar:** neben einer Maschine steht in der Hinweiszeile „Schmelzofen: 3 Schrott → Eisenbarren | 2 Kupfer → Kupferbarren“; im Baumenü steht bei Maschinen „(macht: Eisenbarren, Kupferbarren)“
+- **Titelbildschirm** mit Weiterspielen (nur mit Spielstand), Neues Spiel, Sprache, Beenden; Rusty wippt daneben
+- `data/chapters.json` mit Tipp-Schlüsseln je Zone; Spielstand-Version 4 (freigeschaltete Zonen) mit Migration 3 → 4
+- Tests: `tests/test_chapters.gd` (Freischaltung, Helfer-Sperre, fehlende Zonen auffüllen, Save v4, Produktkosten). Screenshot-Werkzeug kann jetzt Techs freischalten (`tech=`), Zonen öffnen (`unlock=`), Rusty neben ein Gebäude stellen (`goto=`) und andere Szenen laden
+
+### Geändert
+- **Produkte sind Baustoff:** Förderband und Saugstation kosten Eisenbarren, Presse kostet Eisenbarren, Rucksack kostet Plastikplatten, Ölwechsel Kupferbarren, Terminal-Upgrade und Schaltkreis-Forschung Zahnräder, Autopilot Schaltkreise und Chrom, Helfer-Werkstatt Zahnräder, Schaltkreise und Chrom. Damit hat der Schmelzofen einen Zweck jenseits des Verkaufs
+- Helfer lassen sich nur in freigeschalteten Zonen einsetzen (Spruch „Da darf noch keiner hin“)
+- Kapitel-Reihenfolge so gelegt, dass jede Zone an die vorherige grenzt
+- Hinweiszeile kürzer: „Stick: bewegen · RT: saugen · LT: hämmern · Y: bauen · Select: Kapitel und Forschung“
+- Bolts-Anzeige als runde dunkle Plakette mit Schrauben-Symbol
+- Der alte Einzel-Zaun um die Tutorial-Zone ist durch die Zonenzäune ersetzt; das Tutorial öffnet das Tor nicht mehr, der Reinigungsgrad tut es
+
+### Behoben
+- **Keine Ressourcen in den anderen Kapiteln:** ältere Spielstände hatten nur die Objekte der Tutorial-Zone. Beim Laden werden Zonen ohne Objekte jetzt aus der Karte nachgefüllt
+
 ## [1.0.0] – 2026-10-25 – MS11 MVP-Politur (MVP fertig)
 
 ### Hinzugefügt

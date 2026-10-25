@@ -5,19 +5,30 @@ extends RefCounted
 ## (< 50 %), 2 aufgeräumt (< 90 %), 3 sauber (≥ 90 %). Ab 50 % respawnt kein Müll mehr.
 
 signal stage_changed(zone_id: String, stage: int)
+signal zone_unlocked(zone_id: String)
 
 const RESPAWN_STOP := 0.5
 const STAGE_THRESHOLDS := [0.25, 0.5, 0.9]
 
 var zones: Array[Dictionary] = []     # {id, name, rect: Rect2i, tutorial}
 var start_trash: Dictionary = {}      # zone_id → int
+var order: Array[String] = []         # Kapitel-Reihenfolge
+var unlock_cleanliness := 0.5
+var unlocked: Dictionary = {}         # zone_id → true (entdeckt/freigeschaltet)
 var _stages: Dictionary = {}          # zone_id → int
 
 
-func setup(zone_defs: Array, map_nodes: Array) -> void:
+func setup(zone_defs: Array, map_nodes: Array, zone_order: Array = [], p_unlock: float = 0.5) -> void:
 	zones.clear()
 	start_trash.clear()
 	_stages.clear()
+	order.clear()
+	for id in zone_order:
+		order.append(str(id))
+	unlock_cleanliness = p_unlock
+	unlocked.clear()
+	if not order.is_empty():
+		unlocked[order[0]] = true
 	for z: Dictionary in zone_defs:
 		var id := str(z.get("id", ""))
 		zones.append({
@@ -46,6 +57,46 @@ func setup(zone_defs: Array, map_nodes: Array) -> void:
 			for k in d.get("yield", {}):
 				amount += int(d["yield"][k])
 		start_trash[zid] = int(start_trash[zid]) + amount
+
+
+func is_unlocked(zone_id: String) -> bool:
+	return order.is_empty() or unlocked.has(zone_id)
+
+
+## Index der Zone in der Kapitelreihenfolge (-1 wenn unbekannt).
+func chapter_index(zone_id: String) -> int:
+	return order.find(zone_id)
+
+
+## Aktuelles Kapitel = letzte freigeschaltete Zone in der Reihenfolge.
+func current_chapter_zone() -> String:
+	var last := ""
+	for id in order:
+		if unlocked.has(id):
+			last = id
+	return last
+
+
+func next_chapter_zone() -> String:
+	var found_current := false
+	var cur := current_chapter_zone()
+	for id in order:
+		if found_current:
+			return id
+		if id == cur:
+			found_current = true
+	return ""
+
+
+## Prüft, ob die nächste Zone freigeschaltet werden darf (vorherige zu unlock_cleanliness sauber).
+func check_unlocks(nodes: Dictionary) -> void:
+	var cur := current_chapter_zone()
+	var next := next_chapter_zone()
+	if cur == "" or next == "" or unlocked.has(next):
+		return
+	if cleanliness(cur, nodes) >= unlock_cleanliness:
+		unlocked[next] = true
+		zone_unlocked.emit(next)
 
 
 func zone_id_at(tile: Vector2i) -> String:
