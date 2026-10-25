@@ -41,3 +41,7 @@ DataRegistry="*res://src/autoload/data_registry.gd"
 SimClock="*res://src/autoload/sim_clock.gd"
 SaveManager="*res://src/autoload/save_manager.gd"
 InputRouter="*res://src/autoload/input_router.gd"
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://locale/strings.de.translation", "res://locale/strings.en.translation")

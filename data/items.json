@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "id": "scrap",
+      "name_key": "ITEM_SCRAP",
+      "sell_value": 1,
+      "color": "#9AA0A6",
+      "icon": "res://assets/sprites/items/scrap.svg"
+    },
+    {
+      "id": "copper",
+      "name_key": "ITEM_COPPER",
+      "sell_value": 3,
+      "color": "#E07B39",
+      "icon": "res://assets/sprites/items/copper.svg"
+    },
+    {
+      "id": "plastic",
+      "name_key": "ITEM_PLASTIC",
+      "sell_value": 2,
+      "color": "#4FB6E8",
+      "icon": "res://assets/sprites/items/plastic.svg"
+    }
+  ]
+}
