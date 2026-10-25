@@ -29,7 +29,7 @@
 
 ## Bekannte Kleinigkeiten
 
-- Beenden nur per Alt+F4 (Pause-Menü kommt in MS6)
+- Pause-Menü hat noch keinen Sprachwechsel und kein Speichern (kommt in MS6)
 - Sprechblase wird nicht an den Bildschirmrand geclampt (kann oben abgeschnitten werden)
 - Rusty kann über Haufen und Wracks fahren (keine Kollision; Entscheidung folgt mit dem Bauen in MS2)
 

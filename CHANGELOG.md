@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [0.1.1] – 2026-10-25 – Pause-Menü (aus MS6 vorgezogen)
+
+### Hinzugefügt
+- Pause-Menü (Start / Esc): „Fortsetzen“ und „Spiel beenden“, hält Spiel und Simulation an, Gamepad-Fokus mit orangem Rahmen, B/Start schließt
+- Button-Stil im Theme (dicke Outline, 28 px Schrift, Fokus-Rahmen) für alle späteren Menüs
+- `build.ps1` benennt die EXE nach der Projektversion (`ScrapEmpire_v0.1.1.exe`), damit ein laufendes Spiel den Build nicht blockiert
+
+### Geändert
+- Hinweiszeile nennt Start / Esc: Menü
+
 ## [0.1.0] – 2026-10-25 – MS1 Sammeln
 
 ### Hinzugefügt

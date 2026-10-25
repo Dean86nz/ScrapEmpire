@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://src/world/main.gd" id="1"]
 [ext_resource type="PackedScene" path="res://src/world/player/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://src/ui/hud/debug_overlay.tscn" id="3"]
 [ext_resource type="Script" path="res://src/world/world_view.gd" id="4"]
 [ext_resource type="PackedScene" path="res://src/ui/hud/hud.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://src/ui/pause_menu/pause_menu.tscn" id="6"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1")
@@ -15,5 +16,7 @@ script = ExtResource("4")
 [node name="Player" parent="." instance=ExtResource("2")]
 
 [node name="Hud" parent="." instance=ExtResource("5")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("6")]
 
 [node name="DebugOverlay" parent="." instance=ExtResource("3")]

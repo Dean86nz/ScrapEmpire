@@ -1,0 +1,69 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/ui/pause_menu/pause_menu.gd" id="1"]
+
+[sub_resource type="StyleBoxFlat" id="panel_style"]
+content_margin_left = 48.0
+content_margin_top = 32.0
+content_margin_right = 48.0
+content_margin_bottom = 40.0
+bg_color = Color(0.98, 0.9, 0.62, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.165, 0.165, 0.2, 1)
+corner_radius_top_left = 28
+corner_radius_top_right = 28
+corner_radius_bottom_right = 28
+corner_radius_bottom_left = 28
+
+[node name="PauseMenu" type="CanvasLayer"]
+process_mode = 3
+layer = 20
+script = ExtResource("1")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.165, 0.165, 0.2, 0.55)
+
+[node name="Center" type="CenterContainer" parent="Dim"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Dim/Center"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("panel_style")
+
+[node name="VBox" type="VBoxContainer" parent="Dim/Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="Dim/Center/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
+theme_override_font_sizes/font_size = 40
+text = "Pause"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="Dim/Center/Panel/VBox"]
+custom_minimum_size = Vector2(420, 80)
+layout_mode = 2
+focus_neighbor_top = NodePath("../QuitButton")
+focus_neighbor_bottom = NodePath("../QuitButton")
+text = "Fortsetzen"
+
+[node name="QuitButton" type="Button" parent="Dim/Center/Panel/VBox"]
+custom_minimum_size = Vector2(420, 80)
+layout_mode = 2
+focus_neighbor_top = NodePath("../ResumeButton")
+focus_neighbor_bottom = NodePath("../ResumeButton")
+text = "Spiel beenden"
