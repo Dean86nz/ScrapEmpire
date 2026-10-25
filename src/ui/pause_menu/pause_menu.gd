@@ -18,6 +18,9 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	# Esc ist auch „cancel“: im Baumodus/Baumenü schließt Esc zuerst diese, nicht das Spiel pausieren.
+	if event is InputEventKey and not visible and InputRouter.context != InputRouter.Context.GAME:
+		return
 	if event.is_action_pressed("pause"):
 		if visible:
 			close()

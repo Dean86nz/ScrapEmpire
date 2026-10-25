@@ -13,8 +13,7 @@ static func load_into(world: SimWorld, path: String) -> Vector2i:
 
 
 static func apply(world: SimWorld, data: Dictionary) -> Vector2i:
-	world.width_tiles = int(data.get("width", 40))
-	world.height_tiles = int(data.get("height", 30))
+	world.set_size(int(data.get("width", 40)), int(data.get("height", 30)))
 	world.rng = SimRng.new(int(data.get("seed", 0)))
 	for entry: Dictionary in data.get("nodes", []):
 		var kind := str(entry.get("kind", ""))

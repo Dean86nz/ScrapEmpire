@@ -2,6 +2,29 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [0.2.1] – 2026-10-25 – Maus im Baumodus
+
+### Behoben
+- Verkaufsterminal ließ sich per Mausklick nicht platzieren: linke Maustaste platziert/reißt ab, rechte Maustaste bricht ab (Feedback aus MS2-Test)
+
+### Geändert
+- Hinweiszeile zeigt je nach Eingabegerät Gamepad-Tasten oder Maus/Tastatur-Belegung
+
+## [0.2.0] – 2026-10-25 – MS2 Bauen und Verkaufen
+
+### Hinzugefügt
+- `data/buildings.json`: Verkaufsterminal (2×2, 30 Schrott, Kostenfaktor 1,35) und Kiste (1×1, 10 Schrott, fest)
+- Simulation: `Grid` (Belegung), `Building`/`SellTerminal`/`Chest`, `Economy` (Kostenformel, Bezahlen, Erstattung), Befehle place/remove/deposit/withdraw, `bolts`
+- Verkaufsterminal verkauft 1 Item / 0,5 s aus einem Puffer (max. 40), Bolts zählen hoch, „+N“ schwebt über dem Terminal
+- Kiste: 12 Slots × 20, A legt ein, A mit leerem Slot nimmt heraus
+- Baumenü (Y): Gebäude mit Icon und Kosten, „Abreißen“, Fokusnavigation, B schließt
+- Bau-Cursor: D-Pad/Pfeiltasten mit Wiederholung, rechter Stick, Maus; Vorschau grün/rot; A platziert, X dreht, B bricht ab; Reichweite 6 Kacheln
+- Abreißen erstattet gezahlte Kosten und Inhalt (Rest fällt als lose Items)
+- Hotbar-Auswahl (LB/RB) mit orangem Rahmen; Kontexthinweise unten („A: 20 Schrott in Verkaufsterminal einlegen“)
+- Rusty-Sprüche bei Baufehlern (zu wenig Material, kein Platz, zu weit weg)
+- Gebäude blockieren Rusty (Kollision)
+- 24 neue Tests (67 gesamt)
+
 ## [0.1.1] – 2026-10-25 – Pause-Menü (aus MS6 vorgezogen)
 
 ### Hinzugefügt

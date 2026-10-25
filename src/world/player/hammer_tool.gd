@@ -15,7 +15,7 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if Input.is_action_just_pressed("tool_secondary"):
+	if InputRouter.context == InputRouter.Context.GAME and Input.is_action_just_pressed("tool_secondary"):
 		SimClock.world.player.hammer_pressed = true
 		_swing()
 

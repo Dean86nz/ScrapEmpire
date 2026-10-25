@@ -7,7 +7,7 @@ NODE_COPPER_TANGLE,Kabelknäuel,Cable tangle
 NODE_PLASTIC_CRUMBS,Plastikbröckchen,Plastic crumbs
 NODE_WRECK,Wrack,Wreck
 HUD_BOLTS,Bolts,Bolts
-HUD_HINT_MS1,"Linker Stick / WASD: bewegen   ·   RT / LMB: saugen   ·   LT / RMB: hämmern   ·   Start / Esc: Menü","Left stick / WASD: move   ·   RT / LMB: suck   ·   LT / RMB: hammer   ·   Start / Esc: menu"
+HUD_HINT_GAME,"Stick: bewegen   ·   RT: saugen   ·   LT: hämmern   ·   Y / Tab: bauen   ·   LB/RB: Slot   ·   Start / Esc: Menü","Stick: move   ·   RT: suck   ·   LT: hammer   ·   Y / Tab: build   ·   LB/RB: slot   ·   Start / Esc: menu"
 QUIP_START_1,Systemcheck: Räder ja. Plan nein.,System check: wheels yes. Plan no.
 QUIP_START_2,Alles voller Schrott. Endlich zu Hause.,Scrap everywhere. Finally home.
 QUIP_INV_FULL_1,Voll. Ich bin kein Lagerhaus.,Full. I am not a warehouse.
@@ -22,3 +22,21 @@ QUIP_IDLE_2,Der Schrott sammelt sich nicht selbst. Noch nicht.,The scrap won't c
 MENU_PAUSE_TITLE,Pause,Paused
 MENU_RESUME,Fortsetzen,Resume
 MENU_QUIT,Spiel beenden,Quit game
+BLD_SELL_TERMINAL,Verkaufsterminal,Sell terminal
+BLD_CHEST,Kiste,Chest
+MENU_BUILD_TITLE,Bauen,Build
+MENU_DEMOLISH,Abreißen,Demolish
+HINT_PLACE,"D-Pad / rechter Stick: Cursor   ·   A: platzieren   ·   X: drehen   ·   B: abbrechen   ·   Y: Menü","D-pad / right stick: cursor   ·   A: place   ·   X: rotate   ·   B: cancel   ·   Y: menu"
+HINT_DEMOLISH,"D-Pad / rechter Stick: Cursor   ·   A: abreißen   ·   B: abbrechen   ·   Y: Menü","D-pad / right stick: cursor   ·   A: demolish   ·   B: cancel   ·   Y: menu"
+HINT_MENU,"D-Pad: wählen   ·   A: bestätigen   ·   B: schließen","D-pad: select   ·   A: confirm   ·   B: close"
+HINT_DEPOSIT,"A: %d %s in %s einlegen","A: put %d %s into %s"
+HINT_WITHDRAW,"A: aus %s entnehmen (leeren Slot wählen)","A: take from %s (select an empty slot)"
+FAIL_COST,Zu wenig Material. Erst sammeln.,Not enough material. Collect first.
+FAIL_BLOCKED,Hier ist kein Platz.,No room here.
+FAIL_RANGE,Zu weit weg. Näher ran.,Too far away. Get closer.
+HUD_HINT_GAME_KB,"WASD: bewegen   ·   LMB: saugen   ·   RMB: hämmern   ·   Tab: bauen   ·   Mausrad: Slot   ·   E: einlegen   ·   Esc: Menü","WASD: move   ·   LMB: suck   ·   RMB: hammer   ·   Tab: build   ·   wheel: slot   ·   E: insert   ·   Esc: menu"
+HINT_PLACE_KB,"Maus / Pfeile: Cursor   ·   LMB / E: platzieren   ·   Q: drehen   ·   RMB / Esc: abbrechen   ·   Tab: Menü","Mouse / arrows: cursor   ·   LMB / E: place   ·   Q: rotate   ·   RMB / Esc: cancel   ·   Tab: menu"
+HINT_DEMOLISH_KB,"Maus / Pfeile: Cursor   ·   LMB / E: abreißen   ·   RMB / Esc: abbrechen   ·   Tab: Menü","Mouse / arrows: cursor   ·   LMB / E: demolish   ·   RMB / Esc: cancel   ·   Tab: menu"
+HINT_MENU_KB,"Pfeile / Maus: wählen   ·   Enter / Klick: bestätigen   ·   Esc: schließen","Arrows / mouse: select   ·   Enter / click: confirm   ·   Esc: close"
+HINT_DEPOSIT_KB,"E: %d %s in %s einlegen","E: put %d %s into %s"
+HINT_WITHDRAW_KB,"E: aus %s entnehmen (leeren Slot wählen)","E: take from %s (select an empty slot)"

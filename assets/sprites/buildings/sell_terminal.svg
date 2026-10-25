@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Verkaufsterminal 2×2: Kiosk mit Bildschirm, Eingang links (Pfeil) -->
+  <ellipse cx="64" cy="112" rx="52" ry="10" fill="#000" opacity="0.12"/>
+  <rect x="18" y="22" width="92" height="86" rx="16" fill="#3FB47C" stroke="#2A2A33" stroke-width="5"/>
+  <rect x="30" y="34" width="68" height="38" rx="8" fill="#1F2A44" stroke="#2A2A33" stroke-width="4"/>
+  <!-- Bildschirm: Münze (Bolt) mit Glanz -->
+  <circle cx="64" cy="53" r="12" fill="#FFD84A" stroke="#2A2A33" stroke-width="3"/>
+  <circle cx="64" cy="53" r="5" fill="#1F2A44"/>
+  <circle cx="59" cy="48" r="2.5" fill="#FFFFFF" opacity="0.8"/>
+  <!-- Einwurfschlitz -->
+  <rect x="34" y="82" width="60" height="14" rx="7" fill="#2A2A33"/>
+  <rect x="40" y="86" width="48" height="6" rx="3" fill="#F2D77B"/>
+  <!-- Eingangspfeil links -->
+  <path d="M4 58 L18 50 L18 66 Z" fill="#F28C28" stroke="#2A2A33" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Dach-Lämpchen -->
+  <circle cx="64" cy="20" r="7" fill="#E8453C" stroke="#2A2A33" stroke-width="3"/>
+</svg>
