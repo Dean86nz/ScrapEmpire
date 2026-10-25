@@ -23,12 +23,24 @@ func _initialize() -> void:
 func _process(_delta: float) -> bool:
 	_frames += 1
 	if _hold_action != "" and _frames == 2:
-		Input.action_press(_hold_action)
+		for a in _hold_action.split(","):
+			_send_action(a, true)
 	if _frames == _target_frames:
 		if _hold_action != "":
-			Input.action_release(_hold_action)
+			for a in _hold_action.split(","):
+				_send_action(a, false)
 		var img := root.get_viewport().get_texture().get_image()
 		var err := img.save_png(_out_path)
 		print("screenshot %s -> %s (%d)" % [_out_path, "ok" if err == OK else "FEHLER", err])
 		quit(0 if err == OK else 1)
 	return false
+
+
+## Schickt ein echtes InputEventAction durch die Eingabekette, damit auch
+## _unhandled_input-Handler (z. B. Pause-Menü) reagieren, nicht nur Input.is_action_pressed.
+func _send_action(action: String, pressed: bool) -> void:
+	var ev := InputEventAction.new()
+	ev.action = action
+	ev.pressed = pressed
+	ev.strength = 1.0 if pressed else 0.0
+	Input.parse_input_event(ev)

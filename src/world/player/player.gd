@@ -1,15 +1,19 @@
 class_name Player
 extends CharacterBody2D
-## Rusty. Bewegung ist frame-basiert (flüssig bei 60 FPS); spielrelevante Wirkungen
-## (Saugen, Hämmern ab MS1) werden als Befehle an die Simulation gegeben.
+## Rusty. Bewegung ist frame-basiert (flüssig bei 60 FPS). Spielrelevante Wirkungen
+## laufen über PlayerState in der Sim: der Node schreibt pro Frame Position, Zielrichtung
+## und Werkzeug-Eingaben; die Sim entscheidet im Tick.
 
 ## Drehgeschwindigkeit des Körpers in rad/s (ca. eine halbe Umdrehung in 0,25 s).
 const TURN_SPEED := 14.0
+const IDLE_QUIP_SECONDS := 60.0
 
 ## Richtung des Werkzeugs (rechter Stick oder Maus). Nie Nullvektor.
 var aim_dir := Vector2.RIGHT
 ## Letzte Bewegungsrichtung. Nie Nullvektor.
 var facing := Vector2.RIGHT
+
+var _idle_time := 0.0
 
 @onready var _sprite: Sprite2D = $Sprite2D
 @onready var _aim_marker: Node2D = $AimMarker
@@ -29,7 +33,17 @@ func _physics_process(delta: float) -> void:
 		aim_dir = move.normalized()
 	if move.length_squared() > 0.0:
 		facing = move.normalized()
+		_idle_time = 0.0
+	else:
+		_idle_time += delta
+		if _idle_time >= IDLE_QUIP_SECONDS:
+			_idle_time = 0.0
+			Quips.say("idle")
 
 	# Körper dreht sich weich in Laufrichtung; das Sprite blickt nach +X.
 	_sprite.rotation = rotate_toward(_sprite.rotation, facing.angle(), TURN_SPEED * delta)
 	_aim_marker.rotation = aim_dir.angle()
+
+	var state: PlayerState = SimClock.world.player
+	state.pos = Vector2i(global_position.round())
+	state.aim = aim_dir

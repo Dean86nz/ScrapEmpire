@@ -1,8 +1,52 @@
 extends Node
-## Lädt ab MS1 die JSON-Daten aus data/ (Items, Rezepte, Gebäude, Tech, Sprüche).
-## MS0: leer, damit der Autoload-Pfad und die Reihenfolge feststehen.
+## Lädt die JSON-Daten aus data/ (Items, Sprüche; ab MS2 Gebäude, Rezepte, Tech).
+## Balancing ändert JSON, nie GDScript.
 
-var items: Dictionary = {}
-var recipes: Dictionary = {}
-var buildings: Dictionary = {}
-var tech: Dictionary = {}
+var items: Dictionary = {}   # id → Dictionary (id, name_key, sell_value, color, icon)
+var quips: Dictionary = {}   # trigger → Array[String] (Übersetzungs-Keys)
+var _icon_cache: Dictionary = {}
+
+
+func _ready() -> void:
+	load_all()
+
+
+func load_all() -> void:
+	items.clear()
+	for entry: Dictionary in _read_json("res://data/items.json").get("items", []):
+		items[str(entry["id"])] = entry
+	quips = _read_json("res://data/quips.json")
+
+
+func item_name(item_id: String) -> String:
+	if items.has(item_id):
+		return tr(str(items[item_id].get("name_key", item_id)))
+	return item_id
+
+
+func item_color(item_id: String) -> Color:
+	if items.has(item_id):
+		return Color.html(str(items[item_id].get("color", "#FFFFFF")))
+	return Color.WHITE
+
+
+func item_icon(item_id: String) -> Texture2D:
+	if _icon_cache.has(item_id):
+		return _icon_cache[item_id]
+	var tex: Texture2D = null
+	if items.has(item_id):
+		tex = load(str(items[item_id].get("icon", "")))
+	_icon_cache[item_id] = tex
+	return tex
+
+
+func _read_json(path: String) -> Dictionary:
+	var text := FileAccess.get_file_as_string(path)
+	if text == "":
+		push_error("Datendatei fehlt oder leer: " + path)
+		return {}
+	var parsed: Variant = JSON.parse_string(text)
+	if parsed == null or not (parsed is Dictionary):
+		push_error("Ungültiges JSON: " + path)
+		return {}
+	return parsed

@@ -1,26 +1,47 @@
 extends Node2D
-## Hauptszene. MS0: flache Fläche von 120×90 Kacheln mit Begrenzungswänden,
-## Rusty in der Mitte, Kamera auf die Fläche begrenzt.
+## Hauptszene: lädt die Karte in die Simulation, baut Boden und Wände,
+## verbindet Darstellung und HUD mit der SimWorld.
 
-const WORLD_W := 120
-const WORLD_H := 90
+const MAP_PATH := "res://data/maps/tutorial.json"
 
 @onready var _player: Player = $Player
+@onready var _world_view: WorldView = $WorldView
+@onready var _hud: CanvasLayer = $Hud
+
+var _first_collected: Dictionary = {}
 
 
 func _ready() -> void:
-	var px := WORLD_W * GameConfig.TILE_SIZE
-	var py := WORLD_H * GameConfig.TILE_SIZE
-	_build_ground(px, py)
-	_build_walls(px, py)
-	_player.position = Vector2(px, py) / 2.0
+	var world := SimWorld.new()
+	var start := MapLoader.load_into(world, MAP_PATH)
+	SimClock.reset_world(world)
+
+	var size := world.size_px()
+	_build_ground(size.x, size.y)
+	_build_walls(size.x, size.y)
+
+	_player.position = Vector2(start)
 	var cam: Camera2D = _player.get_node("Camera2D")
 	cam.limit_left = 0
 	cam.limit_top = 0
-	cam.limit_right = px
-	cam.limit_bottom = py
+	cam.limit_right = size.x
+	cam.limit_bottom = size.y
 	cam.zoom = Vector2.ONE * GameConfig.CAMERA_ZOOM
 	cam.reset_smoothing()
+
+	_world_view.bind(world, _player)
+	_hud.bind(world)
+
+	world.inventory_full.connect(func() -> void: Quips.say("inventory_full"))
+	world.wreck_destroyed.connect(func(_id: int) -> void: Quips.say("wreck_destroyed"))
+	world.item_collected.connect(_on_item_collected)
+	get_tree().create_timer(1.0).timeout.connect(func() -> void: Quips.say("start"))
+
+
+func _on_item_collected(item_id: String, _from: Vector2i) -> void:
+	if not _first_collected.has(item_id):
+		_first_collected[item_id] = true
+		Quips.say("first_" + item_id)
 
 
 func _build_ground(px: int, py: int) -> void:

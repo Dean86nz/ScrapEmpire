@@ -2,33 +2,36 @@
 
 ## Jetzt
 
-- [ ] MS0 auf dem ROG Ally X testen (EXE in export/windows/), Feedback zu Bewegung, Schriftgröße, Zoom
-- [ ] Nach Ally-Feedback: Branch `ms/0-projektgeruest` nach `main` mergen, MS1 beginnen
+- [ ] MS1 testen (PC oder ROG Ally X, EXE in export/windows/), Feedback zu Saugen, Hämmern, Lesbarkeit der Sprechblase
+- [ ] Nach Feedback: Branch `ms/1-sammeln` nach `main` mergen, MS2 beginnen
 
-## MS0 Projektgerüst (erledigt, wartet auf Ally-Test)
+## MS1 Sammeln (erledigt, wartet auf Test)
 
-- [x] project.godot (1920×1080, Viewport-Stretch, Godot 4.7.2)
-- [x] Ordnerstruktur gemäß docs/02_ARCHITECTURE.md
-- [x] Autoloads (GameConfig, DataRegistry, EventBus, SimClock, SaveManager, InputRouter)
-- [x] Input-Map mit allen Aktionen, Deadzone 0,2 (zur Laufzeit, testbar)
-- [x] Theme mit 24 px Standardschrift
-- [x] Rusty-SVG-Platzhalter, Bewegung, Kamera (Zoom 1,5)
-- [x] Debug-Overlay (F3)
-- [x] Headless-Test-Runner (10 Tests grün)
-- [x] .gitignore, git init, Commits auf Branch `ms/0-projektgeruest`
-- [x] Export-Preset Windows, build.ps1, EXE startet auf dem PC
-- [ ] EXE auf dem Ally getestet
+- [x] data/items.json, DataRegistry lädt JSON
+- [x] Tutorial-Map als JSON (40×30), MapLoader
+- [x] ResourceNode (Haufen, Knäuel, Bröckchen, Wracks) in Sim + Darstellung
+- [x] Inventory (6 Slots × 20) mit Tests
+- [x] Schrottsauger (Kegel 90°, 2,5 Kacheln, 1 Item/0,25 s)
+- [x] Hammer (1 Kachel, 1 Schlag/0,5 s), Wrack zerlegen, lose Items
+- [x] Hotbar-HUD (72-px-Slots), Sprechblase, 11 Rusty-Sprüche (data/quips.json)
+- [x] Regeneration der Haufen
+- [ ] Auf dem Ally getestet
 
-## MS1 Sammeln (nächster Meilenstein)
+## MS2 Bauen und Verkaufen (nächster Meilenstein)
 
-- [ ] data/items.json, DataRegistry lädt JSON
-- [ ] Tutorial-Map als JSON (40×30), MapLoader
-- [ ] ResourceNode (Haufen, Knäuel, Bröckchen, Wracks) in Sim + Darstellung
-- [ ] Inventory (6 Slots × 20) mit Tests
-- [ ] Schrottsauger (Kegel 90°, 2,5 Kacheln, 1 Item/0,25 s)
-- [ ] Hammer (1 Kachel, 1 Schlag/0,5 s), Wrack zerlegen
-- [ ] Hotbar-HUD (72-px-Slots), Sprechblase, erste 10 Rusty-Sprüche (data/quips.json)
-- [ ] Regeneration der Haufen
+- [ ] data/buildings.json (Terminal, Kiste), Kostenformel 1,35^n
+- [ ] Grid (Belegung) in der Sim, Befehle place/rotate/remove
+- [ ] Rastercursor (D-Pad / rechter Stick), Vorschau grün/rot, Drehen
+- [ ] Baumenü (Y) mit Fokusnavigation
+- [ ] Verkaufsterminal: A legt Stack ein, Bolts zählen hoch
+- [ ] Kiste: A legt ein / nimmt heraus
+- [ ] Abreißen erstattet Kosten
+
+## Bekannte Kleinigkeiten
+
+- Pause-Menü hat noch keinen Sprachwechsel und kein Speichern (kommt in MS6)
+- Sprechblase wird nicht an den Bildschirmrand geclampt (kann oben abgeschnitten werden)
+- Rusty kann über Haufen und Wracks fahren (keine Kollision; Entscheidung folgt mit dem Bauen in MS2)
 
 ## Offene Fragen an den Auftraggeber
 

@@ -1,0 +1,24 @@
+keys,de,en
+ITEM_SCRAP,Schrott,Scrap
+ITEM_COPPER,Kupfer,Copper
+ITEM_PLASTIC,Plastik,Plastic
+NODE_SCRAP_PILE,Schrotthaufen,Scrap pile
+NODE_COPPER_TANGLE,Kabelknäuel,Cable tangle
+NODE_PLASTIC_CRUMBS,Plastikbröckchen,Plastic crumbs
+NODE_WRECK,Wrack,Wreck
+HUD_BOLTS,Bolts,Bolts
+HUD_HINT_MS1,"Linker Stick / WASD: bewegen   ·   RT / LMB: saugen   ·   LT / RMB: hämmern   ·   Start / Esc: Menü","Left stick / WASD: move   ·   RT / LMB: suck   ·   LT / RMB: hammer   ·   Start / Esc: menu"
+QUIP_START_1,Systemcheck: Räder ja. Plan nein.,System check: wheels yes. Plan no.
+QUIP_START_2,Alles voller Schrott. Endlich zu Hause.,Scrap everywhere. Finally home.
+QUIP_INV_FULL_1,Voll. Ich bin kein Lagerhaus.,Full. I am not a warehouse.
+QUIP_INV_FULL_2,Mehr geht nicht. Physik und so.,Can't take more. Physics and stuff.
+QUIP_FIRST_SCRAP,Schrott. Mein Lieblingsgeschmack.,Scrap. My favourite flavour.
+QUIP_FIRST_COPPER,Kupfer! Glänzt. Mag ich.,Copper! Shiny. I like it.
+QUIP_FIRST_PLASTIC,Plastik. Hält ewig. Leider.,Plastic. Lasts forever. Sadly.
+QUIP_WRECK_1,Ruhe in Teilen.,Rest in pieces.
+QUIP_WRECK_2,War eh schon kaputt.,It was already broken anyway.
+QUIP_IDLE_1,Ich warte. Ich bin gut im Warten.,I'm waiting. I'm good at waiting.
+QUIP_IDLE_2,Der Schrott sammelt sich nicht selbst. Noch nicht.,The scrap won't collect itself. Yet.
+MENU_PAUSE_TITLE,Pause,Paused
+MENU_RESUME,Fortsetzen,Resume
+MENU_QUIT,Spiel beenden,Quit game

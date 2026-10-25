@@ -32,7 +32,7 @@ Ein buntes, humorvolles 2D-Top-down-Automatisierungsspiel: Ein kleiner Schrottsa
 | Schrottsauger | Kegel 90°, Reichweite 2,5 Kacheln, 1 Item/0,25 s | Rechter Stick zielt, RT saugt |
 | Hammer | Nahkampf 1 Kachel, 1 Schlag/0,5 s | Rechter Stick zielt, LT schlägt |
 
-**Gamepad:** Linker Stick Bewegung · Rechter Stick Zielen · RT Saugen · LT Hammer · A Interagieren/Bestätigen · B Zurück/Abbrechen · Y Baumenü (lang: Routinen-Modus) · X Werkzeug wechseln · LB/RB Hotbar · D-Pad Cursor im Baumodus · Start Pause · Select Techbaum.
+**Gamepad:** Linker Stick Bewegung · Rechter Stick Zielen · RT Saugen · LT Hammer · A Interagieren/Bestätigen · B Zurück/Abbrechen · Y Baumenü (lang: Aufgaben-Menü) · X reserviert (Werkzeugwechsel entfällt, da RT und LT beide Werkzeuge direkt auslösen) · LB/RB Hotbar · D-Pad Cursor im Baumodus · Start Pause · Select Techbaum.
 
 **Tastatur/Maus:** WASD, Maus zielt, LMB Saugen, RMB Hammer, E Interagieren, Tab Baumenü, T Techbaum, Esc Pause.
 

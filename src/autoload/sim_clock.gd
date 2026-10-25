@@ -9,6 +9,14 @@ var alpha := 0.0
 var _acc := TickAccumulator.new()
 
 
+## Ersetzt die Welt (beim Laden einer Karte oder eines Spielstands).
+func reset_world(new_world: SimWorld) -> void:
+	world = new_world
+	_acc = TickAccumulator.new()
+	last_tick_ms = 0.0
+	alpha = 0.0
+
+
 func _process(delta: float) -> void:
 	if paused:
 		return
