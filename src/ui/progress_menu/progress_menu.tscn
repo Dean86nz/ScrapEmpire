@@ -50,23 +50,23 @@ theme_override_colors/font_color = Color(0.3, 0.3, 0.36, 1)
 theme_override_font_sizes/font_size = 26
 text = "◀ LB"
 
+[node name="TabGoals" type="Label" parent="Center/Panel/VBox/Tabs"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
+theme_override_font_sizes/font_size = 34
+text = "Kapitel"
+
 [node name="TabTech" type="Label" parent="Center/Panel/VBox/Tabs"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
 theme_override_font_sizes/font_size = 34
-text = "Techbaum"
+text = "Forschung"
 
 [node name="TabSkills" type="Label" parent="Center/Panel/VBox/Tabs"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
 theme_override_font_sizes/font_size = 34
-text = "Skilltree"
-
-[node name="TabGoals" type="Label" parent="Center/Panel/VBox/Tabs"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
-theme_override_font_sizes/font_size = 34
-text = "Nächste Ziele"
+text = "Skills"
 
 [node name="TabMap" type="Label" parent="Center/Panel/VBox/Tabs"]
 layout_mode = 2

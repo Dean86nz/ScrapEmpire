@@ -39,14 +39,21 @@ func _draw() -> void:
 	var s := _scale()
 	# Rahmen und Hintergrund
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0.165, 0.165, 0.2, 0.85))
+	var font := ThemeDB.fallback_font
 	for z in _summary:
 		var r: Rect2i = z["rect"]
+		var rect := Rect2(Vector2(r.position) * s, Vector2(r.size) * s)
+		if not _world.zones.is_unlocked(str(z["id"])):
+			draw_rect(rect, Color(0.25, 0.25, 0.3))
+			draw_string(font, rect.position + rect.size * 0.5 + Vector2(-7, 8), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color(0.7, 0.7, 0.75))
+			draw_rect(rect, Color(0.165, 0.165, 0.2), false, 1.0)
+			continue
 		var col: Color = STAGE_COLORS[int(z["stage"])]
-		draw_rect(Rect2(Vector2(r.position) * s, Vector2(r.size) * s), col)
-		draw_rect(Rect2(Vector2(r.position) * s, Vector2(r.size) * s), Color(0.165, 0.165, 0.2), false, 1.0)
-	# Müll-Objekte
+		draw_rect(rect, col)
+		draw_rect(rect, Color(0.165, 0.165, 0.2), false, 1.0)
+	# Müll-Objekte (nur in entdeckten Zonen)
 	for n: ResourceNode in _world.nodes.values():
-		if n.is_wreck() and not n.is_resource():
+		if n.is_wreck() and not n.is_resource() and _world.zones.is_unlocked(_world.zones.zone_id_at(n.tile)):
 			draw_circle(Vector2(n.tile) * s + Vector2(s, s) * 0.5, maxf(s * 0.6, 1.5), Color(0.3, 0.25, 0.2))
 	# Gebäude
 	for b: Building in _world.buildings.values():

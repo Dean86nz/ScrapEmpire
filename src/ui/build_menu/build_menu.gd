@@ -44,7 +44,13 @@ func _rebuild() -> void:
 		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		btn.icon = load(def.sprite)
 		btn.expand_icon = true
-		btn.text = "%s   –   %s" % [tr(def.name_key), _cost_text(w.next_cost(def))]
+		var makes := ""
+		var outputs: Array[String] = []
+		for r in w.available_recipes(def.id):
+			outputs.append(DataRegistry.item_name(r.output_item))
+		if not outputs.is_empty():
+			makes = "   (%s %s)" % [tr("BUILD_MAKES"), ", ".join(outputs)]
+		btn.text = "%s   –   %s%s" % [tr(def.name_key), _cost_text(w.next_cost(def)), makes]
 		if not Economy.can_afford(w.player.inventory, w.next_cost(def)):
 			btn.add_theme_color_override("font_color", Color(0.6, 0.25, 0.2))
 			btn.self_modulate = Color(0.82, 0.82, 0.82)

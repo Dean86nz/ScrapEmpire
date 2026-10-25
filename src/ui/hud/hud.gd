@@ -3,7 +3,7 @@ extends CanvasLayer
 
 const ITEM_SLOT := preload("res://src/ui/widgets/item_slot.tscn")
 
-@onready var _bolts_label: Label = $BoltsLabel
+@onready var _bolts_label: Label = $BoltsPanel/HBox/BoltsLabel
 @onready var _hotbar: HBoxContainer = $Hotbar
 @onready var _hint: Label = $HintLabel
 @onready var _xp_bar: HBoxContainer = $XpBar

@@ -1,0 +1,40 @@
+{
+  "chapters": [
+    {
+      "zone": "z01",
+      "tip_key": "CH_TIP_Z01"
+    },
+    {
+      "zone": "z11",
+      "tip_key": "CH_TIP_Z11"
+    },
+    {
+      "zone": "z10",
+      "tip_key": "CH_TIP_Z10"
+    },
+    {
+      "zone": "z00",
+      "tip_key": "CH_TIP_Z00"
+    },
+    {
+      "zone": "z20",
+      "tip_key": "CH_TIP_Z20"
+    },
+    {
+      "zone": "z21",
+      "tip_key": "CH_TIP_Z21"
+    },
+    {
+      "zone": "z22",
+      "tip_key": "CH_TIP_Z22"
+    },
+    {
+      "zone": "z12",
+      "tip_key": "CH_TIP_Z12"
+    },
+    {
+      "zone": "z02",
+      "tip_key": "CH_TIP_Z02"
+    }
+  ]
+}

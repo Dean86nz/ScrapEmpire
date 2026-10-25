@@ -20,7 +20,8 @@ const LONG_PRESS_SECONDS := 0.45
 
 var _world: SimWorld
 var _map_data: Dictionary = {}
-var _gate_nodes: Array[Node] = []
+var _zone_gates: Dictionary = {}  # "a|b" → Array[Node]
+var _chapter_timer := 0.0
 var _build_press_time := -1.0
 var _tech_press_time := -1.0
 var _pending_task_type := -1
@@ -46,6 +47,7 @@ func _ready() -> void:
 	if not save_data.is_empty():
 		MapLoader.apply(_world, _map_data, false)
 		start_px = SaveCodec.decode(save_data, _world)
+		MapLoader.fill_missing_zones(_world, _map_data)
 		_loaded_from_save = true
 	else:
 		start_px = Vector2(MapLoader.apply(_world, _map_data))
@@ -55,7 +57,7 @@ func _ready() -> void:
 	var size := _world.size_px()
 	_build_ground(size.x, size.y)
 	_build_walls(size.x, size.y)
-	_build_fence()
+	_build_zone_fences()
 
 	_player.position = Vector2(start)
 	var cam: Camera2D = _player.get_node("Camera2D")
@@ -91,10 +93,10 @@ func _ready() -> void:
 	_world.zones.refresh(_world.nodes)
 	_tutorial.bind(_world, _player)
 	_tutorial.step_changed.connect(func(_i: int, text: String) -> void: _hud.set_tutorial(text))
-	_tutorial.finished.connect(_open_gate)
-	_hud.set_tutorial(_tutorial.progress_text())
-	if bool(_world.flags.get("gate_open", false)):
-		_open_gate()
+	_tutorial.finished.connect(_refresh_chapter_hud)
+	_world.zone_unlocked.connect(_on_zone_unlocked)
+	_refresh_chapter_hud()
+	_open_unlocked_gates()
 	_pause_menu.opened.connect(save_game)
 	_pause_menu.save_quit_requested.connect(_on_save_quit)
 	_pause_menu.new_game_requested.connect(_on_new_game)
@@ -125,6 +127,10 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_hud.set_hint(_current_hint())
+	_chapter_timer -= delta
+	if _chapter_timer <= 0.0:
+		_chapter_timer = 1.0
+		_refresh_chapter_hud()
 	# Kurz/Lang-Erkennung per Zustandsabfrage (funktioniert auch mit simulierten Eingaben).
 	if _build_press_time >= 0.0:
 		_build_press_time += delta
@@ -370,30 +376,79 @@ func _on_target_chosen(tile: Vector2i, ok: bool) -> void:
 	_task_editor.on_target_result(t, tile, ok)
 
 
-## Zaun aus Schrottbergen um die Tutorial-Zone, mit Tor nach Osten.
-func _build_fence() -> void:
-	var tz: Dictionary = _map_data.get("tutorial_zone", {})
-	if tz.is_empty():
+## Kapitel-Anzeige oben: Tutorial-Schritt oder Zonenziel.
+func _refresh_chapter_hud() -> void:
+	if not _tutorial.done:
+		_hud.set_tutorial(_tutorial.progress_text())
 		return
-	var gate: Dictionary = _map_data.get("gate", {})
-	var gate_rect := Rect2i(int(gate.get("x", -1)), int(gate.get("y", -1)), int(gate.get("w", 0)), int(gate.get("h", 0)))
-	var x0 := int(tz["x"])
-	var y0 := int(tz["y"])
-	var x1 := x0 + int(tz["w"])
-	var y1 := y0 + int(tz["h"])
+	var cur := _world.zones.current_chapter_zone()
+	if cur == "":
+		_hud.set_tutorial("")
+		return
+	var z := _world.zones.zone_by_id(cur)
+	var pct := int(round(_world.zones.cleanliness(cur, _world.nodes) * 100.0))
+	var idx := _world.zones.chapter_index(cur) + 1
+	var next := _world.zones.next_chapter_zone()
+	var text := tr("CH_HUD") % [idx, str(z.get("name", cur)), pct]
+	if next != "":
+		text += "  ·  " + tr("CH_HUD_GATE") % int(round(_world.zones.unlock_cleanliness * 100.0))
+	else:
+		text += "  ·  " + tr("CH_HUD_LAST")
+	_hud.set_tutorial(text)
+
+
+func _on_zone_unlocked(zone_id: String) -> void:
+	_open_unlocked_gates()
+	_player.celebrate()
+	var z := _world.zones.zone_by_id(zone_id)
+	EventBus.quip.emit("ZONE_UNLOCKED")
+	_hud.set_tutorial(tr("CH_UNLOCKED") % str(z.get("name", zone_id)))
+	_chapter_timer = 4.0
+
+
+## Zäune aus Schrottbergen an allen Zonengrenzen; Tore zwischen Nachbarzonen öffnen sich mit dem Kapitel.
+func _build_zone_fences() -> void:
 	var fence_tex := load("res://assets/sprites/tiles/fence.svg")
 	var gate_tex := load("res://assets/sprites/tiles/gate.svg")
-	var tiles: Array[Vector2i] = []
-	for x in range(x0 - 1, x1 + 1):
-		tiles.append(Vector2i(x, y0 - 1))
-		tiles.append(Vector2i(x, y1))
-	for y in range(y0, y1):
-		tiles.append(Vector2i(x0 - 1, y))
-		tiles.append(Vector2i(x1, y))
-	for t in tiles:
-		if t.x < 0 or t.y < 0 or t.x >= _world.width_tiles or t.y >= _world.height_tiles:
+	var zones := _world.zones.zones
+	var fence_tiles: Dictionary = {}
+	var gate_tiles: Dictionary = {}  # tile → pair key
+	for z in zones:
+		var r: Rect2i = z["rect"]
+		if r.end.x < _world.width_tiles:
+			for y in range(r.position.y, r.end.y):
+				fence_tiles[Vector2i(r.end.x, y)] = true
+		if r.end.y < _world.height_tiles:
+			for x in range(r.position.x, r.end.x + 1):
+				fence_tiles[Vector2i(x, r.end.y)] = true
+	# Tore: Mitte jeder gemeinsamen Kante zweier Nachbarzonen, 6 Kacheln breit
+	for i in zones.size():
+		for j in zones.size():
+			if j <= i:
+				continue
+			var a: Rect2i = zones[i]["rect"]
+			var b: Rect2i = zones[j]["rect"]
+			var key := "%s|%s" % [zones[i]["id"], zones[j]["id"]]
+			if a.end.x == b.position.x and a.position.y == b.position.y:      # b rechts von a
+				var cy := a.position.y + a.size.y / 2
+				for y in range(cy - 3, cy + 3):
+					gate_tiles[Vector2i(a.end.x, y)] = key
+			elif b.end.x == a.position.x and a.position.y == b.position.y:   # b links von a
+				var cy := a.position.y + a.size.y / 2
+				for y in range(cy - 3, cy + 3):
+					gate_tiles[Vector2i(b.end.x, y)] = key
+			elif a.end.y == b.position.y and a.position.x == b.position.x:   # b unter a
+				var cx := a.position.x + a.size.x / 2
+				for x in range(cx - 3, cx + 3):
+					gate_tiles[Vector2i(x, a.end.y)] = key
+			elif b.end.y == a.position.y and a.position.x == b.position.x:   # b über a
+				var cx := a.position.x + a.size.x / 2
+				for x in range(cx - 3, cx + 3):
+					gate_tiles[Vector2i(x, b.end.y)] = key
+	for t in fence_tiles.keys():
+		if t.x >= _world.width_tiles or t.y >= _world.height_tiles:
 			continue
-		var is_gate := gate_rect.has_point(t)
+		var is_gate := gate_tiles.has(t)
 		var body := StaticBody2D.new()
 		var shape := CollisionShape2D.new()
 		var rect := RectangleShape2D.new()
@@ -406,16 +461,25 @@ func _build_fence() -> void:
 		sprite.z_index = 3
 		body.add_child(sprite)
 		add_child(body)
+		_world.blocked_tiles[t] = true
 		if is_gate:
-			_gate_nodes.append(body)
+			var key: String = gate_tiles[t]
+			if not _zone_gates.has(key):
+				_zone_gates[key] = []
+			_zone_gates[key].append(body)
 
 
-func _open_gate() -> void:
-	_world.flags["gate_open"] = true
-	for n in _gate_nodes:
-		if is_instance_valid(n):
-			n.queue_free()
-	_gate_nodes.clear()
+## Entfernt alle Tore zwischen zwei freigeschalteten Zonen.
+func _open_unlocked_gates() -> void:
+	for key in _zone_gates.keys():
+		var parts: PackedStringArray = key.split("|")
+		if _world.zones.is_unlocked(parts[0]) and _world.zones.is_unlocked(parts[1]):
+			for n in _zone_gates[key]:
+				if is_instance_valid(n):
+					var t := Vector2i((n.position - Vector2(32, 32)) / 64.0)
+					_world.blocked_tiles.erase(t)
+					n.queue_free()
+			_zone_gates.erase(key)
 
 
 func _on_level_up(_level: int, _points: int) -> void:
@@ -438,6 +502,17 @@ func _current_hint() -> String:
 		InputRouter.Context.MENU:
 			return tr("HINT_MENU" + kb)
 	var b := _player.nearby_building()
+	if b != null and b is Machine:
+		# Rezepte direkt an der Maschine zeigen
+		var parts: Array[String] = []
+		for r in (b as Machine).recipes:
+			var ins: Array[String] = []
+			for item in r.inputs:
+				ins.append("%d %s" % [int(r.inputs[item]), DataRegistry.item_name(str(item))])
+			parts.append("%s → %s" % [" + ".join(ins), DataRegistry.item_name(r.output_item)])
+		var slot_m: Dictionary = _world.player.inventory.slots[_player.selected_slot]
+		var action := (tr("HINT_DEPOSIT_SHORT" + kb) % [slot_m["count"], DataRegistry.item_name(slot_m["item"])]) if slot_m["item"] != "" else tr("HINT_WITHDRAW_SHORT" + kb)
+		return "%s: %s   ·   %s" % [tr(b.def.name_key), "  |  ".join(parts), action]
 	if b != null:
 		var slot: Dictionary = _world.player.inventory.slots[_player.selected_slot]
 		if slot["item"] != "":

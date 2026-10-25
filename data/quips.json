@@ -128,5 +128,8 @@
   ],
   "helper_fail_unknown": [
     "QUIP_WAIT_GENERIC"
+  ],
+  "helper_fail_zone_locked": [
+    "QUIP_HELPER_ZONE_LOCKED"
   ]
 }

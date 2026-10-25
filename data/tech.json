@@ -71,7 +71,9 @@
       "name_key": "TECH_CONVEYOR",
       "desc_key": "TECH_CONVEYOR_DESC",
       "cost_bolts": 200,
-      "cost_items": {},
+      "cost_items": {
+        "iron_bar": 5
+      },
       "time_s": 20,
       "requires": [
         "furnace"
@@ -88,7 +90,9 @@
       "name_key": "TECH_EXTRACTOR",
       "desc_key": "TECH_EXTRACTOR_DESC",
       "cost_bolts": 300,
-      "cost_items": {},
+      "cost_items": {
+        "iron_bar": 10
+      },
       "time_s": 30,
       "requires": [
         "conveyor"
@@ -166,7 +170,9 @@
       "name_key": "TECH_OIL_CHANGE",
       "desc_key": "TECH_OIL_CHANGE_DESC",
       "cost_bolts": 600,
-      "cost_items": {},
+      "cost_items": {
+        "copper_bar": 5
+      },
       "time_s": 60,
       "requires": [
         "suction_plus"
@@ -185,7 +191,9 @@
       "name_key": "TECH_BACKPACK",
       "desc_key": "TECH_BACKPACK_DESC",
       "cost_bolts": 800,
-      "cost_items": {},
+      "cost_items": {
+        "plastic_sheet": 5
+      },
       "time_s": 80,
       "requires": [
         "chest"
@@ -204,7 +212,9 @@
       "name_key": "TECH_CIRCUIT",
       "desc_key": "TECH_CIRCUIT_DESC",
       "cost_bolts": 1200,
-      "cost_items": {},
+      "cost_items": {
+        "gear": 5
+      },
       "time_s": 120,
       "requires": [
         "gear"
@@ -221,7 +231,9 @@
       "name_key": "TECH_TERMINAL_PLUS",
       "desc_key": "TECH_TERMINAL_PLUS_DESC",
       "cost_bolts": 1500,
-      "cost_items": {},
+      "cost_items": {
+        "gear": 10
+      },
       "time_s": 150,
       "requires": [
         "conveyor"
@@ -241,6 +253,7 @@
       "desc_key": "TECH_AUTOPILOT_DESC",
       "cost_bolts": 2000,
       "cost_items": {
+        "circuit": 5,
         "chrome": 10
       },
       "time_s": 180,
@@ -260,7 +273,9 @@
       "name_key": "TECH_AUTOPILOT_SPEED",
       "desc_key": "TECH_AUTOPILOT_SPEED_DESC",
       "cost_bolts": 3500,
-      "cost_items": {},
+      "cost_items": {
+        "circuit": 10
+      },
       "time_s": 180,
       "requires": [
         "autopilot"
@@ -280,6 +295,8 @@
       "desc_key": "TECH_HELPER_WORKSHOP_DESC",
       "cost_bolts": 2500,
       "cost_items": {
+        "gear": 10,
+        "circuit": 5,
         "chrome": 20
       },
       "time_s": 180,
@@ -298,7 +315,9 @@
       "name_key": "TECH_HELPER_TOOLS",
       "desc_key": "TECH_HELPER_TOOLS_DESC",
       "cost_bolts": 3000,
-      "cost_items": {},
+      "cost_items": {
+        "circuit": 10
+      },
       "time_s": 120,
       "requires": [
         "helper_workshop"

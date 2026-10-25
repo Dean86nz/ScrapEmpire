@@ -20,10 +20,11 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **9** | Zonen, Minimap und Karte | v0.9.0 |
 | **10** | Helfer-Roboter | v0.10.0 |
 | **11** | MVP-Politur | v1.0.0 – **MVP fertig** |
+| **12** | Gameplay-Klarheit und Design (Kapitel, Tore, Nebel, Rezepte, Titel) | v1.1.0 |
 
 ## Offen
 
-Keine MVP-Meilensteine mehr offen. Nächste Schritte nach Rückmeldung des Auftraggebers: Ally-Test (Perf-Szenario F6, Lesbarkeit), Balancing-Durchlauf 2–3 h, dann Phase 2.
+Keine MVP-Meilensteine mehr offen. MS12 hat die Rückmeldung vom 2026-10-25 umgesetzt (Karte deckt auf, Kapitel-Logik, Rezepte sichtbar, einfacheres Menü). Es folgt Phase 2 ohne weiteres Go in der Reihenfolge unten; MS13 = Zonen-Heilung, MS14 = Logistik-Drohnen, MS15 = Deko und Fundstücke.
 
 ## Phase 2 (geplant, nicht im MVP)
 

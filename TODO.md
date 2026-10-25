@@ -2,9 +2,20 @@
 
 ## Jetzt
 
-- [x] MVP fertig (v1.0.0). Warten auf Rückmeldung des Auftraggebers: Ally-Test, Balancing-Eindruck, Wünsche für Phase 2
+- [x] MS12 Gameplay-Klarheit (v1.1.0): Kapitel mit Toren, Nebel auf der Karte, Kapitel-Tab, Rezept-Hinweise, Titelbildschirm, Produkte als Baustoff, Zonen-Auffüllung alter Spielstände
+- [ ] Phase 2 in Auftraggeber-Reihenfolge: (1) Zonen-Heilung (Blumen, Tiere, Wetter – Bodenfarbe je Stufe ist schon drin), (2) Logistik-Drohnen, (3) Deko und Fundstücke, (4) Rest
+- [ ] Auftraggeber prüft am Laptop: Titelbildschirm, Kapitel-Tab (Select), Tor nach 50 % Startlager, Maschinen-Hinweis am Schmelzofen, alter Spielstand hat wieder Objekte in allen Zonen
 - [ ] NIE wieder user://saves ohne Backup anfassen: Screenshot-Läufe nur über tests/shot.sh, Datei-Tests mit use_directory
 - [ ] Auftraggeber testet MS4–MS7 am Laptop / später am Ally: Speichern (F5 oder Pause), Beenden, Neustart, Sprache wechseln, Neues Spiel; Perf-Szenario F6 + F3
+
+## MS12 Gameplay-Klarheit und Design (erledigt, selbst getestet)
+
+- [x] Zonenzäune mit Toren, Freischaltung bei 50 %, Nebel auf Minimap und Karte, Bodenfarbe je Zustand
+- [x] Kapitel-Tab, HUD-Kapitelzeile, Rezepte an Maschine und im Baumenü, Titelbildschirm, Bolts-Plakette
+- [x] Produkte als Tech- und Baukosten, Save v4, fehlende Zonen nachfüllen, 7 neue Tests
+- [ ] Rusty auf dem Titelbildschirm ist 5-fach skaliert und dadurch leicht unscharf (SVG-Importgröße erhöhen)
+- [ ] Kapitel-Tipps sind Fließtext; später je Kapitel 2–3 Häkchen-Ziele (z. B. „Schmelzofen gebaut“)
+- [ ] Zäune an Zonengrenzen liegen auf Kacheln, die in alten Spielständen bebaut sein könnten (Gebäude bleibt, Zaun darüber)
 
 ## MS7 Speichern und Pause (erledigt, selbst getestet)
 

@@ -33,6 +33,7 @@ signal helper_removed(id: int)
 signal helper_failed(reason: String)
 signal helper_quip(helper: Helper, key: String)
 signal helper_upgrade_bought(id: String, level: int)
+signal zone_unlocked(zone_id: String)
 
 const TILE := 64
 const LOOT_SCATTER_PX := 40
@@ -76,11 +77,17 @@ var _full_notified := false
 var _node_tiles: Dictionary = {}  # Vector2i → node id (für Bauprüfung)
 var _too_hard_cooldown := 0
 const TOO_HARD_INTERVAL := 20
+var blocked_tiles: Dictionary = {}  # Zaun-Kacheln (nicht bebaubar)
 
 
 func _init() -> void:
 	# Methoden-Callable statt Lambda: ein Lambda hielte self fest und erzeugte einen Zyklus.
 	player.inventory.changed.connect(_on_inventory_changed)
+	zones.zone_unlocked.connect(_on_zone_unlocked)
+
+
+func _on_zone_unlocked(id: String) -> void:
+	zone_unlocked.emit(id)
 
 
 ## Tech- und Skilldaten setzen; danach sind nur freigeschaltete Gebäude baubar.
@@ -252,6 +259,8 @@ func tick() -> void:
 	_tick_magnet()
 	_tick_hammer()
 	_tick_respawns()
+	if tick_count % 20 == 0:
+		zones.check_unlocks(nodes)
 	var done := tech.tick()
 	if done != "":
 		_apply_tech_effects(done)
@@ -275,10 +284,14 @@ func next_helper_cost() -> Dictionary:
 	return {"bolts": bolts_cost, "chrome": int(helper_cfg.get("cost_chrome", 5))}
 
 
-## "" wenn kaufbar, sonst Grund: locked, max, bolts, chrome, no_depot
-func can_buy_helper(depot_tile: Vector2i) -> String:
+## "" wenn kaufbar, sonst Grund: locked, max, bolts, chrome, no_depot, zone_locked
+func can_buy_helper(depot_tile: Vector2i, zone_tile: Vector2i = Vector2i(-1, -1)) -> String:
 	if not unlocked_features.has("helpers"):
 		return "locked"
+	if zone_tile.x >= 0:
+		var zid := zones.zone_id_at(zone_tile)
+		if zid != "" and not zones.is_unlocked(zid):
+			return "zone_locked"
 	if helper_count() >= int(helper_cfg.get("max_helpers", 6)):
 		return "max"
 	var cost := next_helper_cost()
@@ -322,7 +335,7 @@ func add_helper(zone_tile: Vector2i, depot_tile: Vector2i, name_index: int = -1,
 func _cmd_buy_helper(cmd: Dictionary) -> void:
 	var zone_tile: Vector2i = cmd.get("zone", Vector2i.ZERO)
 	var depot_tile: Vector2i = cmd.get("depot", Vector2i.ZERO)
-	var reason := can_buy_helper(depot_tile)
+	var reason := can_buy_helper(depot_tile, zone_tile)
 	if reason != "":
 		helper_failed.emit(reason)
 		return
@@ -587,7 +600,7 @@ func in_build_range(tile: Vector2i, size: Vector2i) -> bool:
 
 
 func _tile_blocked(tile: Vector2i) -> bool:
-	return _node_tiles.has(tile) or tile == player_tile()
+	return _node_tiles.has(tile) or tile == player_tile() or blocked_tiles.has(tile)
 
 
 func can_place_def(def: BuildingDef, tile: Vector2i, rot: int) -> bool:
