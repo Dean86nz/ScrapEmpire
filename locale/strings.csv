@@ -71,7 +71,7 @@ QUIP_FIRST_CHROME,Chrom! Ich kann mich drin spiegeln. Hübsch.,Chrome! I can see
 BLD_CONVEYOR,Förderband,Conveyor belt
 BLD_EXTRACTOR,Saugstation,Suction station
 DEBUG_PERF,[DEV] Perf-Szenario: ~480 Bänder gelegt,[DEV] Perf scenario: ~480 belts placed
-DEBUG_CHAIN,[DEV] Beispielkette unterhalb gebaut,[DEV] Demo chain built below
+DEBUG_CHAIN,[DEV] Beispielkette unter Rusty gebaut (läuft nach ~15 s),[DEV] Demo chain built below Rusty (runs after ~15 s)
 TECH_TERMINAL,Verkaufsterminal,Sell terminal
 TECH_TERMINAL_DESC,Verwandelt Items in Bolts.,Turns items into bolts.
 TECH_FURNACE,Schmelzofen,Furnace
@@ -176,3 +176,4 @@ MENU_SAVE_QUIT,Speichern und Beenden,Save and quit
 HUD_SAVED,Gespeichert ✔,Saved ✔
 QUIP_LOADED_1,Alles noch da. Ich habe aufgepasst.,Everything still here. I kept watch.
 QUIP_LOADED_2,Willkommen zurück. Nichts explodiert.,Welcome back. Nothing exploded.
+DEBUG_CHAIN_FAIL,[DEV] Kein Platz für die Kette. Woanders hinstellen.,[DEV] No room for the chain. Move somewhere else.
