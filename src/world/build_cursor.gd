@@ -6,8 +6,10 @@ extends Node2D
 
 signal menu_requested
 signal stopped
+signal target_chosen(tile: Vector2i, ok: bool)
 
-enum Mode { OFF, PLACE, DEMOLISH }
+enum Mode { OFF, PLACE, DEMOLISH, TARGET }
+const TARGET_RANGE_TILES := 14
 
 const REPEAT_DELAY := 0.3
 const REPEAT_RATE := 0.08
@@ -62,11 +64,24 @@ func start_demolish() -> void:
 	InputRouter.context = InputRouter.Context.BUILD
 
 
+## Zielwahl für Aufgaben: Fadenkreuz, A bestätigt, B bricht ab.
+func start_target() -> void:
+	def = null
+	mode = Mode.TARGET
+	_preview.visible = false
+	_place_in_front()
+	visible = true
+	InputRouter.context = InputRouter.Context.BUILD
+
+
 func stop() -> void:
+	var was_target := mode == Mode.TARGET
 	mode = Mode.OFF
 	visible = false
 	InputRouter.context = InputRouter.Context.GAME
 	stopped.emit()
+	if was_target:
+		target_chosen.emit(tile, false)
 
 
 func _size() -> Vector2i:
@@ -87,7 +102,7 @@ func _clamp_tile() -> void:
 	var w := SimClock.world
 	var pt := w.player_tile()
 	var s := _size()
-	var r := SimWorld.BUILD_RANGE_TILES
+	var r := TARGET_RANGE_TILES if mode == Mode.TARGET else SimWorld.BUILD_RANGE_TILES
 	tile.x = clampi(tile.x, pt.x - r, pt.x + r - s.x + 1)
 	tile.y = clampi(tile.y, pt.y - r, pt.y + r - s.y + 1)
 	tile.x = clampi(tile.x, 0, w.width_tiles - s.x)
@@ -156,6 +171,8 @@ func _handle_movement(delta: float) -> void:
 
 func _is_valid() -> bool:
 	var w := SimClock.world
+	if mode == Mode.TARGET:
+		return true
 	if mode == Mode.DEMOLISH:
 		return w.grid.at(tile) != null
 	return w.in_build_range(tile, _size()) and w.can_place_def(def, tile, rot) \
@@ -186,7 +203,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	var mouse_left: bool = mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT
 	var mouse_right: bool = mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_RIGHT
 	if event.is_action_pressed("interact") or mouse_left:
-		if mode == Mode.PLACE:
+		if mode == Mode.TARGET:
+			var chosen := tile
+			mode = Mode.OFF
+			visible = false
+			InputRouter.context = InputRouter.Context.GAME
+			target_chosen.emit(chosen, true)
+		elif mode == Mode.PLACE:
 			w.queue_command({"type": "place", "def_id": def.id, "tile": tile, "rot": rot})
 			_drag_prev = tile
 		else:

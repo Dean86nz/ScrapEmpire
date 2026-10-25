@@ -347,6 +347,7 @@ Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten 
 - **Rohstoffquellen** (Schrotthaufen, Kabelknäuel, Plastikbröckchen) zählen nicht als Müll. Sie bleiben dauerhaft, die Saugstation gräbt tiefer. Damit bleibt die Fabrik-Ökonomie unendlich.
 - **Müll-Objekte** (alle Objekte vom Typ `loot`: Toaster, Kühlschrank, Palette, Raumschiff-Teil …) zählen für den Reinigungsgrad. Sie respawnen nur, solange die Zone unter 50 % sauber ist („es wird weiter Müll angeschwemmt“). Ab 50 % hört das Anschwemmen auf, die Zone lässt sich vollständig säubern.
 - Nach dem MVP liefern Ereignisse (Meteoriten, Strandgut) und neue Zonen frischen Müll, damit Chrom und Co. nicht ausgehen.
+- **Grundsatz (Auftraggeber, 2026-10-25): Man soll nie „keine“ Ressourcen mehr haben.** Jede Materialart hat mindestens eine unendliche Quelle: Schrott, Kupfer, Plastik über Haufen und Saugstation; Chrom über den „Alten Satelliten“, der als Rohstoffquelle gilt und immer respawnt (zählt nicht als Müll). Holz und Stein (MS9) bekommen je eine nachwachsende Quelle (Treibholz-Stapel, Geröllfeld).
 
 **Definition:** Jede Karte hat Zonen (Rechtecke mit Namen in der Karten-JSON). `reinigungsgrad = 1 − müll_jetzt / müll_start` (Items in Müll-Objekten, nicht Objekte). Stufen: vermüllt (< 25 %), unordentlich (< 50 %), aufgeräumt (< 90 %), sauber (≥ 90 %). Die Stufe steht auf Minimap und Karte und ist der sichtbare Fortschrittsbalken des Planeten. Visuelle Heilung des Bodens folgt in Phase 2 (Kap. 25).
 

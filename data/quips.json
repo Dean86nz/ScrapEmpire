@@ -1,26 +1,114 @@
 {
-  "start": ["QUIP_START_1", "QUIP_START_2"],
-  "inventory_full": ["QUIP_INV_FULL_1", "QUIP_INV_FULL_2"],
-  "first_scrap": ["QUIP_FIRST_SCRAP"],
-  "first_copper": ["QUIP_FIRST_COPPER"],
-  "first_plastic": ["QUIP_FIRST_PLASTIC"],
-  "first_chrome": ["QUIP_FIRST_CHROME"],
-  "wreck_destroyed": ["QUIP_WRECK_1", "QUIP_WRECK_2"],
-  "idle": ["QUIP_IDLE_1", "QUIP_IDLE_2"],
-  "fail_cost": ["FAIL_COST"],
-  "fail_blocked": ["FAIL_BLOCKED"],
-  "fail_range": ["FAIL_RANGE"],
-  "fail_locked": ["FAIL_LOCKED"],
-  "deposit_rejected": ["QUIP_REJECTED_1", "QUIP_REJECTED_2"],
-  "first_machine": ["QUIP_FIRST_MACHINE"],
-  "too_hard_hammer": ["QUIP_TOO_HARD_1", "QUIP_TOO_HARD_2"],
-  "too_hard_suction": ["QUIP_TOO_HEAVY_1", "QUIP_TOO_HEAVY_2"],
-  "level_up": ["QUIP_LEVEL_UP_1", "QUIP_LEVEL_UP_2", "QUIP_LEVEL_UP_3"],
-  "tech_done": ["QUIP_TECH_DONE_1", "QUIP_TECH_DONE_2"],
-  "research_fail_bolts": ["QUIP_RESEARCH_BOLTS"],
-  "research_fail_items": ["QUIP_RESEARCH_ITEMS"],
-  "research_fail_busy": ["QUIP_RESEARCH_BUSY"],
-  "research_fail_requires": ["QUIP_RESEARCH_REQUIRES"],
-  "skill_bought": ["QUIP_SKILL_1", "QUIP_SKILL_2"],
-  "loaded": ["QUIP_LOADED_1", "QUIP_LOADED_2"]
+  "start": [
+    "QUIP_START_1",
+    "QUIP_START_2"
+  ],
+  "inventory_full": [
+    "QUIP_INV_FULL_1",
+    "QUIP_INV_FULL_2"
+  ],
+  "first_scrap": [
+    "QUIP_FIRST_SCRAP"
+  ],
+  "first_copper": [
+    "QUIP_FIRST_COPPER"
+  ],
+  "first_plastic": [
+    "QUIP_FIRST_PLASTIC"
+  ],
+  "first_chrome": [
+    "QUIP_FIRST_CHROME"
+  ],
+  "wreck_destroyed": [
+    "QUIP_WRECK_1",
+    "QUIP_WRECK_2"
+  ],
+  "idle": [
+    "QUIP_IDLE_1",
+    "QUIP_IDLE_2"
+  ],
+  "fail_cost": [
+    "FAIL_COST"
+  ],
+  "fail_blocked": [
+    "FAIL_BLOCKED"
+  ],
+  "fail_range": [
+    "FAIL_RANGE"
+  ],
+  "fail_locked": [
+    "FAIL_LOCKED"
+  ],
+  "deposit_rejected": [
+    "QUIP_REJECTED_1",
+    "QUIP_REJECTED_2"
+  ],
+  "first_machine": [
+    "QUIP_FIRST_MACHINE"
+  ],
+  "too_hard_hammer": [
+    "QUIP_TOO_HARD_1",
+    "QUIP_TOO_HARD_2"
+  ],
+  "too_hard_suction": [
+    "QUIP_TOO_HEAVY_1",
+    "QUIP_TOO_HEAVY_2"
+  ],
+  "level_up": [
+    "QUIP_LEVEL_UP_1",
+    "QUIP_LEVEL_UP_2",
+    "QUIP_LEVEL_UP_3"
+  ],
+  "tech_done": [
+    "QUIP_TECH_DONE_1",
+    "QUIP_TECH_DONE_2"
+  ],
+  "research_fail_bolts": [
+    "QUIP_RESEARCH_BOLTS"
+  ],
+  "research_fail_items": [
+    "QUIP_RESEARCH_ITEMS"
+  ],
+  "research_fail_busy": [
+    "QUIP_RESEARCH_BUSY"
+  ],
+  "research_fail_requires": [
+    "QUIP_RESEARCH_REQUIRES"
+  ],
+  "skill_bought": [
+    "QUIP_SKILL_1",
+    "QUIP_SKILL_2"
+  ],
+  "loaded": [
+    "QUIP_LOADED_1",
+    "QUIP_LOADED_2"
+  ],
+  "autopilot_locked": [
+    "QUIP_AUTOPILOT_LOCKED"
+  ],
+  "autopilot_start": [
+    "QUIP_AUTOPILOT_START_1",
+    "QUIP_AUTOPILOT_START_2"
+  ],
+  "autopilot_interrupt": [
+    "QUIP_AUTOPILOT_STOP"
+  ],
+  "task_wait_stuck": [
+    "QUIP_WAIT_STUCK"
+  ],
+  "task_wait_empty": [
+    "QUIP_WAIT_EMPTY"
+  ],
+  "task_wait_too_hard": [
+    "QUIP_TOO_HARD_1"
+  ],
+  "task_wait_no_progress": [
+    "QUIP_WAIT_GENERIC"
+  ],
+  "task_wait_full": [
+    "QUIP_WAIT_FULL"
+  ],
+  "task_wait_no_building": [
+    "QUIP_WAIT_NO_BUILDING"
+  ]
 }

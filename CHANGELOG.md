@@ -2,6 +2,18 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [0.8.0] – 2026-10-25 – MS8 Tutorial und Autopilot
+
+### Hinzugefügt
+- Hauptkarte `data/maps/main.json` (120×90, 9 benannte Zonen, 146 Objekte, Tier steigt mit der Entfernung; Generator `tools/gen_main_map.py`); die alte Tutorial-Karte ist jetzt die Zone „Startlager“ links in der Mitte
+- Zaun aus Schrottbergen um die Tutorial-Zone mit Tor nach Osten; das Tor öffnet sich nach dem Tutorial
+- Tutorial mit fünf Schritten aus `data/tutorial.json` (bewegen, 30 Schrott saugen, Terminal bauen und verkaufen mit 20 Bolts Bonus, Toaster zerlegen, Schmelzofen erforschen), Fortschritt oben im HUD, Konfetti und Spruch je Schritt
+- Autopilot (nach Tech „Autopilot v0.1“): Aufgaben-Editor per Y lang oder L mit Schritten Gehe zu, Sammle hier, Hämmere hier, Lege ab in, Nimm aus; Ziel per Fadenkreuz-Cursor; X löscht, LB/RB verschiebt; Starten/Stoppen; Autopilot-Kette im HUD mit aktuellem Schritt
+- Arbeiter-Logik `TaskList` (später auch für Helfer): läuft zum Ziel, saugt bis voll oder Quelle leer, hämmert und sammelt die losen Teile ein, legt ab und nimmt aus Gebäuden, wartet 5 s bei Problemen mit Spruch (gedrosselt), Schleife endlos; jede Stick-Eingabe unterbricht sofort; Autopilot v0.2 macht ihn 1,5× schneller
+- Spielstand-Version 2 mit Aufgaben, Tutorial-Stand und Tor; Migration 1 → 2 verschiebt alte Stände in die Zone „Startlager“ und gilt sie als Tutorial-fertig
+- Satellit und Haufen sind als unendliche Rohstoffquellen markiert (Grundsatz: nie ohne Ressourcen)
+- Dev: Szenario „auto“ für Screenshot-Tests; 10 neue Tests (144 gesamt)
+
 ## [0.7.1] – 2026-10-25 – F7-Fix und Testschutz
 
 ### Behoben

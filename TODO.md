@@ -2,8 +2,8 @@
 
 ## Jetzt
 
-- [ ] Go des Auftraggebers für die Einordnung der Cozy-Ergänzung (Roadmap v0.3: MS9 Zonen/Minimap/Karte neu) und für MS8 abwarten
-- [ ] NIE wieder user://saves ohne Backup anfassen: Screenshot-Läufe nur über tests/shot.sh
+- [ ] MS9 Zonen, Minimap und Karte umsetzen (Auftraggeber: ohne Go weitermachen bis MS11)
+- [ ] NIE wieder user://saves ohne Backup anfassen: Screenshot-Läufe nur über tests/shot.sh, Datei-Tests mit use_directory
 - [ ] Auftraggeber testet MS4–MS7 am Laptop / später am Ally: Speichern (F5 oder Pause), Beenden, Neustart, Sprache wechseln, Neues Spiel; Perf-Szenario F6 + F3
 
 ## MS7 Speichern und Pause (erledigt, selbst getestet)
@@ -22,14 +22,15 @@
 - [ ] Objekte Palette, Betonbrocken, Sofa, Ruinenmauer; Materialien Holz, Stein
 - [ ] Tests: Reinigungsgrad, Respawn-Sperre
 
-## MS8 Tutorial und Autopilot (nächster Meilenstein)
+## MS8 Tutorial und Autopilot (erledigt, selbst getestet)
 
-- [ ] Fünf Tutorial-Schritte mit Belohnungen (Sprechblasen, Konfetti)
-- [ ] Gebietsöffnung nach Osten, Hauptgebiet-Map (120×90) mit allen Tiers
-- [ ] WorkerBrain (gehe zu, sammle, hämmere, lege ab, nimm, warte)
-- [ ] Aufgaben-Editor (Y lang): Schritt hinzufügen, Ziel per Cursor, sortieren, löschen, starten
-- [ ] Aufgaben-HUD, Unterbrechen per Stick, Timeout und Warte-Sprüche, Autopilot v0.2 Tempo
-- [ ] Tech Autopilot als Voraussetzung; Save-Format um Aufgaben und Tutorial-Schritt erweitern (Version 2)
+- [x] Fünf Tutorial-Schritte mit Belohnungen (Sprechblasen, Konfetti)
+- [x] Gebietsöffnung nach Osten, Hauptgebiet-Map (120×90) mit allen Tiers
+- [x] WorkerBrain (gehe zu, sammle, hämmere, lege ab, nimm, warte)
+- [x] Aufgaben-Editor (Y lang / L): Schritt hinzufügen, Ziel per Cursor, sortieren, löschen, starten
+- [x] Aufgaben-HUD, Unterbrechen per Stick, Timeout und Warte-Sprüche, Autopilot v0.2 Tempo
+- [x] Tech Autopilot als Voraussetzung; Save-Version 2 mit Migration
+- [ ] Item-Filter je Schritt (GDD 9) noch nicht im Editor wählbar (Politur)
 
 ## Bekannte Kleinigkeiten
 
