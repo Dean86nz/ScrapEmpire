@@ -15,3 +15,6 @@ const FEATURE_TECH := false
 
 func _ready() -> void:
 	InputMapSetup.apply()
+	# Exportierte Builds (Ally) starten im Vollbild; im Editor bleibt es ein Fenster.
+	if OS.has_feature("template"):
+		get_window().mode = Window.MODE_FULLSCREEN
