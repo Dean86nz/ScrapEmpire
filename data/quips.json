@@ -10,9 +10,16 @@
   "fail_cost": ["FAIL_COST"],
   "fail_blocked": ["FAIL_BLOCKED"],
   "fail_range": ["FAIL_RANGE"],
+  "fail_locked": ["FAIL_LOCKED"],
   "deposit_rejected": ["QUIP_REJECTED_1", "QUIP_REJECTED_2"],
   "first_machine": ["QUIP_FIRST_MACHINE"],
   "too_hard_hammer": ["QUIP_TOO_HARD_1", "QUIP_TOO_HARD_2"],
   "too_hard_suction": ["QUIP_TOO_HEAVY_1", "QUIP_TOO_HEAVY_2"],
-  "level_up": ["QUIP_LEVEL_UP_1", "QUIP_LEVEL_UP_2", "QUIP_LEVEL_UP_3"]
+  "level_up": ["QUIP_LEVEL_UP_1", "QUIP_LEVEL_UP_2", "QUIP_LEVEL_UP_3"],
+  "tech_done": ["QUIP_TECH_DONE_1", "QUIP_TECH_DONE_2"],
+  "research_fail_bolts": ["QUIP_RESEARCH_BOLTS"],
+  "research_fail_items": ["QUIP_RESEARCH_ITEMS"],
+  "research_fail_busy": ["QUIP_RESEARCH_BUSY"],
+  "research_fail_requires": ["QUIP_RESEARCH_REQUIRES"],
+  "skill_bought": ["QUIP_SKILL_1", "QUIP_SKILL_2"]
 }

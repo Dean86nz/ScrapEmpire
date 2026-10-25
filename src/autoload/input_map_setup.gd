@@ -48,6 +48,7 @@ static var ACTIONS: Dictionary = {
 	"tool_primary": [_axis(JOY_AXIS_TRIGGER_RIGHT, 1.0), _mouse(MOUSE_BUTTON_LEFT)],
 	"tool_secondary": [_axis(JOY_AXIS_TRIGGER_LEFT, 1.0), _mouse(MOUSE_BUTTON_RIGHT)],
 	"tool_swap": [_btn(JOY_BUTTON_X), _key(KEY_Q)],
+	"boost": [_btn(JOY_BUTTON_LEFT_STICK), _key(KEY_SHIFT)],
 	# Interaktion und Menüs
 	"interact": [_btn(JOY_BUTTON_A), _key(KEY_E)],
 	"cancel": [_btn(JOY_BUTTON_B), _key(KEY_ESCAPE)],

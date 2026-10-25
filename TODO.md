@@ -2,36 +2,36 @@
 
 ## Jetzt
 
-- [ ] MS6 Fortschritts-Menü (Techbaum, Skilltree, Nächste Ziele) umsetzen
-- [ ] Auftraggeber testet MS4/MS5 später auf dem Ally: Perf-Szenario F6 + F3 (FPS, Tick-Zeit) im 15-W-Modus
+- [ ] MS7 Speichern und Pause umsetzen
+- [ ] Auftraggeber testet MS4–MS6 später auf dem Ally: Perf-Szenario F6 + F3 (FPS, Tick-Zeit) im 15-W-Modus; Lesbarkeit der Menü-Karten
 
-## MS5 Förderbänder (erledigt, selbst getestet)
+## MS6 Fortschritts-Menü (erledigt, selbst getestet)
 
-- [x] Band-Gebäude (1×1, 1 Schrott), Richtung, automatische Kurven
-- [x] Items auf Bändern (1/256-Kachel-Offsets, 4 je Kachel), topologische Tick-Reihenfolge
-- [x] Einfügen/Auswerfen an Maschinenports (Eingang 10, Ausgang 10)
-- [x] MultiMesh-Rendering, Perf-Szenario F6 (60 FPS, 2,7 ms Tick bei 1.884 Items am Laptop)
-- [x] Band-Platzierung per Ziehen im Baumodus
-- [x] Saugstation als Quelle für Haufen → Band
-- [ ] Perf-Messung auf dem Ally (15 W)
+- [x] data/tech.json (17 Knoten), TechState mit Forschungstimer
+- [x] data/skills.json (4 Äste, 13 Skills), SkillState, Modifiers
+- [x] Modifiers wirken: Tempo, Drehen, Boost, Slots, Stapel, Magnet, Verkaufspreise, Werkzeug-Stufen, Abbau-Tempo, Reichweite
+- [x] Menü (Select / T) mit Tabs Techbaum / Skilltree / Nächste Ziele, Fokus-Raster, LB/RB wechselt
+- [x] Forschungsbalken im HUD, Freischaltungen wirken sofort
+- [x] F4-Cheat angepasst (Werkzeug-Stufen nur noch über Skills)
 
-## MS6 Fortschritts-Menü
+## MS7 Speichern und Pause
 
-- [ ] data/tech.json (17 Knoten, Kosten, Zeit, Voraussetzungen, Effekte), TechState mit Forschungstimer
-- [ ] data/skills.json (4 Äste, 13 Skills), SkillState, Modifiers
-- [ ] Modifiers wirken: Tempo, Drehen, Boost, Slots, Stapel, Magnet, Verkaufspreise, Werkzeug-Stufen, Abbau-Tempo, Reichweite
-- [ ] Menü (Select / T) mit Tabs Techbaum / Skilltree / Nächste Ziele, Fokus-Raster, LB/RB wechselt
-- [ ] Forschungsbalken im HUD, Freischaltungen wirken sofort (Rezepte, Gebäude, Werkzeuge)
-- [ ] F4-Cheat entfernen, sobald Skilltree läuft
+- [ ] Versioniertes JSON-Save mit zwei rotierenden Dateien + Meta-Datei
+- [ ] Serialisierung: Welt (Knoten, lose Items, Gebäude mit Puffern/Bändern, Respawns), Spieler, Progression, Skills, Tech, Bolts, RNG-Zustand
+- [ ] Autosave 60 s, beim Pausieren und beim Beenden; Laden beim Start
+- [ ] Migrationsgerüst mit Test-Fixtures
+- [ ] Pause-Menü: Sprache DE/EN, Neues Spiel, Speichern und Beenden
+- [ ] Alle sichtbaren Strings lokalisiert prüfen
 
 ## Bekannte Kleinigkeiten
 
-- Pause-Menü hat noch keinen Sprachwechsel und kein Speichern (kommt in MS7)
 - Sprechblase wird nicht an den Bildschirmrand geclampt (kann oben abgeschnitten werden)
 - Rusty kann über Haufen und Wracks fahren (keine Kollision), Gebäude außer Bändern blockieren ihn
 - Baumenü zeigt nicht leistbare Gebäude nur in roter Schrift, nicht ausgegraut
 - Godots SVG-Import rendert keinen `<text>`, Platzhalter nur aus Formen bauen
 - Band-Items am Bandende werden bei Stau mit Interpolation leicht „gestaucht“ dargestellt (kosmetisch)
+- Lange Tech-/Skill-Beschreibungen werden am Kartenrand abgeschnitten (Texte kurz halten)
+- Boost hat keine HUD-Anzeige (Rusty leuchtet nur kurz gelb)
 
 ## Offene Fragen an den Auftraggeber
 

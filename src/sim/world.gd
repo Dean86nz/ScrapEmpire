@@ -22,6 +22,12 @@ signal item_sold(item_id: String, value: int, pos: Vector2i)
 signal deposit_rejected(building: Building, item_id: String)
 signal too_hard(node: ResourceNode, tool: String)
 signal node_respawned(node: ResourceNode)
+signal tech_unlocked(id: String)
+signal research_failed(reason: String)
+signal skill_bought(id: String, level: int)
+signal skill_failed(reason: String)
+signal modifiers_changed(mods: Dictionary)
+signal inventory_resized()
 
 const TILE := 64
 const LOOT_SCATTER_PX := 40
@@ -39,7 +45,14 @@ var buildings: Dictionary = {}  # id → Building
 var defs: Dictionary = {}       # def_id → BuildingDef (von außen gesetzt)
 var item_values: Dictionary = {}  # item_id → Bolts (von außen gesetzt)
 var recipes: Array[RecipeDef] = []  # alle Rezepte (von außen gesetzt)
-var unlocked_tech: Dictionary = {}  # tech_id → true (ab MS6 befüllt)
+var unlocked_tech: Dictionary = {}  # tech_id → true (Spiegel von tech.unlocked)
+var tech := TechState.new()
+var skills := SkillState.new()
+var mods: Dictionary = Modifiers.DEFAULTS.duplicate()
+var unlocked_buildings: Dictionary = {}  # def_id → true
+var unlocked_features: Dictionary = {}   # autopilot, helpers
+var rare_items: Dictionary = {}          # item_id → true (von außen gesetzt)
+var gate_buildings := false              # true sobald Tech-Daten geladen sind
 var bolts: int = 0
 var progression := Progression.new()
 var respawns: Array[Dictionary] = []  # [{kind, tile, ticks_left}]
@@ -57,6 +70,72 @@ const TOO_HARD_INTERVAL := 20
 func _init() -> void:
 	# Methoden-Callable statt Lambda: ein Lambda hielte self fest und erzeugte einen Zyklus.
 	player.inventory.changed.connect(_on_inventory_changed)
+
+
+## Tech- und Skilldaten setzen; danach sind nur freigeschaltete Gebäude baubar.
+func setup_progression_data(tech_defs: Array, skill_data: Dictionary) -> void:
+	tech.setup(tech_defs)
+	skills.setup(skill_data)
+	gate_buildings = true
+	for id in tech.unlocked.keys():
+		_apply_tech_effects(str(id))
+	recompute_modifiers()
+
+
+func is_building_unlocked(def_id: String) -> bool:
+	return not gate_buildings or unlocked_buildings.has(def_id)
+
+
+func recompute_modifiers() -> void:
+	mods = Modifiers.compute(skills.defs, skills.levels, tech.defs, tech.unlocked)
+	if player.apply_modifiers(mods):
+		inventory_resized.emit()
+	for b: Building in buildings.values():
+		if b is SellTerminal:
+			(b as SellTerminal).sell_interval = int(mods["sell_interval"])
+	modifiers_changed.emit(mods)
+
+
+func _apply_tech_effects(id: String) -> void:
+	unlocked_tech[id] = true
+	for eff: Dictionary in tech.effects_of(id):
+		match str(eff.get("type", "")):
+			"unlock_building":
+				unlocked_buildings[str(eff["id"])] = true
+			"unlock_recipe":
+				pass  # über unlocked_tech + refresh_recipes
+			"unlock_feature":
+				unlocked_features[str(eff["id"])] = true
+	refresh_recipes()
+
+
+func _cmd_research(cmd: Dictionary) -> void:
+	var id := str(cmd.get("id", ""))
+	var reason := tech.can_start(id, bolts, player.inventory)
+	if reason != "":
+		research_failed.emit(reason)
+		return
+	var d: Dictionary = tech.by_id[id]
+	bolts -= int(d.get("cost_bolts", 0))
+	for item in d.get("cost_items", {}):
+		player.inventory.remove(str(item), int(d["cost_items"][item]))
+	bolts_changed.emit(bolts)
+	progression.on_tech(int(d.get("cost_bolts", 0)))
+	tech.start(id)
+	if tech.current_id == "":  # Zeit 0: sofort fertig
+		pass
+
+
+func _cmd_buy_skill(cmd: Dictionary) -> void:
+	var id := str(cmd.get("id", ""))
+	var reason := skills.can_buy(id, progression.skill_points)
+	if reason != "":
+		skill_failed.emit(reason)
+		return
+	progression.skill_points -= 1
+	skills.buy(id)
+	recompute_modifiers()
+	skill_bought.emit(id, skills.level_of(id))
 
 
 func _on_inventory_changed() -> void:
@@ -140,7 +219,7 @@ func tick() -> void:
 			if b is SellTerminal:
 				var sold: String = (b as SellTerminal).take_sold()
 				if sold != "":
-					var value: int = int(item_values.get(sold, 0))
+					var value: int = sale_value(sold, (b as SellTerminal).buffer.size() + 1)
 					bolts += value
 					progression.on_sale(value)
 					item_sold.emit(sold, value, b.center_px())
@@ -155,10 +234,34 @@ func tick() -> void:
 		_too_hard_cooldown -= 1
 
 	_tick_suction()
+	_tick_magnet()
 	_tick_hammer()
 	_tick_respawns()
+	var done := tech.tick()
+	if done != "":
+		_apply_tech_effects(done)
+		recompute_modifiers()
+		tech_unlocked.emit(done)
 	player.hammer_pressed = false
 	tick_count += 1
+
+
+## Magnet-Skill: lose Items im Radius werden ohne Zielen eingesammelt (1 je Tick).
+func _tick_magnet() -> void:
+	if player.magnet_radius_px <= 0:
+		return
+	var r2 := player.magnet_radius_px * player.magnet_radius_px
+	for item: LooseItem in loose.values():
+		if Vector2(item.pos - player.pos).length_squared() > r2:
+			continue
+		if not player.inventory.can_add(item.item_id):
+			return
+		loose.erase(item.id)
+		loose_removed.emit(item.id)
+		player.inventory.add(item.item_id, 1)
+		progression.on_collect(item.tier)
+		item_collected.emit(item.item_id, item.pos)
+		return
 
 
 func _tick_respawns() -> void:
@@ -204,6 +307,10 @@ func _apply(cmd: Dictionary) -> void:
 			_cmd_withdraw(cmd)
 		"rotate":
 			_cmd_rotate(cmd)
+		"research":
+			_cmd_research(cmd)
+		"buy_skill":
+			_cmd_buy_skill(cmd)
 
 
 # --- Bauen ----------------------------------------------------------------
@@ -246,6 +353,9 @@ func _cmd_place(cmd: Dictionary) -> void:
 	if def == null:
 		place_failed.emit("unknown")
 		return
+	if not is_building_unlocked(def.id):
+		place_failed.emit("locked")
+		return
 	var tile: Vector2i = cmd.get("tile", Vector2i.ZERO)
 	var rot: int = int(cmd.get("rot", 0))
 	if not in_build_range(tile, def.rotated_size(rot)):
@@ -263,6 +373,8 @@ func _cmd_place(cmd: Dictionary) -> void:
 	b.paid_cost = cost
 	if b is Machine:
 		(b as Machine).recipes = available_recipes(def.id)
+	if b is SellTerminal:
+		(b as SellTerminal).sell_interval = int(mods["sell_interval"])
 	grid.place(b)
 	buildings[b.id] = b
 	_network_dirty = true
@@ -414,6 +526,16 @@ func _tick_extractors() -> void:
 				break
 
 
+## Verkaufswert mit Boni: Feilschen, Kenner (seltene Items), Großhändler (Puffer ≥ 20).
+func sale_value(item_id: String, buffer_size_at_sale: int) -> int:
+	var v := float(item_values.get(item_id, 0)) * float(mods["sell_mult"])
+	if rare_items.has(item_id):
+		v *= float(mods["rare_mult"])
+	if buffer_size_at_sale >= 20:
+		v *= 1.0 + float(mods["bulk_bonus"])
+	return maxi(int(round(v)), 0)
+
+
 ## Rezepte einer Maschinenart, die ohne Tech oder mit freigeschalteter Tech verfügbar sind.
 func available_recipes(machine_id: String) -> Array[RecipeDef]:
 	var result: Array[RecipeDef] = []
@@ -535,7 +657,7 @@ func _tick_suction() -> void:
 		else:
 			node_changed.emit(node)
 	player.inventory.add(item_id, 1)
-	player.suck_cooldown = PlayerState.SUCK_INTERVAL
+	player.suck_cooldown = player.suck_interval
 	progression.on_collect(tier)
 	item_collected.emit(item_id, from_pos)
 
@@ -590,7 +712,7 @@ func _find_suck_target() -> Variant:
 func _cone_distance(target: Vector2i) -> float:
 	var d := Vector2(target - player.pos)
 	var dist := d.length()
-	if dist > PlayerState.SUCK_RANGE_PX:
+	if dist > player.suck_range_px:
 		return INF
 	if dist < 1.0:
 		return 0.0
@@ -607,12 +729,14 @@ func _tick_hammer() -> void:
 	var wreck := _find_wreck_target()
 	if wreck == null:
 		return
-	player.hammer_cooldown = PlayerState.HAMMER_INTERVAL
+	player.hammer_cooldown = player.hammer_interval
 	if wreck.tier > player.hammer_tier:
 		_emit_too_hard(wreck, "hammer")
 		return
-	var item_id := wreck.take_one()
-	if item_id != "":
+	for i in player.hammer_items:
+		var item_id := wreck.take_one()
+		if item_id == "":
+			break
 		add_loose(item_id, wreck.center_px() + _scatter(), wreck.tier)
 	wreck_hit.emit(wreck)
 	if wreck.is_depleted():
@@ -625,7 +749,7 @@ func _tick_hammer() -> void:
 func _find_wreck_target() -> ResourceNode:
 	var hit_point := Vector2(player.pos) + player.aim * PlayerState.HAMMER_REACH_PX
 	var best: ResourceNode = null
-	var best_d := float(PlayerState.HAMMER_RANGE_PX)
+	var best_d := float(player.hammer_range_px)
 	for n: ResourceNode in nodes.values():
 		if not n.uses_hammer():
 			continue

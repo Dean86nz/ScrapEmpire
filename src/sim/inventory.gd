@@ -90,5 +90,14 @@ func is_full() -> bool:
 	return true
 
 
+## Vergrößert Slots und/oder Stapelgröße (nie verkleinern; Inhalt bleibt erhalten).
+func resize(new_slots: int, new_stack: int) -> void:
+	slot_count = maxi(new_slots, slot_count)
+	stack_size = maxi(new_stack, stack_size)
+	while slots.size() < slot_count:
+		slots.append({"item": "", "count": 0})
+	changed.emit()
+
+
 func to_dict() -> Dictionary:
 	return {"slot_count": slot_count, "stack_size": stack_size, "slots": slots.duplicate(true)}

@@ -14,7 +14,7 @@ func _ready() -> void:
 	var half := PlayerState.SUCK_HALF_ANGLE_RAD
 	for i in SEGMENTS + 1:
 		var a := -half + (2.0 * half) * float(i) / float(SEGMENTS)
-		pts.append(Vector2.RIGHT.rotated(a) * PlayerState.SUCK_RANGE_PX)
+		pts.append(Vector2.RIGHT.rotated(a) * PlayerState.BASE_SUCK_RANGE_PX)
 	_cone.polygon = pts
 	_cone.color = Color(0.3, 0.75, 1.0, 0.28)
 	_cone.visible = false
@@ -23,6 +23,16 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Kegel an die aktuelle Reichweite (Skill/Tech) anpassen.
+	var range_px := float(SimClock.world.player.suck_range_px)
+	if _cone.polygon.size() > 1 and absf(_cone.polygon[1].length() - range_px) > 0.5:
+		var pts := PackedVector2Array()
+		pts.append(Vector2.ZERO)
+		var half := PlayerState.SUCK_HALF_ANGLE_RAD
+		for i in SEGMENTS + 1:
+			var a := -half + (2.0 * half) * float(i) / float(SEGMENTS)
+			pts.append(Vector2.RIGHT.rotated(a) * range_px)
+		_cone.polygon = pts
 	var held := InputRouter.context == InputRouter.Context.GAME and Input.is_action_pressed("tool_primary")
 	SimClock.world.player.suck_held = held
 	_cone.visible = held
