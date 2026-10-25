@@ -24,6 +24,11 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **13** | Phase 2: Zonen-Heilung (Natur, Tiere, Tageslicht, Regen) | v1.2.0 |
 | **14** | Phase 2: Logistik-Drohnen | v1.3.0 |
 | **15** | Phase 2: Deko und Fundstücke (Werkbank, Museum, Journal) | v1.4.0 |
+| **16** | Überarbeitung Block 1: Ally-Bugs (A in Menüs, Trigger-Schwelle, Sauger-Reset) | v1.5.0 |
+
+## Überarbeitung nach dem Ally-Test (Go 2026-10-25)
+
+Keine neuen Phase-2-Systeme, sondern stabiler, klarer, langsamer, lustiger. Reihenfolge: MS16 Ally-Bugs → MS17 `world.gd` aufteilen → MS18a Raumschiff-Basis, Heilungsbalken, geführte Aufgaben → MS18b Intro, Jubel-Momente, Endtext → MS19 Menüs schrittweise freischalten → MS20 Balancing nach Zielkurve (Kapitel 1: 25 min, dann 35, 45, 55, 65, ab Kapitel 6 je 75; Zahlen vorher vorlegen; keine längere Forschungszeit, Müll je Objekt nur moderat) → MS21a Animationen, Effekte, Sound (Musikrichtung vorher abstimmen) → MS21b Zonenthemen, schmutzige Zonen, Haufen-Optik → MS21c Überraschungen, Müllberg-Boss, Rusty-Reaktionen → MS22 zweiter Balancing-Durchlauf. Beschlossen: Verkaufsautomaten bleiben als Außenposten (feste Kosten, einer je Zone); Schrotthaufen werden ab „aufgeräumt“ zur Sammelstelle, ab „sauber“ zum Recycling-Container mit Pflanzen. Nach jedem Meilenstein eine EXE und eine Ally-Testliste.
 
 ## Offen
 

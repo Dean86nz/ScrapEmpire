@@ -134,7 +134,11 @@ func _focused_index() -> int:
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("build_menu") or event.is_action_pressed("task_menu"):
+	if MenuInput.accept_pressed(event):
+		if MenuInput.press_focused(get_viewport()):
+			get_viewport().set_input_as_handled()
+		return
+	if MenuInput.back_pressed(event) or event.is_action_pressed("build_menu") or event.is_action_pressed("task_menu"):
 		if _choosing_type:
 			_choosing_type = false
 			_type_box.visible = false

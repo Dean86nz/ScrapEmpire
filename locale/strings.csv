@@ -399,3 +399,5 @@ COL_GLASSES,Lesebrille,Reading glasses
 COL_GLASSES_TEXT,"Macht alles schärfer, auch den Müll. Rusty trägt sie nicht. Er hat Kameras.","Makes everything sharper, including the trash. Rusty does not wear them. He has cameras."
 COL_MUSICBOX,Spieluhr,Music box
 COL_MUSICBOX_TEXT,"Spielt noch vier Töne. Rusty summt den fünften dazu. Das ist jetzt ihr Lied.","Still plays four notes. Rusty hums the fifth. That is their song now."
+BUILD_MISSING,fehlt: %s,missing: %s
+BUILD_INVENTORY_ONLY,Rot = nicht bezahlbar. Es zählt nur Rustys Inventar (nicht Kisten).,Red = not affordable. Only Rusty's inventory counts (not chests).

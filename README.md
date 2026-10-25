@@ -11,6 +11,10 @@ Stand: **MVP (Version 1.0.0)**, Meilensteine 0 bis 11 fertig. Siehe `CHANGELOG.m
 - `docs/03_ROADMAP.md` – Meilensteine mit „fertig, wenn“-Kriterien
 - `CHANGELOG.md`, `TODO.md`
 
+## ROG Ally X
+
+Controller in Armoury Crate auf **Gamepad-Modus** stellen (nicht Desktop-Modus). Woran man es erkennt: Die Hinweisleiste unten zeigt „Stick · RT · Y · Select“. Zeigt sie „WASD · LMB · Tab · T“, sendet der Ally Maus und Tastatur, dann klickt A statt zu bestätigen. RT und LT reagieren erst ab halbem Weg (Schwelle 0,5), damit ein leicht gedrückter Abzug nicht dauerhaft saugt.
+
 ## Steuerung (Gamepad / Tastatur)
 
 | Aktion | Gamepad | Tastatur/Maus |

@@ -158,9 +158,12 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("tech_tree"):
+	if MenuInput.back_pressed(event) or event.is_action_pressed("tech_tree"):
 		close()
 		get_viewport().set_input_as_handled()
+	elif MenuInput.accept_pressed(event) and _tab != Tab.MAP:
+		if MenuInput.press_focused(get_viewport()):
+			get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("hotbar_next"):
 		_next_tab(1)
 		_show_tab()

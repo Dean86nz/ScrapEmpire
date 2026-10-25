@@ -2,6 +2,23 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.5.0] – 2026-10-25 – MS16 Ally-Bugs (Überarbeitung Block 1)
+
+Erste Runde der Überarbeitung nach dem Praxistest auf dem ROG Ally X. Keine neuen Systeme.
+
+### Behoben
+- **A bestätigt in allen Menüs:** Jedes Menü (Baumenü, Fortschritt mit Helfer- und Drohnen-Tab, Aufgaben-Editor, Pause, Endbildschirm, Titel) löst den fokussierten Knopf zusätzlich über die eigene A-Aktion aus, falls Godots Menü-Bestätigung den Druck nicht verarbeitet. A und B sind außerdem fest auf Godots `ui_accept` und `ui_cancel` gebunden, D-Pad auf `ui_up` bis `ui_right`. B geht in jedem Menü zurück
+- **Dauersaugen:** RT und LT haben jetzt eine eigene Schwelle von 0,5 (Sticks bleiben bei 0,2). Der Ally X liefert in Ruhe Werte über 0,2. Zusätzlich setzt der Sauger `suck_held` zurück, sobald der Autopilot endet, egal auf welchem Weg; `TaskList.stop()` gibt den Körper frei
+- **Baumenü bei zu wenig Material:** rote Einträge zeigen „(fehlt: 5 Eisenbarren, 3 Kupfer)“, darüber steht der Hinweis, dass nur Rustys Inventar zählt (nicht Kisten)
+
+### Hinzugefügt
+- `tests/gamepad_check.sh`: spielt mit simulierten Joypad-Ereignissen (A, B, Y kurz und lang, Start, Select, RB, RT) 31 Schritte durch alle Menüs und prüft den Zustand; schützt den echten Spielstand wie `shot.sh`
+- Unit-Tests: Trigger-Schwelle 0,3 nicht gedrückt, 0,6 gedrückt; A ist `ui_accept`, B ist `ui_cancel`; Stopp des Autopiloten gibt den Sauger frei
+- `src/ui/menu_input.gd` als gemeinsame Gamepad-Logik der Menüs
+
+### Hinweis für den Ally X
+Wenn das Spiel die Tastatur-Hinweise (WASD, E, Tab) statt der Gamepad-Hinweise (Stick, A, Y) zeigt, steht der Controller in Armoury Crate im Desktop-Modus. Dann auf Gamepad-Modus stellen, sonst sendet A Mausklicks statt Tastendrücke.
+
 ## [1.4.0] – 2026-10-25 – MS15 Deko und Fundstücke (Phase 2, Teil 3)
 
 ### Hinzugefügt
