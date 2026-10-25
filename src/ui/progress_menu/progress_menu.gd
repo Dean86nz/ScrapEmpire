@@ -459,7 +459,7 @@ func _refresh_tech() -> void:
 			var secs := int(ceil(_world.tech.remaining_ticks / 20.0))
 			_set_card(btn, "%s … %d s" % [tr("TECH_RESEARCHING"), secs], Color(1.0, 0.85, 0.6))
 		else:
-			var reason := _world.tech.can_start(id, _world.bolts, _world.player.inventory)
+			var reason := _world.tech.can_start(id, _world.bolts, _world.player.inventory, ShipSystem.extra_inventories(_world))
 			var status := ""
 			match reason:
 				"requires":
@@ -515,17 +515,28 @@ func _refresh_goals() -> void:
 		var pct := int(round(_world.zones.cleanliness(cur, _world.nodes) * 100.0))
 		var goal_pct := int(round(_world.zones.unlock_cleanliness * 100.0))
 		lines.append("📍 %s %d: %s" % [tr("CH_CHAPTER"), idx, str(z.get("name", cur))])
-		if not bool(_world.flags.get("tutorial_done", false)):
-			lines.append("☐ " + tr("CH_GOAL_TUTORIAL"))
 		var next := _world.zones.next_chapter_zone()
 		if next != "":
 			lines.append("%s %s" % ["☑" if pct >= goal_pct else "☐", tr("CH_GOAL_CLEAN") % [goal_pct, pct]])
 			lines.append("🚪 " + tr("CH_NEXT") % str(_world.zones.zone_by_id(next).get("name", next)))
 		else:
 			lines.append("☑ " + tr("CH_GOAL_CLEAN_LAST") % pct)
-		var tip_key := _chapter_tip(cur)
-		if tip_key != "":
-			lines.append("💡 " + tr(tip_key))
+	# Aufgabenkette: zwei erledigte, die aktuelle, zwei kommende
+	var q := _world.quests
+	lines.append("")
+	lines.append("📋 %s (%d / %d)" % [tr("GOAL_QUESTS"), q.index, q.total()])
+	for i in range(maxi(q.index - 2, 0), mini(q.index + 3, q.total())):
+		var qd: Dictionary = q.defs[i]
+		var text := tr(str(qd.get("text_key", "")))
+		if i < q.index:
+			lines.append("☑ " + text)
+		elif i == q.index:
+			var p := q.progress(_world)
+			lines.append("☐ " + text + ("  (%d/%d)" % [int(p[0]), int(p[1])] if int(p[1]) > 1 else ""))
+		else:
+			lines.append("○ " + text)
+	if q.is_done():
+		lines.append("☑ " + tr("HUD_QUESTS_DONE"))
 	lines.append("")
 	# Forschung
 	var avail := _world.tech.available()
@@ -604,18 +615,6 @@ func _refresh_journal() -> void:
 		_journal_list.add_child(card)
 
 
-func _chapter_tip(zone_id: String) -> String:
-	var text := FileAccess.get_file_as_string("res://data/chapters.json")
-	var parsed: Variant = JSON.parse_string(text) if text != "" else null
-	if parsed == null:
-		return ""
-	for c: Dictionary in parsed.get("chapters", []):
-		if str(c.get("zone", "")) == zone_id:
-			return str(c.get("tip_key", ""))
-	return ""
-
-
-## Nächstes Objekt in der Welt, dessen Stufe über dem passenden Werkzeug liegt.
 func _next_locked_object() -> Dictionary:
 	var best: Dictionary = {}
 	for n: ResourceNode in _world.nodes.values():

@@ -42,11 +42,14 @@ static func _cmd_place(w: SimWorld, cmd: Dictionary) -> void:
 	if def == null:
 		w.place_failed.emit("unknown")
 		return
-	if not w.is_building_unlocked(def.id):
+	if not w.is_building_unlocked(def.id) or not def.buildable:
 		w.place_failed.emit("locked")
 		return
 	var tile: Vector2i = cmd.get("tile", Vector2i.ZERO)
 	var rot: int = int(cmd.get("rot", 0))
+	if def.max_per_zone > 0 and count_in_zone(w, def.id, tile) >= def.max_per_zone:
+		w.place_failed.emit("zone_limit")
+		return
 	if not in_build_range(w, tile, def.rotated_size(rot)):
 		w.place_failed.emit("range")
 		return
@@ -54,10 +57,10 @@ static func _cmd_place(w: SimWorld, cmd: Dictionary) -> void:
 		w.place_failed.emit("blocked")
 		return
 	var cost := next_cost(w, def)
-	if not Economy.can_afford(w.player.inventory, cost):
+	if not ShipSystem.can_afford(w, cost):
 		w.place_failed.emit("cost")
 		return
-	Economy.pay(w.player.inventory, cost)
+	ShipSystem.pay(w, cost)
 	var b := Building.create(w.next_id(), def, tile, rot)
 	b.paid_cost = cost
 	if b is Machine:
@@ -86,6 +89,18 @@ static func place_free(w: SimWorld, def_id: String, tile: Vector2i, rot: int = 0
 	return b
 
 
+## Gebäude einer Art in der Zone der Kachel (Außenposten-Grenze).
+static func count_in_zone(w: SimWorld, def_id: String, tile: Vector2i) -> int:
+	var zid := w.zones.zone_id_at(tile)
+	if zid == "":
+		return 0  # Karten ohne Zonen (Tests, Sonderfälle): keine Grenze
+	var n := 0
+	for b: Building in w.buildings.values():
+		if b.def.id == def_id and w.zones.zone_id_at(b.tile) == zid:
+			n += 1
+	return n
+
+
 static func _cmd_rotate(w: SimWorld, cmd: Dictionary) -> void:
 	var b := w.grid.at(cmd.get("tile", Vector2i.ZERO))
 	if b == null or not (b is Conveyor or b is Extractor):
@@ -98,6 +113,9 @@ static func _cmd_rotate(w: SimWorld, cmd: Dictionary) -> void:
 static func _cmd_remove(w: SimWorld, cmd: Dictionary) -> void:
 	var b := w.grid.at(cmd.get("tile", Vector2i.ZERO))
 	if b == null:
+		return
+	if b is Ship:
+		w.place_failed.emit("ship")
 		return
 	w.grid.remove(b)
 	w.buildings.erase(b.id)
@@ -127,6 +145,8 @@ static func _cmd_deposit(w: SimWorld, cmd: Dictionary) -> void:
 	if accepted > 0:
 		w.player.inventory.remove(item, accepted)
 		w.building_changed.emit(b)
+		if b is Ship:
+			w.ship_received.emit(item, accepted)
 	else:
 		w.deposit_rejected.emit(b, item)
 

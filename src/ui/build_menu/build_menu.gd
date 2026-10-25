@@ -59,7 +59,7 @@ func _rebuild() -> void:
 		if not w.is_building_unlocked(def_id):
 			continue
 		var def: BuildingDef = DataRegistry.building_defs[def_id]
-		if (def.category == "decor") != (_page == 1):
+		if (def.category == "decor") != (_page == 1) or not def.buildable:
 			continue
 		var btn := Button.new()
 		btn.custom_minimum_size = Vector2(520, 76)
@@ -73,9 +73,9 @@ func _rebuild() -> void:
 		if not outputs.is_empty():
 			makes = "   (%s %s)" % [tr("BUILD_MAKES"), ", ".join(outputs)]
 		btn.text = "%s   –   %s%s" % [tr(def.name_key), _cost_text(w.next_cost(def)), makes]
-		if not Economy.can_afford(w.player.inventory, w.next_cost(def)):
+		if not w.can_afford(w.next_cost(def)):
 			any_missing = true
-			btn.text += "   (%s)" % (tr("BUILD_MISSING") % _missing_text(w.next_cost(def), w.player.inventory))
+			btn.text += "   (%s)" % (tr("BUILD_MISSING") % _missing_text(w.missing_for(w.next_cost(def))))
 			btn.add_theme_color_override("font_color", Color(0.6, 0.25, 0.2))
 			btn.self_modulate = Color(0.82, 0.82, 0.82)
 		btn.pressed.connect(func() -> void: _choose(def_id))
@@ -97,13 +97,11 @@ func _rebuild() -> void:
 		_buttons[i].focus_neighbor_bottom = _buttons[i].get_path_to(next)
 
 
-## „fehlt: 12 Eisenbarren, 3 Kupfer“ – nur Rustys Inventar zählt.
-func _missing_text(cost: Dictionary, inv: Inventory) -> String:
+## „fehlt: 12 Eisenbarren, 3 Kupfer“ – Inventar und Schiffslager zählen, Kisten nicht.
+func _missing_text(missing: Dictionary) -> String:
 	var parts: Array[String] = []
-	for item in cost:
-		var missing := int(cost[item]) - inv.count_of(str(item))
-		if missing > 0:
-			parts.append("%d %s" % [missing, DataRegistry.item_name(str(item))])
+	for item in missing:
+		parts.append("%d %s" % [int(missing[item]), DataRegistry.item_name(str(item))])
 	return ", ".join(parts)
 
 

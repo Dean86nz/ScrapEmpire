@@ -1,9 +1,0 @@
-{
-  "steps": [
-    { "id": "move", "text_key": "TUT_1", "done_key": "TUT_1_DONE", "trigger": "moved", "amount": 200, "reward_bolts": 0 },
-    { "id": "collect", "text_key": "TUT_2", "done_key": "TUT_2_DONE", "trigger": "collect", "item": "scrap", "amount": 30, "reward_bolts": 0 },
-    { "id": "sell", "text_key": "TUT_3", "done_key": "TUT_3_DONE", "trigger": "sold", "amount": 1, "reward_bolts": 20 },
-    { "id": "hammer", "text_key": "TUT_4", "done_key": "TUT_4_DONE", "trigger": "wreck_destroyed", "amount": 1, "reward_bolts": 0 },
-    { "id": "research", "text_key": "TUT_5", "done_key": "TUT_5_DONE", "trigger": "research_started", "tech": "furnace", "amount": 1, "reward_bolts": 0 }
-  ]
-}

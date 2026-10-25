@@ -76,7 +76,11 @@ static func _try_transfer(w: SimWorld, c: Conveyor) -> void:
 			c.pop_front()
 		return
 	var accepted := false
-	if target is Chest:
+	if target is Ship:
+		accepted = (target as Ship).accept_from_belt(item)
+		if accepted:
+			w.ship_received.emit(item, 1)
+	elif target is Chest:
 		accepted = target.accept_stack(item, 1) == 1
 	elif target is SellTerminal:
 		accepted = (target as SellTerminal).accept_from_belt(item)
@@ -85,6 +89,24 @@ static func _try_transfer(w: SimWorld, c: Conveyor) -> void:
 	if accepted:
 		c.pop_front()
 		w.building_changed.emit(target)
+
+
+## Führt von einem Ausgang eines Gebäudes dieser Art eine Bandkette bis zum Schiff? (Aufgabenkette)
+static func belt_reaches_ship(w: SimWorld, def_id: String) -> bool:
+	for b: Building in w.buildings.values():
+		if b.def.id != def_id:
+			continue
+		for p in b.ports_world():
+			if p["dir"] != "out":
+				continue
+			var t: Building = w.grid.at(p["outside"])
+			var visited: Dictionary = {}
+			while t is Conveyor and not visited.has(t.id):
+				visited[t.id] = true
+				t = w.grid.at((t as Conveyor).front_tile())
+			if t is Ship:
+				return true
+	return false
 
 
 ## Maschinen- und Stationsausgänge legen je Tick höchstens ein Item auf das Band vor dem Port.

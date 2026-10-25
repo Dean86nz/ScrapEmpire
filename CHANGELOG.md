@@ -2,6 +2,27 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.7.0] – 2026-10-25 – MS18a Raumschiff-Basis, Heilungsbalken, Aufgabenkette (Überarbeitung Block 2, Teil 1)
+
+### Hinzugefügt
+- **Rustys abgestürztes Raumschiff** als zentrale Basis neben dem Start (3×3, nicht abreißbar). Es nimmt Items von Hand (A), per Förderband und per Drohne ins Lager und **verkauft von allein alles über der Reserve je Item** (`data/ship.json`: Schrott 0, Kupfer und Plastik 20, Holz und Stein 40, Produkte 30 bis 50). Das Lager zählt bei allen Bau-, Forschungs-, Helfer- und Drohnenkosten mit; bezahlt wird zuerst aus Rustys Inventar, dann aus dem Schiff. Drohnen nutzen das Schiff als Quelle und Ziel, Helfer als Lager
+- **Drei Ausbaustufen** mit eigener Optik (Wrack mit Rauch → notdürftig repariert mit Antenne → startklar mit Solarflügeln und Lichtern): X am Schiff baut aus, wenn Bolts und Material reichen (Stufe 2: 300 Bolts, 20 Eisenbarren, 5 Kupferbarren; Stufe 3: 2000 Bolts, 20 Zahnräder, 10 Schaltkreise, 20 Chrom). Jede Stufe vergrößert das Lager (20 → 30 → 40 Slots à 50) und verkauft schneller. Die Hinweiszeile am Schiff zeigt Stufe, Lager, Kosten und was fehlt
+- **Planeten-Heilungsbalken** dauerhaft im HUD unter den Bolts: Anteil des weggeräumten Mülls über alle Zonen
+- **Geführte Aufgabenkette** (`data/quests.json`, 24 Aufgaben) ersetzt Tutorial und Fließtext-Tipps: immer genau eine Aufgabe mit Kästchen oben im HUD, mit Zähler („(12/30)“), Haken-Moment mit Konfetti und Spruch, XP und teils Bolts als Belohnung. Die Kette führt vom ersten Schritt über Ofen, Barren, Band zum Schiff, Saugstation, Schiffsausbau, Tor, Presse, Autopilot, Helfer, Drohnen, Fundstücke bis zum geheilten Planeten. Tab „Kapitel“ zeigt erledigte, aktuelle und kommende Aufgaben
+- **Außenposten:** Verkaufsterminals kosten fest 40 Schrott + 5 Eisenbarren (keine Steigerung) und sind auf eines je Zone begrenzt
+- Alte Spielstände bekommen das Schiff automatisch neben dem Start; erledigte Aufgaben werden still übersprungen (Tutorial-Aufgaben gelten als erledigt, wenn das alte Tutorial fertig war). Spielstand-Version 7, Migration 6 → 7
+- Tests: `tests/test_ship.gd` (12) und `tests/test_quests.gd` (6); 212 Tests grün, 31 Gamepad-Prüfungen grün
+
+### Entfernt
+- Tutorial-System (`tutorial.gd`, `tutorial.json`) und Kapitel-Tipps (`chapters.json`)
+
+### Ally-Testliste
+1. Neues Spiel: Schiffswrack links neben Rusty, oben „☐ Bewege dich mit dem linken Stick (0/200)“, links „Planet 0 %“
+2. 30 Schrott saugen, zum Schiff fahren, A: Schrott landet im Schiff und wird in den nächsten Sekunden verkauft (Bolts steigen)
+3. Am Schiff: Hinweiszeile unten zeigt Stufe 1 und die Ausbaukosten; X ohne Material gibt einen Spruch
+4. Select → Kapitel: Aufgabenliste mit Haken; Forschung Schmelzofen kostet Bolts, Material darf im Schiffslager liegen
+5. Alter Spielstand (Weiterspielen): Schiff steht neben dem Start, keine Aufgabe des alten Tutorials wird erneut verlangt
+
 ## [1.6.0] – 2026-10-25 – MS17 Sim-Aufteilung (Überarbeitung Block 7)
 
 Reiner Umbau ohne Verhaltensänderung; Vorbereitung für die Raumschiff-Basis (MS18a).

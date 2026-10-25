@@ -3,7 +3,7 @@ extends RefCounted
 ## Wandelt die SimWorld in ein JSON-taugliches Dictionary und zurück (Architektur 4.8, 12).
 ## Reine Logik ohne Datei-IO; SaveManager kümmert sich um Dateien, Rotation und Migration.
 
-const VERSION := 6
+const VERSION := 7
 
 
 static func v2(v: Vector2i) -> Array:
@@ -69,6 +69,7 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		"drones": _drones(world),
 		"drone_upgrades": world.drone_upgrades.duplicate(),
 		"collectibles_found": world.collectibles_found.keys(),
+		"quests": world.quests.to_dict(),
 		"flags": world.flags.duplicate(),
 		"unlocked_zones": world.zones.unlocked.keys(),
 		"tutorial": {"step": int(world.flags.get("tutorial_step", 0)), "done": bool(world.flags.get("tutorial_done", false))},
@@ -99,6 +100,9 @@ static func _building_state(b: Building) -> Dictionary:
 	if b is SellTerminal:
 		var t := b as SellTerminal
 		return {"buffer": t.buffer.duplicate(), "cooldown": t.get_cooldown()}
+	if b is Ship:
+		var s := b as Ship
+		return {"stage": s.stage, "storage": s.storage.to_dict(), "cooldown": s.get_cooldown()}
 	if b is Chest:
 		return {"inventory": (b as Chest).inventory.to_dict()}
 	if b is Conveyor:
@@ -167,6 +171,7 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 		world.recompute_modifiers()
 	for cid in data.get("collectibles_found", []):
 		world.collectibles_found[str(cid)] = true
+	world.quests.from_dict(data.get("quests", {}))
 	for k in data.get("flags", {}):
 		world.flags[str(k)] = data["flags"][k]
 	for z in data.get("unlocked_zones", []):
@@ -202,6 +207,12 @@ static func _restore_building(b: Building, st: Dictionary, world: SimWorld) -> v
 		for item in st.get("buffer", []):
 			t.buffer.append(str(item))
 		t.set_cooldown(int(st.get("cooldown", 0)))
+	elif b is Ship:
+		var s := b as Ship
+		s.stage = maxi(int(st.get("stage", 1)), 1)
+		ShipSystem.apply_stage(world, s)
+		s.storage.from_dict(st.get("storage", {}))
+		s.set_cooldown(int(st.get("cooldown", 0)))
 	elif b is Chest:
 		(b as Chest).inventory.from_dict(st.get("inventory", {}))
 	elif b is Conveyor:

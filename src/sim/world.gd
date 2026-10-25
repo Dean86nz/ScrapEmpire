@@ -41,6 +41,10 @@ signal drone_upgrade_bought(id: String, level: int)
 signal collectible_added(c: Collectible)
 signal collectible_found(c: Collectible, def: Dictionary)
 signal zone_unlocked(zone_id: String)
+signal ship_received(item: String, n: int)
+signal ship_upgraded(ship: Ship)
+signal ship_failed(reason: String)
+signal quest_completed(id: String, def: Dictionary)
 
 const TILE := 64
 const LOOT_SCATTER_PX := 40
@@ -91,12 +95,39 @@ var drone_upgrades: Dictionary = {}  # id → level
 var collectible_cfg: Dictionary = {}       # data/collectibles.json
 var collectibles: Dictionary = {}          # id → Collectible (noch nicht gefunden, in der Welt)
 var collectibles_found: Dictionary = {}    # def_id → true
+var ship_cfg: Dictionary = {}              # data/ship.json
+var quests := QuestState.new()             # geführte Aufgabenkette
 
 
 func _init() -> void:
 	# Methoden-Callable statt Lambda: ein Lambda hielte self fest und erzeugte einen Zyklus.
 	player.inventory.changed.connect(_on_inventory_changed)
 	zones.zone_unlocked.connect(_on_zone_unlocked)
+	item_collected.connect(_quest_collected)
+	item_sold.connect(_quest_sold)
+	wreck_destroyed.connect(_quest_wreck)
+	ship_received.connect(_quest_ship_received)
+	quests.completed.connect(_on_quest_completed)
+
+
+func _quest_collected(item: String, _pos: Vector2i) -> void:
+	quests.on_collected(item)
+
+
+func _quest_sold(_item: String, value: int, _pos: Vector2i) -> void:
+	quests.on_sold(value)
+
+
+func _quest_wreck(_id: int) -> void:
+	quests.on_wreck()
+
+
+func _quest_ship_received(_item: String, n: int) -> void:
+	quests.on_ship_received(n)
+
+
+func _on_quest_completed(id: String, def: Dictionary) -> void:
+	quest_completed.emit(id, def)
 
 
 func _on_zone_unlocked(id: String) -> void:
@@ -158,10 +189,11 @@ func tick() -> void:
 
 	for b: Building in buildings.values():
 		if b.tick():
-			if b is SellTerminal:
-				var sold: String = (b as SellTerminal).take_sold()
+			if b is SellTerminal or b is Ship:
+				var sold: String = b.take_sold()
 				if sold != "":
-					var value: int = sale_value(sold, (b as SellTerminal).buffer.size() + 1)
+					var batch: int = (b as SellTerminal).buffer.size() + 1 if b is SellTerminal else (b as Ship).storage.total() + 1
+					var value: int = sale_value(sold, batch)
 					bolts += value
 					progression.on_sale(value)
 					item_sold.emit(sold, value, b.center_px())
@@ -179,6 +211,9 @@ func tick() -> void:
 	HelperSystem._tick_helpers(self)
 	DroneSystem._tick_drones(self)
 	CollectibleSystem._tick_collectibles(self)
+	quests.tick_move(player.pos)
+	if tick_count % 10 == 0:
+		quests.check(self)
 	ToolSystem._tick_suction(self)
 	ToolSystem._tick_magnet(self)
 	_tick_hammer()
@@ -226,9 +261,29 @@ func _apply(cmd: Dictionary) -> void:
 			DroneSystem._cmd_set_drone_limit(self, cmd)
 		"buy_drone_upgrade":
 			DroneSystem._cmd_buy_drone_upgrade(self, cmd)
+		"upgrade_ship":
+			ShipSystem._cmd_upgrade_ship(self, cmd)
 
 
 # --- Weiterleitungen an die Teilsysteme (öffentliche API bleibt stabil) ------
+
+# ShipSystem
+
+func ship() -> Ship:
+	return ShipSystem.ship(self)
+
+
+func count_available(item: String) -> int:
+	return ShipSystem.count_available(self, item)
+
+
+func can_afford(cost: Dictionary) -> bool:
+	return ShipSystem.can_afford(self, cost)
+
+
+func missing_for(cost: Dictionary) -> Dictionary:
+	return ShipSystem.missing(self, cost)
+
 
 # ResearchSystem
 

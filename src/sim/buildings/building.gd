@@ -20,6 +20,8 @@ static func create(p_id: int, p_def: BuildingDef, p_tile: Vector2i, p_rot: int) 
 			b = SellTerminal.new()
 		"chest":
 			b = Chest.new()
+		"ship":
+			b = Ship.new()
 		"furnace", "press":
 			b = Machine.new()
 		"conveyor":

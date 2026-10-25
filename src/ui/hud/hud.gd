@@ -15,6 +15,8 @@ const ITEM_SLOT := preload("res://src/ui/widgets/item_slot.tscn")
 @onready var minimap: Minimap = $Minimap
 @onready var _tutorial: PanelContainer = $Tutorial
 @onready var _tutorial_label: Label = $Tutorial/Label
+@onready var _planet_bar: ProgressBar = $PlanetPanel/HBox/Bar
+@onready var _planet_label: Label = $PlanetPanel/HBox/Value
 
 var _inventory: Inventory
 var _world: SimWorld
@@ -69,6 +71,11 @@ func bind_minimap(player: Node2D) -> void:
 
 func toggle_minimap() -> void:
 	minimap.visible = not minimap.visible
+
+
+func set_planet(fraction: float) -> void:
+	_planet_bar.value = fraction
+	_planet_label.text = "%d %%" % int(round(fraction * 100.0))
 
 
 func set_bolts(value: int) -> void:

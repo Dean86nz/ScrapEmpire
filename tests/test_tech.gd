@@ -148,6 +148,7 @@ func test_terminal_plus_speeds_selling() -> void:
 	var w := _world()
 	w.bolts = 5000
 	w.player.inventory.add("scrap", 100)
+	w.player.inventory.add("iron_bar", 5)
 	w.queue_command({"type": "place", "def_id": "sell_terminal", "tile": Vector2i(7, 5)})
 	w.tick()
 	for id in ["furnace", "conveyor", "terminal_plus"]:

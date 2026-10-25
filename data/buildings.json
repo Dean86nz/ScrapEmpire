@@ -1,6 +1,19 @@
 {
   "buildings": [
     {
+      "id": "ship",
+      "name_key": "BLD_SHIP",
+      "size": [
+        3,
+        3
+      ],
+      "cost": {},
+      "cost_growth": 1.0,
+      "sprite": "res://assets/sprites/buildings/ship_1.svg",
+      "ports": [],
+      "buildable": false
+    },
+    {
       "id": "sell_terminal",
       "name_key": "BLD_SELL_TERMINAL",
       "size": [
@@ -8,9 +21,10 @@
         2
       ],
       "cost": {
-        "scrap": 30
+        "scrap": 40,
+        "iron_bar": 5
       },
-      "cost_growth": 1.35,
+      "cost_growth": 1.0,
       "sprite": "res://assets/sprites/buildings/sell_terminal.svg",
       "ports": [
         {
@@ -21,7 +35,8 @@
             0
           ]
         }
-      ]
+      ],
+      "max_per_zone": 1
     },
     {
       "id": "furnace",

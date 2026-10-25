@@ -35,8 +35,39 @@ static func apply(world: SimWorld, data: Dictionary, with_nodes: bool = true) ->
 				world.add_object(kind, tile, int(entry.get("amount", -1)))
 			else:
 				push_warning("Karte: unbekannter Knotentyp '%s' übersprungen" % kind)
+	if with_nodes and data.has("ship"):
+		ensure_ship(world, data)
 	var start: Dictionary = data.get("player_start", {"x": world.width_tiles / 2, "y": world.height_tiles / 2})
 	return _start_px(world, start)
+
+
+## Stellt sicher, dass genau ein Raumschiff existiert: an der Kartenposition, sonst in der Nähe
+## (freie 3×3-Fläche in Spiralsuche). Für neue Spiele und alte Spielstände ohne Schiff.
+static func ensure_ship(world: SimWorld, data: Dictionary) -> Ship:
+	var existing := ShipSystem.ship(world)
+	if existing != null:
+		return existing
+	if not world.defs.has("ship"):
+		return null
+	var def: BuildingDef = world.defs["ship"]
+	var sd: Dictionary = data.get("ship", {})
+	var start: Dictionary = data.get("player_start", {"x": world.width_tiles / 2, "y": world.height_tiles / 2})
+	var base := Vector2i(int(sd.get("x", int(start.get("x", 0)) - 4)), int(sd.get("y", int(start.get("y", 0)) - 2)))
+	for r in 9:
+		for dy in range(-r, r + 1):
+			for dx in range(-r, r + 1):
+				if maxi(absi(dx), absi(dy)) != r:
+					continue
+				var t := base + Vector2i(dx, dy)
+				if t.x < 0 or t.y < 0 or t.x + 3 > world.width_tiles or t.y + 3 > world.height_tiles:
+					continue
+				if world.can_place_def(def, t, 0):
+					var s := world.place_free("ship", t, 0) as Ship
+					if s != null:
+						ShipSystem.apply_stage(world, s)
+						return s
+	push_warning("Karte: kein Platz für das Raumschiff gefunden")
+	return null
 
 
 ## Ergänzt Karten-Objekte in Zonen, die im Spielstand leer sind (z. B. nach der Migration

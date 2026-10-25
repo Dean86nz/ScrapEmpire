@@ -127,7 +127,7 @@ func test_world_deposit_and_sell_bar() -> void:
 	for i in 82:
 		w.tick()
 	assert_eq(f.output.get("iron_bar", 0), 1)
-	w.player.inventory.add("scrap", 0)
+	w.player.inventory.add("iron_bar", 5)  # Außenposten kostet 40 Schrott + 5 Barren
 	# Terminal bauen und Barren verkaufen
 	w.queue_command({"type": "place", "def_id": "sell_terminal", "tile": Vector2i(7, 8)})
 	w.tick()

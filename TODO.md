@@ -2,6 +2,7 @@
 
 ## Jetzt
 
+- [x] MS18a Raumschiff-Basis, Heilungsbalken, Aufgabenkette (v1.7.0)
 - [x] MS17 Sim-Aufteilung (v1.6.0): world.gd 1.259 → 388 Zeilen, acht Teilsysteme, keine Verhaltensänderung
 - [x] MS16 Ally-Bugs (v1.5.0): A in allen Menüs, Trigger-Schwelle 0,5, Sauger-Reset, Baumenü zeigt fehlendes Material, Gamepad-Prüfung
 - [ ] Überarbeitung nach Ally-Test (Go vom 2026-10-25): MS17 world.gd aufteilen → MS18a Schiff, Heilungsbalken, Aufgabenkette → MS18b Intro, Jubel, Endtext → MS19 Menüs entschlacken → MS20 Balancing (Zahlen vorher zeigen) → MS21a Animationen, Effekte, Sound (Musikrichtung abstimmen) → MS21b Zonenthemen, schmutzige Zonen, Haufen-Optik → MS21c Überraschungen, Müllberg-Boss, Rusty-Reaktionen → MS22 zweiter Balancing-Durchlauf
@@ -13,6 +14,13 @@
 - [ ] Auftraggeber prüft am Laptop: Titelbildschirm, Kapitel-Tab (Select), Tor nach 50 % Startlager, Maschinen-Hinweis am Schmelzofen, alter Spielstand hat wieder Objekte in allen Zonen
 - [ ] NIE wieder user://saves ohne Backup anfassen: Screenshot-Läufe nur über tests/shot.sh, Datei-Tests mit use_directory
 - [ ] Auftraggeber testet MS4–MS7 am Laptop / später am Ally: Speichern (F5 oder Pause), Beenden, Neustart, Sprache wechseln, Neues Spiel; Perf-Szenario F6 + F3
+
+## MS18a Raumschiff-Basis (erledigt, selbst getestet)
+
+- [x] Ship-Gebäude mit Lager, Reserve-Verkauf, drei Stufen; ShipSystem als Zahlungsquelle; QuestState mit 24 Aufgaben; Planetenbalken; Außenposten
+- [ ] Die Hinweiszeile am Schiff ist lang (Stufe, Lager, Kosten, fehlt); auf dem Ally prüfen, ob sie in eine Zeile passt
+- [ ] Reserve je Item ist fest in ship.json; später per Menü einstellbar (Block 3 oder Phase 2)
+- [ ] Stufe 3 hat noch keinen Spieleffekt außer Lager und Verkaufstakt (Block 2b: Endtext bezieht sich darauf)
 
 ## MS17 Sim-Aufteilung (erledigt, selbst getestet)
 

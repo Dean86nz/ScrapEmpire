@@ -61,6 +61,37 @@ theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
 theme_override_font_sizes/font_size = 32
 text = "0 Bolts"
 
+[node name="PlanetPanel" type="PanelContainer" parent="."]
+offset_left = 24.0
+offset_top = 84.0
+offset_right = 360.0
+offset_bottom = 128.0
+theme_override_styles/panel = SubResource("bolts_style")
+
+[node name="HBox" type="HBoxContainer" parent="PlanetPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="PlanetPanel/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.95, 0.6, 1)
+theme_override_font_sizes/font_size = 24
+text = "Planet"
+
+[node name="Bar" type="ProgressBar" parent="PlanetPanel/HBox"]
+custom_minimum_size = Vector2(170, 18)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+show_percentage = false
+
+[node name="Value" type="Label" parent="PlanetPanel/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "0 %"
+
 [node name="Hotbar" type="HBoxContainer" parent="."]
 anchors_preset = 1
 anchor_left = 1.0
@@ -111,9 +142,9 @@ text = "10 s"
 
 [node name="TaskRow" type="Label" parent="."]
 offset_left = 32.0
-offset_top = 84.0
+offset_top = 136.0
 offset_right = 900.0
-offset_bottom = 120.0
+offset_bottom = 172.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.165, 0.165, 0.2, 1)
 theme_override_constants/outline_size = 8

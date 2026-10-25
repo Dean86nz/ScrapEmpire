@@ -181,5 +181,29 @@
     "QUIP_FOUND_1",
     "QUIP_FOUND_2",
     "QUIP_FOUND_3"
+  ],
+  "ship_fail_bolts": [
+    "QUIP_FAIL_COST_1"
+  ],
+  "ship_fail_items": [
+    "QUIP_SHIP_ITEMS"
+  ],
+  "ship_fail_max": [
+    "QUIP_SHIP_MAX"
+  ],
+  "ship_upgraded": [
+    "QUIP_SHIP_UP_1",
+    "QUIP_SHIP_UP_2"
+  ],
+  "quest_done": [
+    "QUIP_QUEST_1",
+    "QUIP_QUEST_2",
+    "QUIP_QUEST_3"
+  ],
+  "fail_zone_limit": [
+    "QUIP_FAIL_ZONE_LIMIT"
+  ],
+  "fail_ship": [
+    "QUIP_FAIL_SHIP"
   ]
 }

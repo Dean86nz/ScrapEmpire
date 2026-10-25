@@ -105,12 +105,6 @@
   "nodes": [
     {
       "kind": "scrap_pile",
-      "x": 16,
-      "y": 42,
-      "amount": 8
-    },
-    {
-      "kind": "scrap_pile",
       "x": 24,
       "y": 41,
       "amount": 10
@@ -940,5 +934,9 @@
     "z12",
     "z02"
   ],
-  "unlock_cleanliness": 0.5
+  "unlock_cleanliness": 0.5,
+  "ship": {
+    "x": 16,
+    "y": 43
+  }
 }

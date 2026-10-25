@@ -21,12 +21,14 @@ func _place(w: SimWorld, def_id: String, tile: Vector2i, rot: int = 0) -> void:
 func test_place_pays_and_occupies() -> void:
 	var w := _world()
 	w.player.inventory.add("scrap", 50)
+	w.player.inventory.add("iron_bar", 5)
 	_place(w, "sell_terminal", Vector2i(7, 5))
 	assert_eq(w.buildings.size(), 1)
-	assert_eq(w.player.inventory.count_of("scrap"), 20)
+	assert_eq(w.player.inventory.count_of("scrap"), 10)
+	assert_eq(w.player.inventory.count_of("iron_bar"), 0)
 	assert_eq(w.grid.occupied_count(), 4)
 	var b: Building = w.buildings.values()[0]
-	assert_eq(b.paid_cost, {"scrap": 30})
+	assert_eq(b.paid_cost, {"scrap": 40, "iron_bar": 5})
 	assert_true(b is SellTerminal)
 
 
@@ -56,6 +58,7 @@ func test_place_fails_on_resource_node_and_player() -> void:
 func test_place_fails_out_of_range() -> void:
 	var w := _world()
 	w.player.inventory.add("scrap", 100)
+	w.player.inventory.add("iron_bar", 5)
 	var reasons := []
 	w.place_failed.connect(func(r: String) -> void: reasons.append(r))
 	_place(w, "chest", Vector2i(12, 5))  # 7 Kacheln weit
@@ -64,21 +67,25 @@ func test_place_fails_out_of_range() -> void:
 	assert_eq(w.buildings.size(), 1)
 
 
-func test_second_terminal_costs_more() -> void:
+func test_terminal_is_outpost_with_fixed_cost() -> void:
 	var w := _world()
 	w.player.inventory.add("scrap", 100)
-	assert_eq(w.next_cost(w.defs["sell_terminal"])["scrap"], 30)
+	w.player.inventory.add("iron_bar", 10)
+	assert_eq(w.next_cost(w.defs["sell_terminal"]), {"scrap": 40, "iron_bar": 5})
 	_place(w, "sell_terminal", Vector2i(7, 5))
-	assert_eq(w.next_cost(w.defs["sell_terminal"])["scrap"], 40)
+	assert_eq(w.next_cost(w.defs["sell_terminal"]), {"scrap": 40, "iron_bar": 5}, "keine Steigerung je Exemplar")
 	_place(w, "sell_terminal", Vector2i(7, 8))
-	assert_eq(w.player.inventory.count_of("scrap"), 30)
+	assert_eq(w.buildings.size(), 2)
+	assert_eq(w.player.inventory.count_of("scrap"), 20)
 
 
 func test_remove_refunds() -> void:
 	var w := _world()
-	w.player.inventory.add("scrap", 30)
+	w.player.inventory.add("scrap", 40)
+	w.player.inventory.add("iron_bar", 5)
 	_place(w, "sell_terminal", Vector2i(7, 5))
 	assert_eq(w.player.inventory.count_of("scrap"), 0)
+	assert_eq(w.player.inventory.count_of("iron_bar"), 0)
 	var removed := []
 	w.building_removed.connect(func(id: int) -> void: removed.append(id))
 	w.queue_command({"type": "remove", "tile": Vector2i(8, 6)})
@@ -86,7 +93,8 @@ func test_remove_refunds() -> void:
 	assert_eq(removed.size(), 1)
 	assert_eq(w.buildings.size(), 0)
 	assert_eq(w.grid.occupied_count(), 0)
-	assert_eq(w.player.inventory.count_of("scrap"), 30)
+	assert_eq(w.player.inventory.count_of("scrap"), 40)
+	assert_eq(w.player.inventory.count_of("iron_bar"), 5)
 
 
 func test_remove_drops_contents_when_inventory_full() -> void:
@@ -103,8 +111,10 @@ func test_remove_drops_contents_when_inventory_full() -> void:
 
 func test_deposit_and_sell() -> void:
 	var w := _world()
-	w.player.inventory.add("scrap", 50)
+	w.player.inventory.add("scrap", 40)
+	w.player.inventory.add("iron_bar", 5)
 	_place(w, "sell_terminal", Vector2i(7, 5))
+	w.player.inventory.add("scrap", 20)  # landet in Slot 0
 	var bolts := []
 	w.bolts_changed.connect(func(v: int) -> void: bolts.append(v))
 	var sold := []
@@ -123,8 +133,9 @@ func test_deposit_and_sell() -> void:
 
 func test_deposit_copper_worth_3() -> void:
 	var w := _world()
-	w.player.inventory.add("scrap", 30)
+	w.player.inventory.add("scrap", 40)
 	w.player.inventory.add("copper", 2)
+	w.player.inventory.add("iron_bar", 5)
 	_place(w, "sell_terminal", Vector2i(7, 5))
 	# Bezahlen leert Slot 0 und 1 (Schrott); Kupfer liegt in Slot 2.
 	w.queue_command({"type": "deposit", "tile": Vector2i(8, 6), "slot": 2})
@@ -154,6 +165,7 @@ func test_chest_deposit_withdraw_roundtrip() -> void:
 func test_building_near() -> void:
 	var w := _world()
 	w.player.inventory.add("scrap", 50)
+	w.player.inventory.add("iron_bar", 5)
 	_place(w, "sell_terminal", Vector2i(7, 5))  # Rechteck px (448..576, 320..448)
 	assert_true(w.building_near(Vector2i(420, 330), 48) != null, "28 px links vom Rand")
 	assert_true(w.building_near(Vector2i(380, 330), 48) == null, "68 px entfernt")

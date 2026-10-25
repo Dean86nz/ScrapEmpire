@@ -10,7 +10,13 @@ const SHIFT_PX := Vector2(0, 30 * 64)
 
 
 static func all() -> Dictionary:
-	return {1: Callable(SaveMigrations, "v1_to_v2"), 2: Callable(SaveMigrations, "v2_to_v3"), 3: Callable(SaveMigrations, "v3_to_v4"), 4: Callable(SaveMigrations, "v4_to_v5"), 5: Callable(SaveMigrations, "v5_to_v6")}
+	return {1: Callable(SaveMigrations, "v1_to_v2"), 2: Callable(SaveMigrations, "v2_to_v3"), 3: Callable(SaveMigrations, "v3_to_v4"), 4: Callable(SaveMigrations, "v4_to_v5"), 5: Callable(SaveMigrations, "v5_to_v6"), 6: Callable(SaveMigrations, "v6_to_v7")}
+
+
+static func v6_to_v7(data: Dictionary) -> Dictionary:
+	data["quests"] = {"index": 0, "counters": {}}
+	data["version"] = 7
+	return data
 
 
 static func v5_to_v6(data: Dictionary) -> Dictionary:

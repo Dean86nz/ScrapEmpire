@@ -127,6 +127,19 @@ func current_trash(nodes: Dictionary) -> Dictionary:
 	return result
 
 
+## Heilung des ganzen Planeten: Anteil des weggeräumten Mülls über alle Zonen (0..1).
+func planet_health(nodes: Dictionary) -> float:
+	var start := 0
+	for z in zones:
+		start += int(start_trash.get(z["id"], 0))
+	if start <= 0:
+		return 1.0
+	var now := 0
+	for v in current_trash(nodes).values():
+		now += int(v)
+	return clampf(1.0 - float(now) / float(start), 0.0, 1.0)
+
+
 func cleanliness(zone_id: String, nodes: Dictionary) -> float:
 	var start := int(start_trash.get(zone_id, 0))
 	if start <= 0:
