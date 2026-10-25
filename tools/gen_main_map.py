@@ -16,6 +16,7 @@ tutorial_nodes = [
     ("plastic_crumbs", 9, 21, 6), ("plastic_crumbs", 29, 8, 5),
     ("toaster", 17, 17, None), ("toaster", 25, 14, None),
     ("fridge", 7, 15, None), ("cart", 22, 26, None),
+    ("pallet", 12, 25, None), ("concrete", 33, 18, None),
 ]
 
 # Zonen-Raster: (zx, zy) -> Name, Tier-Bereich (min,max)
@@ -25,13 +26,13 @@ zones = {
     (0, 2): ("Südbucht", 1, 2), (1, 2): ("Palettenhafen", 2, 3), (2, 2): ("Monolith-Ebene", 3, 5),
 }
 tier_objects = {
-    1: ["toaster", "toaster", "cart"],
-    2: ["fridge", "cart", "fridge"],
+    1: ["toaster", "toaster", "cart", "pallet", "concrete"],
+    2: ["fridge", "cart", "fridge", "sofa", "ruin_wall"],
     3: ["ship_part", "satellite", "satellite"],
     4: ["robot_arm"],
     5: ["monolith"],
 }
-piles = ["scrap_pile", "scrap_pile", "scrap_pile", "copper_tangle", "plastic_crumbs"]
+piles = ["scrap_pile", "scrap_pile", "scrap_pile", "copper_tangle", "plastic_crumbs", "driftwood_pile", "rubble_field"]
 
 occupied = set()
 nodes = []

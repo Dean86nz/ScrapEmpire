@@ -12,6 +12,7 @@ const ITEM_SLOT := preload("res://src/ui/widgets/item_slot.tscn")
 @onready var _research_bar: ProgressBar = $Research/Bar
 @onready var _research_time: Label = $Research/Time
 @onready var _task_row: Label = $TaskRow
+@onready var minimap: Minimap = $Minimap
 @onready var _tutorial: PanelContainer = $Tutorial
 @onready var _tutorial_label: Label = $Tutorial/Label
 
@@ -60,6 +61,14 @@ func bind(world: SimWorld) -> void:
 	_xp_bar.bind(world.progression)
 	rebuild_hotbar()
 	set_selected_slot(0)
+
+
+func bind_minimap(player: Node2D) -> void:
+	minimap.bind(_world, player)
+
+
+func toggle_minimap() -> void:
+	minimap.visible = not minimap.visible
 
 
 func set_bolts(value: int) -> void:

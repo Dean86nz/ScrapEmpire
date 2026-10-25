@@ -2,7 +2,7 @@
 
 ## Jetzt
 
-- [ ] MS9 Zonen, Minimap und Karte umsetzen (Auftraggeber: ohne Go weitermachen bis MS11)
+- [ ] MS10 Helfer-Roboter umsetzen (Auftraggeber: ohne Go weitermachen bis MS11)
 - [ ] NIE wieder user://saves ohne Backup anfassen: Screenshot-Läufe nur über tests/shot.sh, Datei-Tests mit use_directory
 - [ ] Auftraggeber testet MS4–MS7 am Laptop / später am Ally: Speichern (F5 oder Pause), Beenden, Neustart, Sprache wechseln, Neues Spiel; Perf-Szenario F6 + F3
 
@@ -15,12 +15,13 @@
 - [x] Pause-Menü: Sprache DE/EN, Neues Spiel, Speichern und Beenden
 - [ ] Englische Texte einmal komplett gegenlesen (Politur MS10)
 
-## MS9 Zonen, Minimap und Karte (neu, Grundlagen A der Cozy-Ergänzung)
+## MS9 Zonen, Minimap und Karte (erledigt, selbst getestet)
 
-- [ ] Zonen-Rechtecke in Karten-JSON, Reinigungsgrad je Zone, Respawn-Sperre ab 50 %
-- [ ] Minimap unten rechts (ausblendbar), Tab „Karte“ im Fortschritts-Menü mit Scroll/Zoom
-- [ ] Objekte Palette, Betonbrocken, Sofa, Ruinenmauer; Materialien Holz, Stein
-- [ ] Tests: Reinigungsgrad, Respawn-Sperre
+- [x] Zonen-Rechtecke in Karten-JSON, Reinigungsgrad je Zone, Respawn-Sperre ab 50 %
+- [x] Minimap unten rechts (ausblendbar), Tab „Karte“ im Fortschritts-Menü mit Scroll/Zoom
+- [x] Objekte Palette, Betonbrocken, Sofa, Ruinenmauer; Materialien Holz, Stein, Quellen Treibholz/Geröll
+- [x] Tests: Reinigungsgrad, Respawn-Sperre
+- [ ] Zonen-Heilung (grüner Boden) ist Phase 2
 
 ## MS8 Tutorial und Autopilot (erledigt, selbst getestet)
 

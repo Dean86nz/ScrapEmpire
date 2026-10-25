@@ -2,12 +2,16 @@ extends CanvasLayer
 ## Fortschritts-Menü (Select / T) mit drei Tabs: Techbaum, Skilltree, Nächste Ziele.
 ## LB/RB wechseln den Tab, D-Pad bewegt den Fokus, A forscht / kauft, B schließt.
 
-enum Tab { TECH, SKILLS, GOALS }
+enum Tab { TECH, SKILLS, GOALS, MAP }
+const TAB_COUNT := 4
 
 const CARD_SCENE_MIN := Vector2(362, 150)
 const REFRESH_SECONDS := 0.5
 
-@onready var _tab_labels: Array[Label] = [$Center/Panel/VBox/Tabs/TabTech, $Center/Panel/VBox/Tabs/TabSkills, $Center/Panel/VBox/Tabs/TabGoals]
+@onready var _tab_labels: Array[Label] = [$Center/Panel/VBox/Tabs/TabTech, $Center/Panel/VBox/Tabs/TabSkills, $Center/Panel/VBox/Tabs/TabGoals, $Center/Panel/VBox/Tabs/TabMap]
+@onready var _map_tab: Control = $Center/Panel/VBox/Content/MapTab
+@onready var _map_view: MapView = $Center/Panel/VBox/Content/MapTab/MapView
+@onready var _map_info: Label = $Center/Panel/VBox/Content/MapTab/Info
 @onready var _tech_grid: GridContainer = $Center/Panel/VBox/Content/TechTab/Grid
 @onready var _skill_columns: HBoxContainer = $Center/Panel/VBox/Content/SkillsTab/Columns
 @onready var _skill_points_label: Label = $Center/Panel/VBox/Content/SkillsTab/Points
@@ -32,6 +36,26 @@ func bind(world: SimWorld) -> void:
 	_world = world
 	_build_tech_cards()
 	_build_skill_cards()
+	_map_view.zone_selected.connect(_on_zone_selected)
+
+
+func bind_player(player: Node2D) -> void:
+	_map_view.bind(_world, player)
+
+
+func _on_zone_selected(info: Dictionary) -> void:
+	var stage_key: String = ["ZONE_STAGE_0", "ZONE_STAGE_1", "ZONE_STAGE_2", "ZONE_STAGE_3"][int(info["stage"])]
+	var tiers: Array[String] = []
+	var by_tier: Dictionary = info["trash_by_tier"]
+	var keys := by_tier.keys()
+	keys.sort()
+	for t in keys:
+		tiers.append("T%d: %d" % [int(t), int(by_tier[t])])
+	_map_info.text = "%s\n\n%s: %d %%\n%s\n\n%s: %d / %d\n%s\n\n%s" % [
+		str(info["name"]), tr("ZONE_CLEAN"), int(round(float(info["cleanliness"]) * 100.0)), tr(stage_key),
+		tr("ZONE_TRASH"), int(info["trash_now"]), int(info["trash_start"]),
+		(tr("ZONE_BY_TIER") + " " + ", ".join(tiers)) if not tiers.is_empty() else tr("ZONE_NO_TRASH"),
+		tr("ZONE_HELP")]
 
 
 func open(tab: Tab = Tab.TECH) -> void:
@@ -63,12 +87,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		close()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("hotbar_next"):
-		_tab = (_tab + 1) % 3 as Tab
+		_tab = (_tab + 1) % TAB_COUNT as Tab
 		_show_tab()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("hotbar_prev"):
-		_tab = (_tab + 2) % 3 as Tab
+		_tab = (_tab + TAB_COUNT - 1) % TAB_COUNT as Tab
 		_show_tab()
+		get_viewport().set_input_as_handled()
+	elif _tab == Tab.MAP and _map_view.handle_input(event):
 		get_viewport().set_input_as_handled()
 
 
@@ -151,7 +177,7 @@ func _refresh_all() -> void:
 	_refresh_tech()
 	_refresh_skills()
 	_refresh_goals()
-	_footer.text = tr("MENU_PROGRESS_FOOTER")
+	_footer.text = tr("MENU_PROGRESS_FOOTER_MAP") if _tab == Tab.MAP else tr("MENU_PROGRESS_FOOTER")
 
 
 func _cost_text(d: Dictionary) -> String:
@@ -274,8 +300,15 @@ func _show_tab() -> void:
 	_tech_tab.visible = _tab == Tab.TECH
 	_skills_tab.visible = _tab == Tab.SKILLS
 	_goals_tab.visible = _tab == Tab.GOALS
+	_map_tab.visible = _tab == Tab.MAP
 	for i in _tab_labels.size():
 		_tab_labels[i].add_theme_color_override("font_color", Color(0.95, 0.55, 0.16) if i == _tab else Color(0.165, 0.165, 0.2))
+	if _tab == Tab.MAP:
+		_map_view.refresh()
+		var f := get_viewport().gui_get_focus_owner()
+		if f:
+			f.release_focus()
+		return
 	var first: Control = null
 	match _tab:
 		Tab.TECH:

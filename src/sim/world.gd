@@ -50,6 +50,7 @@ var tech := TechState.new()
 var skills := SkillState.new()
 var tasks := TaskList.new()
 var flags: Dictionary = {}  # tutorial_step, tutorial_done, gate_open
+var zones := ZoneTracker.new()
 var mods: Dictionary = Modifiers.DEFAULTS.duplicate()
 var unlocked_buildings: Dictionary = {}  # def_id → true
 var unlocked_features: Dictionary = {}   # autopilot, helpers
@@ -274,9 +275,15 @@ func _tick_respawns() -> void:
 		r["ticks_left"] = int(r["ticks_left"]) - 1
 		if int(r["ticks_left"]) <= 0:
 			respawns.remove_at(i)
+			var kind := str(r["kind"])
+			var is_res: bool = ResourceNode.has_kind(kind) and (bool(ResourceNode.defs[kind].get("resource", false)) or str(ResourceNode.defs[kind].get("type", "pile")) == "pile")
+			if not is_res and not zones.allows_trash_respawn(r["tile"], nodes):
+				i -= 1
+				continue  # Zone inzwischen sauber genug: kein Müll mehr
 			if not _node_tiles.has(r["tile"]) and grid.at(r["tile"]) == null:
-				var n := add_object(str(r["kind"]), r["tile"])
+				var n := add_object(kind, r["tile"])
 				node_respawned.emit(n)
+				zones.refresh(nodes)
 			else:
 				r["ticks_left"] = 100  # Kachel belegt: spaeter noch einmal versuchen
 				respawns.append(r)
@@ -287,8 +294,10 @@ func _remove_node(n: ResourceNode) -> void:
 	nodes.erase(n.id)
 	_node_tiles.erase(n.tile)
 	node_removed.emit(n.id)
-	if n.respawn_ticks > 0:
+	# Rohstoffquellen respawnen immer; Müll nur, solange die Zone unter 50 % sauber ist.
+	if n.respawn_ticks > 0 and (n.is_resource() or zones.allows_trash_respawn(n.tile, nodes)):
 		respawns.append({"kind": n.kind, "tile": n.tile, "ticks_left": n.respawn_ticks})
+	zones.refresh(nodes)
 
 
 func _emit_too_hard(n: ResourceNode, tool: String) -> void:

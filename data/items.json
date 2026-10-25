@@ -24,6 +24,20 @@
       "rare": true
     },
     {
+      "id": "stone",
+      "name_key": "ITEM_STONE",
+      "sell_value": 2,
+      "color": "#A9A9A9",
+      "icon": "res://assets/sprites/items/stone.svg"
+    },
+    {
+      "id": "wood",
+      "name_key": "ITEM_WOOD",
+      "sell_value": 2,
+      "color": "#B8864B",
+      "icon": "res://assets/sprites/items/wood.svg"
+    },
+    {
       "id": "chrome",
       "name_key": "ITEM_CHROME",
       "sell_value": 8,

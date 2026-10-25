@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://src/ui/progress_menu/progress_menu.gd" id="1"]
+[ext_resource type="Script" path="res://src/ui/progress_menu/map_view.gd" id="2"]
 
 [sub_resource type="StyleBoxFlat" id="panel_style"]
 content_margin_left = 36.0
@@ -67,6 +68,12 @@ theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
 theme_override_font_sizes/font_size = 34
 text = "Nächste Ziele"
 
+[node name="TabMap" type="Label" parent="Center/Panel/VBox/Tabs"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
+theme_override_font_sizes/font_size = 34
+text = "Karte"
+
 [node name="Next" type="Label" parent="Center/Panel/VBox/Tabs"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.3, 0.36, 1)
@@ -116,6 +123,25 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
+
+[node name="MapTab" type="HBoxContainer" parent="Center/Panel/VBox/Content"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="MapView" type="Control" parent="Center/Panel/VBox/Content/MapTab"]
+custom_minimum_size = Vector2(1040, 780)
+layout_mode = 2
+script = ExtResource("2")
+
+[node name="Info" type="Label" parent="Center/Panel/VBox/Content/MapTab"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
+theme_override_font_sizes/font_size = 24
+text = ""
+autowrap_mode = 3
 
 [node name="Footer" type="Label" parent="Center/Panel/VBox"]
 layout_mode = 2

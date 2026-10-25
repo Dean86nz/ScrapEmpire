@@ -213,3 +213,26 @@ QUIP_WAIT_EMPTY,"Hier ist nichts mehr. Ich warte, bis was nachwächst.",Nothing 
 QUIP_WAIT_GENERIC,Hm. Das klappt gerade nicht. Kurz warten.,Hm. Not working right now. Short wait.
 QUIP_WAIT_FULL,Kiste voll. Ich warte. Ich bin gut im Warten.,Chest full. I will wait. I am good at waiting.
 QUIP_WAIT_NO_BUILDING,Da steht nichts mehr. Wo soll das hin?,Nothing there anymore. Where does this go?
+ITEM_WOOD,Holz,Wood
+ITEM_STONE,Stein,Stone
+NODE_DRIFTWOOD,Treibholz-Stapel,Driftwood pile
+NODE_RUBBLE,Geröllfeld,Rubble field
+NODE_PALLET,Kaputte Palette,Broken pallet
+NODE_CONCRETE,Betonbrocken,Concrete chunk
+NODE_SOFA,Verrottetes Sofa,Rotten sofa
+NODE_RUIN_WALL,Ruinenmauer,Ruin wall
+ZONE_CLEAN,Reinigungsgrad,Cleanliness
+ZONE_TRASH,Müll,Trash
+ZONE_BY_TIER,Objekte je Stufe:,Objects per tier:
+ZONE_NO_TRASH,Kein Müll mehr. Hier wächst bald etwas.,No trash left. Something will grow here soon.
+ZONE_STAGE_0,Zustand: vermüllt,State: trashed
+ZONE_STAGE_1,Zustand: unordentlich,State: messy
+ZONE_STAGE_2,Zustand: aufgeräumt (kein neuer Müll mehr),State: tidy (no new trash)
+ZONE_STAGE_3,Zustand: sauber,State: clean
+ZONE_HELP,D-Pad: Zone wählen · RT/LT: Zoom · rechter Stick: scrollen,D-pad: select zone · RT/LT: zoom · right stick: scroll
+ZONE_Q_0,Hier sieht es wieder wüst aus.,Looks like a dump again here.
+ZONE_Q_1,Die Zone wird unordentlich. Ich räume.,The zone is getting messy. I tidy.
+ZONE_Q_2,Zone aufgeräumt! Hier wird nichts mehr angeschwemmt.,Zone tidy! Nothing washes up here anymore.
+ZONE_Q_3,Zone sauber! Fast schon gemütlich.,Zone clean! Almost cozy.
+MENU_PROGRESS_FOOTER_MAP,D-Pad: Zone · RT/LT: Zoom · LB/RB: Tab · B: schließen,D-pad: zone · RT/LT: zoom · LB/RB: tab · B: close
+HUD_MINIMAP_HINT,M / Select lang: Minimap,M / hold Select: minimap
