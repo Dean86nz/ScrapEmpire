@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.2.0] – 2026-10-25 – MS13 Zonen-Heilung (Phase 2, Teil 1)
+
+### Hinzugefügt
+- **Der Planet heilt:** Je Reinigungsstufe wächst in einer Zone Natur nach: etwas Gras ab „unordentlich“, Gras und Blumen ab „aufgeräumt“, dazu Büsche und Teiche ab „sauber“. Dekor erscheint mit kleiner Pop-Animation, Platz wird deterministisch je Zone gewählt (gleiche Zone heilt immer gleich) und lässt Haufen, Gebäude und Zäune frei
+- **Tiere:** ab „aufgeräumt“ ein Käfer, ab „sauber“ zwei Käfer und zwei Vögel je Zone. Sie streunen in ihrer Zone, hüpfen beim Laufen und folgen Rusty neugierig mit Abstand. Rusty kommentiert das erste Tier
+- **Tageslicht:** weiche Farbpendelung zwischen warmem Morgen und kühlem Nachmittag über 6 Minuten, nie dunkel (mindestens 90 % Helligkeit)
+- **Leichter Regen:** alle 4 bis 7 Minuten für 30 s, mit Tropfen und blauem Schimmer; Rusty hat zwei Regensprüche. Rein kosmetisch, lässt noch nichts schneller wachsen
+- Legende mit vier Farbfeldern unter der großen Karte
+- `data/nature.json` (Dichten je Stufe, Tiere, Tageszyklus, Regen), `src/world/nature_planner.gd`, `nature_view.gd`, `critter_view.gd`, `day_light.gd`, `rain_layer.gd`
+- Tests: `tests/test_nature.gd` (deterministischer Plan, mehr Dekor je Stufe, Rand und belegte Kacheln frei, keine Überlappung, Tageslicht nie dunkel). Screenshot-Werkzeug: `clean=z01;0.95` und `rain=1`
+
 ## [1.1.0] – 2026-10-25 – MS12 Gameplay-Klarheit und Design
 
 Antwort auf die Rückmeldung „Karte deckt nicht auf, keine Ressourcen in den anderen Kapiteln, zu kompliziert“.

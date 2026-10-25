@@ -2,11 +2,19 @@
 
 ## Jetzt
 
+- [x] MS13 Zonen-Heilung (v1.2.0): Gras, Blumen, Büsche, Teiche, Tiere, Tageslicht, Regen, Kartenlegende
 - [x] MS12 Gameplay-Klarheit (v1.1.0): Kapitel mit Toren, Nebel auf der Karte, Kapitel-Tab, Rezept-Hinweise, Titelbildschirm, Produkte als Baustoff, Zonen-Auffüllung alter Spielstände
-- [ ] Phase 2 in Auftraggeber-Reihenfolge: (1) Zonen-Heilung (Blumen, Tiere, Wetter – Bodenfarbe je Stufe ist schon drin), (2) Logistik-Drohnen, (3) Deko und Fundstücke, (4) Rest
+- [ ] Phase 2 weiter: (2) Logistik-Drohnen (MS14), (3) Deko und Fundstücke (MS15), (4) Rest
 - [ ] Auftraggeber prüft am Laptop: Titelbildschirm, Kapitel-Tab (Select), Tor nach 50 % Startlager, Maschinen-Hinweis am Schmelzofen, alter Spielstand hat wieder Objekte in allen Zonen
 - [ ] NIE wieder user://saves ohne Backup anfassen: Screenshot-Läufe nur über tests/shot.sh, Datei-Tests mit use_directory
 - [ ] Auftraggeber testet MS4–MS7 am Laptop / später am Ally: Speichern (F5 oder Pause), Beenden, Neustart, Sprache wechseln, Neues Spiel; Perf-Szenario F6 + F3
+
+## MS13 Zonen-Heilung (erledigt, selbst getestet)
+
+- [x] Natur-Dekor je Stufe, Tiere mit Folgen, Tageslicht, Regen, Legende, 6 Tests
+- [ ] Regen soll laut GDD Natur schneller nachwachsen lassen – es gibt noch nichts, das nachwächst (Phase 2 Rest)
+- [ ] Dekor unter später gebauten Gebäuden bleibt bestehen (liegt darunter, kosmetisch)
+- [ ] Tiere kollidieren nicht mit Gebäuden (laufen darüber)
 
 ## MS12 Gameplay-Klarheit und Design (erledigt, selbst getestet)
 

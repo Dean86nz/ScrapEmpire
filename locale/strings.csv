@@ -315,3 +315,8 @@ TITLE_CONTINUE,Weiterspielen,Continue
 TITLE_NEW,Neues Spiel,New game
 TITLE_QUIT,Beenden,Quit
 ZONE_UNKNOWN,Noch unentdeckt. Erst das Tor davor öffnen.,Not discovered yet. Open the gate before it first.
+QUIP_RAIN_1,Regen! Meine Gelenke. Aber die Blumen freuen sich.,Rain! My joints. But the flowers like it.
+QUIP_RAIN_2,Tropfen auf dem Kopf. Ich bin wasserdicht. Glaube ich.,Drops on my head. I am waterproof. I think.
+QUIP_CRITTER_1,"Ein Tier! Es ist nicht aus Metall. Seltsam, aber nett.","An animal! Not made of metal. Strange, but nice."
+QUIP_CRITTER_2,Da krabbelt was. Nicht einsaugen. Nicht einsaugen.,Something is crawling. Do not suck it up. Do not.
+MAP_LEGEND,Zustand:,State:
