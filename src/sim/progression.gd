@@ -95,3 +95,12 @@ func on_tech(cost_bolts: int) -> void:
 
 func to_dict() -> Dictionary:
 	return {"xp": xp, "level": level, "skill_points": skill_points, "total_xp": total_xp, "bolts_accum": _bolts_accum}
+
+
+func from_dict(d: Dictionary) -> void:
+	xp = int(d.get("xp", 0))
+	level = clampi(int(d.get("level", 1)), 1, level_cap)
+	skill_points = int(d.get("skill_points", 0))
+	total_xp = int(d.get("total_xp", 0))
+	_bolts_accum = int(d.get("bolts_accum", 0))
+	xp_changed.emit(xp, xp_needed(), level)

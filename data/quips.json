@@ -21,5 +21,6 @@
   "research_fail_items": ["QUIP_RESEARCH_ITEMS"],
   "research_fail_busy": ["QUIP_RESEARCH_BUSY"],
   "research_fail_requires": ["QUIP_RESEARCH_REQUIRES"],
-  "skill_bought": ["QUIP_SKILL_1", "QUIP_SKILL_2"]
+  "skill_bought": ["QUIP_SKILL_1", "QUIP_SKILL_2"],
+  "loaded": ["QUIP_LOADED_1", "QUIP_LOADED_2"]
 }

@@ -3,6 +3,8 @@ extends Node2D
 ## verbindet Darstellung, HUD, Baumenü und Bau-Cursor mit der SimWorld.
 
 const MAP_PATH := "res://data/maps/tutorial.json"
+const MAP_NAME := "tutorial"
+const AUTOSAVE_SECONDS := 60.0
 
 @onready var _player: Player = $Player
 @onready var _world_view: WorldView = $WorldView
@@ -10,9 +12,12 @@ const MAP_PATH := "res://data/maps/tutorial.json"
 @onready var _build_menu: CanvasLayer = $BuildMenu
 @onready var _progress_menu: CanvasLayer = $ProgressMenu
 @onready var _cursor: BuildCursor = $BuildCursor
+@onready var _pause_menu: CanvasLayer = $PauseMenu
 
 var _world: SimWorld
 var _first_collected: Dictionary = {}
+var _autosave_timer := AUTOSAVE_SECONDS
+var _loaded_from_save := false
 
 
 func _ready() -> void:
@@ -23,8 +28,16 @@ func _ready() -> void:
 	_world.progression = DataRegistry.new_progression()
 	_world.rare_items = DataRegistry.rare_items()
 	_world.setup_progression_data(DataRegistry.tech_defs(), DataRegistry.skill_data())
-	var start := MapLoader.load_into(_world, MAP_PATH)
+	var start_px: Vector2
+	var save_data := SaveManager.read()
+	if not save_data.is_empty():
+		MapLoader.apply(_world, MapLoader.read(MAP_PATH), false)
+		start_px = SaveCodec.decode(save_data, _world)
+		_loaded_from_save = true
+	else:
+		start_px = Vector2(MapLoader.load_into(_world, MAP_PATH))
 	SimClock.reset_world(_world)
+	var start := Vector2i(start_px)
 
 	var size := _world.size_px()
 	_build_ground(size.x, size.y)
@@ -43,6 +56,15 @@ func _ready() -> void:
 	_hud.bind(_world)
 	_progress_menu.bind(_world)
 	_player.hotbar_selected.connect(_hud.set_selected_slot)
+	if _loaded_from_save:
+		_player.selected_slot = int(save_data.get("player", {}).get("selected_slot", 0))
+		_hud.set_selected_slot(_player.selected_slot)
+		_first_collected = {"scrap": true, "copper": true, "plastic": true, "chrome": true}
+	_pause_menu.opened.connect(save_game)
+	_pause_menu.save_quit_requested.connect(_on_save_quit)
+	_pause_menu.new_game_requested.connect(_on_new_game)
+	_pause_menu.language_changed.connect(_on_language_changed)
+	get_tree().auto_accept_quit = false
 	_world.tech_unlocked.connect(func(_id: String) -> void: Quips.say("tech_done", true))
 	_world.research_failed.connect(func(reason: String) -> void: Quips.say("research_fail_" + reason, true))
 	_world.skill_bought.connect(func(_id: String, _lvl: int) -> void: Quips.say("skill_bought"))
@@ -59,11 +81,56 @@ func _ready() -> void:
 	_world.building_placed.connect(_on_building_placed)
 	_world.too_hard.connect(func(_n: ResourceNode, tool: String) -> void: Quips.say("too_hard_" + tool, true))
 	_world.progression.level_up.connect(_on_level_up)
-	get_tree().create_timer(1.0).timeout.connect(func() -> void: Quips.say("start"))
+	if not _loaded_from_save:
+		get_tree().create_timer(1.0).timeout.connect(func() -> void: Quips.say("start"))
+	else:
+		get_tree().create_timer(1.0).timeout.connect(func() -> void: Quips.say("loaded", true))
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	_hud.set_hint(_current_hint())
+	_autosave_timer -= delta
+	if _autosave_timer <= 0.0:
+		_autosave_timer = AUTOSAVE_SECONDS
+		save_game()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		save_game()
+		get_tree().quit()
+
+
+## Speichert den kompletten Stand (Autosave, Pause, Beenden, F5).
+func save_game() -> bool:
+	var data := SaveCodec.encode(_world, MAP_NAME, _player.global_position, _player.selected_slot)
+	var ok := SaveManager.write(data)
+	if ok:
+		EventBus.quip.emit("HUD_SAVED")
+	return ok
+
+
+func _on_save_quit() -> void:
+	save_game()
+	get_tree().quit()
+
+
+func _on_new_game() -> void:
+	SaveManager.delete_all()
+	get_tree().paused = false
+	SimClock.paused = false
+	InputRouter.context = InputRouter.Context.GAME
+	get_tree().reload_current_scene()
+
+
+func _on_language_changed(locale: String) -> void:
+	save_game()
+	SaveManager.save_settings({"locale": locale})
+	TranslationServer.set_locale(locale)
+	get_tree().paused = false
+	SimClock.paused = false
+	InputRouter.context = InputRouter.Context.GAME
+	get_tree().reload_current_scene()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -72,6 +139,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("tech_tree"):
 		_progress_menu.open()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("debug_save"):
+		save_game()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("debug_perf"):
 		debug_scenario("perf")

@@ -1,10 +1,20 @@
 extends CanvasLayer
 ## Pause-Menü (Start / Esc): hält Spiel und Simulation an. Vollständig per Gamepad bedienbar:
 ## D-Pad/linker Stick wählt, A bestätigt, B oder Start schließt.
+## Einträge: Fortsetzen, Sprache, Neues Spiel (mit Bestätigung), Speichern und Beenden.
+
+signal opened
+signal language_changed(locale: String)
+signal new_game_requested
+signal save_quit_requested
 
 @onready var _title: Label = $Dim/Center/Panel/VBox/Title
 @onready var _resume_btn: Button = $Dim/Center/Panel/VBox/ResumeButton
+@onready var _language_btn: Button = $Dim/Center/Panel/VBox/LanguageButton
+@onready var _new_game_btn: Button = $Dim/Center/Panel/VBox/NewGameButton
 @onready var _quit_btn: Button = $Dim/Center/Panel/VBox/QuitButton
+
+var _confirm_new_game := false
 
 
 func _ready() -> void:
@@ -12,9 +22,18 @@ func _ready() -> void:
 	visible = false
 	_title.text = tr("MENU_PAUSE_TITLE")
 	_resume_btn.text = tr("MENU_RESUME")
-	_quit_btn.text = tr("MENU_QUIT")
+	_new_game_btn.text = tr("MENU_NEW_GAME")
+	_quit_btn.text = tr("MENU_SAVE_QUIT")
+	_refresh_language_label()
 	_resume_btn.pressed.connect(close)
-	_quit_btn.pressed.connect(_quit)
+	_language_btn.pressed.connect(_toggle_language)
+	_new_game_btn.pressed.connect(_on_new_game)
+	_quit_btn.pressed.connect(func() -> void: save_quit_requested.emit())
+
+
+func _refresh_language_label() -> void:
+	var loc := TranslationServer.get_locale().substr(0, 2)
+	_language_btn.text = tr("MENU_LANGUAGE") % ("Deutsch" if loc == "de" else "English")
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -34,10 +53,13 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func open() -> void:
 	visible = true
+	_confirm_new_game = false
+	_new_game_btn.text = tr("MENU_NEW_GAME")
 	get_tree().paused = true
 	SimClock.paused = true
 	InputRouter.context = InputRouter.Context.MENU
 	_resume_btn.grab_focus()
+	opened.emit()
 
 
 func close() -> void:
@@ -47,6 +69,15 @@ func close() -> void:
 	InputRouter.context = InputRouter.Context.GAME
 
 
-func _quit() -> void:
-	# Autosave kommt in MS6; bis dahin einfach beenden.
-	get_tree().quit()
+func _toggle_language() -> void:
+	var loc := TranslationServer.get_locale().substr(0, 2)
+	var next := "en" if loc == "de" else "de"
+	language_changed.emit(next)
+
+
+func _on_new_game() -> void:
+	if not _confirm_new_game:
+		_confirm_new_game = true
+		_new_game_btn.text = tr("MENU_NEW_GAME_CONFIRM")
+		return
+	new_game_requested.emit()

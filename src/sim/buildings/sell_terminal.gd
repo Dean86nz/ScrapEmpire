@@ -39,6 +39,14 @@ func tick() -> bool:
 	return true
 
 
+func get_cooldown() -> int:
+	return _cooldown
+
+
+func set_cooldown(v: int) -> void:
+	_cooldown = v
+
+
 func take_sold() -> String:
 	var s := _sold
 	_sold = ""
