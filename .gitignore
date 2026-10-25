@@ -1,0 +1,11 @@
+# Godot
+.godot/
+export/
+*.translation
+
+# Engine binary lives in the project folder but not in the repo
+Godot_v4.7.2-stable_win64.exe/
+
+# OS
+Thumbs.db
+.DS_Store

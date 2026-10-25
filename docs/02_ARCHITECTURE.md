@@ -1,0 +1,246 @@
+# Scrap Empire – Technische Architektur
+
+Stand: 2026-10-25 · Version 0.1 · Engine: **Godot 4.7.2 stable** (liegt im Projektordner)
+
+## 1. Leitprinzipien
+
+1. **Simulation und Darstellung sind getrennt.** Die Simulation (`sim/`) besteht aus reinen GDScript-Klassen (`RefCounted`), kennt keine Nodes, keine Zeit in Sekunden, keine Floats. Die Darstellung (`world/`, `ui/`) liest Sim-Zustand und zeichnet ihn interpoliert.
+2. **20 Ticks pro Sekunde, deterministisch.** Ein Tick ist 50 ms. Alle Sim-Werte sind Integer (Positionen auf Bändern in 1/256-Kachel-Einheiten, Dauern in Ticks, Mengen in Stück). Gleiche Eingaben erzeugen gleiche Ergebnisse. Das macht Tests trivial und Save/Load exakt.
+3. **Daten vor Code.** Items, Rezepte, Gebäude, Techknoten und Rusty-Sprüche liegen als JSON in `data/`. Balancing ändert nie GDScript.
+4. **Gamepad ist der Primärpfad.** Jedes UI-Element wird zuerst mit Fokus-Navigation gebaut, Maus kommt kostenlos dazu.
+5. **Jeder Meilenstein ist startbar.** `main.tscn` läuft immer; neue Systeme werden hinter Feature-Flags in `GameConfig` ergänzt, bis sie fertig sind.
+
+## 2. Ordnerstruktur
+
+```
+ScrapEmpire/
+├── project.godot
+├── README.md
+├── CHANGELOG.md
+├── TODO.md
+├── docs/
+│   ├── 01_GDD.md
+│   ├── 02_ARCHITECTURE.md
+│   └── 03_ROADMAP.md
+├── addons/                     (leer im MVP; kein Plugin-Zwang)
+├── assets/
+│   ├── sprites/                 Platzhalter-SVGs: robot/, items/, buildings/, tiles/, ui/
+│   ├── fonts/                   (später; MVP nutzt skalierte Standardschrift)
+│   └── audio/                   (später)
+├── data/                        JSON, von DataRegistry geladen
+│   ├── items.json
+│   ├── recipes.json
+│   ├── buildings.json
+│   ├── tech.json
+│   ├── quips.json               Rusty-Sprüche nach Auslöser
+│   └── maps/
+│       ├── tutorial.json
+│       └── main_area.json
+├── locale/
+│   ├── strings.csv              key, de, en  (Godot-CSV-Import erzeugt .translation)
+│   └── ...
+├── src/
+│   ├── autoload/                Singletons (project.godot → Autoload)
+│   │   ├── game_config.gd       Konstanten, Feature-Flags, TILE_SIZE, TICKS_PER_SECOND
+│   │   ├── data_registry.gd     lädt data/*.json in typisierte Defs
+│   │   ├── event_bus.gd         globale Signale (item_sold, tech_unlocked, …)
+│   │   ├── sim_clock.gd         Fixed-Step-Akkumulator, ruft World.tick()
+│   │   ├── save_manager.gd      JSON-Save, Versionierung, Migrationen, Autosave
+│   │   └── input_router.gd      Kontextwechsel (Spiel / Baumodus / Menü), Gerätetyp-Erkennung
+│   ├── sim/                     reine Logik, keine Nodes
+│   │   ├── world.gd             Grid, Gebäudeliste, tick(), serialize()
+│   │   ├── grid.gd              Vector2i → Building, Belegungsprüfung
+│   │   ├── inventory.gd         Slots, add/remove/can_add
+│   │   ├── item_stack.gd
+│   │   ├── buildings/
+│   │   │   ├── building.gd      Basisklasse: pos, rotation, size, tick(), io-Ports
+│   │   │   ├── machine.gd       Rezeptverarbeitung, Puffer, Fortschritt in Ticks
+│   │   │   ├── furnace.gd
+│   │   │   ├── press.gd
+│   │   │   ├── sell_terminal.gd
+│   │   │   ├── chest.gd
+│   │   │   └── conveyor.gd      Lane-Logik, Kurven, Übergabe
+│   │   ├── conveyor_network.gd  Tick-Reihenfolge der Bänder (von hinten nach vorne)
+│   │   ├── resource_node.gd     Schrotthaufen/Wrack: Menge, Regeneration
+│   │   ├── player_state.gd      Inventar, Position (Sim-Sicht), Werkzeugwerte
+│   │   ├── tech_state.gd        freigeschaltete Knoten, laufende Forschung (Restticks), Modifikatoren
+│   │   ├── task_list.gd         Autopilot: Schrittliste, Ausführungs-Zustandsmaschine
+│   │   └── sim_rng.gd           seeded RNG für Wrack-Spawns
+│   ├── world/                   Node2D-Darstellung
+│   │   ├── main.tscn / main.gd  Einstieg, baut Szene aus Save oder Map
+│   │   ├── player/
+│   │   │   ├── player.tscn      CharacterBody2D, Bewegung, Zielrichtung
+│   │   │   ├── player.gd
+│   │   │   ├── suction_tool.gd
+│   │   │   └── hammer_tool.gd
+│   │   ├── building_view.gd     generische Ansicht, liest Building-Def + Zustand
+│   │   ├── conveyor_renderer.gd MultiMeshInstance2D für Items auf allen Bändern
+│   │   ├── resource_node_view.gd
+│   │   ├── map_loader.gd        JSON-Map → TileMapLayer + Sim-World
+│   │   ├── build_cursor.gd      Raster-Cursor, Vorschau, Platzieren/Drehen/Abreißen
+│   │   └── camera.gd            folgt Spieler, Deadzone, Zoom fix
+│   └── ui/
+│       ├── theme/
+│       │   └── scrap_theme.tres  Schriftgrößen ≥ 22 px, dicke Rahmen, Farben
+│       ├── hud/                 Bolts, Hotbar, Kontexthinweise, Rusty-Sprechblase
+│       ├── build_menu/
+│       ├── tech_tree/
+│       ├── pause_menu/
+│       ├── task_editor/         Aufgabenliste anlegen (Schritttyp wählen, Ziel per Cursor)
+│       ├── task_hud/            Icon-Kette der laufenden Aufgabenliste
+│       ├── tutorial/
+│       └── widgets/             FocusButton, ItemSlot, ButtonPrompt (Gamepad-Icons)
+└── tests/
+    ├── run_tests.gd             headless Runner: godot --headless -s tests/run_tests.gd
+    ├── test_inventory.gd
+    ├── test_conveyor.gd
+    ├── test_machine.gd
+    ├── test_save_migration.gd
+    └── test_tech.gd
+```
+
+## 3. Schichten und Datenfluss
+
+```
+ Eingabe (Gamepad/Tastatur)
+        │
+        ▼
+ InputRouter ──► Spielkontext: Player (world/) bewegt CharacterBody2D pro Frame
+             ──► Baukontext:  BuildCursor erzeugt Befehle (place/rotate/remove)
+             ──► Menükontext: UI-Fokusnavigation
+        │
+        ▼  Befehle (Dictionaries: {type, pos, rot, item, …})
+ SimClock (fixed 50 ms) ──► World.apply_commands(queue) ──► World.tick()
+        │                                                       │
+        │                               Buildings.tick(), ConveyorNetwork.tick(),
+        │                               ResourceNodes.tick(), TechState.tick(), TaskList.tick()
+        ▼
+ EventBus-Signale (item_sold, buffer_full, tech_unlocked, quip_requested)
+        │
+        ▼
+ Darstellung liest Sim-Zustand jeden Frame, interpoliert mit SimClock.alpha
+ (BuildingView, ConveyorRenderer, HUD)
+```
+
+**Der Spieler ist ein Sonderfall:** Bewegung läuft frame-basiert in `CharacterBody2D` für flüssige 60 FPS. Spielrelevante Wirkungen (Items aufsaugen, Hammerschlag, Einlegen) werden als Befehle in die Sim-Queue gestellt und im nächsten Tick ausgeführt. Dadurch bleibt alles, was zählt, deterministisch.
+
+## 4. Kernsysteme im Detail
+
+### 4.1 SimClock
+
+```
+_process(delta):
+    accumulator += min(delta, 0.25)          # Spiralschutz bei Rucklern
+    while accumulator >= TICK_DT:
+        world.apply_commands(command_queue)
+        world.tick()
+        tick_count += 1
+        accumulator -= TICK_DT
+    alpha = accumulator / TICK_DT            # für Interpolation
+```
+
+Pause setzt `paused = true`; Autosave liest `tick_count` mit.
+
+### 4.2 Grid und Gebäude
+
+- `Grid` hält `Dictionary[Vector2i, Building]`; ein 2×2-Gebäude belegt 4 Einträge auf dasselbe Objekt.
+- `Building` hat `pos: Vector2i`, `rot: int` (0–3), `def: BuildingDef`, `ports: Array[Port]` (Seite, Richtung in/out, lokale Zelle).
+- Rotation dreht Port-Seiten per Modulo. Darstellung dreht nur das Sprite.
+
+### 4.3 Förderbänder
+
+- Jedes Band ist eine Zelle mit einer Lane (MVP: einspurig). Items liegen als `{item_id, offset}` mit `offset` 0..255 (1/256 Kachel).
+- Pro Tick bewegt sich jedes Item um `speed = 256 × 2 Kacheln/s / 20 Ticks = 25,6 → 26` Einheiten (als Integer-Konstante in `GameConfig`, nie zur Laufzeit gerechnet).
+- Mindestabstand 64 Einheiten (4 Items pro Kachel). Ein Item, das `offset ≥ 256` erreicht, versucht Übergabe an das Nachfolger-Band oder den Eingangs-Port der Nachbarmaschine; schlägt das fehl, bleibt es bei 255 und blockiert nachfolgende Items.
+- **Kurven**: ein Band, dessen Eingang von der Seite kommt, zeichnet sich als Kurve; die Sim behandelt sie identisch (Eingang → Ausgang, 256 Einheiten). Kurvenform wird automatisch aus Nachbarschaft bestimmt, der Spieler platziert nur „Band mit Richtung“.
+- **Tick-Reihenfolge**: `ConveyorNetwork` sortiert Bänder topologisch (Ziel vor Quelle), damit ein Item in einem Tick nicht zwei Zellen springt und Lücken korrekt entstehen. Sortierung wird nur bei Bauänderung neu berechnet.
+- **Einfüge-Logik**: Maschinen-Ausgangs-Port legt alle 1 Tick ein Item auf das angrenzende Band, wenn `offset 0` frei ist. Auswurf: Band übergibt an Eingangs-Port, wenn Eingangspuffer < 10.
+- **Rendering**: ein `MultiMeshInstance2D` pro Item-Typ, Instanzen werden pro Frame aus `offset` + `alpha` positioniert. Ziel: 2.000 Items bei 60 FPS auf dem Ally im 15-W-Modus. Band-Kacheln selbst sind ein `TileMapLayer` mit animierten Tiles.
+
+### 4.4 Maschinen
+
+```
+tick():
+    if progress_ticks == 0 and output_buffer < 10 and recipe_matches(input_buffer):
+        consume inputs; progress_ticks = recipe.ticks
+    elif progress_ticks > 0:
+        progress_ticks -= 1
+        if progress_ticks == 0: output_buffer.add(recipe.output)
+    try_eject_to_port()
+```
+
+Rezeptwahl: erstes Rezept der Def-Liste, dessen Inputs vollständig im Eingangspuffer liegen und dessen Tech freigeschaltet ist.
+
+### 4.5 Ressourcenknoten
+
+`ResourceNode {item_id, amount, max_amount, regen_ticks}`; Wracks haben `regen_ticks = 0` und werden bei `amount == 0` entfernt. `World` spawnt alle 3.600 Ticks (3 min) ein neues Wrack an einer freien Randzelle via `SimRng`.
+
+### 4.6 Aufgabenliste (Autopilot)
+
+`TaskList` hält bis zu 12 Schritte `{type: GOTO|COLLECT|HAMMER|DEPOSIT|WITHDRAW, target: Vector2i, item_filter}` und einen Ausführungszustand `{index, wait_ticks, active}`. Der Spieler baut die Liste im `task_editor` (Schritttyp per Fokusliste, Ziel per `BuildCursor`). `GOTO` setzt im Player eine Zielposition; der Player-Node läuft per einfacher Geradeaus-Steuerung mit Kollisions-Ausweichen (kein A* im MVP; das Tutorial-/Hauptgebiet ist offen genug). Jeder Schritt hat einen Timeout von 200 Ticks (10 s), danach „Warte-Spruch“ und Retry.
+
+### 4.7 Forschung
+
+`TechState` hält `unlocked: Array[String]` und `current: {id, remaining_ticks}`. `start(id)` prüft Voraussetzungen und Bolts, zieht Bolts ab und setzt `remaining_ticks = zeit_s × 20`. `tick()` zählt herunter und sendet `tech_unlocked` über den EventBus. Modifikatoren (Saugreichweite, Laufgeschwindigkeit, Slots) werden als Dictionary aus `tech.json` aggregiert und von Player/Buildings abgefragt.
+
+### 4.8 Speichern
+
+```json
+{
+  "version": 3,
+  "saved_at_unix": 1761400000,
+  "tick_count": 123456,
+  "player": { "pos": [12.5, 8.0], "inventory": [...], "tool": "suction" },
+  "tech": { "unlocked": ["terminal", "furnace"], "current": { "id": "chest", "remaining_ticks": 120 } },
+  "world": { "buildings": [...], "conveyor_items": [...], "resource_nodes": [...] },
+  "tasks": { "steps": [...], "index": 0, "active": false },
+  "economy": { "bolts": 1240 },
+  "tutorial": { "step": 5 }
+}
+```
+
+- `SaveManager.save()` alle 60 s, bei Pause, bei Fensterschließen. Zwei Dateien rotierend (`save_a.json`, `save_b.json`) plus `save_meta.json` mit Verweis auf die zuletzt gültige, damit ein Absturz beim Schreiben nie den Spielstand zerstört.
+- Migrationen: `migrations: Dictionary[int, Callable]`, jede hebt um genau eine Version. Test `test_save_migration.gd` lädt Fixtures jeder alten Version.
+- Pfad: `user://saves/` (Windows: `%APPDATA%/Godot/app_userdata/ScrapEmpire/`).
+
+Offline passiert nichts (GDD 7.3). `saved_at_unix` wird trotzdem gespeichert, damit eine spätere Offline-Progression ohne Save-Migration nachgerüstet werden kann.
+
+### 4.9 Eingabe
+
+Input-Map-Aktionen (project.godot): `move_left/right/up/down` (Stick + WASD), `aim_x/aim_y` (rechter Stick), `tool_primary` (RT/LMB), `tool_secondary` (LT/RMB), `interact` (A/E), `cancel` (B/Esc), `build_menu` (Y/Tab), `tool_swap` (X/Q), `hotbar_prev/next` (LB/RB/Mausrad), `tech_tree` (Select/T), `pause` (Start/Esc), `cursor_*` (D-Pad). Deadzone 0,2. `InputRouter` erkennt das zuletzt benutzte Gerät und tauscht Button-Icons im HUD (Xbox-Layout für Ally).
+
+### 4.10 Lokalisierung
+
+Alle sichtbaren Strings über `tr("KEY")`. `locale/strings.csv` mit Spalten `key,de,en`. Item-/Gebäude-/Tech-Namen stehen als Keys in den JSON-Daten (`"name_key": "ITEM_SCRAP"`). Standardsprache folgt dem System, umschaltbar im Pause-Menü.
+
+### 4.11 Performance-Budget (Ally, 15 W, 1080p)
+
+| Bereich | Budget pro Frame (16,6 ms) |
+|---|---|
+| Sim-Tick (bei 20/s im Schnitt 0,33 Ticks/Frame) | ≤ 3 ms pro Tick |
+| Conveyor-Rendering 2.000 Items | ≤ 2 ms |
+| UI | ≤ 1 ms |
+| Rest (Physik Spieler, Kamera, Partikel) | ≤ 3 ms |
+| Reserve | ≥ 7 ms |
+
+Messung: eingebautes Debug-Overlay (F3), zeigt Tick-Zeit, FPS, Item-Anzahl. Perf-Testszene `tests/perf_conveyor.tscn` baut 500 Bänder mit 2.000 Items.
+
+## 5. Tests
+
+- Headless-Runner ohne Plugin: `tests/run_tests.gd` erbt `SceneTree`, lädt alle `test_*.gd`, ruft jede `test_*`-Methode, zählt Fehler, beendet mit Exit-Code.
+- Aufruf: `Godot_v4.7.2-stable_win64_console.exe --headless --path . -s tests/run_tests.gd`
+- Getestet wird nur `sim/` und `autoload/` (deterministisch). Darstellung wird manuell auf dem Ally getestet (Testanleitung je Meilenstein).
+
+## 6. Platzhalter-Grafik
+
+Alle Sprites als handgeschriebene SVG in `assets/sprites/`: runde Formen, 4 px dunkle Outline, gesättigte Füllfarbe, kleines Gesicht auf Rusty. Godot importiert SVG direkt als Textur (Skalierung 2× für Schärfe). Items 32 px, Rusty 56 px, Gebäude 128 px (2×2), Band-Tiles 64 px. Ein Austausch gegen echte Assets ändert nur Dateien, keinen Code.
+
+## 7. Git
+
+- Repo-Root = Projektordner. `.gitignore`: `.godot/`, `*.import`-Reste nicht ignorieren (werden benötigt), `export/`, `Godot_v4.7.2-stable_win64.exe/` (die Engine gehört nicht ins Repo).
+- Branch `main` ist immer lauffähig. Arbeit pro Meilenstein auf `ms/<nr>-<name>`, Merge nach bestandener Testanleitung.
+- Commit-Format: `ms3: Presse verarbeitet Plastik zu Platten`.
+
+## 8. Bewusst nicht gebaut (MVP)
+
+Kein ECS, kein C# (erst wenn Perf-Messung es verlangt; Kandidat wäre `conveyor_network.gd`), kein Multithreading, kein Netzwerk, kein Plugin-Framework für Tests, keine prozedurale Welt, keine Shader außer Outline-Shader für Fokus-Hervorhebung.
