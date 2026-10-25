@@ -21,6 +21,7 @@ var _world: SimWorld
 var _map_data: Dictionary = {}
 var _gate_nodes: Array[Node] = []
 var _build_press_time := -1.0
+var _tech_press_time := -1.0
 var _pending_task_type := -1
 var _first_collected: Dictionary = {}
 var _autosave_timer := AUTOSAVE_SECONDS
@@ -77,6 +78,10 @@ func _ready() -> void:
 	_world.tasks.state_changed.connect(func(_a: bool) -> void: _hud.refresh_tasks(_world.tasks))
 	_world.tasks.step_started.connect(func(_i: int) -> void: _hud.refresh_tasks(_world.tasks))
 	_hud.refresh_tasks(_world.tasks)
+	_hud.bind_minimap(_player)
+	_progress_menu.bind_player(_player)
+	_world.zones.stage_changed.connect(_on_zone_stage_changed)
+	_world.zones.refresh(_world.nodes)
 	_tutorial.bind(_world, _player)
 	_tutorial.step_changed.connect(func(_i: int, text: String) -> void: _hud.set_tutorial(text))
 	_tutorial.finished.connect(_open_gate)
@@ -112,11 +117,27 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_hud.set_hint(_current_hint())
+	# Kurz/Lang-Erkennung per Zustandsabfrage (funktioniert auch mit simulierten Eingaben).
 	if _build_press_time >= 0.0:
 		_build_press_time += delta
-		if _build_press_time >= LONG_PRESS_SECONDS and InputRouter.context == InputRouter.Context.GAME:
+		if not Input.is_action_pressed("build_menu"):
+			var held := _build_press_time
+			_build_press_time = -1.0
+			if InputRouter.context == InputRouter.Context.GAME and held < LONG_PRESS_SECONDS:
+				_build_menu.open()
+		elif _build_press_time >= LONG_PRESS_SECONDS and InputRouter.context == InputRouter.Context.GAME:
 			_build_press_time = -1.0
 			_open_task_editor()
+	if _tech_press_time >= 0.0:
+		_tech_press_time += delta
+		if not Input.is_action_pressed("tech_tree"):
+			var held_t := _tech_press_time
+			_tech_press_time = -1.0
+			if InputRouter.context == InputRouter.Context.GAME and held_t < LONG_PRESS_SECONDS:
+				_progress_menu.open()
+		elif _tech_press_time >= LONG_PRESS_SECONDS:
+			_tech_press_time = -1.0
+			_hud.toggle_minimap()
 	_autosave_timer -= delta
 	if _autosave_timer <= 0.0:
 		_autosave_timer = AUTOSAVE_SECONDS
@@ -163,20 +184,18 @@ func _on_language_changed(locale: String) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("build_menu"):
-		# Y kurz: Baumenü (beim Loslassen); Y lang: Aufgaben-Editor.
+		# Y kurz: Baumenü (beim Loslassen, per Abfrage in _process); Y lang: Aufgaben-Editor.
 		_build_press_time = 0.0
-		get_viewport().set_input_as_handled()
-	elif event.is_action_released("build_menu") and _build_press_time >= 0.0:
-		var held := _build_press_time
-		_build_press_time = -1.0
-		if InputRouter.context == InputRouter.Context.GAME and held < LONG_PRESS_SECONDS:
-			_build_menu.open()
 		get_viewport().set_input_as_handled()
 	elif InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("task_menu"):
 		_open_task_editor()
 		get_viewport().set_input_as_handled()
 	elif InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("tech_tree"):
-		_progress_menu.open()
+		# Select kurz: Fortschritt; Select lang: Minimap ein/aus.
+		_tech_press_time = 0.0
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("minimap_toggle"):
+		_hud.toggle_minimap()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("debug_save"):
 		save_game()
@@ -265,6 +284,15 @@ func debug_scenario(name: String) -> void:
 						(c as Conveyor).try_insert(kinds[(n + i) % 3], i * Conveyor.SPACING)
 						n += 1
 			EventBus.quip.emit("DEBUG_PERF")
+
+
+func _on_zone_stage_changed(zone_id: String, stage: int) -> void:
+	if stage >= 2:
+		_player.celebrate()
+	var z := _world.zones.zone_by_id(zone_id)
+	EventBus.quip.emit(["ZONE_Q_0", "ZONE_Q_1", "ZONE_Q_2", "ZONE_Q_3"][stage])
+	_hud.set_tutorial(_hud.get_node("Tutorial/Label").text)  # unverändert lassen
+	print("Zone %s → Stufe %d" % [str(z.get("name", zone_id)), stage])
 
 
 func _open_task_editor() -> void:

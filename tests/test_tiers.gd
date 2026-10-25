@@ -14,7 +14,7 @@ func test_defs_loaded() -> void:
 	ResourceNode.load_defs("res://data/scrap_objects.json")
 	assert_true(ResourceNode.has_kind("toaster"))
 	assert_true(ResourceNode.has_kind("monolith"))
-	assert_eq(ResourceNode.defs.size(), 11, "10 Objekte + eingebautes Wrack")
+	assert_eq(ResourceNode.defs.size(), 17, "16 Objekte + eingebautes Wrack")
 	var n := ResourceNode.from_kind(1, "fridge", Vector2i.ZERO)
 	assert_eq(n.tier, 2)
 	assert_true(n.uses_hammer())

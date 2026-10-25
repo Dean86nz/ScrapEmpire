@@ -50,6 +50,7 @@ static var ACTIONS: Dictionary = {
 	"tool_swap": [_btn(JOY_BUTTON_X), _key(KEY_Q)],
 	"boost": [_btn(JOY_BUTTON_LEFT_STICK), _key(KEY_SHIFT)],
 	"task_menu": [_key(KEY_L)],
+	"minimap_toggle": [_key(KEY_M)],
 	# Interaktion und Menüs
 	"interact": [_btn(JOY_BUTTON_A), _key(KEY_E)],
 	"cancel": [_btn(JOY_BUTTON_B), _key(KEY_ESCAPE)],

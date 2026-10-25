@@ -184,109 +184,127 @@
       "y": 56
     },
     {
+      "kind": "pallet",
+      "x": 12,
+      "y": 55
+    },
+    {
+      "kind": "concrete",
+      "x": 33,
+      "y": 48
+    },
+    {
       "kind": "scrap_pile",
       "x": 26,
       "y": 26,
       "amount": 6
     },
     {
-      "kind": "copper_tangle",
+      "kind": "rubble_field",
       "x": 30,
       "y": 4,
+      "amount": 8
+    },
+    {
+      "kind": "rubble_field",
+      "x": 25,
+      "y": 6,
+      "amount": 10
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 10,
+      "y": 3,
+      "amount": 8
+    },
+    {
+      "kind": "rubble_field",
+      "x": 26,
+      "y": 22,
+      "amount": 5
+    },
+    {
+      "kind": "plastic_crumbs",
+      "x": 24,
+      "y": 20,
+      "amount": 5
+    },
+    {
+      "kind": "rubble_field",
+      "x": 32,
+      "y": 20,
+      "amount": 5
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 5,
+      "y": 5,
       "amount": 7
     },
     {
       "kind": "scrap_pile",
-      "x": 11,
-      "y": 26,
-      "amount": 5
-    },
-    {
-      "kind": "copper_tangle",
-      "x": 23,
-      "y": 16,
-      "amount": 10
-    },
-    {
-      "kind": "plastic_crumbs",
-      "x": 6,
-      "y": 13,
-      "amount": 9
-    },
-    {
-      "kind": "copper_tangle",
-      "x": 7,
-      "y": 24,
-      "amount": 9
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 4,
-      "y": 21,
-      "amount": 5
-    },
-    {
-      "kind": "copper_tangle",
-      "x": 4,
-      "y": 10,
+      "x": 28,
+      "y": 17,
       "amount": 8
     },
     {
-      "kind": "scrap_pile",
-      "x": 15,
-      "y": 17,
-      "amount": 5
+      "kind": "driftwood_pile",
+      "x": 4,
+      "y": 2,
+      "amount": 7
     },
     {
-      "kind": "copper_tangle",
-      "x": 22,
-      "y": 9,
-      "amount": 9
+      "kind": "ruin_wall",
+      "x": 31,
+      "y": 10
     },
     {
-      "kind": "fridge",
+      "kind": "cart",
       "x": 10,
       "y": 16
     },
     {
       "kind": "fridge",
-      "x": 5,
-      "y": 13
+      "x": 25,
+      "y": 11
     },
     {
-      "kind": "fridge",
+      "kind": "concrete",
       "x": 9,
       "y": 12
     },
     {
       "kind": "cart",
-      "x": 22,
-      "y": 18
-    },
-    {
-      "kind": "cart",
-      "x": 25,
-      "y": 19
-    },
-    {
-      "kind": "fridge",
-      "x": 27,
-      "y": 3
-    },
-    {
-      "kind": "cart",
-      "x": 9,
-      "y": 4
-    },
-    {
-      "kind": "toaster",
-      "x": 5,
-      "y": 27
-    },
-    {
-      "kind": "fridge",
-      "x": 35,
+      "x": 34,
       "y": 11
+    },
+    {
+      "kind": "fridge",
+      "x": 37,
+      "y": 10
+    },
+    {
+      "kind": "fridge",
+      "x": 37,
+      "y": 14
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 44,
+      "y": 24,
+      "amount": 5
+    },
+    {
+      "kind": "plastic_crumbs",
+      "x": 51,
+      "y": 14,
+      "amount": 5
+    },
+    {
+      "kind": "plastic_crumbs",
+      "x": 75,
+      "y": 11,
+      "amount": 7
     },
     {
       "kind": "scrap_pile",
@@ -301,46 +319,36 @@
       "amount": 10
     },
     {
-      "kind": "scrap_pile",
+      "kind": "rubble_field",
       "x": 47,
       "y": 7,
-      "amount": 9
-    },
-    {
-      "kind": "copper_tangle",
-      "x": 55,
-      "y": 25,
-      "amount": 10
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 68,
-      "y": 25,
-      "amount": 7
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 72,
-      "y": 22,
       "amount": 5
     },
     {
-      "kind": "scrap_pile",
+      "kind": "rubble_field",
+      "x": 55,
+      "y": 25,
+      "amount": 8
+    },
+    {
+      "kind": "satellite",
+      "x": 72,
+      "y": 22
+    },
+    {
+      "kind": "fridge",
       "x": 49,
-      "y": 16,
-      "amount": 6
+      "y": 16
     },
     {
-      "kind": "plastic_crumbs",
+      "kind": "ship_part",
       "x": 76,
-      "y": 16,
-      "amount": 10
+      "y": 16
     },
     {
-      "kind": "plastic_crumbs",
-      "x": 54,
-      "y": 9,
-      "amount": 6
+      "kind": "cart",
+      "x": 55,
+      "y": 12
     },
     {
       "kind": "fridge",
@@ -349,49 +357,64 @@
     },
     {
       "kind": "fridge",
-      "x": 45,
+      "x": 52,
       "y": 7
     },
     {
-      "kind": "cart",
+      "kind": "satellite",
       "x": 75,
       "y": 13
     },
     {
-      "kind": "cart",
+      "kind": "sofa",
       "x": 70,
       "y": 25
     },
     {
-      "kind": "ship_part",
-      "x": 57,
-      "y": 16
-    },
-    {
-      "kind": "fridge",
-      "x": 54,
-      "y": 2
-    },
-    {
-      "kind": "fridge",
-      "x": 51,
-      "y": 18
-    },
-    {
       "kind": "satellite",
-      "x": 63,
-      "y": 11
+      "x": 70,
+      "y": 3
     },
     {
       "kind": "scrap_pile",
-      "x": 102,
-      "y": 8,
+      "x": 110,
+      "y": 9,
+      "amount": 6
+    },
+    {
+      "kind": "driftwood_pile",
+      "x": 83,
+      "y": 18,
+      "amount": 10
+    },
+    {
+      "kind": "plastic_crumbs",
+      "x": 116,
+      "y": 9,
+      "amount": 6
+    },
+    {
+      "kind": "plastic_crumbs",
+      "x": 114,
+      "y": 25,
+      "amount": 7
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 101,
+      "y": 7,
+      "amount": 6
+    },
+    {
+      "kind": "driftwood_pile",
+      "x": 97,
+      "y": 20,
       "amount": 9
     },
     {
-      "kind": "scrap_pile",
-      "x": 114,
-      "y": 13,
+      "kind": "rubble_field",
+      "x": 105,
+      "y": 10,
       "amount": 10
     },
     {
@@ -401,34 +424,29 @@
       "amount": 10
     },
     {
-      "kind": "copper_tangle",
-      "x": 99,
-      "y": 14,
-      "amount": 6
-    },
-    {
-      "kind": "copper_tangle",
-      "x": 102,
-      "y": 4,
-      "amount": 8
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 109,
-      "y": 2,
-      "amount": 6
-    },
-    {
-      "kind": "scrap_pile",
+      "kind": "robot_arm",
       "x": 94,
-      "y": 25,
-      "amount": 7
+      "y": 12
     },
     {
-      "kind": "scrap_pile",
-      "x": 117,
-      "y": 24,
-      "amount": 9
+      "kind": "satellite",
+      "x": 108,
+      "y": 26
+    },
+    {
+      "kind": "robot_arm",
+      "x": 86,
+      "y": 8
+    },
+    {
+      "kind": "satellite",
+      "x": 90,
+      "y": 10
+    },
+    {
+      "kind": "satellite",
+      "x": 88,
+      "y": 25
     },
     {
       "kind": "ship_part",
@@ -441,118 +459,128 @@
       "y": 15
     },
     {
-      "kind": "ship_part",
-      "x": 89,
-      "y": 16
-    },
-    {
-      "kind": "ship_part",
-      "x": 100,
-      "y": 12
-    },
-    {
       "kind": "satellite",
-      "x": 105,
+      "x": 85,
       "y": 4
     },
     {
-      "kind": "satellite",
-      "x": 111,
-      "y": 5
-    },
-    {
       "kind": "scrap_pile",
-      "x": 52,
-      "y": 32,
-      "amount": 5
-    },
-    {
-      "kind": "copper_tangle",
-      "x": 42,
-      "y": 36,
-      "amount": 9
-    },
-    {
-      "kind": "copper_tangle",
-      "x": 77,
-      "y": 53,
-      "amount": 6
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 75,
-      "y": 53,
-      "amount": 8
-    },
-    {
-      "kind": "plastic_crumbs",
-      "x": 67,
-      "y": 53,
-      "amount": 5
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 68,
-      "y": 33,
-      "amount": 10
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 67,
-      "y": 33,
-      "amount": 6
-    },
-    {
-      "kind": "copper_tangle",
-      "x": 77,
-      "y": 45,
-      "amount": 6
-    },
-    {
-      "kind": "plastic_crumbs",
-      "x": 64,
-      "y": 42,
+      "x": 71,
+      "y": 35,
       "amount": 7
     },
     {
-      "kind": "fridge",
-      "x": 68,
-      "y": 45
+      "kind": "rubble_field",
+      "x": 62,
+      "y": 53,
+      "amount": 6
     },
     {
-      "kind": "cart",
-      "x": 58,
-      "y": 47
+      "kind": "copper_tangle",
+      "x": 65,
+      "y": 34,
+      "amount": 5
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 76,
+      "y": 49,
+      "amount": 6
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 42,
+      "y": 34,
+      "amount": 10
+    },
+    {
+      "kind": "rubble_field",
+      "x": 42,
+      "y": 36,
+      "amount": 8
+    },
+    {
+      "kind": "copper_tangle",
+      "x": 77,
+      "y": 53,
+      "amount": 6
+    },
+    {
+      "kind": "sofa",
+      "x": 76,
+      "y": 32
+    },
+    {
+      "kind": "fridge",
+      "x": 42,
+      "y": 55
     },
     {
       "kind": "fridge",
       "x": 51,
-      "y": 38
+      "y": 36
     },
     {
-      "kind": "fridge",
-      "x": 61,
-      "y": 57
-    },
-    {
-      "kind": "cart",
-      "x": 45,
-      "y": 34
-    },
-    {
-      "kind": "toaster",
-      "x": 49,
-      "y": 51
-    },
-    {
-      "kind": "fridge",
-      "x": 68,
-      "y": 42
-    },
-    {
-      "kind": "fridge",
-      "x": 61,
+      "kind": "sofa",
+      "x": 51,
       "y": 52
+    },
+    {
+      "kind": "fridge",
+      "x": 59,
+      "y": 40
+    },
+    {
+      "kind": "ruin_wall",
+      "x": 68,
+      "y": 45
+    },
+    {
+      "kind": "fridge",
+      "x": 60,
+      "y": 41
+    },
+    {
+      "kind": "driftwood_pile",
+      "x": 112,
+      "y": 55,
+      "amount": 8
+    },
+    {
+      "kind": "copper_tangle",
+      "x": 91,
+      "y": 38,
+      "amount": 10
+    },
+    {
+      "kind": "plastic_crumbs",
+      "x": 101,
+      "y": 57,
+      "amount": 6
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 85,
+      "y": 34,
+      "amount": 5
+    },
+    {
+      "kind": "copper_tangle",
+      "x": 89,
+      "y": 51,
+      "amount": 10
+    },
+    {
+      "kind": "rubble_field",
+      "x": 108,
+      "y": 42,
+      "amount": 9
+    },
+    {
+      "kind": "rubble_field",
+      "x": 101,
+      "y": 52,
+      "amount": 6
     },
     {
       "kind": "copper_tangle",
@@ -561,357 +589,344 @@
       "amount": 10
     },
     {
-      "kind": "plastic_crumbs",
+      "kind": "driftwood_pile",
       "x": 90,
       "y": 41,
+      "amount": 10
+    },
+    {
+      "kind": "ship_part",
+      "x": 83,
+      "y": 45
+    },
+    {
+      "kind": "cart",
+      "x": 114,
+      "y": 33
+    },
+    {
+      "kind": "sofa",
+      "x": 108,
+      "y": 49
+    },
+    {
+      "kind": "satellite",
+      "x": 99,
+      "y": 56
+    },
+    {
+      "kind": "ship_part",
+      "x": 90,
+      "y": 54
+    },
+    {
+      "kind": "ship_part",
+      "x": 84,
+      "y": 34
+    },
+    {
+      "kind": "sofa",
+      "x": 93,
+      "y": 40
+    },
+    {
+      "kind": "satellite",
+      "x": 112,
+      "y": 37
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 8,
+      "y": 80,
       "amount": 7
     },
     {
       "kind": "scrap_pile",
-      "x": 100,
-      "y": 35,
-      "amount": 8
-    },
-    {
-      "kind": "plastic_crumbs",
-      "x": 89,
-      "y": 37,
-      "amount": 5
-    },
-    {
-      "kind": "copper_tangle",
-      "x": 83,
-      "y": 47,
-      "amount": 9
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 103,
-      "y": 49,
-      "amount": 8
-    },
-    {
-      "kind": "copper_tangle",
-      "x": 84,
-      "y": 36,
+      "x": 37,
+      "y": 85,
       "amount": 6
     },
     {
       "kind": "scrap_pile",
-      "x": 84,
-      "y": 34,
-      "amount": 8
-    },
-    {
-      "kind": "satellite",
-      "x": 93,
-      "y": 42
-    },
-    {
-      "kind": "fridge",
-      "x": 82,
-      "y": 42
-    },
-    {
-      "kind": "fridge",
-      "x": 97,
-      "y": 43
-    },
-    {
-      "kind": "ship_part",
-      "x": 102,
-      "y": 41
-    },
-    {
-      "kind": "fridge",
-      "x": 103,
-      "y": 53
-    },
-    {
-      "kind": "fridge",
-      "x": 90,
-      "y": 44
-    },
-    {
-      "kind": "satellite",
-      "x": 87,
-      "y": 42
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 29,
-      "y": 73,
-      "amount": 10
-    },
-    {
-      "kind": "scrap_pile",
       "x": 17,
-      "y": 65,
-      "amount": 10
+      "y": 73,
+      "amount": 6
     },
     {
       "kind": "scrap_pile",
-      "x": 27,
-      "y": 87,
-      "amount": 5
+      "x": 22,
+      "y": 71,
+      "amount": 9
     },
     {
       "kind": "scrap_pile",
-      "x": 34,
+      "x": 23,
+      "y": 83,
+      "amount": 9
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 10,
+      "y": 74,
+      "amount": 7
+    },
+    {
+      "kind": "copper_tangle",
+      "x": 30,
       "y": 85,
       "amount": 7
     },
     {
       "kind": "scrap_pile",
-      "x": 31,
-      "y": 79,
-      "amount": 7
+      "x": 20,
+      "y": 84,
+      "amount": 5
     },
     {
-      "kind": "scrap_pile",
-      "x": 12,
-      "y": 82,
-      "amount": 10
+      "kind": "driftwood_pile",
+      "x": 2,
+      "y": 83,
+      "amount": 8
     },
     {
-      "kind": "scrap_pile",
+      "kind": "concrete",
+      "x": 25,
+      "y": 71
+    },
+    {
+      "kind": "ruin_wall",
+      "x": 19,
+      "y": 73
+    },
+    {
+      "kind": "cart",
       "x": 8,
-      "y": 64,
-      "amount": 5
+      "y": 64
     },
     {
-      "kind": "plastic_crumbs",
+      "kind": "fridge",
       "x": 10,
-      "y": 82,
-      "amount": 6
+      "y": 82
     },
     {
-      "kind": "copper_tangle",
-      "x": 33,
-      "y": 77,
-      "amount": 8
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 6,
-      "y": 76,
-      "amount": 6
-    },
-    {
-      "kind": "cart",
-      "x": 34,
-      "y": 64
-    },
-    {
-      "kind": "toaster",
-      "x": 26,
-      "y": 73
-    },
-    {
-      "kind": "toaster",
-      "x": 26,
-      "y": 87
-    },
-    {
-      "kind": "toaster",
-      "x": 21,
-      "y": 64
-    },
-    {
-      "kind": "fridge",
-      "x": 5,
-      "y": 63
-    },
-    {
-      "kind": "cart",
-      "x": 4,
-      "y": 79
-    },
-    {
-      "kind": "toaster",
-      "x": 27,
-      "y": 72
-    },
-    {
-      "kind": "fridge",
-      "x": 22,
-      "y": 78
-    },
-    {
-      "kind": "fridge",
-      "x": 16,
-      "y": 74
-    },
-    {
-      "kind": "plastic_crumbs",
-      "x": 56,
-      "y": 62,
-      "amount": 7
-    },
-    {
-      "kind": "copper_tangle",
-      "x": 46,
-      "y": 71,
-      "amount": 6
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 74,
-      "y": 67,
-      "amount": 5
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 66,
-      "y": 65,
-      "amount": 7
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 74,
-      "y": 87,
-      "amount": 6
-    },
-    {
-      "kind": "copper_tangle",
-      "x": 59,
-      "y": 81,
-      "amount": 8
-    },
-    {
-      "kind": "plastic_crumbs",
-      "x": 76,
-      "y": 76,
-      "amount": 8
-    },
-    {
-      "kind": "copper_tangle",
-      "x": 77,
-      "y": 77,
-      "amount": 8
-    },
-    {
-      "kind": "satellite",
-      "x": 72,
-      "y": 83
-    },
-    {
-      "kind": "fridge",
-      "x": 46,
-      "y": 72
-    },
-    {
-      "kind": "fridge",
-      "x": 77,
-      "y": 87
-    },
-    {
-      "kind": "satellite",
-      "x": 52,
-      "y": 70
-    },
-    {
-      "kind": "ship_part",
-      "x": 74,
-      "y": 73
-    },
-    {
-      "kind": "fridge",
-      "x": 57,
+      "kind": "pallet",
+      "x": 32,
       "y": 75
     },
     {
       "kind": "fridge",
-      "x": 53,
+      "x": 31,
       "y": 67
     },
     {
       "kind": "fridge",
-      "x": 54,
-      "y": 70
+      "x": 13,
+      "y": 74
     },
     {
-      "kind": "satellite",
-      "x": 54,
-      "y": 84
+      "kind": "driftwood_pile",
+      "x": 65,
+      "y": 85,
+      "amount": 9
     },
     {
-      "kind": "scrap_pile",
-      "x": 82,
-      "y": 77,
+      "kind": "driftwood_pile",
+      "x": 74,
+      "y": 64,
+      "amount": 9
+    },
+    {
+      "kind": "copper_tangle",
+      "x": 48,
+      "y": 72,
       "amount": 7
     },
     {
       "kind": "copper_tangle",
-      "x": 105,
-      "y": 77,
-      "amount": 8
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 97,
-      "y": 67,
-      "amount": 6
-    },
-    {
-      "kind": "plastic_crumbs",
-      "x": 112,
-      "y": 76,
-      "amount": 10
-    },
-    {
-      "kind": "plastic_crumbs",
-      "x": 103,
-      "y": 87,
-      "amount": 9
-    },
-    {
-      "kind": "plastic_crumbs",
-      "x": 105,
+      "x": 45,
       "y": 74,
-      "amount": 6
-    },
-    {
-      "kind": "scrap_pile",
-      "x": 114,
-      "y": 82,
       "amount": 5
     },
     {
       "kind": "scrap_pile",
-      "x": 91,
-      "y": 74,
+      "x": 53,
+      "y": 87,
+      "amount": 5
+    },
+    {
+      "kind": "rubble_field",
+      "x": 76,
+      "y": 71,
+      "amount": 5
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 45,
+      "y": 63,
       "amount": 7
     },
     {
+      "kind": "rubble_field",
+      "x": 44,
+      "y": 79,
+      "amount": 6
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 60,
+      "y": 74,
+      "amount": 8
+    },
+    {
+      "kind": "plastic_crumbs",
+      "x": 44,
+      "y": 72,
+      "amount": 6
+    },
+    {
+      "kind": "ruin_wall",
+      "x": 56,
+      "y": 62
+    },
+    {
+      "kind": "ship_part",
+      "x": 61,
+      "y": 77
+    },
+    {
+      "kind": "ruin_wall",
+      "x": 53,
+      "y": 66
+    },
+    {
+      "kind": "sofa",
+      "x": 48,
+      "y": 65
+    },
+    {
       "kind": "satellite",
-      "x": 96,
+      "x": 74,
+      "y": 87
+    },
+    {
+      "kind": "cart",
+      "x": 59,
+      "y": 81
+    },
+    {
+      "kind": "satellite",
+      "x": 76,
+      "y": 76
+    },
+    {
+      "kind": "satellite",
+      "x": 77,
+      "y": 77
+    },
+    {
+      "kind": "satellite",
+      "x": 73,
+      "y": 74
+    },
+    {
+      "kind": "rubble_field",
+      "x": 104,
+      "y": 83,
+      "amount": 8
+    },
+    {
+      "kind": "plastic_crumbs",
+      "x": 89,
+      "y": 63,
+      "amount": 5
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 103,
+      "y": 67,
+      "amount": 9
+    },
+    {
+      "kind": "plastic_crumbs",
+      "x": 112,
+      "y": 80,
+      "amount": 6
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 99,
+      "y": 70,
+      "amount": 9
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 105,
+      "y": 83,
+      "amount": 9
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 97,
+      "y": 75,
+      "amount": 10
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 93,
+      "y": 67,
+      "amount": 6
+    },
+    {
+      "kind": "scrap_pile",
+      "x": 94,
+      "y": 70,
+      "amount": 10
+    },
+    {
+      "kind": "copper_tangle",
+      "x": 92,
+      "y": 62,
+      "amount": 6
+    },
+    {
+      "kind": "robot_arm",
+      "x": 110,
+      "y": 76
+    },
+    {
+      "kind": "monolith",
+      "x": 92,
+      "y": 67
+    },
+    {
+      "kind": "satellite",
+      "x": 112,
+      "y": 76
+    },
+    {
+      "kind": "monolith",
+      "x": 117,
+      "y": 79
+    },
+    {
+      "kind": "monolith",
+      "x": 106,
+      "y": 79
+    },
+    {
+      "kind": "satellite",
+      "x": 114,
+      "y": 82
+    },
+    {
+      "kind": "robot_arm",
+      "x": 91,
       "y": 74
     },
     {
       "kind": "satellite",
-      "x": 111,
-      "y": 81
-    },
-    {
-      "kind": "ship_part",
-      "x": 89,
-      "y": 70
-    },
-    {
-      "kind": "monolith",
-      "x": 88,
-      "y": 72
-    },
-    {
-      "kind": "ship_part",
-      "x": 107,
-      "y": 66
-    },
-    {
-      "kind": "satellite",
-      "x": 93,
-      "y": 85
+      "x": 104,
+      "y": 71
     }
   ]
 }

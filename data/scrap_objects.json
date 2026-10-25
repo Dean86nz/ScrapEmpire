@@ -129,6 +129,83 @@
       },
       "respawn_s": 0,
       "sprite": "res://assets/sprites/nodes/monolith.svg"
+    },
+    {
+      "id": "driftwood_pile",
+      "name_key": "NODE_DRIFTWOOD",
+      "tier": 1,
+      "tool": "suction",
+      "type": "pile",
+      "item": "wood",
+      "max": 10,
+      "regen_s": 30,
+      "sprite": "res://assets/sprites/nodes/driftwood_pile.svg",
+      "resource": true
+    },
+    {
+      "id": "rubble_field",
+      "name_key": "NODE_RUBBLE",
+      "tier": 1,
+      "tool": "suction",
+      "type": "pile",
+      "item": "stone",
+      "max": 10,
+      "regen_s": 30,
+      "sprite": "res://assets/sprites/nodes/rubble_field.svg",
+      "resource": true
+    },
+    {
+      "id": "pallet",
+      "name_key": "NODE_PALLET",
+      "tier": 1,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "wood": 6,
+        "scrap": 2
+      },
+      "respawn_s": 180,
+      "sprite": "res://assets/sprites/nodes/pallet.svg"
+    },
+    {
+      "id": "concrete",
+      "name_key": "NODE_CONCRETE",
+      "tier": 1,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "stone": 6,
+        "scrap": 1
+      },
+      "respawn_s": 180,
+      "sprite": "res://assets/sprites/nodes/concrete.svg"
+    },
+    {
+      "id": "sofa",
+      "name_key": "NODE_SOFA",
+      "tier": 2,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "wood": 8,
+        "plastic": 4,
+        "copper": 2
+      },
+      "respawn_s": 300,
+      "sprite": "res://assets/sprites/nodes/sofa.svg"
+    },
+    {
+      "id": "ruin_wall",
+      "name_key": "NODE_RUIN_WALL",
+      "tier": 2,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "stone": 10,
+        "scrap": 3
+      },
+      "respawn_s": 300,
+      "sprite": "res://assets/sprites/nodes/ruin_wall.svg"
     }
   ]
 }

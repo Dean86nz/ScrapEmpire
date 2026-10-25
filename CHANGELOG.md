@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [0.9.0] – 2026-10-25 – MS9 Zonen, Minimap und Karte
+
+### Hinzugefügt
+- Zonen aus der Karten-JSON mit Reinigungsgrad: Müll = Items in Loot-Objekten ohne Rohstoff-Flag; Stufen vermüllt / unordentlich / aufgeräumt / sauber; Stufenwechsel mit Spruch, ab „aufgeräumt“ mit Konfetti
+- Respawn-Sperre: Müll respawnt nur, solange die Zone unter 50 % sauber ist; Rohstoffquellen (Haufen, Satellit) respawnen immer (Grundsatz: nie ohne Ressourcen)
+- Minimap unten rechts: Zonen in Stufenfarbe, Müll-Punkte, Gebäude, Rusty-Pfeil; ausblendbar mit M oder Select lang
+- Tab „Karte“ im Fortschritts-Menü: Zonen mit Namen und Prozent, D-Pad wählt eine Zone, Infotafel mit Reinigungsgrad, Zustand, Müll und Objekten je Stufe; RT/LT zoomen, rechter Stick scrollt
+- Alles aus Schrott: Objekte Kaputte Palette, Betonbrocken (T1), Verrottetes Sofa, Ruinenmauer (T2), Materialien Holz und Stein mit nachwachsenden Quellen Treibholz-Stapel und Geröllfeld; Hauptkarte neu erzeugt (149 Objekte)
+- Kurz/Lang-Erkennung für Y und Select per Tastenzustand (funktioniert auch mit simulierten Eingaben)
+- 7 neue Tests (151 gesamt)
+
 ## [0.8.0] – 2026-10-25 – MS8 Tutorial und Autopilot
 
 ### Hinzugefügt
