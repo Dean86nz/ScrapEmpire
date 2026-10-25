@@ -29,16 +29,18 @@ Controller in Armoury Crate auf **Gamepad-Modus** stellen (nicht Desktop-Modus).
 | Hotbar-Slot | LB / RB | Mausrad |
 | Turbo-Boost (Skill) | L3 | Shift |
 | Baumodus: platzieren, drehen, abbrechen | A, X, B | LMB, Q, RMB |
+| Schiff ausbauen (am Schiff) | X | Q |
 | Pause-Menü | Start | Esc |
 
 Entwickler-Tasten: F3 Debug-Overlay, F4 Cheat (Bolts, Material, XP), F5 speichern, F6 Perf-Szenario, F7 Beispielkette. Screenshot-Werkzeug (`tests/shot.sh`) kennt zusätzlich die Szenarien `auto`, `helpers`, `drones`, `cozy`, `endgame`.
 
 ## Spielablauf in Kürze
 
-1. **Startlager (Kapitel 1):** Schrott saugen, Terminal bauen, verkaufen, Schmelzofen erforschen. Der Ofen macht aus 3 Schrott einen Eisenbarren; Barren sind Baustoff für Förderband und Saugstation.
-2. **Zone säubern:** Müll-Objekte (Toaster, Kühlschränke …) zerhämmern. Ab 50 % Reinigungsgrad öffnet sich das Tor zur nächsten Zone. Minimap und Karte zeigen nur entdeckte Zonen; der Boden wird mit jeder Stufe grüner.
-3. **Automatisieren:** Saugstation an einen Haufen, Band zum Ofen, Band zum Terminal. Später Autopilot (Aufgabenliste für Rusty) und Helfer-Roboter, die Zonen allein aufräumen.
-4. **Weiterkommen:** Forschung kostet Bolts und Produkte (Barren, Platten, Zahnräder, Schaltkreise, Chrom), Skills kosten Skillpunkte aus Leveln. Tab „Kapitel“ (Select) zeigt immer die nächsten Ziele.
+1. **Startlager (Kapitel 1):** Rusty ist mit seinem Schiff abgestürzt. Das Wrack ist die Basis: Schrott hineinlegen (A), das Schiff verkauft alles über der Reserve von allein. Der Schmelzofen macht aus 3 Schrott einen Eisenbarren; Barren sind Baustoff für Förderband, Saugstation und den Schiffsausbau (X am Schiff).
+2. **Aufgaben:** Oben steht immer genau eine Aufgabe mit Kästchen. Die Kette führt durch das ganze Spiel; Tab „Kapitel“ (Select) zeigt erledigte und kommende Aufgaben.
+3. **Zone säubern:** Müll-Objekte (Toaster, Kühlschränke …) zerhämmern. Ab der Tor-Schwelle öffnet sich das Tor zur nächsten Zone. Der Planetenbalken links oben zeigt die Heilung des ganzen Planeten; der Boden wird mit jeder Stufe grüner.
+4. **Automatisieren:** Saugstation an einen Haufen, Band zum Ofen, Band zum Schiff. Später Autopilot, Helfer-Roboter und Drohnen. Verkaufsterminals sind Außenposten für entfernte Zonen (eines je Zone).
+5. **Weiterkommen:** Forschung kostet Bolts und Produkte; Rustys Inventar und das Schiffslager zählen, Kisten nicht. Skills kosten Skillpunkte aus Leveln.
 
 ## Entwickeln
 

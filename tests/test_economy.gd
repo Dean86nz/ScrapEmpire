@@ -1,13 +1,16 @@
 extends TestCase
 
 
-func test_terminal_cost_curve() -> void:
+func test_terminal_is_flat_and_furnace_cost_curve() -> void:
 	var defs := BuildingDef.load_all("res://data/buildings.json")
 	var t: BuildingDef = defs["sell_terminal"]
-	var costs: Array[int] = []
+	var flat: Array[int] = []
+	var curve: Array[int] = []
 	for n in 5:
-		costs.append(Economy.cost_for(t, n)["scrap"])
-	assert_eq(costs, [30, 40, 55, 75, 100] as Array[int])
+		flat.append(Economy.cost_for(t, n)["scrap"])
+		curve.append(Economy.cost_for(defs["furnace"], n)["scrap"])
+	assert_eq(flat, [40, 40, 40, 40, 40] as Array[int], "Außenposten: feste Kosten")
+	assert_eq(curve, [40, 55, 75, 100, 135] as Array[int], "Ofen: 35 % je Exemplar, auf 5 gerundet")
 
 
 func test_chest_cost_is_flat() -> void:

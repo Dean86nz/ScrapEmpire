@@ -15,7 +15,6 @@ const LONG_PRESS_SECONDS := 0.45
 @onready var _cursor: BuildCursor = $BuildCursor
 @onready var _pause_menu: CanvasLayer = $PauseMenu
 @onready var _task_editor: CanvasLayer = $TaskEditor
-@onready var _tutorial: TutorialController = $Tutorial
 @onready var _end_screen: CanvasLayer = $EndScreen
 
 var _world: SimWorld
@@ -47,6 +46,8 @@ func _ready() -> void:
 	_world.helper_cfg = DataRegistry.helper_config()
 	_world.drone_cfg = DataRegistry.drone_config()
 	_world.collectible_cfg = DataRegistry.collectible_config()
+	_world.ship_cfg = DataRegistry.ship_config()
+	_world.quests.setup(DataRegistry.quest_defs())
 	_world.setup_progression_data(DataRegistry.tech_defs(), DataRegistry.skill_data())
 	var start_px: Vector2
 	var save_data := SaveManager.read()
@@ -55,6 +56,8 @@ func _ready() -> void:
 		MapLoader.apply(_world, _map_data, false)
 		start_px = SaveCodec.decode(save_data, _world)
 		MapLoader.fill_missing_zones(_world, _map_data)
+		MapLoader.ensure_ship(_world, _map_data)
+		_world.quests.fast_forward(_world, bool(_world.flags.get("tutorial_done", false)))
 		_loaded_from_save = true
 	else:
 		start_px = Vector2(MapLoader.apply(_world, _map_data))
@@ -104,9 +107,9 @@ func _ready() -> void:
 	_progress_menu.bind_player(_player)
 	_world.zones.stage_changed.connect(_on_zone_stage_changed)
 	_world.zones.refresh(_world.nodes)
-	_tutorial.bind(_world, _player)
-	_tutorial.step_changed.connect(func(_i: int, text: String) -> void: _hud.set_tutorial(text))
-	_tutorial.finished.connect(_refresh_chapter_hud)
+	_world.quest_completed.connect(_on_quest_completed)
+	_world.ship_upgraded.connect(_on_ship_upgraded)
+	_world.ship_failed.connect(func(reason: String) -> void: Quips.say("ship_fail_" + reason, true))
 	_world.zone_unlocked.connect(_on_zone_unlocked)
 	_world.collectible_found.connect(_on_collectible_found)
 	_setup_nature()
@@ -146,6 +149,7 @@ func _process(delta: float) -> void:
 	if _chapter_timer <= 0.0:
 		_chapter_timer = 1.0
 		_refresh_chapter_hud()
+		_hud.set_planet(_world.zones.planet_health(_world.nodes))
 	# Kurz/Lang-Erkennung per Zustandsabfrage (funktioniert auch mit simulierten Eingaben).
 	if _build_press_time >= 0.0:
 		_build_press_time += delta
@@ -212,7 +216,10 @@ func _on_language_changed(locale: String) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("build_menu"):
+	if InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("tool_swap") and _player.nearby_building() is Ship:
+		_world.queue_command({"type": "upgrade_ship"})
+		get_viewport().set_input_as_handled()
+	elif InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("build_menu"):
 		# Y kurz: Baumenü (beim Loslassen, per Abfrage in _process); Y lang: Aufgaben-Editor.
 		_build_press_time = 0.0
 		get_viewport().set_input_as_handled()
@@ -483,10 +490,15 @@ func _setup_nature() -> void:
 	_sky.rain_stopped.connect(func() -> void: _rain.set_raining(false))
 
 
-## Kapitel-Anzeige oben: Tutorial-Schritt oder Zonenziel.
+## Aufgaben-Anzeige oben: genau eine aktuelle Aufgabe mit Haken; ohne Aufgaben das Zonenziel.
 func _refresh_chapter_hud() -> void:
-	if not _tutorial.done:
-		_hud.set_tutorial(_tutorial.progress_text())
+	var q := _world.quests
+	if not q.is_done():
+		var p := q.progress(_world)
+		var text := tr(str(q.current().get("text_key", "")))
+		if int(p[1]) > 1:
+			text += "  (%d/%d)" % [int(p[0]), int(p[1])]
+		_hud.set_tutorial("☐  " + text)
 		return
 	var cur := _world.zones.current_chapter_zone()
 	if cur == "":
@@ -502,6 +514,44 @@ func _refresh_chapter_hud() -> void:
 	else:
 		text += "  ·  " + tr("CH_HUD_LAST")
 	_hud.set_tutorial(text)
+
+
+func _on_quest_completed(_id: String, def: Dictionary) -> void:
+	_player.celebrate()
+	Quips.say("quest_done", true)
+	_hud.set_tutorial("☑  " + tr("HUD_QUEST_DONE") % tr(str(def.get("text_key", ""))))
+	_chapter_timer = 2.5
+
+
+func _on_ship_upgraded(s: Ship) -> void:
+	_player.celebrate()
+	Quips.say("ship_upgraded", true)
+	var sd := ShipSystem.stage_def(_world, s.stage)
+	_hud.set_tutorial(tr("HUD_SHIP_UP") % [s.stage, tr(str(sd.get("name_key", "")))])
+	_chapter_timer = 4.0
+
+
+func _ship_hint(s: Ship, kb: String) -> String:
+	var sd := ShipSystem.stage_def(_world, s.stage)
+	var up := ""
+	var reason := ShipSystem.can_upgrade(_world, s)
+	if reason == "max":
+		up = tr("SHIP_UPGRADE_MAX")
+	else:
+		var cost := ShipSystem.upgrade_cost(_world, s)
+		var parts: Array[String] = []
+		for item in cost.get("items", {}):
+			parts.append("%d %s" % [int(cost["items"][item]), DataRegistry.item_name(str(item))])
+		up = tr("SHIP_UPGRADE_COST") % [int(cost.get("bolts", 0)), ", ".join(parts)]
+		if reason != "":
+			var miss := ShipSystem.missing(_world, cost.get("items", {}))
+			var mparts: Array[String] = []
+			if _world.bolts < int(cost.get("bolts", 0)):
+				mparts.append("%d %s" % [int(cost.get("bolts", 0)) - _world.bolts, tr("HUD_BOLTS")])
+			for item in miss:
+				mparts.append("%d %s" % [int(miss[item]), DataRegistry.item_name(str(item))])
+			up += " " + tr("SHIP_UPGRADE_MISSING") % ", ".join(mparts)
+	return tr("SHIP_HINT" + kb) % [s.stage, tr(str(sd.get("name_key", ""))), s.storage.total(), s.storage.slot_count * s.storage.stack_size, up]
 
 
 func _on_zone_unlocked(zone_id: String) -> void:
@@ -609,6 +659,8 @@ func _current_hint() -> String:
 		InputRouter.Context.MENU:
 			return tr("HINT_MENU" + kb)
 	var b := _player.nearby_building()
+	if b != null and b is Ship:
+		return _ship_hint(b as Ship, kb)
 	if b != null and b is Machine:
 		# Rezepte direkt an der Maschine zeigen
 		var parts: Array[String] = []

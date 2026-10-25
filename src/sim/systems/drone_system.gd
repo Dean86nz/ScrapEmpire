@@ -12,11 +12,11 @@ static func next_drone_cost(w: SimWorld) -> Dictionary:
 
 
 static func _is_drone_source(b: Building) -> bool:
-	return b is Chest or b is Machine
+	return b is Chest or b is Machine or b is Ship
 
 
 static func _is_drone_target(b: Building) -> bool:
-	return b is Chest or b is Machine or b is SellTerminal
+	return b is Chest or b is Machine or b is SellTerminal or b is Ship
 
 
 ## "" wenn kaufbar, sonst: locked, max, bolts, circuit, no_source, no_target, same
@@ -28,7 +28,7 @@ static func can_buy_drone(w: SimWorld, source_tile: Vector2i, target_tile: Vecto
 	var cost := next_drone_cost(w)
 	if w.bolts < int(cost["bolts"]):
 		return "bolts"
-	if w.player.inventory.count_of("circuit") < int(cost["circuit"]):
+	if ShipSystem.count_available(w, "circuit") < int(cost["circuit"]):
 		return "circuit"
 	if source_tile.x < 0:
 		return ""
@@ -69,7 +69,7 @@ static func _cmd_buy_drone(w: SimWorld, cmd: Dictionary) -> void:
 		return
 	var cost := next_drone_cost(w)
 	w.bolts -= int(cost["bolts"])
-	w.player.inventory.remove("circuit", int(cost["circuit"]))
+	ShipSystem.pay(w, {"circuit": int(cost["circuit"])})
 	w.bolts_changed.emit(w.bolts)
 	add_drone(w, w.grid.at(source_tile).id, w.grid.at(target_tile).id)
 
@@ -119,7 +119,7 @@ static func can_buy_drone_upgrade(w: SimWorld, id: String) -> String:
 		return "locked"
 	if w.bolts < int(u["cost_bolts"][level]):
 		return "bolts"
-	if w.player.inventory.count_of("circuit") < int(u["cost_circuit"][level]):
+	if ShipSystem.count_available(w, "circuit") < int(u["cost_circuit"][level]):
 		return "circuit"
 	return ""
 
@@ -133,7 +133,7 @@ static func _cmd_buy_drone_upgrade(w: SimWorld, cmd: Dictionary) -> void:
 	var u := drone_upgrade_def(w, id)
 	var level := int(w.drone_upgrades.get(id, 0))
 	w.bolts -= int(u["cost_bolts"][level])
-	w.player.inventory.remove("circuit", int(u["cost_circuit"][level]))
+	ShipSystem.pay(w, {"circuit": int(u["cost_circuit"][level])})
 	w.bolts_changed.emit(w.bolts)
 	w.drone_upgrades[id] = level + 1
 	w.recompute_modifiers()

@@ -56,7 +56,7 @@ func tick(world: SimWorld) -> void:
 			else:
 				_wait("source_empty")
 		else:
-			_unload_into(dst)
+			_unload_into(world, dst)
 			if not is_carrying():
 				trips += 1
 				state = State.TO_SOURCE
@@ -92,6 +92,12 @@ func _load_from(src: Building) -> void:
 			return
 		var taken := inv.remove(item, want)
 		_add_carry(item, taken)
+	elif src is Ship:
+		var sinv: Inventory = (src as Ship).storage
+		var sitem := carry_item if is_carrying() else _pick_item(inv_contents(sinv))
+		if sitem == "":
+			return
+		_add_carry(sitem, sinv.remove(sitem, want))
 	elif src is Machine:
 		var m := src as Machine
 		var item := carry_item if is_carrying() else _pick_item(m.output)
@@ -129,7 +135,7 @@ func _add_carry(item: String, n: int) -> void:
 
 
 ## Liefert ab; beachtet Limit (Zielbestand des Items) und was das Ziel annimmt.
-func _unload_into(dst: Building) -> void:
+func _unload_into(world: SimWorld, dst: Building) -> void:
 	if not is_carrying():
 		return
 	var allowed := carry_count
@@ -146,6 +152,8 @@ func _unload_into(dst: Building) -> void:
 		_wait("target_full")
 		return
 	var accepted: int = dst.accept_stack(carry_item, allowed)
+	if accepted > 0 and dst is Ship:
+		world.ship_received.emit(carry_item, accepted)
 	carry_count -= accepted
 	if carry_count <= 0:
 		carry_count = 0

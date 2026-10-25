@@ -1,0 +1,14 @@
+{
+  "_comment": "Rustys abgestürztes Raumschiff: Basis für Abgabe, Verkauf und Ausbau. Verkauft automatisch alles, was über der Reserve je Item liegt. Lager zählt bei Bau- und Forschungskosten mit.",
+  "reserve": {
+    "scrap": 0, "copper": 20, "plastic": 20, "stone": 40, "wood": 40, "chrome": 50,
+    "iron_bar": 50, "copper_bar": 50, "plastic_sheet": 50, "gear": 30, "circuit": 30, "titanium": 50, "stardust": 50
+  },
+  "stages": [
+    { "stage": 1, "name_key": "SHIP_STAGE_1", "storage_slots": 20, "stack": 50, "sell_interval": 10, "sprite": "res://assets/sprites/buildings/ship_1.svg",
+      "upgrade": { "bolts": 300, "items": { "iron_bar": 20, "copper_bar": 5 } } },
+    { "stage": 2, "name_key": "SHIP_STAGE_2", "storage_slots": 30, "stack": 50, "sell_interval": 6, "sprite": "res://assets/sprites/buildings/ship_2.svg",
+      "upgrade": { "bolts": 2000, "items": { "gear": 20, "circuit": 10, "chrome": 20 } } },
+    { "stage": 3, "name_key": "SHIP_STAGE_3", "storage_slots": 40, "stack": 50, "sell_interval": 4, "sprite": "res://assets/sprites/buildings/ship_3.svg" }
+  ]
+}

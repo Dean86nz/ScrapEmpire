@@ -109,7 +109,7 @@ func test_save_keeps_found_and_does_not_respawn() -> void:
 			w.player.pos = c.center_px()
 	w.tick()
 	var data := SaveCodec.encode(w, "main", Vector2(32, 32), 0)
-	assert_eq(int(data["version"]), 6)
+	assert_eq(int(data["version"]), SaveCodec.VERSION)
 	assert_eq(data["collectibles_found"], ["gnome"])
 	var w2 := _world()
 	SaveCodec.decode(JSON.parse_string(JSON.stringify(data)), w2)

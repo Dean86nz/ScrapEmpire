@@ -57,7 +57,10 @@ ScrapEmpire/
 │   │   │   ├── tool_system.gd        Saugen, Hämmern, Magnet, Helfer-Arbeit
 │   │   │   ├── helper_system.gd      Helfer-Kauf, Upgrades, Tick
 │   │   │   ├── drone_system.gd       Drohnen-Kauf, Filter, Limit, Tick
-│   │   │   └── collectible_system.gd Fundstücke
+│   │   │   ├── collectible_system.gd Fundstücke
+│   │   │   └── ship_system.gd        Raumschiff: Stufen, Ausbau, Lager als Zahlungsquelle (count_available, pay)
+│   │   ├── quests.gd            QuestState: geführte Aufgabenkette aus data/quests.json (Zähler + Zustandsprüfungen)
+│   │   ├── buildings/ship.gd    Ship: Lager, Reserve-Verkauf, Stufen-Sprite
 │   │   ├── grid.gd              Vector2i → Building, Belegungsprüfung
 │   │   ├── inventory.gd         Slots, add/remove/can_add
 │   │   ├── item_stack.gd
@@ -291,6 +294,12 @@ Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers �
 - Systeme halten keinen Zustand und keine Referenz auf die Welt (keine Zyklen zwischen RefCounted-Objekten); alles Veränderliche liegt in `SimWorld`.
 - Funktionen, die von Ansichten, Tests oder anderen Systemen gebraucht werden, haben eine gleichnamige Weiterleitung in `SimWorld` (z. B. `w.place_free(...)` → `BuildingSystem.place_free(w, ...)`). Nur intern genutzte Funktionen ruft `tick()`/`_apply()` direkt über das System auf.
 - Neue Spielregeln kommen als neues System dazu (z. B. `ShipSystem` für die Basis), nicht in `world.gd`.
+
+## 10b. Raumschiff und Aufgaben (seit v1.7.0, MS18a)
+
+- `Ship` ist ein Gebäude (`buildable: false`, 3×3), genau eines je Welt (`MapLoader.ensure_ship`). Lager = `Inventory`; `tick()` verkauft ein Item je Takt über der Reserve; `SimWorld.tick()` bucht wie beim Terminal.
+- Alle Kosten laufen über `ShipSystem.can_afford / pay / missing`: Inventar zuerst, dann Schiffslager. `TechState.can_start` nimmt zusätzliche Inventare entgegen.
+- `QuestState` wird alle 10 Ticks geprüft (`check`); Zähler kommen über Welt-Signale (`item_collected`, `item_sold`, `wreck_destroyed`, `ship_received`), Zustandsprüfungen lesen die Welt. Abschluss → `quest_completed`. Alte Stände: `fast_forward`.
 
 ## 11. Neue Darstellung und UI
 

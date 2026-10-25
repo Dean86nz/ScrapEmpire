@@ -27,7 +27,7 @@ func setup(b: Building) -> void:
 	building_id = b.id
 	_building = b
 	position = Vector2(b.center_px())
-	_sprite.texture = load(b.def.sprite)
+	_sprite.texture = load((b as Ship).sprite_path if b is Ship and (b as Ship).sprite_path != "" else b.def.sprite)
 	_sprite.rotation = b.rot * PI / 2.0
 	add_child(_sprite)
 
@@ -110,6 +110,13 @@ func refresh(b: Building) -> void:
 	var s := b.summary()
 	if b is Machine:
 		_refresh_machine(s)
+		return
+	if b is Ship:
+		var sh := b as Ship
+		if sh.sprite_path != "" and (_sprite.texture == null or _sprite.texture.resource_path != sh.sprite_path):
+			_sprite.texture = load(sh.sprite_path)
+		_label.text = "%d / %d" % [s["storage"], s["storage_max"]]
+		_label.visible = int(s["storage"]) > 0
 		return
 	if s.has("buffer"):
 		_label.text = "%d / %d" % [s["buffer"], s["buffer_max"]]

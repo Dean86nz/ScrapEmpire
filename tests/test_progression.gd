@@ -75,9 +75,11 @@ func test_world_grants_xp_for_collect_build_sell() -> void:
 	w.player.suck_held = false
 	assert_eq(w.progression.total_xp, 1)
 	w.player.inventory.add("scrap", 40)
+	w.player.inventory.add("iron_bar", 5)
 	w.queue_command({"type": "place", "def_id": "sell_terminal", "tile": Vector2i(7, 5)})
 	w.tick()
 	assert_eq(w.progression.total_xp, 6)
+	w.player.inventory.add("scrap", 10)  # nach dem Bezahlen wieder Schrott in Slot 0
 	w.queue_command({"type": "deposit", "tile": Vector2i(7, 5), "slot": 0})
 	for i in 60:
 		w.tick()

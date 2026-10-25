@@ -295,19 +295,9 @@ CH_HUD,Kapitel %d · %s · %d %% sauber,Chapter %d · %s · %d %% clean
 CH_HUD_GATE,Tor öffnet bei %d %%,Gate opens at %d %%
 CH_HUD_LAST,Letzte Zone: alles sauber machen!,Last zone: clean it all!
 CH_UNLOCKED,Tor offen! Neues Kapitel: %s,Gate open! New chapter: %s
-CH_GOAL_TUTORIAL,Tutorial abschließen,Finish the tutorial
 CH_GOAL_CLEAN,Zone zu %d %% säubern (jetzt %d %%),Clean the zone to %d %% (now %d %%)
 CH_GOAL_CLEAN_LAST,Zone komplett säubern (jetzt %d %%),Clean the zone completely (now %d %%)
 CH_NEXT,Dann öffnet sich das Tor nach: %s,Then the gate opens to: %s
-CH_TIP_Z01,"Dein Lager: Terminal bauen, Schmelzofen erforschen, Schrott zu Eisenbarren schmelzen. Barren brauchst du für Förderband und Saugstation.","Your camp: build a terminal, research the furnace, smelt scrap into iron bars. You need bars for conveyor and suction station."
-CH_TIP_Z11,"Mehr Kupfer: Presse erforschen, Plastikplatten pressen. Platten und Barren werden zu Zahnrädern und Denkbrettern, die Forschung braucht.","More copper: research the press, press plastic sheets. Sheets and bars become gears and thinkboards that research needs."
-CH_TIP_Z00,"Erste Saugstation an einen Haufen, Band zum Ofen, Band zum Terminal: die Fabrik läuft ohne dich.","First suction station at a pile, belt to the furnace, belt to the terminal: the factory runs without you."
-CH_TIP_Z10,"Kühlschränke sind Stufe 2: Skill Schlagkraft kaufen (Skillpunkte aus Leveln).","Fridges are tier 2: buy the Smash skill (skill points from levels)."
-CH_TIP_Z21,"Satelliten liefern Chrom (Saugkraft Stufe 2). Chrom braucht der Autopilot.","Satellites give chrome (Suction power 2). The autopilot needs chrome."
-CH_TIP_Z20,"Autopilot erforschen, Aufgabenliste anlegen (Y lang): Rusty arbeitet allein.","Research the autopilot, create a task list (hold Y): Rusty works on his own."
-CH_TIP_Z02,"Helfer-Werkstatt erforschen und Helfer kaufen. Sie räumen Zonen auf, während du baust.","Research the helper workshop and buy helpers. They clean zones while you build."
-CH_TIP_Z12,"Mit Helfern und Bändern mehrere Ketten parallel. Großhändler-Skill lohnt sich jetzt.","With helpers and belts run several chains in parallel. The Wholesaler skill pays off now."
-CH_TIP_Z22,"Die letzte Zone. Monolith und Roboter-Arm warten auf Phase 2.","The last zone. Monolith and robot arm wait for phase 2."
 ZONE_UNLOCKED,Das Tor ist offen! Da hinten liegt noch mehr Müll. Herrlich.,The gate is open! More trash out there. Lovely.
 QUIP_HELPER_ZONE_LOCKED,Da darf noch keiner hin. Erst das Tor öffnen.,Nobody goes there yet. Open the gate first.
 TITLE_TAGLINE,Ein kleiner Roboter. Ein vermüllter Planet. Viel Arbeit.,A small robot. A trashed planet. Lots of work.
@@ -358,7 +348,6 @@ QUIP_DRONE_NO_TARGET,"Das Ziel muss Kiste, Maschine oder Terminal sein.","The ta
 QUIP_DRONE_SAME,Von A nach A? Das fliegt nicht weit.,From A to A? That does not fly far.
 QUIP_DRONE_UPG_MAX,Das ist schon die höchste Stufe.,That is already the highest level.
 GOAL_DRONES,Drohnen,Drones
-CH_TIP_DRONES,"Drohnen: Quelle und Ziel wählen, A wechselt das Material, X das Limit.","Drones: pick source and target, A changes the material, X the limit."
 TECH_DECOR_BENCH,Deko-Werkbank,Decor workbench
 TECH_DECOR_BENCH_DESC,"Dekoration aus Holz, Stein und Schrott: Laternen, Bänke, Blumenkästen, Schilder. Nur schön, kein Nutzen.","Decoration from wood, stone and scrap: lanterns, benches, planters, signs. Just pretty, no function."
 TECH_MUSEUM,Museum,Museum
@@ -400,4 +389,52 @@ COL_GLASSES_TEXT,"Macht alles schärfer, auch den Müll. Rusty trägt sie nicht.
 COL_MUSICBOX,Spieluhr,Music box
 COL_MUSICBOX_TEXT,"Spielt noch vier Töne. Rusty summt den fünften dazu. Das ist jetzt ihr Lied.","Still plays four notes. Rusty hums the fifth. That is their song now."
 BUILD_MISSING,fehlt: %s,missing: %s
-BUILD_INVENTORY_ONLY,Rot = nicht bezahlbar. Es zählt nur Rustys Inventar (nicht Kisten).,Red = not affordable. Only Rusty's inventory counts (not chests).
+BUILD_INVENTORY_ONLY,Rot = nicht bezahlbar. Es zählen Rustys Inventar und das Schiffslager (nicht Kisten).,Red = not affordable. Rusty's inventory and the ship storage count (not chests).
+BLD_SHIP,Rustys Raumschiff,Rusty's spaceship
+SHIP_STAGE_1,Wrack,Wreck
+SHIP_STAGE_2,Notdürftig repariert,Patched up
+SHIP_STAGE_3,Startklar,Ready for launch
+SHIP_HINT,"Schiff · Stufe %d (%s) · Lager %d/%d · A: einlegen / entnehmen · X: Ausbau %s","Ship · stage %d (%s) · storage %d/%d · A: put in / take out · X: upgrade %s"
+SHIP_HINT_KB,"Schiff · Stufe %d (%s) · Lager %d/%d · E: einlegen / entnehmen · Q: Ausbau %s","Ship · stage %d (%s) · storage %d/%d · E: put in / take out · Q: upgrade %s"
+SHIP_UPGRADE_COST,(%d Bolts + %s),(%d bolts + %s)
+SHIP_UPGRADE_MISSING,(fehlt: %s),(missing: %s)
+SHIP_UPGRADE_MAX,(höchste Stufe),(max stage)
+SHIP_SELLS,Das Schiff verkauft alles über der Reserve von allein.,The ship sells anything above the reserve on its own.
+HUD_SHIP_UP,Schiff ausgebaut: Stufe %d · %s,Ship upgraded: stage %d · %s
+HUD_PLANET,Planet,Planet
+HUD_QUEST_DONE,Erledigt: %s,Done: %s
+HUD_QUESTS_DONE,Alle Aufgaben erledigt. Der Planet ist dein.,All tasks done. The planet is yours.
+GOAL_QUESTS,Aufgaben,Tasks
+QUIP_SHIP_ITEMS,Für den Ausbau fehlt Material. Schmelzen und pressen hilft.,Missing material for the upgrade. Smelting and pressing helps.
+QUIP_SHIP_MAX,Mehr Schiff geht nicht. Es ist perfekt. Fast.,No more ship possible. It is perfect. Almost.
+QUIP_SHIP_UP_1,Das Schiff sieht schon fast wie ein Schiff aus!,The ship almost looks like a ship now!
+QUIP_SHIP_UP_2,Neue Module! Die Lichter gehen an. Ich bin gerührt.,New modules! The lights come on. I am touched.
+QUIP_QUEST_1,Erledigt. Haken dran. Nächste Aufgabe.,Done. Check. Next task.
+QUIP_QUEST_2,Das lief. Weiter im Plan.,That worked. On with the plan.
+QUIP_QUEST_3,Abgehakt! Ich mag Listen.,Checked off! I like lists.
+QUIP_FAIL_ZONE_LIMIT,Ein Außenposten je Zone reicht. Das Schiff ist die Basis.,One outpost per zone is enough. The ship is the base.
+QUIP_FAIL_SHIP,Das Schiff bleibt. Es ist mein Zuhause.,The ship stays. It is my home.
+QUEST_MOVE,Bewege dich mit dem linken Stick.,Move with the left stick.
+QUEST_COLLECT,Sauge 30 Schrott aus den grauen Haufen (RT).,Suck 30 scrap from the grey piles (RT).
+QUEST_DELIVER,Bring 20 Schrott zum Schiff und lege ihn ein (A).,Bring 20 scrap to the ship and put it in (A).
+QUEST_BOLTS,Verdiene 30 Bolts. Das Schiff verkauft von allein.,Earn 30 bolts. The ship sells on its own.
+QUEST_HAMMER,Zerlege einen Rostigen Toaster mit dem Hammer (LT).,Smash a rusty toaster with the hammer (LT).
+QUEST_RESEARCH_FURNACE,Erforsche den Schmelzofen (Select → Forschung).,Research the furnace (Select → Research).
+QUEST_BUILD_FURNACE,Baue einen Schmelzofen (Y).,Build a furnace (Y).
+QUEST_BARS,"Schmelze 10 Eisenbarren (3 Schrott je Barren in den Ofen legen).","Smelt 10 iron bars (put 3 scrap per bar into the furnace)."
+QUEST_RESEARCH_CONVEYOR,Erforsche das Förderband.,Research the conveyor belt.
+QUEST_BELT,Verbinde den Schmelzofen per Förderband mit dem Schiff.,Connect the furnace to the ship with a conveyor belt.
+QUEST_RESEARCH_EXTRACTOR,Erforsche die Saugstation.,Research the suction station.
+QUEST_EXTRACTOR,Baue eine Saugstation neben einen Schrotthaufen.,Build a suction station next to a scrap pile.
+QUEST_SHIP2,Baue das Schiff auf Stufe 2 aus (X am Schiff).,Upgrade the ship to stage 2 (X at the ship).
+QUEST_ZONE1,"Räume das Startlager auf, bis sich das Tor öffnet.",Clean up the start camp until the gate opens.
+QUEST_RESEARCH_PRESS,Erforsche die Presse.,Research the press.
+QUEST_BUILD_PRESS,Baue eine Presse.,Build a press.
+QUEST_AUTOPILOT,Erforsche den Autopiloten.,Research the autopilot.
+QUEST_HELPER_WS,Erforsche die Helfer-Werkstatt.,Research the helper workshop.
+QUEST_HELPER,Kaufe einen Helfer (Select → Helfer).,Buy a helper (Select → Helpers).
+QUEST_DRONE_HANGAR,Erforsche den Drohnen-Hangar.,Research the drone hangar.
+QUEST_DRONE,Kaufe eine Drohne (Select → Drohnen).,Buy a drone (Select → Drones).
+QUEST_SHIP3,Baue das Schiff auf Stufe 3 aus.,Upgrade the ship to stage 3.
+QUEST_COLLECTIBLES,Finde 3 Fundstücke (sie funkeln im Müll).,Find 3 collectibles (they sparkle in the trash).
+QUEST_PLANET,Heile den ganzen Planeten: alle Zonen sauber.,Heal the whole planet: all zones clean.

@@ -47,14 +47,13 @@ static func _apply_tech_effects(w: SimWorld, id: String) -> void:
 
 static func _cmd_research(w: SimWorld, cmd: Dictionary) -> void:
 	var id := str(cmd.get("id", ""))
-	var reason := w.tech.can_start(id, w.bolts, w.player.inventory)
+	var reason := w.tech.can_start(id, w.bolts, w.player.inventory, ShipSystem.extra_inventories(w))
 	if reason != "":
 		w.research_failed.emit(reason)
 		return
 	var d: Dictionary = w.tech.by_id[id]
 	w.bolts -= int(d.get("cost_bolts", 0))
-	for item in d.get("cost_items", {}):
-		w.player.inventory.remove(str(item), int(d["cost_items"][item]))
+	ShipSystem.pay(w, d.get("cost_items", {}))
 	w.bolts_changed.emit(w.bolts)
 	w.progression.on_tech(int(d.get("cost_bolts", 0)))
 	w.tech.start(id)

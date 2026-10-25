@@ -361,6 +361,12 @@ Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten 
 - **Produkte als Baustoff:** Tech- und Gebäudekosten enthalten Maschinenprodukte (Eisenbarren für Band und Saugstation, Platten für den Rucksack, Zahnräder und Schaltkreise für höhere Forschung). Das beantwortet „was macht der Schmelzofen“: Barren sind das Material für alles Weitere, nicht nur Verkaufsware.
 - Bodenfärbung je Zone (unentdeckt dunkel, vermüllt braun, unordentlich grau, aufgeräumt hellgrün, sauber grün) ist die Basis der Zonen-Heilung in Phase 2.
 
+### 23b. Raumschiff-Basis, Heilungsbalken, Aufgabenkette (MS18a, umgesetzt in v1.7.0)
+
+- **Schiff:** Rustys Absturzwrack neben dem Start ist die Basis. Abgabe (A, Band, Drohne), automatischer Verkauf über der Reserve je Item, Lager zählt bei allen Kosten. Drei Stufen (Wrack → notdürftig repariert → startklar) mit sichtbarer Optik, größerem Lager und schnellerem Verkauf; Ausbau mit X am Schiff gegen Bolts und Produkte. Terminals bleiben als Außenposten: feste Kosten, eines je Zone.
+- **Hauptziel sichtbar:** Planeten-Heilungsbalken im HUD (weggeräumter Müll über alle Zonen, 0 bis 100 %).
+- **Aufgabenkette:** `data/quests.json`, immer genau eine Aufgabe mit Kästchen im HUD, Zähler, Haken-Moment; führt durch das ganze bisherige Spiel bis „Planet geheilt“. Ersetzt Tutorial und Tipps.
+
 ## 24. Minimap und Karte
 
 - **Minimap:** unten rechts, 280 × 200 px, mit Select-lang oder im Pause-Menü ausblendbar. Zeigt Zonen in ihrer Stufenfarbe (braun → grau → hellgrün → grün), Rusty als Punkt mit Richtung, Gebäude als kleine Quadrate, Müll-Objekte als Punkte.

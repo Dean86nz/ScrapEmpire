@@ -39,6 +39,14 @@ func collectible_config() -> Dictionary:
 	return _read_json("res://data/collectibles.json")
 
 
+func ship_config() -> Dictionary:
+	return _read_json("res://data/ship.json")
+
+
+func quest_defs() -> Array:
+	return _read_json("res://data/quests.json").get("quests", [])
+
+
 func tech_defs() -> Array:
 	return TechState.load_defs("res://data/tech.json")
 

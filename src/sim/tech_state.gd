@@ -53,7 +53,7 @@ func _requirements_met(d: Dictionary) -> bool:
 
 
 ## "" wenn startbar, sonst Grund: unknown, done, busy, requires, bolts, items
-func can_start(id: String, bolts: int, inventory: Inventory) -> String:
+func can_start(id: String, bolts: int, inventory: Inventory, extra: Array = []) -> String:
 	if not by_id.has(id):
 		return "unknown"
 	if unlocked.has(id):
@@ -66,7 +66,10 @@ func can_start(id: String, bolts: int, inventory: Inventory) -> String:
 	if bolts < int(d.get("cost_bolts", 0)):
 		return "bolts"
 	for item in d.get("cost_items", {}):
-		if inventory.count_of(str(item)) < int(d["cost_items"][item]):
+		var have := inventory.count_of(str(item))
+		for inv: Inventory in extra:
+			have += inv.count_of(str(item))
+		if have < int(d["cost_items"][item]):
 			return "items"
 	return ""
 
