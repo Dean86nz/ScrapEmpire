@@ -1,0 +1,137 @@
+class_name NatureView
+extends Node2D
+## Zonen-Heilung: Gras, Blumen, Büsche, Teiche und Tiere je Reinigungsstufe. Rein kosmetisch.
+## Reagiert auf stage_changed und zone_unlocked der Sim; Dekor erscheint mit kleiner Pop-Animation.
+
+signal critters_appeared(zone_id: String)
+
+var _world: SimWorld
+var _player: Node2D
+var _cfg: Dictionary = {}
+var _decor: Dictionary = {}     # zone id → {tile_key → Sprite2D}
+var _critters: Dictionary = {}  # zone id → Array[CritterView]
+var _textures: Dictionary = {}
+
+const DECOR_Z := -8
+
+
+func bind(world: SimWorld, player: Node2D, cfg: Dictionary) -> void:
+	_world = world
+	_player = player
+	_cfg = cfg
+	for z in world.zones.summary(world.nodes):
+		_refresh_zone(str(z["id"]), int(z["stage"]), false)
+	world.zones.stage_changed.connect(func(id: String, st: int) -> void: _refresh_zone(id, st, true))
+	world.zone_unlocked.connect(func(id: String) -> void: _refresh_zone(id, world.zones.stage(id, world.nodes), true))
+
+
+func _tex(kind: String) -> Texture2D:
+	if not _textures.has(kind):
+		_textures[kind] = load("res://assets/sprites/nature/%s.svg" % kind)
+	return _textures[kind]
+
+
+func _occupied() -> Dictionary:
+	var used := {}
+	for n: ResourceNode in _world.nodes.values():
+		for dx in 2:
+			for dy in 2:
+				used[n.tile + Vector2i(dx, dy)] = true
+	for b: Building in _world.buildings.values():
+		for dx in b.def.size.x:
+			for dy in b.def.size.y:
+				used[b.tile + Vector2i(dx, dy)] = true
+	for t in _world.blocked_tiles.keys():
+		used[t] = true
+	return used
+
+
+func _refresh_zone(zone_id: String, stage: int, animate: bool) -> void:
+	if not _world.zones.is_unlocked(zone_id):
+		return
+	var z := _world.zones.zone_by_id(zone_id)
+	if z.is_empty():
+		return
+	var rect: Rect2i = z["rect"]
+	var plan := NaturePlanner.plan(rect, stage, NaturePlanner.zone_seed(zone_id), _cfg, _occupied())
+	if not _decor.has(zone_id):
+		_decor[zone_id] = {}
+	var existing: Dictionary = _decor[zone_id]
+	var wanted := {}
+	var delay := 0.0
+	for d in plan:
+		var key := "%s:%d:%d" % [d["kind"], d["tile"].x, d["tile"].y]
+		wanted[key] = true
+		if existing.has(key):
+			continue
+		var s := Sprite2D.new()
+		s.texture = _tex(str(d["kind"]))
+		var size := NaturePlanner._footprint(str(d["kind"]), _cfg.get("decor_size", {}))
+		s.position = Vector2(d["tile"] * 64) + Vector2(size * 64) * 0.5
+		s.z_index = DECOR_Z
+		s.flip_h = (d["tile"].x + d["tile"].y) % 2 == 0
+		add_child(s)
+		existing[key] = s
+		if animate:
+			s.scale = Vector2.ZERO
+			delay = minf(delay + 0.02, 1.5)
+			var tw := create_tween()
+			tw.tween_interval(delay)
+			tw.tween_property(s, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	# Nicht mehr gewolltes Dekor (Stufe gesunken) verschwindet
+	for key in existing.keys():
+		if not wanted.has(key):
+			var s: Sprite2D = existing[key]
+			existing.erase(key)
+			if animate:
+				var tw := create_tween()
+				tw.tween_property(s, "scale", Vector2.ZERO, 0.3)
+				tw.tween_callback(s.queue_free)
+			else:
+				s.queue_free()
+	_refresh_critters(zone_id, stage, rect, animate)
+
+
+func _refresh_critters(zone_id: String, stage: int, rect: Rect2i, animate: bool) -> void:
+	var wanted: Dictionary = _cfg.get("animals", {}).get(str(stage), {})
+	var speeds: Dictionary = _cfg.get("animal_speed", {})
+	if not _critters.has(zone_id):
+		_critters[zone_id] = []
+	var list: Array = _critters[zone_id]
+	var have := {}
+	for c: CritterView in list:
+		have[c.kind] = int(have.get(c.kind, 0)) + 1
+	var rect_px := Rect2(Vector2(rect.position * 64), Vector2(rect.size * 64))
+	var added := false
+	var seed_base := NaturePlanner.zone_seed(zone_id)
+	for kind in wanted.keys():
+		var need := int(wanted[kind]) - int(have.get(kind, 0))
+		for i in maxi(need, 0):
+			var c := CritterView.new()
+			c.setup(str(kind), rect_px, float(speeds.get(kind, 60)), _player, seed_base + list.size() * 31 + i)
+			add_child(c)
+			list.append(c)
+			added = true
+	# Zu viele (Stufe gesunken): entfernen
+	for c: CritterView in list.duplicate():
+		if int(wanted.get(c.kind, 0)) < int(have.get(c.kind, 0)):
+			have[c.kind] = int(have[c.kind]) - 1
+			list.erase(c)
+			c.queue_free()
+	if added and animate:
+		critters_appeared.emit(zone_id)
+
+
+## Anzahl Dekor-Objekte (Debug/Tests).
+func decor_count() -> int:
+	var n := 0
+	for z in _decor.values():
+		n += z.size()
+	return n
+
+
+func critter_count() -> int:
+	var n := 0
+	for l in _critters.values():
+		n += l.size()
+	return n

@@ -21,6 +21,9 @@ const LONG_PRESS_SECONDS := 0.45
 var _world: SimWorld
 var _map_data: Dictionary = {}
 var _zone_gates: Dictionary = {}  # "a|b" → Array[Node]
+var _nature: NatureView
+var _sky: DayLight
+var _rain: RainLayer
 var _chapter_timer := 0.0
 var _build_press_time := -1.0
 var _tech_press_time := -1.0
@@ -95,6 +98,7 @@ func _ready() -> void:
 	_tutorial.step_changed.connect(func(_i: int, text: String) -> void: _hud.set_tutorial(text))
 	_tutorial.finished.connect(_refresh_chapter_hud)
 	_world.zone_unlocked.connect(_on_zone_unlocked)
+	_setup_nature()
 	_refresh_chapter_hud()
 	_open_unlocked_gates()
 	_pause_menu.opened.connect(save_game)
@@ -374,6 +378,27 @@ func _on_target_chosen(tile: Vector2i, ok: bool) -> void:
 	var t := _pending_task_type
 	_pending_task_type = -1
 	_task_editor.on_target_result(t, tile, ok)
+
+
+## Zonen-Heilung (Phase 2): Dekor und Tiere je Stufe, Tageslicht, Regen.
+func _setup_nature() -> void:
+	var cfg := NaturePlanner.load_config()
+	_nature = NatureView.new()
+	_nature.name = "Nature"
+	add_child(_nature)
+	_nature.bind(_world, _player, cfg)
+	_nature.critters_appeared.connect(func(_id: String) -> void: Quips.say("critter", true))
+	_sky = DayLight.new()
+	_sky.name = "Sky"
+	_sky.setup(cfg)
+	add_child(_sky)
+	_rain = RainLayer.new()
+	_rain.name = "Rain"
+	add_child(_rain)
+	_sky.rain_started.connect(func() -> void:
+		_rain.set_raining(true)
+		Quips.say("rain", true))
+	_sky.rain_stopped.connect(func() -> void: _rain.set_raining(false))
 
 
 ## Kapitel-Anzeige oben: Tutorial-Schritt oder Zonenziel.

@@ -67,6 +67,20 @@ func _process(_delta: float) -> bool:
 					current_scene.debug_scenario(kv[1])
 				"feature":
 					clock.world.unlocked_features[kv[1]] = true
+				"clean":  # clean=z01;0.95 entfernt Müll-Objekte der Zone bis zum Reinigungsgrad
+					var zc := kv[1].split(";")
+					var goal := float(zc[1])
+					var zone_id := zc[0]
+					var ids: Array = clock.world.nodes.keys()
+					for nid in ids:
+						if clock.world.zones.cleanliness(zone_id, clock.world.nodes) >= goal:
+							break
+						var n: ResourceNode = clock.world.nodes[nid]
+						if n.is_wreck() and not n.is_resource() and clock.world.zones.zone_id_at(n.tile) == zone_id:
+							clock.world._remove_node(n)
+					clock.world.zones.refresh(clock.world.nodes)
+				"rain":
+					current_scene.get_node("Sky").start_rain_now()
 				"unlock":  # unlock=z11 schaltet eine Zone frei (Tor öffnet sich)
 					clock.world.zones.unlocked[kv[1]] = true
 					clock.world.zone_unlocked.emit(kv[1])

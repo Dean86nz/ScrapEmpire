@@ -131,6 +131,18 @@ func _draw() -> void:
 	for n: ResourceNode in _world.nodes.values():
 		if n.is_wreck() and not n.is_resource() and _world.zones.is_unlocked(_world.zones.zone_id_at(n.tile)):
 			draw_circle(_offset + (Vector2(n.tile) + Vector2(0.5, 0.5)) * s, maxf(s * 0.5, 2.0), Color(0.3, 0.25, 0.2))
+	# Legende unten: vier Farbfelder
+	var ly := size.y - 30.0
+	var lx := 10.0
+	draw_rect(Rect2(0, ly - 8, size.x, 42), Color(1.0, 0.96, 0.8, 0.95))
+	draw_string(font, Vector2(lx, ly + 18), tr("MAP_LEGEND"), HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color(0.165, 0.165, 0.2))
+	lx += 110.0
+	for i in 4:
+		draw_rect(Rect2(lx, ly, 26, 26), STAGE_COLORS[i])
+		draw_rect(Rect2(lx, ly, 26, 26), Color(0.165, 0.165, 0.2), false, 2.0)
+		var label := tr("ZONE_STAGE_%d" % i).split(":")[-1].strip_edges().split(" ")[0]
+		draw_string(font, Vector2(lx + 32, ly + 18), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color(0.165, 0.165, 0.2))
+		lx += 32 + 150.0
 	for b: Building in _world.buildings.values():
 		var br := b.rect_px()
 		draw_rect(Rect2(_offset + Vector2(br.position) / 64.0 * s, Vector2(br.size) / 64.0 * s), Color(0.95, 0.55, 0.16))

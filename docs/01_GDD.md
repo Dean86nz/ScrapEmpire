@@ -371,7 +371,8 @@ Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten 
 
 Priorität: (1) Zonen-Heilung und Minimap-Zustände, (2) Logistik-Drohnen, (3) Dekoration und Fundstücke, (4) der Rest.
 
-### B. Der Planet heilt
+### B. Der Planet heilt (MS13, umgesetzt in v1.2.0)
+Umsetzung: `data/nature.json` steuert Dichten je Stufe (Gras ab Stufe 1, Blumen ab 2, Büsche und Teiche ab 3), Tiere (Käfer ab 2, Vögel ab 3), Tageszyklus 360 s ohne Nacht, Regen alle 4–7 min für 30 s. Platzierung deterministisch je Zonen-Seed, Haufen, Gebäude und Zäune bleiben frei. Alles rein kosmetisch, nichts davon im Spielstand.
 - Zonen wechseln stufenweise ihren Look: Boden grün, Blumen, klares Wasser, hellerer Himmel (Tilemap-Layer pro Stufe, Übergang mit Partikeln).
 - Tiere kehren in saubere Zonen zurück und begleiten Rusty neugierig (kosmetisch, datengetrieben wie Helfer-Sprüche).
 - Weiches Wetter und Tageszeit ohne dunkle Nacht; Regen lässt Natur schneller nachwachsen.
