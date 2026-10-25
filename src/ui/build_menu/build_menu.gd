@@ -36,6 +36,8 @@ func _rebuild() -> void:
 	_buttons.clear()
 	var w := SimClock.world
 	for def_id in DataRegistry.building_defs:
+		if not w.is_building_unlocked(def_id):
+			continue
 		var def: BuildingDef = DataRegistry.building_defs[def_id]
 		var btn := Button.new()
 		btn.custom_minimum_size = Vector2(520, 76)

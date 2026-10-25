@@ -139,7 +139,7 @@ Forschung wird im Techbaum-Menü (Select) gestartet: Bolts werden sofort abgezog
 | 3 | `chest` | Kiste | 80 | 10 s | 2 | Kiste baubar |
 | 4 | `press` | Presse | 150 | 15 s | 2 | Presse baubar, Rezept Plastikplatte |
 | 5 | `conveyor` | Förderband | 200 | 20 s | 2 | Gerade Bänder, Einfügen/Auswerfen an Maschinen |
-| 6 | `conveyor_turn` | Kurvenband | 300 | 30 s | 5 | Bandkurven |
+| 6 | `extractor` | Saugstation | 300 | 30 s | 5 | Saugstation baubar (Kurven sind automatisch, Stand MS5) |
 | 7 | `suction_plus` | Turbo-Sauger | 350 | 35 s | 1 | Saugreichweite 3,5, 1 Item/0,15 s |
 | 8 | `hammer_plus` | Presslufthammer | 400 | 40 s | 1 | Hammer 2 Items/Schlag |
 | 9 | `gear` | Zahnrad-Rezept | 500 | 50 s | 4 | Presse kann Zahnräder |

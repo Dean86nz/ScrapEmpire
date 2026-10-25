@@ -8,6 +8,7 @@ const MAP_PATH := "res://data/maps/tutorial.json"
 @onready var _world_view: WorldView = $WorldView
 @onready var _hud: CanvasLayer = $Hud
 @onready var _build_menu: CanvasLayer = $BuildMenu
+@onready var _progress_menu: CanvasLayer = $ProgressMenu
 @onready var _cursor: BuildCursor = $BuildCursor
 
 var _world: SimWorld
@@ -20,6 +21,8 @@ func _ready() -> void:
 	_world.item_values = DataRegistry.item_values()
 	_world.recipes = DataRegistry.recipes
 	_world.progression = DataRegistry.new_progression()
+	_world.rare_items = DataRegistry.rare_items()
+	_world.setup_progression_data(DataRegistry.tech_defs(), DataRegistry.skill_data())
 	var start := MapLoader.load_into(_world, MAP_PATH)
 	SimClock.reset_world(_world)
 
@@ -38,7 +41,11 @@ func _ready() -> void:
 
 	_world_view.bind(_world, _player)
 	_hud.bind(_world)
+	_progress_menu.bind(_world)
 	_player.hotbar_selected.connect(_hud.set_selected_slot)
+	_world.tech_unlocked.connect(func(_id: String) -> void: Quips.say("tech_done", true))
+	_world.research_failed.connect(func(reason: String) -> void: Quips.say("research_fail_" + reason, true))
+	_world.skill_bought.connect(func(_id: String, _lvl: int) -> void: Quips.say("skill_bought"))
 
 	_build_menu.build_selected.connect(_on_build_selected)
 	_build_menu.demolish_selected.connect(_cursor.start_demolish)
@@ -63,6 +70,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("build_menu"):
 		_build_menu.open()
 		get_viewport().set_input_as_handled()
+	elif InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("tech_tree"):
+		_progress_menu.open()
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("debug_perf"):
 		debug_scenario("perf")
 		get_viewport().set_input_as_handled()
@@ -70,12 +80,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		debug_scenario("chain")
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("debug_cheat"):
-		# Dev-Cheat bis MS6 (Skilltree): Werkzeug-Stufen +1, etwas Material.
-		_world.player.suction_tier = mini(_world.player.suction_tier + 1, 5)
-		_world.player.hammer_tier = mini(_world.player.hammer_tier + 1, 5)
+		# Dev-Cheat: Bolts, Material, XP und Chrom zum Testen der Menüs.
+		_world.bolts += 500
+		_world.bolts_changed.emit(_world.bolts)
 		_world.player.inventory.add("scrap", 20)
 		_world.player.inventory.add("copper", 10)
-		EventBus.quip.emit("DEBUG_TIER_UP")
+		_world.player.inventory.add("chrome", 5)
+		_world.progression.add_xp(100)
+		EventBus.quip.emit("DEBUG_CHEAT")
 		get_viewport().set_input_as_handled()
 
 

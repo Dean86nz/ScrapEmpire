@@ -15,6 +15,7 @@ func accept_from_belt(item_id: String) -> bool:
 	return true
 
 var buffer: Array[String] = []
+var sell_interval := SELL_INTERVAL  # aus Modifiers (Turbo-Terminal: 4)
 var _cooldown := 0
 var _sold := ""
 
@@ -34,7 +35,7 @@ func tick() -> bool:
 	if buffer.is_empty():
 		return false
 	_sold = buffer.pop_front()
-	_cooldown = SELL_INTERVAL
+	_cooldown = sell_interval
 	return true
 
 

@@ -27,6 +27,23 @@ func new_progression() -> Progression:
 	return Progression.load_config("res://data/progression.json")
 
 
+func tech_defs() -> Array:
+	return TechState.load_defs("res://data/tech.json")
+
+
+func skill_data() -> Dictionary:
+	return SkillState.load_file("res://data/skills.json")
+
+
+## Items mit "rare": true (Kenner-Skill): item_id → true
+func rare_items() -> Dictionary:
+	var result: Dictionary = {}
+	for id in items:
+		if bool(items[id].get("rare", false)):
+			result[id] = true
+	return result
+
+
 func node_name(kind: String) -> String:
 	var d: Dictionary = ResourceNode.defs.get(kind, {})
 	return tr(str(d.get("name_key", kind)))

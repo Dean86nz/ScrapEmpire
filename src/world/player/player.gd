@@ -19,6 +19,8 @@ var facing := Vector2.RIGHT
 var selected_slot := 0
 
 var _idle_time := 0.0
+var _boost_time := 0.0
+var _boost_cooldown := 0.0
 
 @onready var _sprite: Sprite2D = $Sprite2D
 @onready var _aim_marker: Node2D = $AimMarker
@@ -65,7 +67,19 @@ func _physics_process(delta: float) -> void:
 	var move := Vector2.ZERO
 	if not in_menu:
 		move = Input.get_vector("move_left", "move_right", "move_up", "move_down", InputMapSetup.DEADZONE)
-	velocity = move * GameConfig.PLAYER_SPEED_PX
+	var mods: Dictionary = SimClock.world.mods
+	# Turbo-Boost (Skill): L3 / Shift, 2 s schnell, dann Abklingzeit.
+	_boost_cooldown = maxf(_boost_cooldown - delta, 0.0)
+	if _boost_time > 0.0:
+		_boost_time -= delta
+	elif not in_menu and float(mods["boost_cooldown"]) > 0.0 and _boost_cooldown <= 0.0 and Input.is_action_just_pressed("boost"):
+		_boost_time = float(mods["boost_seconds"])
+		_boost_cooldown = float(mods["boost_cooldown"]) + _boost_time
+	var speed := GameConfig.PLAYER_SPEED_PX * float(mods["speed_mult"])
+	if _boost_time > 0.0:
+		speed *= float(mods["boost_mult"])
+	_sprite.modulate = Color(1.0, 1.0, 0.75) if _boost_time > 0.0 else Color.WHITE
+	velocity = move * speed
 	move_and_slide()
 
 	var aim := Vector2.ZERO
@@ -87,7 +101,7 @@ func _physics_process(delta: float) -> void:
 			Quips.say("idle")
 
 	# Körper dreht sich weich in Laufrichtung; das Sprite blickt nach +X.
-	_sprite.rotation = rotate_toward(_sprite.rotation, facing.angle(), TURN_SPEED * delta)
+	_sprite.rotation = rotate_toward(_sprite.rotation, facing.angle(), TURN_SPEED * float(mods["turn_mult"]) * delta)
 	_aim_marker.rotation = aim_dir.angle()
 
 	var state: PlayerState = SimClock.world.player

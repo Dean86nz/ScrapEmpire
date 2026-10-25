@@ -7,7 +7,6 @@ NODE_COPPER_TANGLE,Kabelknäuel,Cable tangle
 NODE_PLASTIC_CRUMBS,Plastikbröckchen,Plastic crumbs
 NODE_WRECK,Wrack,Wreck
 HUD_BOLTS,Bolts,Bolts
-HUD_HINT_GAME,"Stick: bewegen   ·   RT: saugen   ·   LT: hämmern   ·   Y / Tab: bauen   ·   LB/RB: Slot   ·   Start / Esc: Menü","Stick: move   ·   RT: suck   ·   LT: hammer   ·   Y / Tab: build   ·   LB/RB: slot   ·   Start / Esc: menu"
 QUIP_START_1,Systemcheck: Räder ja. Plan nein.,System check: wheels yes. Plan no.
 QUIP_START_2,Alles voller Schrott. Endlich zu Hause.,Scrap everywhere. Finally home.
 QUIP_INV_FULL_1,Voll. Ich bin kein Lagerhaus.,Full. I am not a warehouse.
@@ -34,7 +33,6 @@ HINT_WITHDRAW,"A: aus %s entnehmen (leeren Slot wählen)","A: take from %s (sele
 FAIL_COST,Zu wenig Material. Erst sammeln.,Not enough material. Collect first.
 FAIL_BLOCKED,Hier ist kein Platz.,No room here.
 FAIL_RANGE,Zu weit weg. Näher ran.,Too far away. Get closer.
-HUD_HINT_GAME_KB,"WASD: bewegen   ·   LMB: saugen   ·   RMB: hämmern   ·   Tab: bauen   ·   Mausrad: Slot   ·   E: einlegen   ·   Esc: Menü","WASD: move   ·   LMB: suck   ·   RMB: hammer   ·   Tab: build   ·   wheel: slot   ·   E: insert   ·   Esc: menu"
 HINT_PLACE_KB,"Maus / Pfeile: Cursor   ·   LMB / E: platzieren   ·   Q: drehen   ·   RMB / Esc: abbrechen   ·   Tab: Menü","Mouse / arrows: cursor   ·   LMB / E: place   ·   Q: rotate   ·   RMB / Esc: cancel   ·   Tab: menu"
 HINT_DEMOLISH_KB,"Maus / Pfeile: Cursor   ·   LMB / E: abreißen   ·   RMB / Esc: abbrechen   ·   Tab: Menü","Mouse / arrows: cursor   ·   LMB / E: demolish   ·   RMB / Esc: cancel   ·   Tab: menu"
 HINT_MENU_KB,"Pfeile / Maus: wählen   ·   Enter / Klick: bestätigen   ·   Esc: schließen","Arrows / mouse: select   ·   Enter / click: confirm   ·   Esc: close"
@@ -70,8 +68,104 @@ QUIP_LEVEL_UP_1,Level up! Ich fühle mich… schraubiger.,Level up! I feel… bo
 QUIP_LEVEL_UP_2,Ding! Ein Skillpunkt. Nicht ausgeben. Doch.,Ding! A skill point. Don't spend it. Do.
 QUIP_LEVEL_UP_3,Ich wachse. Nicht körperlich. Innerlich.,I'm growing. Not physically. Inside.
 QUIP_FIRST_CHROME,Chrom! Ich kann mich drin spiegeln. Hübsch.,Chrome! I can see myself in it. Handsome.
-DEBUG_TIER_UP,[DEV] Werkzeug-Stufe +1,[DEV] Tool tier +1
 BLD_CONVEYOR,Förderband,Conveyor belt
 BLD_EXTRACTOR,Saugstation,Suction station
 DEBUG_PERF,[DEV] Perf-Szenario: ~480 Bänder gelegt,[DEV] Perf scenario: ~480 belts placed
 DEBUG_CHAIN,[DEV] Beispielkette unterhalb gebaut,[DEV] Demo chain built below
+TECH_TERMINAL,Verkaufsterminal,Sell terminal
+TECH_TERMINAL_DESC,Verwandelt Items in Bolts.,Turns items into bolts.
+TECH_FURNACE,Schmelzofen,Furnace
+TECH_FURNACE_DESC,Schrott zu Eisenbarren und Kupfer zu Kupferbarren.,Scrap to iron bars and copper to copper bars.
+TECH_CHEST,Kiste,Chest
+TECH_CHEST_DESC,Lager mit 12 Slots für alles.,Storage with 12 slots for everything.
+TECH_PRESS,Presse,Press
+TECH_PRESS_DESC,Plastik zu Plastikplatten.,Plastic to plastic sheets.
+TECH_CONVEYOR,Förderband,Conveyor belt
+TECH_CONVEYOR_DESC,Transportiert Items zwischen Maschinen.,Moves items between machines.
+TECH_EXTRACTOR,Saugstation,Suction station
+TECH_EXTRACTOR_DESC,Holt dauerhaft Rohstoffe aus einem Haufen.,Pulls resources from a pile forever.
+TECH_SUCTION_PLUS,Turbo-Sauger,Turbo vacuum
+TECH_SUCTION_PLUS_DESC,Saugt schneller und eine Kachel weiter.,Sucks faster and one tile further.
+TECH_HAMMER_PLUS,Presslufthammer,Jackhammer
+TECH_HAMMER_PLUS_DESC,Zwei Items pro Schlag.,Two items per hit.
+TECH_GEAR,Zahnrad-Rezept,Gear recipe
+TECH_GEAR_DESC,2 Eisenbarren → Zahnrad (20 Bolts).,2 iron bars → gear (20 bolts).
+TECH_OIL_CHANGE,Ölwechsel,Oil change
+TECH_OIL_CHANGE_DESC,Rusty fährt deutlich schneller.,Rusty drives much faster.
+TECH_BACKPACK,Rucksack,Backpack
+TECH_BACKPACK_DESC,Vier zusätzliche Inventar-Slots.,Four extra inventory slots.
+TECH_CIRCUIT,Denkbrett-Rezept,Thinkboard recipe
+TECH_CIRCUIT_DESC,Kupferbarren + Plastikplatte → Denkbrett (30 Bolts).,Copper bar + plastic sheet → thinkboard (30 bolts).
+TECH_TERMINAL_PLUS,Turbo-Terminal,Turbo terminal
+TECH_TERMINAL_PLUS_DESC,Verkauft fünfmal so schnell.,Sells five times faster.
+TECH_AUTOPILOT,Autopilot v0.1,Autopilot v0.1
+TECH_AUTOPILOT_DESC,Rusty arbeitet Aufgabenlisten allein ab.,Rusty works task lists on his own.
+TECH_AUTOPILOT_SPEED,Autopilot v0.2,Autopilot v0.2
+TECH_AUTOPILOT_SPEED_DESC,"Aufgaben mit 1,5-fachem Tempo.",Tasks at 1.5× speed.
+TECH_HELPER_WORKSHOP,Helfer-Werkstatt,Helper workshop
+TECH_HELPER_WORKSHOP_DESC,Helfer-Roboter kaufen.,Buy helper robots.
+TECH_HELPER_TOOLS,Helfer-Werkzeug II,Helper tools II
+TECH_HELPER_TOOLS_DESC,Helfer bauen bis Stufe 2 ab.,Helpers mine up to tier 2.
+TECH_DONE,Erforscht,Researched
+TECH_RESEARCHING,Wird erforscht,Researching
+TECH_NEEDS,Braucht: %s,Needs: %s
+TECH_MISSING_BOLTS,Es fehlen %d Bolts,Missing %d bolts
+TECH_MISSING_ITEMS,Material fehlt,Missing material
+TECH_BUSY,Andere Forschung läuft,Other research running
+TECH_READY,A: Forschen,A: Research
+HUD_RESEARCH,Forschung,Research
+MENU_PROGRESS_FOOTER,D-Pad: wählen · A: forschen / kaufen · LB/RB: Tab · B: schließen,D-pad: select · A: research / buy · LB/RB: tab · B: close
+SKILL_BRANCH_MOVEMENT,Bewegung,Movement
+SKILL_BRANCH_INVENTORY,Inventar,Inventory
+SKILL_BRANCH_TRADE,Handel,Trade
+SKILL_BRANCH_TOOLS,Werkzeuge,Tools
+SKILL_FAST_WHEELS,Flinke Räder,Fast wheels
+SKILL_FAST_WHEELS_DESC,+8 % Tempo je Stufe,+8% speed per level
+SKILL_BOOST,Turbo-Boost,Turbo boost
+SKILL_BOOST_DESC,L3 / Shift: 2 s +40 % Tempo; Abklingzeit 8 / 6 / 4 s,L3 / Shift: 2 s +40% speed; cooldown 8 / 6 / 4 s
+SKILL_AGILITY,Wendigkeit,Agility
+SKILL_AGILITY_DESC,+25 % Drehgeschwindigkeit je Stufe,+25% turn speed per level
+SKILL_POCKETS,Taschen,Pockets
+SKILL_POCKETS_DESC,+1 Inventar-Slot je Stufe,+1 inventory slot per level
+SKILL_STACKER,Stapler,Stacker
+SKILL_STACKER_DESC,+5 Stapelgröße je Stufe,+5 stack size per level
+SKILL_MAGNET,Magnet,Magnet
+SKILL_MAGNET_DESC,Sammelt lose Items im Umkreis von 1 / 2 / 3 Kacheln automatisch,Collects loose items within 1 / 2 / 3 tiles automatically
+SKILL_HAGGLE,Feilschen,Haggling
+SKILL_HAGGLE_DESC,+5 % Bolts je Verkauf und Stufe,+5% bolts per sale and level
+SKILL_CONNOISSEUR,Kenner,Connoisseur
+SKILL_CONNOISSEUR_DESC,"+10 % auf Kupfer, Plastik, Chrom und Produkte daraus","+10% on copper, plastic, chrome and their products"
+SKILL_WHOLESALE,Großhändler,Wholesaler
+SKILL_WHOLESALE_DESC,+5 % wenn der Terminal-Puffer mindestens 20 Items hält,+5% when the terminal buffer holds at least 20 items
+SKILL_SMASH,Schlagkraft,Smash
+SKILL_SMASH_DESC,Hammer-Stufe +1 je Stufe,Hammer tier +1 per level
+SKILL_SUCTION_POWER,Saugkraft,Suction power
+SKILL_SUCTION_POWER_DESC,Sauger-Stufe +1 je Stufe,Vacuum tier +1 per level
+SKILL_TEMPO,Tempo,Tempo
+SKILL_TEMPO_DESC,+15 % Abbau-Geschwindigkeit je Stufe,+15% mining speed per level
+SKILL_REACH,Reichweite,Reach
+SKILL_REACH_DESC,"+0,5 Kacheln Saug- und Hammerreichweite je Stufe",+0.5 tiles vacuum and hammer reach per level
+SKILL_MAXED,Voll ausgebaut,Maxed out
+SKILL_NEEDS,Braucht %s Stufe %d,Needs %s level %d
+SKILL_NO_POINTS,Kein Skillpunkt,No skill point
+SKILL_BUY,A: Kaufen (1 Punkt),A: Buy (1 point)
+GOAL_RESEARCHING,Läuft,Running
+GOAL_TECH,Forschung,Research
+GOAL_READY,bereit,ready
+GOAL_MISSING_BOLTS,es fehlen %d Bolts,missing %d bolts
+GOAL_MISSING_CHROME,es fehlen %d Chrom,missing %d chrome
+GOAL_OBJECT,Nächstes Objekt,Next object
+GOAL_NEEDS_TOOL,Werkzeug-Stufe %d nötig (Skill %s),tool tier %d needed (skill %s)
+GOAL_HELPERS,Helfer,Helpers
+FAIL_LOCKED,Noch nicht erforscht. Select öffnet den Techbaum.,Not researched yet. Select opens the tech tree.
+QUIP_TECH_DONE_1,Forschung fertig. Ich bin jetzt schlauer. Theoretisch.,Research done. I am smarter now. In theory.
+QUIP_TECH_DONE_2,Ding! Neues Wissen. Wo lege ich das hin?,Ding! New knowledge. Where do I put it?
+QUIP_RESEARCH_BOLTS,Zu wenig Bolts. Verkaufen hilft.,Not enough bolts. Selling helps.
+QUIP_RESEARCH_ITEMS,Da fehlt Material. Chrom glänzt übrigens.,Missing material. Chrome is shiny by the way.
+QUIP_RESEARCH_BUSY,Ich forsche schon. Eins nach dem anderen.,Already researching. One at a time.
+QUIP_RESEARCH_REQUIRES,Erst die Grundlagen. Dann das.,Basics first. Then this.
+QUIP_SKILL_1,Ich fühle mich… verbessert.,I feel… improved.
+QUIP_SKILL_2,Skill gekauft. Keine Rückgabe.,Skill bought. No refunds.
+DEBUG_CHEAT,"[DEV] +500 Bolts, Material, Chrom, 100 XP","[DEV] +500 bolts, material, chrome, 100 XP"
+HUD_HINT_GAME,"Stick: bewegen   ·   RT: saugen   ·   LT: hämmern   ·   Y: bauen   ·   Select: Fortschritt   ·   LB/RB: Slot   ·   Start: Menü","Stick: move   ·   RT: suck   ·   LT: hammer   ·   Y: build   ·   Select: progress   ·   LB/RB: slot   ·   Start: menu"
+HUD_HINT_GAME_KB,"WASD: bewegen   ·   LMB: saugen   ·   RMB: hämmern   ·   Tab: bauen   ·   T: Fortschritt   ·   Mausrad: Slot   ·   E: einlegen   ·   Esc: Menü","WASD: move   ·   LMB: suck   ·   RMB: hammer   ·   Tab: build   ·   T: progress   ·   wheel: slot   ·   E: insert   ·   Esc: menu"

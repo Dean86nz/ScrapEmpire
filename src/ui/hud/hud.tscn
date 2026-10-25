@@ -22,13 +22,49 @@ text = "0 Bolts"
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -520.0
+offset_left = -840.0
 offset_top = 24.0
 offset_right = -32.0
 offset_bottom = 96.0
 grow_horizontal = 0
 theme_override_constants/separation = 8
 alignment = 2
+
+[node name="Research" type="HBoxContainer" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 24.0
+offset_right = 300.0
+offset_bottom = 64.0
+grow_horizontal = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="Label" type="Label" parent="Research"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.165, 0.165, 0.2, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 24
+text = "Forschung: Schmelzofen"
+
+[node name="Bar" type="ProgressBar" parent="Research"]
+custom_minimum_size = Vector2(240, 22)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+show_percentage = false
+
+[node name="Time" type="Label" parent="Research"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.165, 0.165, 0.2, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 24
+text = "10 s"
 
 [node name="XpBar" parent="." instance=ExtResource("2")]
 
