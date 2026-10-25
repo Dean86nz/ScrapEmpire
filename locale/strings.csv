@@ -270,3 +270,14 @@ HELPER_STUCK_3,Moment. Wo bin ich? Ach so. Weiter.,Wait. Where am I? Oh right. O
 QUIP_HELPER_LOCKED,Helfer? Erst die Helfer-Werkstatt erforschen.,Helpers? Research the helper workshop first.
 QUIP_HELPER_MAX,Mehr als sechs Helfer werden chaotisch. Nein.,More than six helpers gets chaotic. No.
 QUIP_HELPER_NO_DEPOT,Das Lager muss ein Gebäude sein. Eine Kiste zum Beispiel.,The depot must be a building. A chest for example.
+END_TITLE,MVP geschafft! Der ganze Techbaum ist erforscht.,MVP complete! The whole tech tree is researched.
+END_BODY,"Spielzeit: %d Minuten · Bolts: %d · Level: %d · Helfer: %d · Saubere Zonen: %d von %d
+
+Rusty sagt: Danke. Ich mache dann mal weiter. Allein. Wie geplant.
+
+Alles danach ist Phase 2: Zonen-Heilung, Drohnen, Deko, Fundstücke, Besucher.","Play time: %d minutes · Bolts: %d · Level: %d · Helpers: %d · Clean zones: %d of %d
+
+Rusty says: Thanks. I will carry on then. Alone. As planned.
+
+Everything after this is phase 2: zone healing, drones, decoration, collectibles, visitors."
+END_CLOSE,Weiterspielen,Keep playing

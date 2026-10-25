@@ -24,7 +24,7 @@ func _process(_delta: float) -> void:
 	for b: Building in w.buildings.values():
 		if b is Conveyor:
 			belt_items += (b as Conveyor).items.size()
-	_label.text = "FPS %d\nTick %.2f ms\nTicks %d\nItems %d (Band %d)\n%s\nSauger T%d  Hammer T%d\nXP %d" % [
+	_label.text = "FPS %d\nTick %.2f ms\nTicks %d\nItems %d (Band %d)\n%s\nSauger T%d  Hammer T%d\nXP %d\nHelfer %d" % [
 		Engine.get_frames_per_second(),
 		SimClock.last_tick_ms,
 		w.tick_count,
@@ -33,4 +33,5 @@ func _process(_delta: float) -> void:
 		"Gamepad" if InputRouter.is_gamepad else "Tastatur/Maus",
 		w.player.suction_tier, w.player.hammer_tier,
 		w.progression.total_xp,
+		w.helpers.size(),
 	]

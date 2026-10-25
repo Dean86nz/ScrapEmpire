@@ -28,9 +28,20 @@ func say(text: String) -> void:
 	_label.text = text
 	_panel.visible = true
 	_timer = SHOW_SECONDS
-	# Panel zentriert über Rusty
+	# Panel zentriert über dem Sprecher; am oberen Bildrand stattdessen darunter.
 	await get_tree().process_frame
 	_panel.position = Vector2(-_panel.size.x / 2.0, -_panel.size.y)
+	var screen_pos := get_viewport().get_canvas_transform() * (global_position + _panel.position)
+	if screen_pos.y < 140.0:
+		_panel.position.y = 110.0
+	var vp_w := get_viewport().get_visible_rect().size.x
+	var zoom := get_viewport().get_canvas_transform().get_scale().x
+	var left := (get_viewport().get_canvas_transform() * (global_position + _panel.position)).x
+	var right := left + _panel.size.x * zoom
+	if left < 16.0:
+		_panel.position.x += (16.0 - left) / zoom
+	elif right > vp_w - 16.0:
+		_panel.position.x -= (right - (vp_w - 16.0)) / zoom
 
 
 func _process(delta: float) -> void:

@@ -16,6 +16,7 @@ const LONG_PRESS_SECONDS := 0.45
 @onready var _pause_menu: CanvasLayer = $PauseMenu
 @onready var _task_editor: CanvasLayer = $TaskEditor
 @onready var _tutorial: TutorialController = $Tutorial
+@onready var _end_screen: CanvasLayer = $EndScreen
 
 var _world: SimWorld
 var _map_data: Dictionary = {}
@@ -100,6 +101,7 @@ func _ready() -> void:
 	_pause_menu.language_changed.connect(_on_language_changed)
 	get_tree().auto_accept_quit = false
 	_world.tech_unlocked.connect(func(_id: String) -> void: Quips.say("tech_done", true))
+	_world.tech_unlocked.connect(_check_mvp_done)
 	_world.research_failed.connect(func(reason: String) -> void: Quips.say("research_fail_" + reason, true))
 	_world.skill_bought.connect(func(_id: String, _lvl: int) -> void: Quips.say("skill_bought"))
 
@@ -255,6 +257,15 @@ func debug_scenario(name: String) -> void:
 			_world.place_free("conveyor", o + Vector2i(7, 0), 0)
 			_world.place_free("sell_terminal", o + Vector2i(8, 0), 0)
 			EventBus.quip.emit("DEBUG_CHAIN")
+		"endgame":
+			_world.bolts += 100000
+			_world.bolts_changed.emit(_world.bolts)
+			_world.player.inventory.add("chrome", 50)
+			for d: Dictionary in _world.tech.defs:
+				_world.tech.unlocked[str(d["id"])] = true
+				_world._apply_tech_effects(str(d["id"]))
+			_world.recompute_modifiers()
+			_check_mvp_done("")
 		"helpers":
 			_world.unlocked_features["helpers"] = true
 			_world.unlocked_features["helper_tools"] = true
@@ -299,6 +310,16 @@ func debug_scenario(name: String) -> void:
 						(c as Conveyor).try_insert(kinds[(n + i) % 3], i * Conveyor.SPACING)
 						n += 1
 			EventBus.quip.emit("DEBUG_PERF")
+
+
+## Alle Techknoten erforscht → MVP-Ende-Bildschirm (einmalig).
+func _check_mvp_done(_id: String) -> void:
+	if bool(_world.flags.get("mvp_done", false)):
+		return
+	if _world.tech.available().is_empty() and _world.tech.unlocked.size() >= _world.tech.defs.size():
+		_world.flags["mvp_done"] = true
+		save_game()
+		_end_screen.show_stats(_world)
 
 
 func _on_zone_stage_changed(zone_id: String, stage: int) -> void:

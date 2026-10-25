@@ -47,6 +47,7 @@ func _rebuild() -> void:
 		btn.text = "%s   –   %s" % [tr(def.name_key), _cost_text(w.next_cost(def))]
 		if not Economy.can_afford(w.player.inventory, w.next_cost(def)):
 			btn.add_theme_color_override("font_color", Color(0.6, 0.25, 0.2))
+			btn.self_modulate = Color(0.82, 0.82, 0.82)
 		btn.pressed.connect(func() -> void: _choose(def_id))
 		_list.add_child(btn)
 		_buttons.append(btn)
