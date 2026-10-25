@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dtdm12maugyv"
-path="res://.godot/imported/wreck.svg-5ecd5b1565fe9517212ba230a15eea29.ctex"
+uid="uid://cixamexmmtubl"
+path="res://.godot/imported/toaster.svg-8a6b69b4875a7fc21b06de421ff38ae5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/nodes/wreck.svg"
-dest_files=["res://.godot/imported/wreck.svg-5ecd5b1565fe9517212ba230a15eea29.ctex"]
+source_file="res://assets/sprites/nodes/toaster.svg"
+dest_files=["res://.godot/imported/toaster.svg-8a6b69b4875a7fc21b06de421ff38ae5.ctex"]
 
 [params]
 

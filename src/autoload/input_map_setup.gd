@@ -63,6 +63,7 @@ static var ACTIONS: Dictionary = {
 	"cursor_right": [_btn(JOY_BUTTON_DPAD_RIGHT), _key(KEY_RIGHT)],
 	# Entwickler
 	"debug_overlay": [_key(KEY_F3)],
+	"debug_cheat": [_key(KEY_F4)],
 	"toggle_fullscreen": [_key(KEY_F11)],
 }
 

@@ -24,8 +24,40 @@ var _idle_time := 0.0
 @onready var _aim_marker: Node2D = $AimMarker
 
 
+var _confetti: CPUParticles2D
+
+
 func _ready() -> void:
 	add_to_group("player")
+
+
+## Konfetti beim Levelaufstieg.
+func celebrate() -> void:
+	if _confetti == null:
+		_confetti = CPUParticles2D.new()
+		_confetti.one_shot = true
+		_confetti.explosiveness = 0.9
+		_confetti.amount = 48
+		_confetti.lifetime = 1.2
+		_confetti.direction = Vector2(0, -1)
+		_confetti.spread = 80.0
+		_confetti.initial_velocity_min = 220.0
+		_confetti.initial_velocity_max = 380.0
+		_confetti.gravity = Vector2(0, 500)
+		_confetti.scale_amount_min = 4.0
+		_confetti.scale_amount_max = 7.0
+		_confetti.angular_velocity_min = -360.0
+		_confetti.angular_velocity_max = 360.0
+		var grad := Gradient.new()
+		grad.set_color(0, Color(1.0, 0.4, 0.4))
+		grad.set_color(1, Color(0.4, 0.8, 1.0))
+		grad.add_point(0.33, Color(1.0, 0.9, 0.3))
+		grad.add_point(0.66, Color(0.5, 0.95, 0.5))
+		_confetti.color_initial_ramp = grad
+		_confetti.z_index = 40
+		add_child(_confetti)
+	_confetti.restart()
+	_confetti.emitting = true
 
 
 func _physics_process(delta: float) -> void:

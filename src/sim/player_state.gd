@@ -1,7 +1,7 @@
 class_name PlayerState
 extends RefCounted
 ## Sim-Sicht auf Rusty: Position und Eingaben (vom Player-Node pro Frame geschrieben),
-## Inventar und Werkzeug-Cooldowns (von der Sim im Tick verwaltet).
+## Inventar, Werkzeug-Stufen und Werkzeug-Cooldowns (von der Sim im Tick verwaltet).
 
 const SUCK_RANGE_PX := 160          # 2,5 Kacheln
 const SUCK_HALF_ANGLE_RAD := PI / 4 # Kegel 90°
@@ -22,3 +22,7 @@ var hammer_pressed := false
 var inventory := Inventory.new(INVENTORY_SLOTS, STACK_SIZE)
 var suck_cooldown := 0
 var hammer_cooldown := 0
+
+# Werkzeug-Stufen (GDD Kap. 17); ab MS6 aus Modifiers (Skilltree), bis dahin Dev-Cheat.
+var suction_tier := 1
+var hammer_tier := 1

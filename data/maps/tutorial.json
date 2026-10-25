@@ -15,8 +15,14 @@
     { "kind": "copper_tangle", "x": 31, "y": 23, "amount": 5 },
     { "kind": "plastic_crumbs", "x": 9, "y": 21, "amount": 6 },
     { "kind": "plastic_crumbs", "x": 29, "y": 8, "amount": 5 },
-    { "kind": "wreck", "x": 7, "y": 15, "loot": { "scrap": 15, "copper": 6, "plastic": 6 } },
-    { "kind": "wreck", "x": 33, "y": 6, "loot": { "scrap": 18, "copper": 8, "plastic": 4 } },
-    { "kind": "wreck", "x": 22, "y": 26, "loot": { "scrap": 12, "copper": 5, "plastic": 8 } }
+    { "kind": "toaster", "x": 17, "y": 17 },
+    { "kind": "toaster", "x": 25, "y": 14 },
+    { "kind": "fridge", "x": 7, "y": 15 },
+    { "kind": "fridge", "x": 33, "y": 6 },
+    { "kind": "cart", "x": 22, "y": 26 },
+    { "kind": "ship_part", "x": 5, "y": 5 },
+    { "kind": "satellite", "x": 35, "y": 25 },
+    { "kind": "robot_arm", "x": 36, "y": 3 },
+    { "kind": "monolith", "x": 3, "y": 26 }
   ]
 }

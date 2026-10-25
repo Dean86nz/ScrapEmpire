@@ -1,0 +1,13 @@
+{
+  "level_base_xp": 100,
+  "level_growth": 1.15,
+  "level_round_to": 5,
+  "level_cap": 20,
+  "skill_points_per_level": 1,
+  "xp_sources": {
+    "collect_per_tier": 1,
+    "bolts_per_xp": 5,
+    "build": 5,
+    "tech_cost_divisor": 10
+  }
+}

@@ -2,25 +2,25 @@
 
 ## Jetzt
 
-- [ ] MS3 testen (`export/windows/ScrapEmpire_v0.3.0.exe`): Ofen und Presse bauen, füttern, Barren verkaufen, Stau „!“ sehen
-- [ ] Nach Feedback: Branch `ms/3-maschinen` nach `main` mergen, MS4 beginnen
+- [ ] MS4 testen (`export/windows/ScrapEmpire_v0.4.0.exe`): XP-Leiste, Level 2, „Zu hart!“ am Kühlschrank, F4-Cheat, Respawn des Toasters
+- [ ] Nach Feedback: Branch `ms/4-xp-tiers` nach `main` mergen, MS5 Förderbänder beginnen
 
-## MS3 Maschinen (erledigt, wartet auf Test)
+## MS4 XP, Level und Schrott-Stufen (erledigt, wartet auf Test)
 
-- [x] data/recipes.json, Rezeptsystem
-- [x] Schmelzofen (Schrott → Eisenbarren, Kupfer → Kupferbarren)
-- [x] Presse (Plastik → Plastikplatte; Zahnrad/Schaltkreis erst mit Tech)
-- [x] Ein-/Ausgangspuffer (10/10), Fortschrittsanzeige, Stau-Feedback „!“
-- [x] Manuelles Entnehmen aus dem Ausgang
+- [x] data/progression.json, Progression-Sim, XP-Leiste, Level-Up-Konfetti und Sprüche
+- [x] data/scrap_objects.json: Tier 1–5, ResourceNode datengetrieben, Chrom als Material
+- [x] Werkzeug-Stufe in PlayerState (Modifiers kommen in MS6), „Zu hart!“-Feedback mit Funken, Dev-Cheat F4
+- [x] Respawn-Timer in der Welt, Tutorial-Map mit allen Objekten
+- [x] Platzhalter-SVGs: Toaster, Kühlschrank, Einkaufswagen, Raumschiff-Teil, Satellit, Roboter-Arm, Monolith, Chrom, Titan, Sternenstaub
 - [ ] Auf dem Ally getestet
 
-## MS4 XP, Level und Schrott-Stufen
+## MS5 Förderbänder (nächster Meilenstein)
 
-- [ ] data/progression.json, Progression-Sim, XP-Leiste, Level-Up-Konfetti und Sprüche
-- [ ] data/scrap_objects.json: Tier 1–5, ResourceNode datengetrieben, Chrom als Material
-- [ ] Werkzeug-Stufe in Modifiers, „Zu hart!“-Feedback mit Funken, Dev-Cheat F4
-- [ ] Respawn-Timer (SpawnManager), Tutorial-Map mit allen Objekten
-- [ ] Platzhalter-SVGs: Toaster, Kühlschrank, Einkaufswagen, Raumschiff-Teil, Satellit, Roboter-Arm, Monolith, Chrom
+- [ ] Band-Gebäude (1×1, 1 Schrott), Richtung, automatische Kurven
+- [ ] Items auf Bändern (1/256-Kachel-Offsets, 4 je Kachel), topologische Tick-Reihenfolge
+- [ ] Einfügen/Auswerfen an Maschinenports (Eingang 10, Ausgang 10)
+- [ ] MultiMesh-Rendering, Perf-Szene 2.000 Items
+- [ ] Band-Platzierung per Ziehen im Baumodus
 
 ## Bekannte Kleinigkeiten
 

@@ -19,6 +19,7 @@ func _ready() -> void:
 	_world.defs = DataRegistry.building_defs
 	_world.item_values = DataRegistry.item_values()
 	_world.recipes = DataRegistry.recipes
+	_world.progression = DataRegistry.new_progression()
 	var start := MapLoader.load_into(_world, MAP_PATH)
 	SimClock.reset_world(_world)
 
@@ -49,6 +50,8 @@ func _ready() -> void:
 	_world.place_failed.connect(func(reason: String) -> void: Quips.say("fail_" + reason, true))
 	_world.deposit_rejected.connect(func(_b: Building, _item: String) -> void: Quips.say("deposit_rejected", true))
 	_world.building_placed.connect(_on_building_placed)
+	_world.too_hard.connect(func(_n: ResourceNode, tool: String) -> void: Quips.say("too_hard_" + tool, true))
+	_world.progression.level_up.connect(_on_level_up)
 	get_tree().create_timer(1.0).timeout.connect(func() -> void: Quips.say("start"))
 
 
@@ -60,6 +63,19 @@ func _unhandled_input(event: InputEvent) -> void:
 	if InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("build_menu"):
 		_build_menu.open()
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("debug_cheat"):
+		# Dev-Cheat bis MS6 (Skilltree): Werkzeug-Stufen +1, etwas Material.
+		_world.player.suction_tier = mini(_world.player.suction_tier + 1, 5)
+		_world.player.hammer_tier = mini(_world.player.hammer_tier + 1, 5)
+		_world.player.inventory.add("scrap", 20)
+		_world.player.inventory.add("copper", 10)
+		EventBus.quip.emit("DEBUG_TIER_UP")
+		get_viewport().set_input_as_handled()
+
+
+func _on_level_up(_level: int, _points: int) -> void:
+	_player.celebrate()
+	Quips.say("level_up", true)
 
 
 func _on_build_selected(def_id: String) -> void:

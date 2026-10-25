@@ -1,18 +1,24 @@
 class_name ResourceNode
 extends RefCounted
-## Rohstoffquelle auf einer Kachel: Haufen (saugbar, wächst nach) oder Wrack (hämmerbar, endlich).
+## Schrott-Objekt auf einer Kachel. Datengetrieben über data/scrap_objects.json:
+## "pile" wächst nach und wird gesaugt; "loot" ist endlich, wird gehämmert oder gesaugt
+## und respawnt nach einer Zeit. Jedes Objekt hat eine Härte-Stufe (tier) und ein Werkzeug.
 
 const TILE := 64
+const TICKS_PER_SECOND := 20
 const PILE_MAX := 10
 const PILE_REGEN_TICKS := 600  # 30 s
 const KIND_WRECK := "wreck"
 
-## kind → item_id für Haufen
-const PILE_ITEMS := {
-	"scrap_pile": "scrap",
-	"copper_tangle": "copper",
-	"plastic_crumbs": "plastic",
+## Eingebaute Mindest-Definitionen (Tests und Fallback); scrap_objects.json überschreibt/ergänzt.
+const BUILTIN_DEFS := {
+	"scrap_pile": {"tier": 1, "tool": "suction", "type": "pile", "item": "scrap", "max": 10, "regen_s": 30},
+	"copper_tangle": {"tier": 1, "tool": "suction", "type": "pile", "item": "copper", "max": 10, "regen_s": 30},
+	"plastic_crumbs": {"tier": 1, "tool": "suction", "type": "pile", "item": "plastic", "max": 10, "regen_s": 30},
+	"wreck": {"tier": 1, "tool": "hammer", "type": "loot", "yield": {}, "respawn_s": 0},
 }
+
+static var defs: Dictionary = BUILTIN_DEFS.duplicate(true)
 
 var id: int
 var kind: String
@@ -20,46 +26,93 @@ var tile: Vector2i
 var amount: int
 var max_amount: int
 var regen_ticks: int
-var loot: Dictionary = {}  # nur Wrack: item_id → Restmenge
+var loot: Dictionary = {}  # nur loot: item_id → Restmenge
+var tier: int = 1
+var tool: String = "suction"
+var respawn_ticks: int = 0
+var _pile_item: String = ""
 var _regen_counter: int = 0
 
 
+## Lädt data/scrap_objects.json über die eingebauten Definitionen.
+static func load_defs(path: String) -> void:
+	var text := FileAccess.get_file_as_string(path)
+	var parsed: Variant = JSON.parse_string(text) if text != "" else null
+	if parsed == null or not (parsed is Dictionary):
+		push_error("scrap_objects.json nicht lesbar: " + path)
+		return
+	defs = BUILTIN_DEFS.duplicate(true)
+	for entry: Dictionary in parsed.get("objects", []):
+		defs[str(entry["id"])] = entry
+
+
+static func has_kind(p_kind: String) -> bool:
+	return defs.has(p_kind)
+
+
 static func is_pile_kind(p_kind: String) -> bool:
-	return PILE_ITEMS.has(p_kind)
+	return defs.has(p_kind) and str(defs[p_kind].get("type", "")) == "pile"
 
 
-static func make_pile(p_id: int, p_kind: String, p_tile: Vector2i, p_amount: int) -> ResourceNode:
-	assert(PILE_ITEMS.has(p_kind), "unbekannter Haufen: " + p_kind)
+## Erzeugt ein Objekt aus seiner Definition. amount_override gilt nur für Haufen.
+static func from_kind(p_id: int, p_kind: String, p_tile: Vector2i, amount_override: int = -1) -> ResourceNode:
+	assert(defs.has(p_kind), "unbekanntes Schrott-Objekt: " + p_kind)
+	var d: Dictionary = defs[p_kind]
 	var n := ResourceNode.new()
 	n.id = p_id
 	n.kind = p_kind
 	n.tile = p_tile
-	n.max_amount = PILE_MAX
-	n.amount = clampi(p_amount, 0, PILE_MAX)
-	n.regen_ticks = PILE_REGEN_TICKS
+	n.tier = int(d.get("tier", 1))
+	n.tool = str(d.get("tool", "suction"))
+	if str(d.get("type", "pile")) == "pile":
+		n._pile_item = str(d.get("item", "scrap"))
+		n.max_amount = int(d.get("max", PILE_MAX))
+		n.amount = n.max_amount if amount_override < 0 else clampi(amount_override, 0, n.max_amount)
+		n.regen_ticks = int(float(d.get("regen_s", 30)) * TICKS_PER_SECOND)
+	else:
+		for k in d.get("yield", {}):
+			n.loot[str(k)] = int(d["yield"][k])
+		n.amount = 0
+		for k in n.loot:
+			n.amount += int(n.loot[k])
+		n.max_amount = n.amount
+		n.regen_ticks = 0
+		n.respawn_ticks = int(float(d.get("respawn_s", 0)) * TICKS_PER_SECOND)
 	return n
 
 
-static func make_wreck(p_id: int, p_tile: Vector2i, p_loot: Dictionary) -> ResourceNode:
-	var n := ResourceNode.new()
-	n.id = p_id
-	n.kind = KIND_WRECK
-	n.tile = p_tile
-	n.loot = p_loot.duplicate()
+static func make_pile(p_id: int, p_kind: String, p_tile: Vector2i, p_amount: int) -> ResourceNode:
+	return from_kind(p_id, p_kind, p_tile, p_amount)
+
+
+## Endliches Hammer-Objekt mit eigener Ausbeute (Tests, Karten mit explizitem "loot").
+static func make_wreck(p_id: int, p_tile: Vector2i, p_loot: Dictionary, p_kind: String = KIND_WRECK) -> ResourceNode:
+	var n := from_kind(p_id, p_kind, p_tile)
+	n.loot = {}
+	for k in p_loot:
+		n.loot[str(k)] = int(p_loot[k])
 	n.amount = 0
 	for k in n.loot:
 		n.amount += int(n.loot[k])
 	n.max_amount = n.amount
-	n.regen_ticks = 0
 	return n
 
 
+func is_pile() -> bool:
+	return _pile_item != ""
+
+
+## Endliches Objekt (Wrack, Toaster, Satellit …), unabhängig vom Werkzeug.
 func is_wreck() -> bool:
-	return kind == KIND_WRECK
+	return not is_pile()
+
+
+func uses_hammer() -> bool:
+	return tool == "hammer"
 
 
 func item_id() -> String:
-	return PILE_ITEMS.get(kind, "")
+	return _pile_item
 
 
 func center_px() -> Vector2i:
@@ -83,14 +136,14 @@ func tick() -> bool:
 	return false
 
 
-## Entnimmt ein Item. Haufen: immer dasselbe Item. Wrack: Item mit größter Restmenge
+## Entnimmt ein Item. Haufen: immer dasselbe Item. Loot: Item mit größter Restmenge
 ## (bei Gleichstand alphabetisch), damit die Ausbeute gemischt und deterministisch ist.
 func take_one() -> String:
 	if amount <= 0:
 		return ""
-	if not is_wreck():
+	if is_pile():
 		amount -= 1
-		return item_id()
+		return _pile_item
 	var keys := loot.keys()
 	keys.sort()
 	var best := ""

@@ -1,37 +1,52 @@
 class_name ResourceNodeView
 extends Node2D
-## Darstellung eines Ressourcenknotens. Haufen schrumpfen mit der Menge, Wracks wackeln bei Treffern.
+## Darstellung eines Schrott-Objekts. Haufen schrumpfen mit der Menge, Objekte wackeln bei
+## Treffern. Ab Tier 2 zeigt ein Abzeichen die Härte-Stufe; „Zu hart“ erzeugt Funken.
 
-const TEXTURES := {
+const FALLBACK_TEXTURES := {
 	"scrap_pile": "res://assets/sprites/nodes/scrap_pile.svg",
 	"copper_tangle": "res://assets/sprites/nodes/copper_tangle.svg",
 	"plastic_crumbs": "res://assets/sprites/nodes/plastic_crumbs.svg",
-	"wreck": "res://assets/sprites/nodes/wreck.svg",
+	"wreck": "res://assets/sprites/nodes/fridge.svg",
+}
+const TIER_COLORS := {
+	1: Color(0.6, 0.65, 0.7), 2: Color(0.3, 0.75, 0.4), 3: Color(0.25, 0.6, 0.95),
+	4: Color(0.7, 0.4, 0.9), 5: Color(1.0, 0.7, 0.2),
 }
 
 var node_id: int = -1
 var _sprite := Sprite2D.new()
-var _kind := ""
+var _badge: Label
 var _tween: Tween
+var _sparks: CPUParticles2D
 
 
 func setup(node: ResourceNode) -> void:
 	node_id = node.id
-	_kind = node.kind
-	_sprite.texture = load(TEXTURES[node.kind])
+	var path := str(ResourceNode.defs.get(node.kind, {}).get("sprite", FALLBACK_TEXTURES.get(node.kind, "")))
+	if path != "" and ResourceLoader.exists(path):
+		_sprite.texture = load(path)
 	_sprite.position = Vector2(0, -6)
 	add_child(_sprite)
 	position = Vector2(node.center_px())
+	if node.tier >= 2:
+		_badge = Label.new()
+		_badge.text = "T%d" % node.tier
+		_badge.add_theme_font_size_override("font_size", 22)
+		_badge.add_theme_color_override("font_color", Color.WHITE)
+		_badge.add_theme_color_override("font_outline_color", TIER_COLORS.get(node.tier, Color.BLACK))
+		_badge.add_theme_constant_override("outline_size", 8)
+		_badge.position = Vector2(14, -50)
+		add_child(_badge)
 	refresh(node)
 
 
 func refresh(node: ResourceNode) -> void:
-	if node.is_wreck():
+	if not node.is_pile():
 		_sprite.scale = Vector2.ONE
 		return
 	var t := float(node.amount) / float(maxi(node.max_amount, 1))
 	_sprite.scale = Vector2.ONE * (0.55 + 0.45 * t)
-	_sprite.visible = node.amount > 0 or true  # leere Haufen bleiben als kleiner Rest sichtbar
 
 
 func wobble() -> void:
@@ -41,3 +56,27 @@ func wobble() -> void:
 	_tween.tween_property(_sprite, "rotation", 0.18, 0.05)
 	_tween.tween_property(_sprite, "rotation", -0.14, 0.08)
 	_tween.tween_property(_sprite, "rotation", 0.0, 0.08)
+
+
+## Funken bei zu niedrigem Werkzeug: kurzer Partikelstoß plus Wackeln.
+func sparks() -> void:
+	wobble()
+	if _sparks == null:
+		_sparks = CPUParticles2D.new()
+		_sparks.one_shot = true
+		_sparks.explosiveness = 1.0
+		_sparks.amount = 18
+		_sparks.lifetime = 0.45
+		_sparks.direction = Vector2(0, -1)
+		_sparks.spread = 70.0
+		_sparks.initial_velocity_min = 160.0
+		_sparks.initial_velocity_max = 260.0
+		_sparks.gravity = Vector2(0, 600)
+		_sparks.scale_amount_min = 3.0
+		_sparks.scale_amount_max = 5.0
+		_sparks.color = Color(1.0, 0.85, 0.3)
+		_sparks.position = Vector2(0, -10)
+		_sparks.z_index = 10
+		add_child(_sparks)
+	_sparks.restart()
+	_sparks.emitting = true
