@@ -86,6 +86,12 @@ theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
 theme_override_font_sizes/font_size = 34
 text = "Drohnen"
 
+[node name="TabJournal" type="Label" parent="Center/Panel/VBox/Tabs"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
+theme_override_font_sizes/font_size = 34
+text = "Journal"
+
 [node name="Next" type="Label" parent="Center/Panel/VBox/Tabs"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.3, 0.36, 1)
@@ -222,6 +228,16 @@ text = "Drohnen-Upgrades"
 [node name="UpgradeList" type="VBoxContainer" parent="Center/Panel/VBox/Content/DronesTab/Right"]
 layout_mode = 2
 theme_override_constants/separation = 10
+
+[node name="JournalTab" type="ScrollContainer" parent="Center/Panel/VBox/Content"]
+visible = false
+layout_mode = 2
+follow_focus = true
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="Center/Panel/VBox/Content/JournalTab"]
+layout_mode = 2
+theme_override_constants/separation = 8
 
 [node name="Footer" type="Label" parent="Center/Panel/VBox"]
 layout_mode = 2

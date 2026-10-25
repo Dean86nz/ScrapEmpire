@@ -23,6 +23,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **12** | Gameplay-Klarheit und Design (Kapitel, Tore, Nebel, Rezepte, Titel) | v1.1.0 |
 | **13** | Phase 2: Zonen-Heilung (Natur, Tiere, Tageslicht, Regen) | v1.2.0 |
 | **14** | Phase 2: Logistik-Drohnen | v1.3.0 |
+| **15** | Phase 2: Deko und Fundstücke (Werkbank, Museum, Journal) | v1.4.0 |
 
 ## Offen
 

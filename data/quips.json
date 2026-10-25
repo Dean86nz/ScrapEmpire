@@ -176,5 +176,10 @@
   "drone_bought": [
     "DRONE_BOUGHT_1",
     "DRONE_BOUGHT_2"
+  ],
+  "collectible_found": [
+    "QUIP_FOUND_1",
+    "QUIP_FOUND_2",
+    "QUIP_FOUND_3"
   ]
 }

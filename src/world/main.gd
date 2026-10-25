@@ -46,6 +46,7 @@ func _ready() -> void:
 	_world.rare_items = DataRegistry.rare_items()
 	_world.helper_cfg = DataRegistry.helper_config()
 	_world.drone_cfg = DataRegistry.drone_config()
+	_world.collectible_cfg = DataRegistry.collectible_config()
 	_world.setup_progression_data(DataRegistry.tech_defs(), DataRegistry.skill_data())
 	var start_px: Vector2
 	var save_data := SaveManager.read()
@@ -57,6 +58,7 @@ func _ready() -> void:
 		_loaded_from_save = true
 	else:
 		start_px = Vector2(MapLoader.apply(_world, _map_data))
+	_world.spawn_collectibles()
 	SimClock.reset_world(_world)
 	var start := Vector2i(start_px)
 
@@ -106,6 +108,7 @@ func _ready() -> void:
 	_tutorial.step_changed.connect(func(_i: int, text: String) -> void: _hud.set_tutorial(text))
 	_tutorial.finished.connect(_refresh_chapter_hud)
 	_world.zone_unlocked.connect(_on_zone_unlocked)
+	_world.collectible_found.connect(_on_collectible_found)
 	_setup_nature()
 	_refresh_chapter_hud()
 	_open_unlocked_gates()
@@ -293,6 +296,20 @@ func debug_scenario(name: String) -> void:
 			_world.place_free("chest", depot, 0)
 			_world.queue_command({"type": "buy_helper", "zone": _world.player_tile() + Vector2i(-4, -3), "depot": depot})
 			_world.queue_command({"type": "buy_helper", "zone": _world.player_tile() + Vector2i(5, 3), "depot": depot})
+		"cozy":
+			# Deko-Demo: Feature frei, Material, ein paar Deko-Objekte und ein Museum neben Rusty
+			_world.unlocked_features["decor"] = true
+			_world.unlocked_buildings["museum"] = true
+			_world.player.inventory.add("wood", 60)
+			_world.player.inventory.add("stone", 60)
+			var c0 := _world.player_tile() + Vector2i(-5, 2)
+			_world.place_free("museum", c0, 0)
+			_world.place_free("lantern", c0 + Vector2i(3, 0), 0)
+			_world.place_free("bench", c0 + Vector2i(4, 1), 0)
+			_world.place_free("planter", c0 + Vector2i(7, 0), 0)
+			_world.place_free("sign", c0 + Vector2i(3, 2), 0)
+			_world.place_free("sculpture", c0 + Vector2i(8, 2), 0)
+			_world.place_free("stone_ring", c0 + Vector2i(6, 3), 0)
 		"drones":
 			# Drohnen-Demo: Kiste mit Schrott → Ofen → Terminal, zwei Drohnen
 			_world.unlocked_features["drones"] = true
@@ -436,6 +453,13 @@ func _on_target_chosen(tile: Vector2i, ok: bool) -> void:
 	var t := _pending_task_type
 	_pending_task_type = -1
 	_task_editor.on_target_result(t, tile, ok)
+
+
+func _on_collectible_found(_c: Collectible, def: Dictionary) -> void:
+	_player.celebrate()
+	Quips.say("collectible_found", true)
+	_hud.set_tutorial(tr("HUD_FOUND") % tr(str(def.get("name_key", "?"))))
+	_chapter_timer = 5.0
 
 
 ## Zonen-Heilung (Phase 2): Dekor und Tiere je Stufe, Tageslicht, Regen.

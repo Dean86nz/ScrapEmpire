@@ -27,7 +27,7 @@ Stand: **MVP (Version 1.0.0)**, Meilensteine 0 bis 11 fertig. Siehe `CHANGELOG.m
 | Baumodus: platzieren, drehen, abbrechen | A, X, B | LMB, Q, RMB |
 | Pause-Menü | Start | Esc |
 
-Entwickler-Tasten: F3 Debug-Overlay, F4 Cheat (Bolts, Material, XP), F5 speichern, F6 Perf-Szenario, F7 Beispielkette. Screenshot-Werkzeug (`tests/shot.sh`) kennt zusätzlich die Szenarien `auto`, `helpers`, `drones`, `endgame`.
+Entwickler-Tasten: F3 Debug-Overlay, F4 Cheat (Bolts, Material, XP), F5 speichern, F6 Perf-Szenario, F7 Beispielkette. Screenshot-Werkzeug (`tests/shot.sh`) kennt zusätzlich die Szenarien `auto`, `helpers`, `drones`, `cozy`, `endgame`.
 
 ## Spielablauf in Kürze
 

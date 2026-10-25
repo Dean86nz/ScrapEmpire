@@ -359,3 +359,43 @@ QUIP_DRONE_SAME,Von A nach A? Das fliegt nicht weit.,From A to A? That does not 
 QUIP_DRONE_UPG_MAX,Das ist schon die höchste Stufe.,That is already the highest level.
 GOAL_DRONES,Drohnen,Drones
 CH_TIP_DRONES,"Drohnen: Quelle und Ziel wählen, A wechselt das Material, X das Limit.","Drones: pick source and target, A changes the material, X the limit."
+TECH_DECOR_BENCH,Deko-Werkbank,Decor workbench
+TECH_DECOR_BENCH_DESC,"Dekoration aus Holz, Stein und Schrott: Laternen, Bänke, Blumenkästen, Schilder. Nur schön, kein Nutzen.","Decoration from wood, stone and scrap: lanterns, benches, planters, signs. Just pretty, no function."
+TECH_MUSEUM,Museum,Museum
+TECH_MUSEUM_DESC,Ein Haus für deine Fundstücke. Das Journal zeigt sie auch ohne Museum.,A home for your finds. The journal shows them even without a museum.
+BLD_LANTERN,Laterne,Lantern
+BLD_BENCH,Bank,Bench
+BLD_PLANTER,Blumenkasten,Planter
+BLD_SCULPTURE,Schrott-Skulptur,Scrap sculpture
+BLD_SIGN,Holzschild,Wooden sign
+BLD_STONE_RING,Steinkreis,Stone ring
+BLD_MUSEUM,Museum,Museum
+BUILD_PAGE_DECOR,Deko,Decor
+MENU_TAB_JOURNAL,Journal,Journal
+JOURNAL_HEADER,Fundstücke,Finds
+JOURNAL_MUSEUM_YES,Museum gebaut,Museum built
+JOURNAL_MUSEUM_NO,Museum: Tech nach Deko-Werkbank,Museum: tech after decor workbench
+JOURNAL_UNKNOWN,Noch nicht gefunden. Liegt irgendwo in: %s,Not found yet. Lies somewhere in: %s
+GOAL_COLLECTIBLES,Fundstücke,Finds
+HUD_FOUND,Fundstück gefunden: %s (siehe Journal),Find collected: %s (see journal)
+QUIP_FOUND_1,Oh! Das ist kein Schrott. Das ist… ein Schatz?,Oh! That is not scrap. That is… treasure?
+QUIP_FOUND_2,Das kommt ins Journal. Und später ins Museum.,That goes in the journal. And later in the museum.
+QUIP_FOUND_3,Nicht einschmelzen. Nicht einschmelzen. Behalten.,Do not melt it. Do not melt it. Keep it.
+COL_GNOME,Gartenzwerg Gunther,Garden gnome Gunther
+COL_GNOME_TEXT,"Hat 400 Jahre im Sand gestanden und bewacht. Was, weiß niemand. Er sagt es nicht.","Stood guard in the sand for 400 years. Guarding what, nobody knows. He will not say."
+COL_GUITAR,Alte Gitarre,Old guitar
+COL_GUITAR_TEXT,"Drei Saiten fehlen. Die anderen drei klingen nach Fernweh, wenn der Wind sie trifft.","Three strings missing. The other three sound like wanderlust when the wind hits them."
+COL_COFFEE,Kaffeemaschine Kurt,Coffee machine Kurt
+COL_COFFEE_TEXT,"Blinkt noch. Sagt, er wolle „nur einen kurzen Espresso“ und dann weiterarbeiten. Seit Jahrzehnten.","Still blinking. Says he wants „just a quick espresso“ and then back to work. For decades."
+COL_DUCK,Gummiente,Rubber duck
+COL_DUCK_TEXT,"Quietscht nicht mehr. Schaut aber so, als wüsste sie, wo das Wasser hin ist.","Does not squeak anymore. But looks like it knows where the water went."
+COL_OCTOPUS,Plüschkrake,Plush octopus
+COL_OCTOPUS_TEXT,"Acht Arme, sieben davon noch dran. Umarmt Rusty beim Aufheben. Oder war das der Wind?","Eight arms, seven still attached. Hugged Rusty on pickup. Or was that the wind?"
+COL_SNOWGLOBE,Schneekugel,Snow globe
+COL_SNOWGLOBE_TEXT,"Innen eine Stadt, die es hier nie gab. Schütteln hilft nicht, sie wiederzufinden.","Inside, a city that never existed here. Shaking does not bring it back."
+COL_TROPHY,Rostige Trophäe,Rusty trophy
+COL_TROPHY_TEXT,"„1. Platz“ steht drauf. Wofür, ist abgerostet. Rusty vergibt ihn sich selbst.","Says „1st place“. For what has rusted away. Rusty awards it to himself."
+COL_GLASSES,Lesebrille,Reading glasses
+COL_GLASSES_TEXT,"Macht alles schärfer, auch den Müll. Rusty trägt sie nicht. Er hat Kameras.","Makes everything sharper, including the trash. Rusty does not wear them. He has cameras."
+COL_MUSICBOX,Spieluhr,Music box
+COL_MUSICBOX_TEXT,"Spielt noch vier Töne. Rusty summt den fünften dazu. Das ist jetzt ihr Lied.","Still plays four notes. Rusty hums the fifth. That is their song now."

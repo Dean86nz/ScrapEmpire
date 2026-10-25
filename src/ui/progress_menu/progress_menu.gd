@@ -2,8 +2,8 @@ extends CanvasLayer
 ## Fortschritts-Menü (Select / T) mit drei Tabs: Techbaum, Skilltree, Nächste Ziele.
 ## LB/RB wechseln den Tab, D-Pad bewegt den Fokus, A forscht / kauft, B schließt.
 
-enum Tab { GOALS, TECH, SKILLS, MAP, HELPERS, DRONES }
-const TAB_COUNT := 6
+enum Tab { GOALS, TECH, SKILLS, MAP, HELPERS, DRONES, JOURNAL }
+const TAB_COUNT := 7
 
 signal helper_purchase_requested
 signal drone_purchase_requested
@@ -11,7 +11,9 @@ signal drone_purchase_requested
 const CARD_SCENE_MIN := Vector2(362, 150)
 const REFRESH_SECONDS := 0.5
 
-@onready var _tab_labels: Array[Label] = [$Center/Panel/VBox/Tabs/TabGoals, $Center/Panel/VBox/Tabs/TabTech, $Center/Panel/VBox/Tabs/TabSkills, $Center/Panel/VBox/Tabs/TabMap, $Center/Panel/VBox/Tabs/TabHelpers, $Center/Panel/VBox/Tabs/TabDrones]
+@onready var _tab_labels: Array[Label] = [$Center/Panel/VBox/Tabs/TabGoals, $Center/Panel/VBox/Tabs/TabTech, $Center/Panel/VBox/Tabs/TabSkills, $Center/Panel/VBox/Tabs/TabMap, $Center/Panel/VBox/Tabs/TabHelpers, $Center/Panel/VBox/Tabs/TabDrones, $Center/Panel/VBox/Tabs/TabJournal]
+@onready var _journal_tab: Control = $Center/Panel/VBox/Content/JournalTab
+@onready var _journal_list: VBoxContainer = $Center/Panel/VBox/Content/JournalTab/List
 @onready var _drones_tab: Control = $Center/Panel/VBox/Content/DronesTab
 @onready var _drone_buy_btn: Button = $Center/Panel/VBox/Content/DronesTab/Left/BuyButton
 @onready var _drone_list: VBoxContainer = $Center/Panel/VBox/Content/DronesTab/Left/DroneList
@@ -75,6 +77,7 @@ func bind(world: SimWorld) -> void:
 		_drone_upgrade_list.add_child(ubtn)
 		_drone_upgrade_cards[uid] = ubtn
 	_tab_labels[Tab.DRONES].text = tr("MENU_TAB_DRONES")
+	_tab_labels[Tab.JOURNAL].text = tr("MENU_TAB_JOURNAL")
 	_tab_labels[Tab.HELPERS].text = tr("MENU_TAB_HELPERS")
 	_tab_labels[Tab.GOALS].text = tr("MENU_TAB_CHAPTER")
 	_tab_labels[Tab.TECH].text = tr("MENU_TAB_TECH")
@@ -422,6 +425,8 @@ func _refresh_all() -> void:
 	_refresh_goals()
 	_refresh_helpers()
 	_refresh_drones()
+	if _tab == Tab.JOURNAL:
+		_refresh_journal()
 	match _tab:
 		Tab.MAP:
 			_footer.text = tr("MENU_PROGRESS_FOOTER_MAP")
@@ -547,6 +552,9 @@ func _refresh_goals() -> void:
 	elif not _world.unlocked_features.has("drones") and _world.tech.by_id.has("drone_hangar"):
 		var dh: Dictionary = _world.tech.by_id["drone_hangar"]
 		lines.append("🚁 %s: %s – %s" % [tr("GOAL_DRONES"), tr(str(dh["name_key"])), _cost_text(dh)])
+	# Fundstücke
+	if _world.collectible_total() > 0:
+		lines.append("🧸 %s: %d / %d" % [tr("GOAL_COLLECTIBLES"), _world.collectibles_found.size(), _world.collectible_total()])
 	# Level
 	if not _world.progression.is_max_level():
 		lines.append("⭐ %s: %d / %d XP" % [tr("HUD_LEVEL") % (_world.progression.level + 1), _world.progression.xp, _world.progression.xp_needed()])
@@ -563,6 +571,34 @@ func _refresh_goals() -> void:
 		title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		(card.get_node("Box/Detail") as Label).visible = false
 		_goals_list.add_child(card)
+
+
+## Journal: Fundstücke mit Text, Unbekannte mit Kapitel-Hinweis.
+func _refresh_journal() -> void:
+	for c in _journal_list.get_children():
+		c.queue_free()
+	var found := _world.collectibles_found.size()
+	var total := _world.collectible_total()
+	var has_museum := _world.building_count("museum") > 0
+	var head := _make_card("🏛 %s: %d / %d   ·   %s" % [tr("JOURNAL_HEADER"), found, total, tr("JOURNAL_MUSEUM_YES") if has_museum else tr("JOURNAL_MUSEUM_NO")])
+	head.custom_minimum_size = Vector2(1360, 72)
+	(head.get_node("Box/Detail") as Label).visible = false
+	_journal_list.add_child(head)
+	for def: Dictionary in _world.collectible_cfg.get("collectibles", []):
+		var def_id := str(def.get("id", ""))
+		var zone_id := str(def.get("zone", ""))
+		var card: Button
+		if _world.collectibles_found.has(def_id):
+			card = _make_card("🧸 " + tr(str(def.get("name_key", def_id))))
+			_set_card(card, tr(str(def.get("text_key", ""))), Color.WHITE)
+		else:
+			card = _make_card("❔ ???")
+			var where := "%s %d" % [tr("CH_CHAPTER"), _world.zones.chapter_index(zone_id) + 1]
+			if _world.zones.is_unlocked(zone_id):
+				where = str(_world.zones.zone_by_id(zone_id).get("name", zone_id))
+			_set_card(card, tr("JOURNAL_UNKNOWN") % where, Color(0.85, 0.85, 0.85))
+		card.custom_minimum_size = Vector2(1360, 96)
+		_journal_list.add_child(card)
 
 
 func _chapter_tip(zone_id: String) -> String:
@@ -598,6 +634,7 @@ func _show_tab() -> void:
 	_map_tab.visible = _tab == Tab.MAP
 	_helpers_tab.visible = _tab == Tab.HELPERS
 	_drones_tab.visible = _tab == Tab.DRONES
+	_journal_tab.visible = _tab == Tab.JOURNAL
 	for i in _tab_labels.size():
 		_tab_labels[i].visible = _tab_enabled(i)
 		_tab_labels[i].add_theme_color_override("font_color", Color(0.95, 0.55, 0.16) if i == _tab else Color(0.165, 0.165, 0.2))
@@ -620,6 +657,8 @@ func _show_tab() -> void:
 			first = _buy_btn
 		Tab.DRONES:
 			first = _drone_buy_btn
+		Tab.JOURNAL:
+			first = _journal_list.get_child(0) if _journal_list.get_child_count() > 0 else null
 	if first:
 		first.grab_focus()
 

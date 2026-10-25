@@ -3,7 +3,7 @@ extends RefCounted
 ## Wandelt die SimWorld in ein JSON-taugliches Dictionary und zurück (Architektur 4.8, 12).
 ## Reine Logik ohne Datei-IO; SaveManager kümmert sich um Dateien, Rotation und Migration.
 
-const VERSION := 5
+const VERSION := 6
 
 
 static func v2(v: Vector2i) -> Array:
@@ -68,6 +68,7 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		"helper_upgrades": world.helper_upgrades.duplicate(),
 		"drones": _drones(world),
 		"drone_upgrades": world.drone_upgrades.duplicate(),
+		"collectibles_found": world.collectibles_found.keys(),
 		"flags": world.flags.duplicate(),
 		"unlocked_zones": world.zones.unlocked.keys(),
 		"tutorial": {"step": int(world.flags.get("tutorial_step", 0)), "done": bool(world.flags.get("tutorial_done", false))},
@@ -164,6 +165,8 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 		d.from_dict(dd)
 	if not data.get("drone_upgrades", {}).is_empty():
 		world.recompute_modifiers()
+	for cid in data.get("collectibles_found", []):
+		world.collectibles_found[str(cid)] = true
 	for k in data.get("flags", {}):
 		world.flags[str(k)] = data["flags"][k]
 	for z in data.get("unlocked_zones", []):

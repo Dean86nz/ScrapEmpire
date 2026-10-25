@@ -35,6 +35,10 @@ func drone_config() -> Dictionary:
 	return _read_json("res://data/drones.json")
 
 
+func collectible_config() -> Dictionary:
+	return _read_json("res://data/collectibles.json")
+
+
 func tech_defs() -> Array:
 	return TechState.load_defs("res://data/tech.json")
 
