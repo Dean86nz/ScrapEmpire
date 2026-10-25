@@ -195,7 +195,7 @@ Nach dem Tutorial öffnet sich das Hauptgebiet (120×90 Kacheln), handgesetzt, n
 
 ## 13. Nicht im MVP (vorgemerkt)
 
-Offline-Progression, Sammeldrohnen, Ereignisse (Meteoriten, Stromausfall, Überlastung), weitere Planeten, Bosse, Prestige, Forschungslabore, Splitter/Merger, unterirdische Bänder, Strom-System, Multiplayer, mehrere Aufgabenlisten mit Bedingungen.
+Offline-Progression, Skill-Respec, Tier-4/5-Materialien, Sound, Ereignisse (Meteoriten, Stromausfall, Überlastung), weitere Planeten, Bosse, Prestige, Forschungslabore, Splitter/Merger, unterirdische Bänder, Strom-System, Multiplayer, mehrere Aufgabenlisten mit Bedingungen.
 
 ## 14. Getroffene Standardentscheidungen (Widerspruch willkommen)
 
@@ -209,3 +209,108 @@ Bestätigt bzw. entschieden durch den Auftraggeber am 2026-10-25:
 | Welt | handgesetzt (Standard, nicht widersprochen) |
 | Kampf | nicht im MVP (Standard, nicht widersprochen) |
 | Selbst-Automatisierung | im MVP als letztes Feature (MS7) |
+
+
+---
+
+# Teil B – Ergänzung Progression (2026-10-25, Auftraggeber)
+
+Diese Kapitel ergänzen das MVP um Erfahrung und Level, Skilltree, Schrott-Stufen, Helfer-Roboter und ein Fortschritts-Menü. Alle Zahlen liegen in `data/progression.json`, `data/skills.json`, `data/scrap_objects.json` und `data/helpers.json`, nicht im Code.
+
+## 15. Erfahrung und Level
+
+**XP-Quellen** (Werte in `data/progression.json`):
+
+| Aktion | XP |
+|---|---|
+| Item abbauen (saugen oder hämmern) | 1 × Tier des Objekts |
+| Verkauf | 1 XP je 5 Bolts (aufgerundet pro Verkaufsvorgang) |
+| Gebäude bauen | 5 |
+| Tech erforscht | Kosten in Bolts / 10 |
+| Skill gekauft | 0 (Skillpunkte sind die Belohnung, keine XP-Schleife) |
+
+**Level-Kurve:** `xp_für_level(n) = 100 × 1,15^(n-1)`, gerundet auf 5. Level-Obergrenze im MVP: 20.
+
+| Level | XP für dieses Level | kumuliert |
+|---|---|---|
+| 2 | 100 | 100 |
+| 3 | 115 | 215 |
+| 4 | 130 | 345 |
+| 5 | 150 | 495 |
+| 6 | 175 | 670 |
+| 8 | 230 | 1.105 |
+| 10 | 305 | 1.705 |
+| 12 | 405 | 2.515 |
+| 15 | 615 | 4.165 |
+| 20 | 1.230 | 8.985 |
+
+Richtwert: bei durchschnittlich 60 XP/min (Phase C) dauert Level 10 etwa 30 Minuten, Level 20 etwa 2,5 Stunden. Damit fällt Level 20 ungefähr mit dem Ende des MVP-Techbaums zusammen.
+
+**Levelaufstieg:** +1 Skillpunkt, Konfetti-Partikel um Rusty, Spruch aus dem Pool `level_up`, kurzer HUD-Puls der XP-Leiste. Sound kommt mit dem Audio-Pass nach dem MVP.
+
+**XP-Leiste:** dauerhaft im HUD unten links, 480 × 28 px, Level-Zahl 32 px links daneben, Fortschritt als gefüllter Balken mit dicker Outline.
+
+## 16. Skilltree
+
+Vier Äste, jeder Skill 3 bis 5 Stufen, Boni prozentual oder additiv. Voraussetzung innerhalb des Astes: Skill 2 braucht Skill 1 auf Stufe 2, Skill 3 braucht Skill 2 auf Stufe 2. Keine Sackgassen: mit 20 Skillpunkten sind alle Äste anspielbar, mit späteren Levels alles kaufbar (Gesamtstufen: 48; Level-Obergrenze wird nach dem MVP angehoben). Respec gegen Bolts ist vorgemerkt.
+
+| Ast | Skill | Stufen | Bonus pro Stufe |
+|---|---|---|---|
+| Bewegung | Flinke Räder | 5 | +8 % Laufgeschwindigkeit |
+| Bewegung | Turbo-Boost (L3 / Shift) | 3 | Boost +40 % für 2 s; Abklingzeit 8 / 6 / 4 s |
+| Bewegung | Wendigkeit | 3 | +25 % Drehgeschwindigkeit |
+| Inventar | Taschen | 4 | +1 Slot |
+| Inventar | Stapler | 4 | +5 Stapelgröße |
+| Inventar | Magnet | 3 | lose Items im Radius 1 / 2 / 3 Kacheln werden automatisch eingesammelt |
+| Handel | Feilschen | 5 | +5 % Bolts je Verkauf |
+| Handel | Kenner | 3 | +10 % auf Kupfer, Plastik, Chrom und daraus gefertigte Produkte |
+| Handel | Großhändler | 3 | +5 % wenn der Terminal-Puffer beim Verkauf mindestens 20 Items hält |
+| Werkzeuge | Schlagkraft | 3 | Hammer-Stufe +1 (Tier 2, 3, 4) |
+| Werkzeuge | Saugkraft | 3 | Sauger-Stufe +1 (Tier 2, 3, 4) |
+| Werkzeuge | Tempo | 5 | +15 % Abbau-Geschwindigkeit (Sauger-Takt und Hammer-Takt) |
+| Werkzeuge | Reichweite | 4 | +0,5 Kacheln Saug- und Hammerreichweite |
+
+Skillpunkte-Kosten: 1 Punkt pro Stufe. UI: vier farbige Spalten (Bewegung blau, Inventar grün, Handel gelb, Werkzeuge orange), D-Pad wechselt Spalte/Zeile, A kauft, gesperrte Skills zeigen die fehlende Voraussetzung.
+
+## 17. Schrott-Objekte mit Stufen (Tier 1–5)
+
+Jedes Objekt hat ein Werkzeug (Sauger oder Hammer), eine Härte-Stufe und eine Ausbeute. Ein Werkzeug baut nur Objekte bis zu seiner eigenen Stufe ab. Zu niedrige Stufe: Funken-Partikel, kurzes Wackeln, Spruch „Zu hart!“ (Hammer) bzw. „Zu schwer!“ (Sauger), kein stiller Fehlschlag. Definitionen in `data/scrap_objects.json`.
+
+| Tier | Objekt | Werkzeug | Ausbeute | Respawn | Im MVP |
+|---|---|---|---|---|---|
+| 1 | Schrotthaufen | Sauger | Schrott, wächst nach | 30 s je Einheit | ja |
+| 1 | Kabelknäuel | Sauger | Kupfer, wächst nach | 30 s je Einheit | ja |
+| 1 | Plastikbröckchen | Sauger | Plastik, wächst nach | 30 s je Einheit | ja |
+| 1 | Rostiger Toaster | Hammer | 8 Schrott, 2 Kupfer | 3 min | ja |
+| 2 | Verbeulter Kühlschrank | Hammer | 15 Schrott, 6 Kupfer, 6 Plastik | 5 min | ja |
+| 2 | Kaputter Einkaufswagen | Sauger | 12 Schrott, 8 Kupfer | 5 min | ja |
+| 3 | Gestrandetes Raumschiff-Teil | Hammer | 10 Schrott, 6 Kupfer, 4 Chrom | 8 min | ja |
+| 3 | Alter Satellit | Sauger | 6 Kupfer, 6 Plastik, 3 Chrom | 8 min | ja |
+| 4 | Vergrabener Roboter-Arm | Hammer | Titan (neu) | 12 min | sichtbar, nicht abbaubar |
+| 5 | Monolith „Warum steht der hier?“ | Hammer | Sternenstaub (neu) | nie | sichtbar, nicht abbaubar |
+
+**Neues Material Chrom** (`chrome`, Verkaufswert 8): nötig für Tech „Autopilot v0.1“ (10 Chrom zusätzlich zu Bolts), Tech „Helfer-Werkstatt“ (20 Chrom) und den Kauf von Helfer-Robotern. Tier 4 und 5 stehen als Ziel sichtbar in der Welt, ihre Materialien kommen nach dem MVP.
+
+**Werkzeug-Stufen:** Start Tier 1. Tier 2 und 3 über den Werkzeug-Ast (Schlagkraft, Saugkraft). Tech „Presslufthammer“ und „Turbo-Sauger“ erhöhen Ausbeute bzw. Takt, nicht die Stufe. Tier 4 ist über Skill Stufe 3 erreichbar, aber erst nach dem MVP relevant.
+
+**Respawn:** Objekte respawnen an ihrem Spawn-Punkt nach der angegebenen Zeit; Ereignisse (Phase 2) liefern zusätzlich nach.
+
+## 18. Helfer-Roboter
+
+- Freischaltung: Tech „Helfer-Werkstatt“ (nach Autopilot v0.1). Kauf im Fortschritts-Menü, Tab „Helfer“.
+- Kosten: `bolts(n) = 400 × 1,5^(n-1)` plus 5 Chrom pro Helfer; maximal 6 Helfer im MVP.
+- Einsatz: Spieler setzt per Cursor einen Zielbereich (Kreis, Radius 6 Kacheln) und ein Lager (Kiste, später Bandanfang). Der Helfer baut im Bereich alle Objekte bis zu seiner Werkzeug-Stufe ab und bringt volle Ladung zum Lager.
+- Upgrades **global** (einfacher balancierbar, eine Tabelle): Helfer-Tempo (3 Stufen, +20 %), Helfer-Tragkraft (3 Stufen, +10 Items), Helfer-Werkzeug (Tier 1 → 2 → 3). Kosten in `data/helpers.json`.
+- Persönlichkeit: Name aus Liste (Bolte, Knirps, Dübel, Fräulein Flex, Schraubi, Rostnase), eigene Farbe, 12 Sprüche. Alle 4 bis 6 Minuten bleibt ein zufälliger Helfer 5 s stehen und sagt etwas („Ich habe vergessen, was ich tun wollte.“), dann geht es weiter.
+- Offline: im MVP passiert nichts offline (Entscheidung Auftraggeber). Sobald Offline-Progression kommt, zählen Helfer mit derselben 8-Stunden-Grenze.
+- Technik: Helfer und Autopilot teilen sich die Arbeiter-Logik (`WorkerBrain`): gehe zu, baue ab, liefere ab, warte bei Problemen.
+
+## 19. Fortschritts-Menü
+
+Ein Menü (Select / T) mit drei Tabs, LB/RB wechselt: **Techbaum**, **Skilltree**, **Nächste Ziele**. Der Tab „Nächste Ziele“ listet für Objekte, Materialien, Werkzeug-Stufen und Helfer die nächste Freischaltung mit dem, was fehlt (Level, Tech, Bolts, Material), als große Karten mit Icon und Fortschrittsbalken. Alles mindestens 24 px, Fokus orange.
+
+## 20. Auswirkungen auf Techbaum und Zielkurve
+
+- Neue Techknoten: 16 `helper_workshop` Helfer-Werkstatt (2.500 Bolts, 20 Chrom, 180 s, nach 14), 17 `helper_tools` Helfer-Werkzeug II (3.000 Bolts, 120 s, nach 16). Autopilot v0.1 kostet zusätzlich 10 Chrom.
+- Zielkurve: Phase D (60–120 min) enthält jetzt Tier 2/3 und Level 10–15; Phase E (120–180 min) Helfer-Roboter und Level 15–20.
+- Scope: Der MVP wächst von 9 auf 11 Meilensteine (siehe Roadmap). Helfer-Roboter sind das letzte Feature vor der Politur und bei Zeitnot abtrennbar.

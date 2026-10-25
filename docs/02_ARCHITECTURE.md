@@ -244,3 +244,44 @@ Alle Sprites als handgeschriebene SVG in `assets/sprites/`: runde Formen, 4 px d
 ## 8. Bewusst nicht gebaut (MVP)
 
 Kein ECS, kein C# (erst wenn Perf-Messung es verlangt; Kandidat wäre `conveyor_network.gd`), kein Multithreading, kein Netzwerk, kein Plugin-Framework für Tests, keine prozedurale Welt, keine Shader außer Outline-Shader für Fokus-Hervorhebung.
+
+
+---
+
+# Teil B – Erweiterung Progression (2026-10-25)
+
+## 9. Neue Datendateien
+
+| Datei | Inhalt |
+|---|---|
+| `data/progression.json` | XP-Quellen, Level-Formel (Basis 100, Faktor 1,15, Rundung 5), Level-Obergrenze, Skillpunkte pro Level |
+| `data/skills.json` | Äste, Skills, Stufen, Voraussetzungen, Modifikator-Schlüssel und Werte je Stufe |
+| `data/scrap_objects.json` | Objekttypen: id, name_key, tier, tool (`suction`/`hammer`), yield (item → Menge) oder regen, respawn_s, sprite, size |
+| `data/helpers.json` | Helfer-Kostenkurve, Maximalzahl, globale Upgrades, Namen, Farben, Sprüche |
+| `data/tech.json` | wie geplant, plus Knoten 16/17 und Chrom-Kosten |
+
+`ResourceNode` wird datengetrieben: `kind` verweist auf `scrap_objects.json`; neue Felder `tier`, `tool`, `respawn_ticks`, `spawn_tile`. Die drei bisherigen Haufen-Arten und das Wrack werden zu Einträgen dieser Datei (Wrack = „Verbeulter Kühlschrank“, Tier 2; neues Tier-1-Hammerobjekt „Rostiger Toaster“ für den Einstieg).
+
+## 10. Neue Sim-Module
+
+| Modul | Aufgabe |
+|---|---|
+| `src/sim/progression.gd` | `xp`, `level`, `skill_points`, `add_xp(amount, source)`, `xp_for_level(n)`; Signal `level_up(level)` |
+| `src/sim/skill_state.gd` | Stufen je Skill, `can_buy(id)`, `buy(id)`, erzeugt `Modifiers` |
+| `src/sim/modifiers.gd` | zentrales Dictionary aller aktiven Boni: `speed_mult`, `turn_mult`, `boost_cooldown`, `slots_add`, `stack_add`, `magnet_radius`, `sell_mult`, `rare_mult`, `bulk_bonus`, `hammer_tier`, `suction_tier`, `mine_speed_mult`, `range_add`. Wird aus Skills + Tech aggregiert; `PlayerState`, `SellTerminal` und Werkzeuge lesen nur hieraus. |
+| `src/sim/worker_brain.gd` | Zustandsmaschine für Autopilot und Helfer: `GOTO`, `COLLECT`, `HAMMER`, `DEPOSIT`, `WITHDRAW`, `WAIT`; Timeout und Retry |
+| `src/sim/helpers/helper.gd` | Helfer-Zustand: Name, Farbe, Zone, Lager, Inventar, nutzt `WorkerBrain` |
+| `src/sim/spawn_manager.gd` | Respawn-Timer je Objekt, Spawn-Punkte aus der Karte |
+
+Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers → Player-Werkzeuge → Progression (XP-Buchungen des Ticks) → SpawnManager.
+
+## 11. Neue Darstellung und UI
+
+- HUD: XP-Leiste (`src/ui/hud/xp_bar.tscn`), Level-Up-Konfetti (`CPUParticles2D` über Rusty), Funken-Partikel bei „Zu hart“.
+- `src/ui/progress_menu/` mit Tabs Techbaum / Skilltree / Nächste Ziele (LB/RB), gemeinsames Fokus-Raster-Widget `FocusGrid`.
+- `src/world/helper_view.gd`: Rusty-Sprite mit Farbmodulation, Namensschild 22 px, eigene Sprechblase.
+- Zonen-Cursor (Kreis) für Helfer, basiert auf `BuildCursor`.
+
+## 12. Save-Format
+
+`version` wird erhöht; neue Felder: `progression {xp, level, skill_points}`, `skills {id: stufe}`, `helpers [...]`, `spawns [...]`. Migrationen heben alte Stände mit Standardwerten an.
