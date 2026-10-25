@@ -315,3 +315,68 @@ Ein Menü (Select / T) mit drei Tabs, LB/RB wechselt: **Techbaum**, **Skilltree*
 - Neue Techknoten: 16 `helper_workshop` Helfer-Werkstatt (2.500 Bolts, 20 Chrom, 180 s, nach 14), 17 `helper_tools` Helfer-Werkzeug II (3.000 Bolts, 120 s, nach 16). Autopilot v0.1 kostet zusätzlich 10 Chrom.
 - Zielkurve: Phase D (60–120 min) enthält jetzt Tier 2/3 und Level 10–15; Phase E (120–180 min) Helfer-Roboter und Level 15–20.
 - Scope: Der MVP wächst von 9 auf 11 Meilensteine (siehe Roadmap). Helfer-Roboter sind das letzte Feature vor der Politur und bei Zeitnot abtrennbar.
+
+
+---
+
+# Teil C – Ergänzung Cozy-Ausrichtung, Welt, Erkundung, Logistik (2026-10-25, Auftraggeber)
+
+## 21. Leitidee und Verbote (Grundlagen, gelten ab sofort)
+
+Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten auf, jedes gesäuberte Gebiet wird sichtbar schöner. Nichts bestraft, alles belohnt.
+
+**Ausdrücklich nicht einbauen:** Hunger, Durst, Energie- oder Schlafbedarf, Zeitlimits, Permadeath, Gegner, die die Basis angreifen, echte Dunkelheit. (Stand MS7: nichts davon existiert; die Liste ist eine Sperre für alle späteren Vorschläge.)
+
+## 22. Ressourcen-Prinzip: Alles kommt aus Schrott
+
+- Kein klassisches Holz- oder Steinabbauen. Stein stammt aus **Betonbrocken** und **Ruinenstücken**, Holz aus **kaputten Paletten** und **Möbeln**. Alles sind Schrott-Objekte mit Tier wie alle anderen (`scrap_objects.json`).
+- Neue Materialien `stone` (Stein, 2 Bolts) und `wood` (Holz, 2 Bolts). Im MVP nur verkaufbar; ab Phase 2 Baustoff für Dekoration.
+- Natur in sauberen Zonen ist unantastbar und rein kosmetisch.
+
+| Tier | Objekt | Werkzeug | Ausbeute | Respawn |
+|---|---|---|---|---|
+| 1 | Kaputte Palette | Hammer | 6 Holz, 2 Schrott | solange Zone unter 50 % sauber |
+| 1 | Betonbrocken | Hammer | 6 Stein, 1 Schrott | solange Zone unter 50 % sauber |
+| 2 | Verrottetes Sofa | Hammer | 8 Holz, 4 Plastik, 2 Kupfer | solange Zone unter 50 % sauber |
+| 2 | Ruinenmauer | Hammer | 10 Stein, 3 Schrott | solange Zone unter 50 % sauber |
+
+## 23. Zonen und Reinigungsgrad
+
+**Auflösung eines Konflikts:** Teil B lässt Schrott-Objekte respawnen, Teil C will einen sauberen Planeten. Lösung:
+
+- **Rohstoffquellen** (Schrotthaufen, Kabelknäuel, Plastikbröckchen) zählen nicht als Müll. Sie bleiben dauerhaft, die Saugstation gräbt tiefer. Damit bleibt die Fabrik-Ökonomie unendlich.
+- **Müll-Objekte** (alle Objekte vom Typ `loot`: Toaster, Kühlschrank, Palette, Raumschiff-Teil …) zählen für den Reinigungsgrad. Sie respawnen nur, solange die Zone unter 50 % sauber ist („es wird weiter Müll angeschwemmt“). Ab 50 % hört das Anschwemmen auf, die Zone lässt sich vollständig säubern.
+- Nach dem MVP liefern Ereignisse (Meteoriten, Strandgut) und neue Zonen frischen Müll, damit Chrom und Co. nicht ausgehen.
+
+**Definition:** Jede Karte hat Zonen (Rechtecke mit Namen in der Karten-JSON). `reinigungsgrad = 1 − müll_jetzt / müll_start` (Items in Müll-Objekten, nicht Objekte). Stufen: vermüllt (< 25 %), unordentlich (< 50 %), aufgeräumt (< 90 %), sauber (≥ 90 %). Die Stufe steht auf Minimap und Karte und ist der sichtbare Fortschrittsbalken des Planeten. Visuelle Heilung des Bodens folgt in Phase 2 (Kap. 25).
+
+## 24. Minimap und Karte
+
+- **Minimap:** unten rechts, 280 × 200 px, mit Select-lang oder im Pause-Menü ausblendbar. Zeigt Zonen in ihrer Stufenfarbe (braun → grau → hellgrün → grün), Rusty als Punkt mit Richtung, Gebäude als kleine Quadrate, Müll-Objekte als Punkte.
+- **Große Karte:** eigene Taste (Back/Select kurz öffnet das Fortschritts-Menü; die Karte bekommt den vierten Tab „Karte“ dort, damit keine Taste fehlt). Rechter Stick scrollt, LT/RT zoomen, A auf einer Zone zeigt Name, Reinigungsgrad, Anzahl Müll-Objekte je Tier.
+- Beide 7-Zoll-tauglich: Zonen-Namen 22 px, Legende mit vier Farbfeldern.
+
+## 25. Phase 2 (nur geplant, nicht jetzt bauen)
+
+Priorität: (1) Zonen-Heilung und Minimap-Zustände, (2) Logistik-Drohnen, (3) Dekoration und Fundstücke, (4) der Rest.
+
+### B. Der Planet heilt
+- Zonen wechseln stufenweise ihren Look: Boden grün, Blumen, klares Wasser, hellerer Himmel (Tilemap-Layer pro Stufe, Übergang mit Partikeln).
+- Tiere kehren in saubere Zonen zurück und begleiten Rusty neugierig (kosmetisch, datengetrieben wie Helfer-Sprüche).
+- Weiches Wetter und Tageszeit ohne dunkle Nacht; Regen lässt Natur schneller nachwachsen.
+
+### C. Erkundung und Cozy-Inhalte
+- **Fundstücke** (einzigartige Objekte: alte Gitarre, Gartenzwerg, Kaffeemaschine mit Charakter): verwerten oder im Museum ausstellen; Journal mit humorvollen Texten. Daten: `collectibles.json`.
+- **Dekoration** aus Stein, Holz, Schrott ohne Spielnutzen (Möbel, Lampen, Zäune, Schilder), Platzieren per Rastercursor wie Maschinen. Daten: `decor.json`.
+- **Besucher** in sauberen Zonen (Händler, Tourist, Forscher) mit optionalen Aufträgen und Tauschwaren, ohne Timer. Daten: `visitors.json`.
+- **Scrap-Fischen** an verschmutzten Seen; Wasser wird mit jedem Fang klarer.
+- **Fahrzeuge** (Buggy, Hoverboard) aus Schrott, später freischaltbar, mit Upgrades.
+- **Zen-Modus** (Kamera auf Fabrik oder Zone, UI aus, Musik) und **Fotomodus** (freie Kamera, Filter, Vorher/Nachher, Bild speichern).
+- **Aufgaben vom Planeten-Rat:** optionale Ziele mit kosmetischer Belohnung (Deko, Roboter-Skins, Farben). Daten: `council_quests.json`.
+
+### D. Logistik-Drohnen (nach den Helfer-Robotern)
+- Fliegende Drohnen transportieren zwischen Lagern, Maschinen und Terminal; flexibler als Bänder, aber langsamer und teurer.
+- Konfiguration per Gamepad: Quelle, Ziel, Material, Schwellwert („auffüllen, bis 50 im Lager“). Upgrades: Tragkraft, Geschwindigkeit, Anzahl, Prioritäten.
+- Arbeiten in der Offline-Progression mit (sobald diese kommt, 8-h-Grenze). Nutzen `WorkerBrain` mit Flugpfad statt Bodenweg.
+
+**Techbaum-Plätze (Phase 2):** Drohnen-Hangar (nach Helfer-Werkstatt), Deko-Werkbank (nach Kiste), Museum (nach Deko-Werkbank), Fahrzeug-Werkstatt (nach Ölwechsel), Angel (nach Turbo-Sauger). Nichts ist von Anfang an da.

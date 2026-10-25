@@ -166,13 +166,31 @@ func _unhandled_input(event: InputEvent) -> void:
 func debug_scenario(name: String) -> void:
 	match name:
 		"chain":
-			_world.place_free("extractor", Vector2i(14, 18), 0)
-			for x in [15, 16]:
-				_world.place_free("conveyor", Vector2i(x, 18), 0)
-			_world.place_free("furnace", Vector2i(17, 18), 0)
-			for x in [19, 20]:
-				_world.place_free("conveyor", Vector2i(x, 18), 0)
-			_world.place_free("sell_terminal", Vector2i(21, 18), 0)
+			# Kette 2 Kacheln unter Rusty: Haufen, Saugstation, 2 Bänder, Ofen, 2 Bänder, Terminal (10 Kacheln breit).
+			var o := Vector2i.ZERO
+			var free := false
+			for dy in [3, 4, 5, 2, 6, 7]:
+				o = _world.player_tile() + Vector2i(-4, dy)
+				o.x = clampi(o.x, 0, _world.width_tiles - 11)
+				o.y = clampi(o.y, 0, _world.height_tiles - 2)
+				var needed: Array = [[o, Vector2i(1, 1)], [o + Vector2i(1, 0), Vector2i(3, 1)], [o + Vector2i(4, 0), Vector2i(2, 2)], [o + Vector2i(6, 0), Vector2i(2, 1)], [o + Vector2i(8, 0), Vector2i(2, 2)]]
+				free = true
+				for entry in needed:
+					if not _world.grid.can_place(entry[0], entry[1], _world._tile_blocked):
+						free = false
+				if free:
+					break
+			if not free:
+				EventBus.quip.emit("DEBUG_CHAIN_FAIL")
+				return
+			_world.add_object("scrap_pile", o, 10)
+			_world.place_free("extractor", o + Vector2i(1, 0), 0)
+			_world.place_free("conveyor", o + Vector2i(2, 0), 0)
+			_world.place_free("conveyor", o + Vector2i(3, 0), 0)
+			_world.place_free("furnace", o + Vector2i(4, 0), 0)
+			_world.place_free("conveyor", o + Vector2i(6, 0), 0)
+			_world.place_free("conveyor", o + Vector2i(7, 0), 0)
+			_world.place_free("sell_terminal", o + Vector2i(8, 0), 0)
 			EventBus.quip.emit("DEBUG_CHAIN")
 		"perf":
 			var kinds := ["scrap", "copper", "plastic"]

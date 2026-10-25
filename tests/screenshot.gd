@@ -37,6 +37,10 @@ func _initialize() -> void:
 
 func _process(_delta: float) -> bool:
 	_frames += 1
+	if _frames == 1:
+		# Sprüche mitschreiben (Debug-Hilfe); Autoloads existieren erst jetzt.
+		var bus: Node = root.get_node("/root/EventBus")
+		bus.quip.connect(func(key: String) -> void: print("quip@%d: %s" % [_frames, key]))
 	if _frames == 2:
 		for a in _hold_actions:
 			_send_action(a, true)

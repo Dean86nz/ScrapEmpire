@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [0.7.1] – 2026-10-25 – F7-Fix und Testschutz
+
+### Behoben
+- F7 (Beispielkette) baut jetzt drei Kacheln unter Rusty statt an festen Koordinaten unter dem Startpunkt, bringt einen eigenen Schrotthaufen mit, sucht sich eine freie Reihe und meldet, wenn kein Platz ist
+
+### Hinzugefügt
+- `tests/shot.sh`: Screenshot-Läufe sichern den echten Spielstand vorher und stellen ihn danach wieder her (nach einem versehentlich gelöschten Spielstand)
+- `tests/restore_save.gd`: erzeugt einen Spielstand mit vorgegebenen Werten
+- Screenshot-Skript protokolliert Rustys Sprüche
+
 ## [0.7.0] – 2026-10-25 – MS7 Speichern und Pause
 
 ### Hinzugefügt
