@@ -3,7 +3,7 @@ extends RefCounted
 ## Wandelt die SimWorld in ein JSON-taugliches Dictionary und zurück (Architektur 4.8, 12).
 ## Reine Logik ohne Datei-IO; SaveManager kümmert sich um Dateien, Rotation und Migration.
 
-const VERSION := 2
+const VERSION := 3
 
 
 static func v2(v: Vector2i) -> Array:
@@ -64,9 +64,18 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		"buildings": buildings,
 		"respawns": respawns,
 		"tasks": world.tasks.to_dict(),
+		"helpers": _helpers(world),
+		"helper_upgrades": world.helper_upgrades.duplicate(),
 		"flags": world.flags.duplicate(),
 		"tutorial": {"step": int(world.flags.get("tutorial_step", 0)), "done": bool(world.flags.get("tutorial_done", false))},
 	}
+
+
+static func _helpers(world: SimWorld) -> Array:
+	var arr: Array = []
+	for h: Helper in world.helpers.values():
+		arr.append(h.to_dict())
+	return arr
 
 
 static func _building_state(b: Building) -> Dictionary:
@@ -128,6 +137,11 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 		world.respawns.append({"kind": str(rd.get("kind", "")), "tile": to_v2(rd.get("tile")), "ticks_left": int(rd.get("ticks_left", 100))})
 
 	world.tasks.from_dict(data.get("tasks", {}))
+	for k in data.get("helper_upgrades", {}):
+		world.helper_upgrades[str(k)] = int(data["helper_upgrades"][k])
+	for hd: Dictionary in data.get("helpers", []):
+		var h := world.add_helper(SaveCodec.to_v2(hd.get("zone")), SaveCodec.to_v2(hd.get("depot")), int(hd.get("name_index", 0)), int(hd.get("color_index", 0)))
+		h.from_dict(hd)
 	for k in data.get("flags", {}):
 		world.flags[str(k)] = data["flags"][k]
 	var tut: Dictionary = data.get("tutorial", {})

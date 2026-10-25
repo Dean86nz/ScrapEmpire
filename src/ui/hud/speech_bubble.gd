@@ -3,6 +3,9 @@ extends Node2D
 
 const SHOW_SECONDS := 3.0
 
+## true: zeigt Rustys globale Sprüche (EventBus.quip); false: nur eigene say()-Aufrufe (Helfer).
+var listen_global := true
+
 @onready var _panel: PanelContainer = $Panel
 @onready var _label: Label = $Panel/Label
 var _timer := 0.0
@@ -10,7 +13,8 @@ var _timer := 0.0
 
 func _ready() -> void:
 	_panel.visible = false
-	EventBus.quip.connect(_on_quip)
+	if listen_global:
+		EventBus.quip.connect(_on_quip)
 	# Immer über allem in der Welt, nie mitrotieren (Elternteil ist der Player, nicht das Sprite).
 	z_index = 50
 	z_as_relative = false

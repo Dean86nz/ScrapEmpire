@@ -236,3 +236,37 @@ ZONE_Q_2,Zone aufgeräumt! Hier wird nichts mehr angeschwemmt.,Zone tidy! Nothin
 ZONE_Q_3,Zone sauber! Fast schon gemütlich.,Zone clean! Almost cozy.
 MENU_PROGRESS_FOOTER_MAP,D-Pad: Zone · RT/LT: Zoom · LB/RB: Tab · B: schließen,D-pad: zone · RT/LT: zoom · LB/RB: tab · B: close
 HUD_MINIMAP_HINT,M / Select lang: Minimap,M / hold Select: minimap
+MENU_TAB_HELPERS,Helfer,Helpers
+MENU_PROGRESS_FOOTER_HELPERS,"A: kaufen / Upgrade · A auf Helfer: entlassen · LB/RB: Tab · B: schließen","A: buy / upgrade · A on helper: dismiss · LB/RB: tab · B: close"
+HELPER_UPGRADES,Globale Upgrades (gelten für alle Helfer),Global upgrades (apply to all helpers)
+HELPER_BUY,Helfer kaufen,Buy helper
+HELPER_BUY_HINT,A: Zone und Lager wählen,A: pick zone and depot
+HELPER_LOCKED,Braucht Tech Helfer-Werkstatt,Needs tech Helper workshop
+HELPER_MAX,Maximal 6 Helfer,Maximum 6 helpers
+HELPER_ZONE,Zone,Zone
+HELPER_LOAD,Ladung,Load
+HELPER_STATE_WORK,arbeitet,working
+HELPER_STATE_WAIT,wartet,waiting
+HELPER_STATE_IDLE,nichts zu tun,nothing to do
+HELPER_PICK_ZONE,Wo soll der Helfer arbeiten? Mitte wählen (6 Kacheln Radius).,Where should the helper work? Pick the center (6 tiles radius).
+HELPER_PICK_DEPOT,Und wohin bringt er alles? Kiste oder Terminal wählen.,And where does it all go? Pick a chest or terminal.
+HELPER_UPG_SPEED,Helfer-Tempo,Helper speed
+HELPER_UPG_SPEED_DESC,+20 % Laufgeschwindigkeit je Stufe,+20% movement speed per level
+HELPER_UPG_CAPACITY,Helfer-Tragkraft,Helper capacity
+HELPER_UPG_CAPACITY_DESC,+10 Items je Slot und Stufe,+10 items per slot and level
+HELPER_UPG_TOOL,Helfer-Werkzeug,Helper tools
+HELPER_UPG_TOOL_DESC,Helfer bauen eine Stufe härter ab (T2 dann T3),Helpers mine one tier harder (T2 then T3)
+HELPER_UPG_LOCKED,Tech fehlt,Tech missing
+HELPER_UPG_BUY,A: Kaufen,A: Buy
+HELPER_HIRED_1,Hallo! Ich bin neu. Wo ist der Schrott?,Hello! I am new. Where is the scrap?
+HELPER_HIRED_2,Angestellt! Mein erster Tag. Nicht lachen.,Hired! My first day. Do not laugh.
+HELPER_Q_1,Piep. Arbeite.,Beep. Working.
+HELPER_Q_2,Ist das Schrott oder Kunst? Egal. Mitnehmen.,Is that scrap or art? Whatever. Taking it.
+HELPER_Q_3,Kiste. Kiste. Kiste. Ich liebe Kisten.,Chest. Chest. Chest. I love chests.
+HELPER_Q_4,Rusty ist mein Vorbild. Nur schneller.,Rusty is my idol. Just faster.
+HELPER_STUCK_1,"Ich habe vergessen, was ich tun wollte.",I forgot what I was doing.
+HELPER_STUCK_2,Kurze Pause. Meine Räder brauchen Motivation.,Short break. My wheels need motivation.
+HELPER_STUCK_3,Moment. Wo bin ich? Ach so. Weiter.,Wait. Where am I? Oh right. Onward.
+QUIP_HELPER_LOCKED,Helfer? Erst die Helfer-Werkstatt erforschen.,Helpers? Research the helper workshop first.
+QUIP_HELPER_MAX,Mehr als sechs Helfer werden chaotisch. Nein.,More than six helpers gets chaotic. No.
+QUIP_HELPER_NO_DEPOT,Das Lager muss ein Gebäude sein. Eine Kiste zum Beispiel.,The depot must be a building. A chest for example.

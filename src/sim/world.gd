@@ -28,6 +28,11 @@ signal skill_bought(id: String, level: int)
 signal skill_failed(reason: String)
 signal modifiers_changed(mods: Dictionary)
 signal inventory_resized()
+signal helper_added(helper: Helper)
+signal helper_removed(id: int)
+signal helper_failed(reason: String)
+signal helper_quip(helper: Helper, key: String)
+signal helper_upgrade_bought(id: String, level: int)
 
 const TILE := 64
 const LOOT_SCATTER_PX := 40
@@ -51,6 +56,9 @@ var skills := SkillState.new()
 var tasks := TaskList.new()
 var flags: Dictionary = {}  # tutorial_step, tutorial_done, gate_open
 var zones := ZoneTracker.new()
+var helpers: Dictionary = {}          # id → Helper
+var helper_cfg: Dictionary = {}       # data/helpers.json
+var helper_upgrades: Dictionary = {}  # upgrade id → Stufe
 var mods: Dictionary = Modifiers.DEFAULTS.duplicate()
 var unlocked_buildings: Dictionary = {}  # def_id → true
 var unlocked_features: Dictionary = {}   # autopilot, helpers
@@ -90,9 +98,11 @@ func is_building_unlocked(def_id: String) -> bool:
 
 
 func recompute_modifiers() -> void:
-	mods = Modifiers.compute(skills.defs, skills.levels, tech.defs, tech.unlocked)
+	mods = Modifiers.compute(skills.defs, skills.levels, tech.defs, tech.unlocked, helper_cfg.get("upgrades", []), helper_upgrades)
 	if player.apply_modifiers(mods):
 		inventory_resized.emit()
+	for h: Helper in helpers.values():
+		_apply_helper_mods(h)
 	for b: Building in buildings.values():
 		if b is SellTerminal:
 			(b as SellTerminal).sell_interval = int(mods["sell_interval"])
@@ -237,6 +247,7 @@ func tick() -> void:
 		_too_hard_cooldown -= 1
 
 	tasks.tick(self, player)
+	_tick_helpers()
 	_tick_suction()
 	_tick_magnet()
 	_tick_hammer()
@@ -248,6 +259,217 @@ func tick() -> void:
 		tech_unlocked.emit(done)
 	player.hammer_pressed = false
 	tick_count += 1
+
+
+# --- Helfer-Roboter ---------------------------------------------------------
+
+func helper_count() -> int:
+	return helpers.size()
+
+
+func next_helper_cost() -> Dictionary:
+	var n := helper_count()
+	var base := float(helper_cfg.get("cost_base_bolts", 400))
+	var growth := float(helper_cfg.get("cost_growth", 1.5))
+	var bolts_cost := int(round(base * pow(growth, n) / 10.0)) * 10
+	return {"bolts": bolts_cost, "chrome": int(helper_cfg.get("cost_chrome", 5))}
+
+
+## "" wenn kaufbar, sonst Grund: locked, max, bolts, chrome, no_depot
+func can_buy_helper(depot_tile: Vector2i) -> String:
+	if not unlocked_features.has("helpers"):
+		return "locked"
+	if helper_count() >= int(helper_cfg.get("max_helpers", 6)):
+		return "max"
+	var cost := next_helper_cost()
+	if bolts < int(cost["bolts"]):
+		return "bolts"
+	if player.inventory.count_of("chrome") < int(cost["chrome"]):
+		return "chrome"
+	if grid.at(depot_tile) == null:
+		return "no_depot"
+	return ""
+
+
+func _apply_helper_mods(h: Helper) -> void:
+	h.apply_modifiers(mods, int(helper_cfg.get("base_speed_px_per_s", 224)), int(helper_cfg.get("base_slots", 3)), int(helper_cfg.get("base_stack", 10)))
+
+
+func _schedule_stuck(h: Helper) -> void:
+	var lo := int(helper_cfg.get("stuck_min_s", 240)) * 20
+	var hi := int(helper_cfg.get("stuck_max_s", 360)) * 20
+	h.stuck_timer = rng.randi_range(lo, hi)
+
+
+func add_helper(zone_tile: Vector2i, depot_tile: Vector2i, name_index: int = -1, color_index: int = -1) -> Helper:
+	var h := Helper.new()
+	h.id = next_id()
+	var n := helper_count()
+	h.name_index = n if name_index < 0 else name_index
+	h.color_index = n if color_index < 0 else color_index
+	h.zone_tile = zone_tile
+	h.radius_tiles = int(helper_cfg.get("zone_radius_tiles", 6))
+	h.depot_tile = depot_tile
+	var depot := grid.at(depot_tile)
+	h.pos = depot.center_px() + Vector2i(0, 48) if depot != null else zone_tile * TILE
+	_apply_helper_mods(h)
+	_schedule_stuck(h)
+	helpers[h.id] = h
+	helper_added.emit(h)
+	return h
+
+
+func _cmd_buy_helper(cmd: Dictionary) -> void:
+	var zone_tile: Vector2i = cmd.get("zone", Vector2i.ZERO)
+	var depot_tile: Vector2i = cmd.get("depot", Vector2i.ZERO)
+	var reason := can_buy_helper(depot_tile)
+	if reason != "":
+		helper_failed.emit(reason)
+		return
+	var cost := next_helper_cost()
+	bolts -= int(cost["bolts"])
+	player.inventory.remove("chrome", int(cost["chrome"]))
+	bolts_changed.emit(bolts)
+	var h := add_helper(zone_tile, depot_tile)
+	var hired: Array = helper_cfg.get("quips_hired", [])
+	if not hired.is_empty():
+		helper_quip.emit(h, str(hired[h.id % hired.size()]))
+
+
+func _cmd_remove_helper(cmd: Dictionary) -> void:
+	var id := int(cmd.get("id", -1))
+	if not helpers.has(id):
+		return
+	var h: Helper = helpers[id]
+	# Inhalt fällt als lose Items am Standort
+	for s: Dictionary in h.inventory.slots:
+		for i in int(s["count"]):
+			if i < 20:
+				add_loose(s["item"], h.pos + _scatter())
+	helpers.erase(id)
+	helper_removed.emit(id)
+
+
+func helper_upgrade_def(id: String) -> Dictionary:
+	for u: Dictionary in helper_cfg.get("upgrades", []):
+		if str(u["id"]) == id:
+			return u
+	return {}
+
+
+## "" wenn kaufbar, sonst: unknown, max, locked, bolts, chrome
+func can_buy_helper_upgrade(id: String) -> String:
+	var u := helper_upgrade_def(id)
+	if u.is_empty():
+		return "unknown"
+	var level := int(helper_upgrades.get(id, 0))
+	if level >= int(u.get("max_level", 1)):
+		return "max"
+	var feature := str(u.get("requires_feature", ""))
+	if feature != "" and not unlocked_features.has(feature):
+		return "locked"
+	if bolts < int(u["cost_bolts"][level]):
+		return "bolts"
+	if player.inventory.count_of("chrome") < int(u["cost_chrome"][level]):
+		return "chrome"
+	return ""
+
+
+func _cmd_buy_helper_upgrade(cmd: Dictionary) -> void:
+	var id := str(cmd.get("id", ""))
+	var reason := can_buy_helper_upgrade(id)
+	if reason != "":
+		helper_failed.emit(reason)
+		return
+	var u := helper_upgrade_def(id)
+	var level := int(helper_upgrades.get(id, 0))
+	bolts -= int(u["cost_bolts"][level])
+	player.inventory.remove("chrome", int(u["cost_chrome"][level]))
+	helper_upgrades[id] = level + 1
+	bolts_changed.emit(bolts)
+	recompute_modifiers()
+	helper_upgrade_bought.emit(id, level + 1)
+
+
+## Saugen/Hämmern für einen Helfer (gleiche Regeln wie Rusty, aber ohne Kegel: Reichweite reicht).
+func helper_work(h: Helper) -> void:
+	if h.suck_held:
+		if h.suck_cooldown > 0:
+			h.suck_cooldown -= 1
+		else:
+			var target: Variant = _find_suck_target_for(h)
+			if target != null and h.inventory.can_add(target.item_id if target is LooseItem else _peek_suck_item(target)):
+				var item_id: String
+				if target is LooseItem:
+					item_id = target.item_id
+					loose.erase(target.id)
+					loose_removed.emit(target.id)
+				else:
+					var node := target as ResourceNode
+					item_id = node.take_one()
+					if node.is_wreck() and node.is_depleted():
+						_remove_node(node)
+						wreck_destroyed.emit(node.id)
+					else:
+						node_changed.emit(node)
+				h.inventory.add(item_id, 1)
+				h.suck_cooldown = PlayerState.BASE_SUCK_INTERVAL
+				progression.on_collect(1)
+	if h.hammer_pressed:
+		h.hammer_pressed = false
+		if h.hammer_cooldown > 0:
+			pass
+		else:
+			var hit_point := Vector2(h.pos) + h.aim * PlayerState.HAMMER_REACH_PX
+			for n: ResourceNode in nodes.values():
+				if not n.uses_hammer() or n.tier > h.hammer_tier:
+					continue
+				if hit_point.distance_to(Vector2(n.center_px())) <= float(h.hammer_range_px):
+					h.hammer_cooldown = PlayerState.BASE_HAMMER_INTERVAL
+					var item_id := n.take_one()
+					if item_id != "":
+						add_loose(item_id, n.center_px() + _scatter(), n.tier)
+					wreck_hit.emit(n)
+					if n.is_depleted():
+						_remove_node(n)
+						wreck_destroyed.emit(n.id)
+					else:
+						node_changed.emit(n)
+					break
+	if h.hammer_cooldown > 0:
+		h.hammer_cooldown -= 1
+
+
+func _find_suck_target_for(h: Helper) -> Variant:
+	var best: Variant = null
+	var best_d := INF
+	for item: LooseItem in loose.values():
+		var d := Vector2(item.pos - h.pos).length()
+		if d <= h.suck_range_px and d < best_d:
+			best_d = d
+			best = item
+	if best != null:
+		return best
+	for n: ResourceNode in nodes.values():
+		if n.uses_hammer() or n.is_depleted() or n.tier > h.suction_tier:
+			continue
+		var d := Vector2(n.center_px() - h.pos).length()
+		if d <= h.suck_range_px and d < best_d:
+			best_d = d
+			best = n
+	return best
+
+
+func _tick_helpers() -> void:
+	for h: Helper in helpers.values():
+		if h.stuck_timer == 1:
+			h.pause_for_stuck(int(helper_cfg.get("stuck_pause_s", 5)) * 20)
+			var stuck: Array = helper_cfg.get("quips_stuck", [])
+			if not stuck.is_empty():
+				helper_quip.emit(h, str(stuck[rng.randi_range(0, stuck.size() - 1)]))
+			_schedule_stuck(h)
+		h.tick(self)
+		helper_work(h)
 
 
 ## Magnet-Skill: lose Items im Radius werden ohne Zielen eingesammelt (1 je Tick).
@@ -323,6 +545,12 @@ func _apply(cmd: Dictionary) -> void:
 			_cmd_research(cmd)
 		"buy_skill":
 			_cmd_buy_skill(cmd)
+		"buy_helper":
+			_cmd_buy_helper(cmd)
+		"buy_helper_upgrade":
+			_cmd_buy_helper_upgrade(cmd)
+		"remove_helper":
+			_cmd_remove_helper(cmd)
 
 
 # --- Bauen ----------------------------------------------------------------

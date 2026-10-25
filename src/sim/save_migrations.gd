@@ -10,7 +10,15 @@ const SHIFT_PX := Vector2(0, 30 * 64)
 
 
 static func all() -> Dictionary:
-	return {1: Callable(SaveMigrations, "v1_to_v2")}
+	return {1: Callable(SaveMigrations, "v1_to_v2"), 2: Callable(SaveMigrations, "v2_to_v3")}
+
+
+## 2 → 3: Helfer-Roboter und ihre Upgrades.
+static func v2_to_v3(data: Dictionary) -> Dictionary:
+	data["helpers"] = []
+	data["helper_upgrades"] = {}
+	data["version"] = 3
+	return data
 
 
 static func _shift_tile(a: Variant) -> Array:

@@ -6,6 +6,7 @@ var _world: SimWorld
 var _node_views: Dictionary = {}      # node id → ResourceNodeView
 var _loose_views: Dictionary = {}     # loose id → LooseItemView
 var _building_views: Dictionary = {}  # building id → BuildingView
+var _helper_views: Dictionary = {}    # helper id → HelperView
 var _player: Node2D
 var conveyor_renderer := ConveyorRenderer.new()
 
@@ -34,6 +35,29 @@ func bind(world: SimWorld, player: Node2D) -> void:
 	world.item_sold.connect(_on_item_sold)
 	world.too_hard.connect(_on_too_hard)
 	world.node_respawned.connect(_on_node_respawned)
+	for h: Helper in world.helpers.values():
+		_on_helper_added(h)
+	world.helper_added.connect(_on_helper_added)
+	world.helper_removed.connect(_on_helper_removed)
+	world.helper_quip.connect(_on_helper_quip)
+
+
+func _on_helper_added(h: Helper) -> void:
+	var view := HelperView.new()
+	view.setup(h, _world.helper_cfg.get("names", []), _world.helper_cfg.get("colors", []))
+	add_child(view)
+	_helper_views[h.id] = view
+
+
+func _on_helper_removed(id: int) -> void:
+	if _helper_views.has(id):
+		_helper_views[id].queue_free()
+		_helper_views.erase(id)
+
+
+func _on_helper_quip(h: Helper, key: String) -> void:
+	if _helper_views.has(h.id):
+		_helper_views[h.id].say(tr(key))
 
 
 func _on_too_hard(node: ResourceNode, _tool: String) -> void:

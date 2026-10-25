@@ -24,11 +24,13 @@ const DEFAULTS := {
 	"sell_interval": 10,        # Ticks pro Verkauf am Terminal
 	"autopilot_speed_mult": 1.0,
 	"helper_tier": 1,
+	"helper_speed_mult": 1.0,
+	"helper_capacity_add": 0,
 }
 
 
 ## Berechnet die Boni aus Skill-Stufen und freigeschalteten Techs.
-static func compute(skill_defs: Array, skill_levels: Dictionary, tech_defs: Array, unlocked_tech: Dictionary) -> Dictionary:
+static func compute(skill_defs: Array, skill_levels: Dictionary, tech_defs: Array, unlocked_tech: Dictionary, upgrade_defs: Array = [], upgrade_levels: Dictionary = {}) -> Dictionary:
 	var m: Dictionary = DEFAULTS.duplicate()
 	for sd: Dictionary in skill_defs:
 		var level: int = int(skill_levels.get(str(sd["id"]), 0))
@@ -36,6 +38,12 @@ static func compute(skill_defs: Array, skill_levels: Dictionary, tech_defs: Arra
 			continue
 		for eff: Dictionary in sd.get("effects", []):
 			_apply_skill_effect(m, eff, level)
+	for ud: Dictionary in upgrade_defs:
+		var ulevel: int = int(upgrade_levels.get(str(ud["id"]), 0))
+		if ulevel <= 0:
+			continue
+		for eff: Dictionary in ud.get("effects", []):
+			_apply_skill_effect(m, eff, ulevel)
 	for td: Dictionary in tech_defs:
 		if not unlocked_tech.has(str(td["id"])):
 			continue

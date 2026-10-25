@@ -2,13 +2,22 @@ extends CanvasLayer
 ## Fortschritts-Menü (Select / T) mit drei Tabs: Techbaum, Skilltree, Nächste Ziele.
 ## LB/RB wechseln den Tab, D-Pad bewegt den Fokus, A forscht / kauft, B schließt.
 
-enum Tab { TECH, SKILLS, GOALS, MAP }
-const TAB_COUNT := 4
+enum Tab { TECH, SKILLS, GOALS, MAP, HELPERS }
+const TAB_COUNT := 5
+
+signal helper_purchase_requested
 
 const CARD_SCENE_MIN := Vector2(362, 150)
 const REFRESH_SECONDS := 0.5
 
-@onready var _tab_labels: Array[Label] = [$Center/Panel/VBox/Tabs/TabTech, $Center/Panel/VBox/Tabs/TabSkills, $Center/Panel/VBox/Tabs/TabGoals, $Center/Panel/VBox/Tabs/TabMap]
+@onready var _tab_labels: Array[Label] = [$Center/Panel/VBox/Tabs/TabTech, $Center/Panel/VBox/Tabs/TabSkills, $Center/Panel/VBox/Tabs/TabGoals, $Center/Panel/VBox/Tabs/TabMap, $Center/Panel/VBox/Tabs/TabHelpers]
+@onready var _helpers_tab: Control = $Center/Panel/VBox/Content/HelpersTab
+@onready var _buy_btn: Button = $Center/Panel/VBox/Content/HelpersTab/Left/BuyButton
+@onready var _helper_list: VBoxContainer = $Center/Panel/VBox/Content/HelpersTab/Left/HelperList
+@onready var _upgrade_list: VBoxContainer = $Center/Panel/VBox/Content/HelpersTab/Right/UpgradeList
+@onready var _upgrade_title: Label = $Center/Panel/VBox/Content/HelpersTab/Right/UpgradeTitle
+var _upgrade_cards: Dictionary = {}
+var _helper_cards: Array[Button] = []
 @onready var _map_tab: Control = $Center/Panel/VBox/Content/MapTab
 @onready var _map_view: MapView = $Center/Panel/VBox/Content/MapTab/MapView
 @onready var _map_info: Label = $Center/Panel/VBox/Content/MapTab/Info
@@ -37,6 +46,21 @@ func bind(world: SimWorld) -> void:
 	_build_tech_cards()
 	_build_skill_cards()
 	_map_view.zone_selected.connect(_on_zone_selected)
+	_buy_btn.pressed.connect(_on_buy_pressed)
+	_upgrade_title.text = tr("HELPER_UPGRADES")
+	for u: Dictionary in _world.helper_cfg.get("upgrades", []):
+		var id := str(u["id"])
+		var btn := _make_card(tr(str(u["name_key"])))
+		btn.custom_minimum_size = Vector2(560, 120)
+		btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_helper_upgrade", "id": id}))
+		_upgrade_list.add_child(btn)
+		_upgrade_cards[id] = btn
+	_tab_labels[Tab.HELPERS].text = tr("MENU_TAB_HELPERS")
+
+
+func _on_buy_pressed() -> void:
+	visible = false
+	helper_purchase_requested.emit()
 
 
 func bind_player(player: Node2D) -> void:
@@ -173,11 +197,78 @@ func _build_skill_cards() -> void:
 
 # --- Aktualisieren ----------------------------------------------------------
 
+func _refresh_helpers() -> void:
+	var w := _world
+	var cost := w.next_helper_cost()
+	var reason := w.can_buy_helper(Vector2i(-1, -1))
+	if reason == "no_depot":
+		reason = ""
+	var status := ""
+	match reason:
+		"locked":
+			status = tr("HELPER_LOCKED")
+		"max":
+			status = tr("HELPER_MAX")
+		"bolts":
+			status = tr("TECH_MISSING_BOLTS") % (int(cost["bolts"]) - w.bolts)
+		"chrome":
+			status = tr("GOAL_MISSING_CHROME") % (int(cost["chrome"]) - w.player.inventory.count_of("chrome"))
+		_:
+			status = tr("HELPER_BUY_HINT")
+	_buy_btn.text = "%s  –  %d %s, %d %s   (%s)" % [tr("HELPER_BUY"), int(cost["bolts"]), tr("HUD_BOLTS"), int(cost["chrome"]), DataRegistry.item_name("chrome"), status]
+	_buy_btn.disabled = reason != ""
+	for c in _helper_list.get_children():
+		c.queue_free()
+	_helper_cards.clear()
+	var names: Array = w.helper_cfg.get("names", [])
+	for h: Helper in w.helpers.values():
+		var card := _make_card(h.display_name(names))
+		card.custom_minimum_size = Vector2(740, 96)
+		var state := tr("HELPER_STATE_WAIT") if h.tasks.wait_ticks > 0 else (tr("HELPER_STATE_WORK") if h.tasks.active else tr("HELPER_STATE_IDLE"))
+		var zone_name: String = str(w.zones.zone_by_id(w.zones.zone_id_at(h.zone_tile)).get("name", "?"))
+		_set_card(card, "%s · %s (%d, %d) · %s %d/%d · %s" % [state, tr("HELPER_ZONE"), h.zone_tile.x, h.zone_tile.y, tr("HELPER_LOAD"), h.inventory.total(), h.inventory.slot_count * h.inventory.stack_size, zone_name], Color.WHITE)
+		var hid := h.id
+		card.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "remove_helper", "id": hid}))
+		_helper_list.add_child(card)
+		_helper_cards.append(card)
+	for u: Dictionary in w.helper_cfg.get("upgrades", []):
+		var id := str(u["id"])
+		var level := int(w.helper_upgrades.get(id, 0))
+		var maxl := int(u["max_level"])
+		var r := w.can_buy_helper_upgrade(id)
+		var cost_txt := ""
+		if level < maxl:
+			cost_txt = "%d %s" % [int(u["cost_bolts"][level]), tr("HUD_BOLTS")]
+			if int(u["cost_chrome"][level]) > 0:
+				cost_txt += ", %d %s" % [int(u["cost_chrome"][level]), DataRegistry.item_name("chrome")]
+		var st := ""
+		match r:
+			"max":
+				st = tr("SKILL_MAXED")
+			"locked":
+				st = tr("HELPER_UPG_LOCKED")
+			"bolts":
+				st = tr("TECH_MISSING_BOLTS") % (int(u["cost_bolts"][level]) - w.bolts)
+			"chrome":
+				st = tr("TECH_MISSING_ITEMS")
+			_:
+				st = tr("HELPER_UPG_BUY")
+		_set_card(_upgrade_cards[id], "%d / %d · %s\n%s · %s" % [level, maxl, tr(str(u["desc_key"])), cost_txt, st],
+			Color(0.75, 1.0, 0.8) if level >= maxl else (Color.WHITE if r == "" else Color(0.85, 0.85, 0.85)))
+
+
 func _refresh_all() -> void:
 	_refresh_tech()
 	_refresh_skills()
 	_refresh_goals()
-	_footer.text = tr("MENU_PROGRESS_FOOTER_MAP") if _tab == Tab.MAP else tr("MENU_PROGRESS_FOOTER")
+	_refresh_helpers()
+	match _tab:
+		Tab.MAP:
+			_footer.text = tr("MENU_PROGRESS_FOOTER_MAP")
+		Tab.HELPERS:
+			_footer.text = tr("MENU_PROGRESS_FOOTER_HELPERS")
+		_:
+			_footer.text = tr("MENU_PROGRESS_FOOTER")
 
 
 func _cost_text(d: Dictionary) -> String:
@@ -301,6 +392,7 @@ func _show_tab() -> void:
 	_skills_tab.visible = _tab == Tab.SKILLS
 	_goals_tab.visible = _tab == Tab.GOALS
 	_map_tab.visible = _tab == Tab.MAP
+	_helpers_tab.visible = _tab == Tab.HELPERS
 	for i in _tab_labels.size():
 		_tab_labels[i].add_theme_color_override("font_color", Color(0.95, 0.55, 0.16) if i == _tab else Color(0.165, 0.165, 0.2))
 	if _tab == Tab.MAP:
@@ -318,6 +410,8 @@ func _show_tab() -> void:
 			first = col.get_child(1) if col and col.get_child_count() > 1 else null
 		Tab.GOALS:
 			first = _goals_list.get_child(0) if _goals_list.get_child_count() > 0 else null
+		Tab.HELPERS:
+			first = _buy_btn
 	if first:
 		first.grab_focus()
 
