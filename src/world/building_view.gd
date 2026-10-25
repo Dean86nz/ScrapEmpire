@@ -20,6 +20,9 @@ var _buffer_root := Node2D.new()
 var _half_h := 64.0
 
 
+const TURN_TEXTURE := "res://assets/sprites/buildings/conveyor_turn.svg"
+
+
 func setup(b: Building) -> void:
 	building_id = b.id
 	_building = b
@@ -27,6 +30,12 @@ func setup(b: Building) -> void:
 	_sprite.texture = load(b.def.sprite)
 	_sprite.rotation = b.rot * PI / 2.0
 	add_child(_sprite)
+
+	if b is Conveyor:
+		# Bänder liegen unter allem anderen und blockieren Rusty nicht.
+		z_index = -2
+		_refresh_conveyor(b as Conveyor)
+		return
 
 	var shape := CollisionShape2D.new()
 	var rect := RectangleShape2D.new()
@@ -82,8 +91,22 @@ func _process(_delta: float) -> void:
 		_bar_fill.size.x = (BAR_W - 4) * m.progress_fraction()
 
 
+func _refresh_conveyor(c: Conveyor) -> void:
+	_sprite.rotation = c.rot * PI / 2.0
+	if c.shape == Conveyor.Shape.STRAIGHT:
+		_sprite.texture = load(c.def.sprite)
+		_sprite.flip_v = false
+	else:
+		_sprite.texture = load(TURN_TEXTURE)
+		_sprite.flip_v = c.shape == Conveyor.Shape.TURN_FROM_RIGHT
+
+
 func refresh(b: Building) -> void:
 	_building = b
+	if b is Conveyor:
+		_refresh_conveyor(b as Conveyor)
+		return
+	_sprite.rotation = b.rot * PI / 2.0
 	var s := b.summary()
 	if b is Machine:
 		_refresh_machine(s)

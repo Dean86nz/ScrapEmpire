@@ -94,6 +94,20 @@ func tick() -> bool:
 	return false
 
 
+func has_output() -> bool:
+	return output_total() > 0
+
+
+func pop_output_one() -> String:
+	for item in output.keys():
+		if int(output[item]) > 0:
+			output[item] = int(output[item]) - 1
+			if output[item] == 0:
+				output.erase(item)
+			return item
+	return ""
+
+
 ## Entnimmt zuerst aus dem Ausgang, sonst aus dem Eingang (damit Fehleinwürfe korrigierbar sind).
 func withdraw_stack() -> Dictionary:
 	for buf in [output, input]:

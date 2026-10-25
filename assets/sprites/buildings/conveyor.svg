@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Förderband gerade, Laufrichtung rechts -->
+  <rect x="0" y="10" width="64" height="44" fill="#4A4A55"/>
+  <rect x="0" y="14" width="64" height="36" fill="#6B6B78"/>
+  <rect x="0" y="10" width="64" height="4" fill="#2A2A33"/>
+  <rect x="0" y="50" width="64" height="4" fill="#2A2A33"/>
+  <path d="M10 22 L22 32 L10 42" fill="none" stroke="#F2D77B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M34 22 L46 32 L34 42" fill="none" stroke="#F2D77B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
