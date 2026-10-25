@@ -1,10 +1,11 @@
 class_name WorldView
 extends Node2D
-## Spiegelt die SimWorld in Nodes: Ressourcenknoten, lose Items, Einsammel-Animation.
+## Spiegelt die SimWorld in Nodes: Ressourcenknoten, lose Items, Gebäude, Einsammel-Animation.
 
 var _world: SimWorld
-var _node_views: Dictionary = {}   # node id → ResourceNodeView
-var _loose_views: Dictionary = {}  # loose id → LooseItemView
+var _node_views: Dictionary = {}      # node id → ResourceNodeView
+var _loose_views: Dictionary = {}     # loose id → LooseItemView
+var _building_views: Dictionary = {}  # building id → BuildingView
 var _player: Node2D
 
 
@@ -15,6 +16,8 @@ func bind(world: SimWorld, player: Node2D) -> void:
 		_on_node_added(n)
 	for item: LooseItem in world.loose.values():
 		_on_loose_added(item)
+	for b: Building in world.buildings.values():
+		_on_building_placed(b)
 	world.node_added.connect(_on_node_added)
 	world.node_changed.connect(_on_node_changed)
 	world.node_removed.connect(_on_node_removed)
@@ -22,6 +25,10 @@ func bind(world: SimWorld, player: Node2D) -> void:
 	world.loose_removed.connect(_on_loose_removed)
 	world.item_collected.connect(_on_item_collected)
 	world.wreck_hit.connect(_on_wreck_hit)
+	world.building_placed.connect(_on_building_placed)
+	world.building_changed.connect(_on_building_changed)
+	world.building_removed.connect(_on_building_removed)
+	world.item_sold.connect(_on_item_sold)
 
 
 func _on_node_added(node: ResourceNode) -> void:
@@ -58,6 +65,31 @@ func _on_loose_removed(id: int) -> void:
 	if _loose_views.has(id):
 		_loose_views[id].queue_free()
 		_loose_views.erase(id)
+
+
+func _on_building_placed(b: Building) -> void:
+	var view := BuildingView.new()
+	view.setup(b)
+	add_child(view)
+	_building_views[b.id] = view
+
+
+func _on_building_changed(b: Building) -> void:
+	if _building_views.has(b.id):
+		_building_views[b.id].refresh(b)
+
+
+func _on_building_removed(id: int) -> void:
+	if _building_views.has(id):
+		_building_views[id].queue_free()
+		_building_views.erase(id)
+
+
+func _on_item_sold(_item_id: String, value: int, pos: Vector2i) -> void:
+	for view: BuildingView in _building_views.values():
+		if view.position == Vector2(pos):
+			view.show_sale(value)
+			return
 
 
 ## Icon fliegt vom Fundort zu Rusty und verschwindet.

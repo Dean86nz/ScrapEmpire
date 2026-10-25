@@ -1,5 +1,6 @@
 extends Node2D
 ## Schrottsauger: zeigt den Saugkegel, solange RT/LMB gehalten wird, und meldet das der Sim.
+## Nur im Spielkontext aktiv (nicht im Baumodus oder Menü).
 
 const SEGMENTS := 12
 
@@ -22,7 +23,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	var held := Input.is_action_pressed("tool_primary")
+	var held := InputRouter.context == InputRouter.Context.GAME and Input.is_action_pressed("tool_primary")
 	SimClock.world.player.suck_held = held
 	_cone.visible = held
 	if held:

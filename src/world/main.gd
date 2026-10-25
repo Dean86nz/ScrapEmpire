@@ -1,22 +1,27 @@
 extends Node2D
 ## Hauptszene: lädt die Karte in die Simulation, baut Boden und Wände,
-## verbindet Darstellung und HUD mit der SimWorld.
+## verbindet Darstellung, HUD, Baumenü und Bau-Cursor mit der SimWorld.
 
 const MAP_PATH := "res://data/maps/tutorial.json"
 
 @onready var _player: Player = $Player
 @onready var _world_view: WorldView = $WorldView
 @onready var _hud: CanvasLayer = $Hud
+@onready var _build_menu: CanvasLayer = $BuildMenu
+@onready var _cursor: BuildCursor = $BuildCursor
 
+var _world: SimWorld
 var _first_collected: Dictionary = {}
 
 
 func _ready() -> void:
-	var world := SimWorld.new()
-	var start := MapLoader.load_into(world, MAP_PATH)
-	SimClock.reset_world(world)
+	_world = SimWorld.new()
+	_world.defs = DataRegistry.building_defs
+	_world.item_values = DataRegistry.item_values()
+	var start := MapLoader.load_into(_world, MAP_PATH)
+	SimClock.reset_world(_world)
 
-	var size := world.size_px()
+	var size := _world.size_px()
 	_build_ground(size.x, size.y)
 	_build_walls(size.x, size.y)
 
@@ -29,13 +34,49 @@ func _ready() -> void:
 	cam.zoom = Vector2.ONE * GameConfig.CAMERA_ZOOM
 	cam.reset_smoothing()
 
-	_world_view.bind(world, _player)
-	_hud.bind(world)
+	_world_view.bind(_world, _player)
+	_hud.bind(_world)
+	_player.hotbar_selected.connect(_hud.set_selected_slot)
 
-	world.inventory_full.connect(func() -> void: Quips.say("inventory_full"))
-	world.wreck_destroyed.connect(func(_id: int) -> void: Quips.say("wreck_destroyed"))
-	world.item_collected.connect(_on_item_collected)
+	_build_menu.build_selected.connect(_on_build_selected)
+	_build_menu.demolish_selected.connect(_cursor.start_demolish)
+	_cursor.menu_requested.connect(_build_menu.open)
+
+	_world.inventory_full.connect(func() -> void: Quips.say("inventory_full"))
+	_world.wreck_destroyed.connect(func(_id: int) -> void: Quips.say("wreck_destroyed"))
+	_world.item_collected.connect(_on_item_collected)
+	_world.place_failed.connect(func(reason: String) -> void: Quips.say("fail_" + reason, true))
 	get_tree().create_timer(1.0).timeout.connect(func() -> void: Quips.say("start"))
+
+
+func _process(_delta: float) -> void:
+	_hud.set_hint(_current_hint())
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("build_menu"):
+		_build_menu.open()
+		get_viewport().set_input_as_handled()
+
+
+func _on_build_selected(def_id: String) -> void:
+	_cursor.start_place(DataRegistry.building_defs[def_id])
+
+
+func _current_hint() -> String:
+	match InputRouter.context:
+		InputRouter.Context.BUILD:
+			return tr("HINT_DEMOLISH") if _cursor.mode == BuildCursor.Mode.DEMOLISH else tr("HINT_PLACE")
+		InputRouter.Context.MENU:
+			return tr("HINT_MENU")
+	var b := _player.nearby_building()
+	if b != null:
+		var slot: Dictionary = _world.player.inventory.slots[_player.selected_slot]
+		if slot["item"] != "":
+			return tr("HINT_DEPOSIT") % [slot["count"], DataRegistry.item_name(slot["item"]), tr(b.def.name_key)]
+		if not b.contents().is_empty():
+			return tr("HINT_WITHDRAW") % tr(b.def.name_key)
+	return tr("HUD_HINT_GAME")
 
 
 func _on_item_collected(item_id: String, _from: Vector2i) -> void:

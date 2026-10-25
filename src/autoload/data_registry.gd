@@ -2,8 +2,9 @@ extends Node
 ## Lädt die JSON-Daten aus data/ (Items, Sprüche; ab MS2 Gebäude, Rezepte, Tech).
 ## Balancing ändert JSON, nie GDScript.
 
-var items: Dictionary = {}   # id → Dictionary (id, name_key, sell_value, color, icon)
-var quips: Dictionary = {}   # trigger → Array[String] (Übersetzungs-Keys)
+var items: Dictionary = {}          # id → Dictionary (id, name_key, sell_value, color, icon)
+var quips: Dictionary = {}          # trigger → Array[String] (Übersetzungs-Keys)
+var building_defs: Dictionary = {}  # id → BuildingDef
 var _icon_cache: Dictionary = {}
 
 
@@ -16,6 +17,14 @@ func load_all() -> void:
 	for entry: Dictionary in _read_json("res://data/items.json").get("items", []):
 		items[str(entry["id"])] = entry
 	quips = _read_json("res://data/quips.json")
+	building_defs = BuildingDef.load_all("res://data/buildings.json")
+
+
+func item_values() -> Dictionary:
+	var result: Dictionary = {}
+	for id in items:
+		result[id] = int(items[id].get("sell_value", 0))
+	return result
 
 
 func item_name(item_id: String) -> String:

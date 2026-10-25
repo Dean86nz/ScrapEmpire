@@ -5,5 +5,8 @@
   "first_copper": ["QUIP_FIRST_COPPER"],
   "first_plastic": ["QUIP_FIRST_PLASTIC"],
   "wreck_destroyed": ["QUIP_WRECK_1", "QUIP_WRECK_2"],
-  "idle": ["QUIP_IDLE_1", "QUIP_IDLE_2"]
+  "idle": ["QUIP_IDLE_1", "QUIP_IDLE_2"],
+  "fail_cost": ["FAIL_COST"],
+  "fail_blocked": ["FAIL_BLOCKED"],
+  "fail_range": ["FAIL_RANGE"]
 }

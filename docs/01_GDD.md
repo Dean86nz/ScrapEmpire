@@ -74,9 +74,11 @@ Wertschöpfungsregel: Produktwert = Summe Inputwerte × 1,5 bis 1,8 (gerundet). 
 | Förderband | 1×1 | 1 Schrott pro Stück | 2 Kacheln/s | gerade, Kurve L/R | Kapazität 4 Items pro Kachel |
 | Kiste | 1×1 | 10 Schrott | – | von allen Seiten | 12 Slots × 20, Puffer für Routinen |
 
-Maschinen haben Puffer: Eingang max. 10 Items pro Typ, Ausgang max. 10 Items. Voller Ausgang stoppt die Maschine (visuell: Maschine „schnauft“, Items hüpfen am Band).
+Maschinen haben Puffer: Eingang max. 10 Items pro Typ, Ausgang max. 10 Items. Voller Ausgang stoppt die Maschine (visuell: Maschine „schnauft“, Items hüpfen am Band). Ausnahme Verkaufsterminal: beim manuellen Einlegen nimmt es bis zu 40 Items (ein ganzer Stack passt hinein), Bänder (MS4) halten sich an 10.
 
-Erste Maschine wird manuell befüllt (A-Taste am Eingang: ganzen Stack einlegen; A am Ausgang: entnehmen). Alles weitere lösen Förderbänder.
+Manuelles Befüllen: A neben dem Gebäude legt den ausgewählten Hotbar-Stack (LB/RB wählt) ganz ein; ist der gewählte Slot leer, nimmt A einen Stack aus dem Gebäude. Alles weitere lösen Förderbänder.
+
+**Baumodus** (Y öffnet Baumenü, A wählt): D-Pad, rechter Stick oder Pfeiltasten bewegen den Cursor, A platziert, X dreht, B bricht ab, Y zurück ins Menü. Reichweite 6 Kacheln um Rusty. „Abreißen“ im Baumenü erstattet die gezahlten Kosten und den Inhalt.
 
 ## 7. Ökonomie-Formeln
 

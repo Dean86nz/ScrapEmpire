@@ -2,36 +2,34 @@
 
 ## Jetzt
 
-- [ ] MS1 testen (PC oder ROG Ally X, EXE in export/windows/), Feedback zu Saugen, Hämmern, Lesbarkeit der Sprechblase
-- [ ] Nach Feedback: Branch `ms/1-sammeln` nach `main` mergen, MS2 beginnen
+- [ ] MS2 testen (EXE `export/windows/ScrapEmpire_v0.2.0.exe`): Bauen in unter 2 s, Einlegen, Bolts, Abreißen, alles ohne Maus
+- [ ] Nach Feedback: Branch `ms/2-bauen` nach `main` mergen, MS3 beginnen
 
-## MS1 Sammeln (erledigt, wartet auf Test)
+## MS2 Bauen und Verkaufen (erledigt, wartet auf Test)
 
-- [x] data/items.json, DataRegistry lädt JSON
-- [x] Tutorial-Map als JSON (40×30), MapLoader
-- [x] ResourceNode (Haufen, Knäuel, Bröckchen, Wracks) in Sim + Darstellung
-- [x] Inventory (6 Slots × 20) mit Tests
-- [x] Schrottsauger (Kegel 90°, 2,5 Kacheln, 1 Item/0,25 s)
-- [x] Hammer (1 Kachel, 1 Schlag/0,5 s), Wrack zerlegen, lose Items
-- [x] Hotbar-HUD (72-px-Slots), Sprechblase, 11 Rusty-Sprüche (data/quips.json)
-- [x] Regeneration der Haufen
+- [x] data/buildings.json (Terminal, Kiste), Kostenformel 1,35^n
+- [x] Grid (Belegung) in der Sim, Befehle place/rotate/remove
+- [x] Rastercursor (D-Pad / rechter Stick / Maus), Vorschau grün/rot, Drehen
+- [x] Baumenü (Y) mit Fokusnavigation
+- [x] Verkaufsterminal: A legt Stack ein, Bolts zählen hoch
+- [x] Kiste: A legt ein / nimmt heraus
+- [x] Abreißen erstattet Kosten
 - [ ] Auf dem Ally getestet
 
-## MS2 Bauen und Verkaufen (nächster Meilenstein)
+## MS3 Maschinen (nächster Meilenstein)
 
-- [ ] data/buildings.json (Terminal, Kiste), Kostenformel 1,35^n
-- [ ] Grid (Belegung) in der Sim, Befehle place/rotate/remove
-- [ ] Rastercursor (D-Pad / rechter Stick), Vorschau grün/rot, Drehen
-- [ ] Baumenü (Y) mit Fokusnavigation
-- [ ] Verkaufsterminal: A legt Stack ein, Bolts zählen hoch
-- [ ] Kiste: A legt ein / nimmt heraus
-- [ ] Abreißen erstattet Kosten
+- [ ] data/recipes.json, Rezeptsystem
+- [ ] Schmelzofen (Schrott → Eisenbarren, Kupfer → Kupferbarren)
+- [ ] Presse (Plastik → Plastikplatte; Zahnrad/Schaltkreis erst mit Tech)
+- [ ] Ein-/Ausgangspuffer (10/10), Fortschrittsanzeige, Stau-Feedback „!“
+- [ ] Manuelles Entnehmen aus dem Ausgang
 
 ## Bekannte Kleinigkeiten
 
 - Pause-Menü hat noch keinen Sprachwechsel und kein Speichern (kommt in MS6)
 - Sprechblase wird nicht an den Bildschirmrand geclampt (kann oben abgeschnitten werden)
-- Rusty kann über Haufen und Wracks fahren (keine Kollision; Entscheidung folgt mit dem Bauen in MS2)
+- Rusty kann über Haufen und Wracks fahren (keine Kollision), Gebäude blockieren ihn
+- Baumenü zeigt nicht leistbare Gebäude nur in roter Schrift, nicht ausgegraut (Fokuskette bleibt vollständig)
 
 ## Offene Fragen an den Auftraggeber
 
