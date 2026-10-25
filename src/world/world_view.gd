@@ -29,6 +29,22 @@ func bind(world: SimWorld, player: Node2D) -> void:
 	world.building_changed.connect(_on_building_changed)
 	world.building_removed.connect(_on_building_removed)
 	world.item_sold.connect(_on_item_sold)
+	world.too_hard.connect(_on_too_hard)
+	world.node_respawned.connect(_on_node_respawned)
+
+
+func _on_too_hard(node: ResourceNode, _tool: String) -> void:
+	if _node_views.has(node.id):
+		_node_views[node.id].sparks()
+
+
+func _on_node_respawned(node: ResourceNode) -> void:
+	# node_added hat die View schon erzeugt; kurzer Pop beim Erscheinen.
+	if _node_views.has(node.id):
+		var v: Node2D = _node_views[node.id]
+		v.scale = Vector2.ZERO
+		var tween := create_tween()
+		tween.tween_property(v, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _on_node_added(node: ResourceNode) -> void:

@@ -2,17 +2,21 @@ extends TestCase
 
 
 func test_tutorial_map_loads() -> void:
+	ResourceNode.load_defs("res://data/scrap_objects.json")
 	var w := SimWorld.new()
 	var start := MapLoader.load_into(w, "res://data/maps/tutorial.json")
 	assert_eq(w.width_tiles, 40)
 	assert_eq(w.height_tiles, 30)
-	assert_eq(w.nodes.size(), 13)
+	assert_eq(w.nodes.size(), 19)
 	assert_eq(start, Vector2i(20 * 64 + 32, 15 * 64 + 32))
-	var wrecks := 0
+	var hammer_objects := 0
+	var tiers: Dictionary = {}
 	for n: ResourceNode in w.nodes.values():
-		if n.is_wreck():
-			wrecks += 1
-	assert_eq(wrecks, 3)
+		if n.uses_hammer():
+			hammer_objects += 1
+		tiers[n.tier] = true
+	assert_eq(hammer_objects, 7, "2 Toaster, 2 Kühlschränke, Raumschiff-Teil, Roboter-Arm, Monolith")
+	assert_true(tiers.has(5), "Monolith (Tier 5) ist sichtbar")
 
 
 func test_unknown_kind_is_skipped() -> void:

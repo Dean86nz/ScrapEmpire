@@ -45,7 +45,19 @@ func _process(_delta: float) -> bool:
 		var clock: Node = root.get_node("/root/SimClock")
 		for pair in _cheat.split(","):
 			var kv := pair.split("=")
-			clock.world.player.inventory.add(kv[0], int(kv[1]))
+			match kv[0]:
+				"pos":  # pos=x;y teleportiert Rusty (Weltpixel)
+					var xy := kv[1].split(";")
+					var player: Node2D = get_nodes_in_group("player")[0]
+					player.global_position = Vector2(float(xy[0]), float(xy[1]))
+					player.get_node("Camera2D").reset_smoothing()
+				"xp":
+					clock.world.progression.add_xp(int(kv[1]))
+				"tier":
+					clock.world.player.suction_tier = int(kv[1])
+					clock.world.player.hammer_tier = int(kv[1])
+				_:
+					clock.world.player.inventory.add(kv[0], int(kv[1]))
 	for step in _sequence:
 		if step["frame"] == _frames:
 			_send_action(step["action"], step["pressed"])

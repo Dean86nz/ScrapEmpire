@@ -6,6 +6,7 @@ const ITEM_SLOT := preload("res://src/ui/widgets/item_slot.tscn")
 @onready var _bolts_label: Label = $BoltsLabel
 @onready var _hotbar: HBoxContainer = $Hotbar
 @onready var _hint: Label = $HintLabel
+@onready var _xp_bar: HBoxContainer = $XpBar
 
 var _inventory: Inventory
 var _slots: Array = []
@@ -29,6 +30,7 @@ func bind(world: SimWorld) -> void:
 	_inventory.changed.connect(_refresh)
 	world.bolts_changed.connect(set_bolts)
 	set_bolts(world.bolts)
+	_xp_bar.bind(world.progression)
 	_refresh()
 	set_selected_slot(0)
 

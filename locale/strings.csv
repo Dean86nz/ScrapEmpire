@@ -50,3 +50,24 @@ BLD_PRESS,Presse,Press
 QUIP_REJECTED_1,Das passt da nicht rein.,That does not go in there.
 QUIP_REJECTED_2,Falsches Loch. Passiert den Besten.,Wrong slot. Happens to the best.
 QUIP_FIRST_MACHINE,Es brummt. Das ist gut. Glaube ich.,It hums. That is good. I think.
+ITEM_CHROME,Chrom,Chrome
+ITEM_TITANIUM,Titan,Titanium
+ITEM_STARDUST,Sternenstaub,Stardust
+NODE_TOASTER,Rostiger Toaster,Rusty toaster
+NODE_FRIDGE,Verbeulter Kühlschrank,Dented fridge
+NODE_CART,Kaputter Einkaufswagen,Broken shopping cart
+NODE_SHIP_PART,Gestrandetes Raumschiff-Teil,Stranded spaceship part
+NODE_SATELLITE,Alter Satellit,Old satellite
+NODE_ROBOT_ARM,Vergrabener Roboter-Arm,Buried robot arm
+NODE_MONOLITH,"Monolith „Warum steht der hier?“","Monolith ""Why is this here?"""
+HUD_LEVEL,Lv %d,Lv %d
+HUD_SKILL_POINTS,Skillpunkte: %d,Skill points: %d
+QUIP_TOO_HARD_1,Zu hart! Mein Hammer weint.,Too hard! My hammer is crying.
+QUIP_TOO_HARD_2,Das braucht einen größeren Hammer.,That needs a bigger hammer.
+QUIP_TOO_HEAVY_1,Zu schwer! Sauger sagt nein.,Too heavy! Vacuum says no.
+QUIP_TOO_HEAVY_2,Mehr Saugkraft. Weniger Reden.,More suction. Less talking.
+QUIP_LEVEL_UP_1,Level up! Ich fühle mich… schraubiger.,Level up! I feel… bolt-ier.
+QUIP_LEVEL_UP_2,Ding! Ein Skillpunkt. Nicht ausgeben. Doch.,Ding! A skill point. Don't spend it. Do.
+QUIP_LEVEL_UP_3,Ich wachse. Nicht körperlich. Innerlich.,I'm growing. Not physically. Inside.
+QUIP_FIRST_CHROME,Chrom! Ich kann mich drin spiegeln. Hübsch.,Chrome! I can see myself in it. Handsome.
+DEBUG_TIER_UP,[DEV] Werkzeug-Stufe +1,[DEV] Tool tier +1

@@ -18,13 +18,14 @@ static func apply(world: SimWorld, data: Dictionary) -> Vector2i:
 	for entry: Dictionary in data.get("nodes", []):
 		var kind := str(entry.get("kind", ""))
 		var tile := Vector2i(int(entry.get("x", 0)), int(entry.get("y", 0)))
-		if kind == ResourceNode.KIND_WRECK:
+		if entry.has("loot") and (kind == ResourceNode.KIND_WRECK or ResourceNode.has_kind(kind)):
+			# Explizite Ausbeute überschreibt die Definition (alte Karten, Sonderfälle).
 			var loot: Dictionary = {}
-			for k in entry.get("loot", {}):
+			for k in entry["loot"]:
 				loot[str(k)] = int(entry["loot"][k])
-			world.add_wreck(tile, loot)
-		elif ResourceNode.is_pile_kind(kind):
-			world.add_pile(kind, tile, int(entry.get("amount", ResourceNode.PILE_MAX)))
+			world.add_wreck(tile, loot, kind)
+		elif ResourceNode.has_kind(kind):
+			world.add_object(kind, tile, int(entry.get("amount", -1)))
 		else:
 			push_warning("Karte: unbekannter Knotentyp '%s' übersprungen" % kind)
 	var start: Dictionary = data.get("player_start", {"x": world.width_tiles / 2, "y": world.height_tiles / 2})

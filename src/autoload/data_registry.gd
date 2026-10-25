@@ -20,6 +20,16 @@ func load_all() -> void:
 	quips = _read_json("res://data/quips.json")
 	building_defs = BuildingDef.load_all("res://data/buildings.json")
 	recipes = RecipeDef.load_all("res://data/recipes.json")
+	ResourceNode.load_defs("res://data/scrap_objects.json")
+
+
+func new_progression() -> Progression:
+	return Progression.load_config("res://data/progression.json")
+
+
+func node_name(kind: String) -> String:
+	var d: Dictionary = ResourceNode.defs.get(kind, {})
+	return tr(str(d.get("name_key", kind)))
 
 
 func item_values() -> Dictionary:

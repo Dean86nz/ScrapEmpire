@@ -238,11 +238,11 @@ Diese Kapitel ergänzen das MVP um Erfahrung und Level, Skilltree, Schrott-Stufe
 | 4 | 130 | 345 |
 | 5 | 150 | 495 |
 | 6 | 175 | 670 |
-| 8 | 230 | 1.105 |
-| 10 | 305 | 1.705 |
-| 12 | 405 | 2.515 |
-| 15 | 615 | 4.165 |
-| 20 | 1.230 | 8.985 |
+| 8 | 230 | 1.100 |
+| 10 | 305 | 1.670 |
+| 12 | 405 | 2.425 |
+| 15 | 615 | 4.040 |
+| 20 | 1.240 | 8.815 |
 
 Richtwert: bei durchschnittlich 60 XP/min (Phase C) dauert Level 10 etwa 30 Minuten, Level 20 etwa 2,5 Stunden. Damit fällt Level 20 ungefähr mit dem Ende des MVP-Techbaums zusammen.
 
