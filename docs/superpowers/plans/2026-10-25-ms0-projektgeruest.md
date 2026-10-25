@@ -31,7 +31,7 @@
 **Interfaces:**
 - Produces: Projekt öffnet im Editor, Hauptszene `res://src/world/main.tscn` (kommt in Task 4), Autoload-Einträge für Task 2/3.
 
-- [ ] **Step 1: .gitignore**
+- [x] **Step 1: .gitignore**
 
 ```
 # Godot
@@ -45,7 +45,7 @@ Thumbs.db
 .DS_Store
 ```
 
-- [ ] **Step 2: project.godot** (Autoloads werden in Task 2 ergänzt, Hauptszene in Task 4)
+- [x] **Step 2: project.godot** (Autoloads werden in Task 2 ergänzt, Hauptszene in Task 4)
 
 ```ini
 ; Engine configuration file.
@@ -79,7 +79,7 @@ textures/canvas_textures/default_texture_filter=1
 
 Begründung `mobile`-Renderer: niedrigerer GPU-Verbrauch im 15-W-Modus, 2D braucht Forward+ nicht.
 
-- [ ] **Step 3: git init, Ordner anlegen, erster Commit**
+- [x] **Step 3: git init, Ordner anlegen, erster Commit**
 
 ```bash
 git init -b main
@@ -98,7 +98,7 @@ git add -A && git commit -m "ms0: Projektgerüst, .gitignore, project.godot"
 **Interfaces:**
 - Produces: `class_name TickAccumulator` mit `advance(delta: float) -> int` (Anzahl fälliger Ticks) und `alpha: float`; `class_name SimWorld` mit `tick_count: int`, `queue_command(cmd: Dictionary)`, `tick()`; `class_name TestCase` mit `assert_eq`, `assert_true`, `failures: Array[String]`.
 
-- [ ] **Step 1: Test-Basisklasse und Runner**
+- [x] **Step 1: Test-Basisklasse und Runner**
 
 ```gdscript
 # tests/test_case.gd
@@ -145,7 +145,7 @@ func _initialize() -> void:
     quit(1 if failed.size() > 0 else 0)
 ```
 
-- [ ] **Step 2: Failing tests**
+- [x] **Step 2: Failing tests**
 
 ```gdscript
 # tests/test_tick_accumulator.gd
@@ -184,9 +184,9 @@ func test_commands_consumed_on_tick() -> void:
     assert_eq(w.pending_commands(), 0)
 ```
 
-- [ ] **Step 3: Run, expect FAIL** (Klassen fehlen → Parse-Fehler, Exit ≠ 0)
+- [x] **Step 3: Run, expect FAIL** (Klassen fehlen → Parse-Fehler, Exit ≠ 0)
 
-- [ ] **Step 4: Implementierung**
+- [x] **Step 4: Implementierung**
 
 ```gdscript
 # src/sim/tick_accumulator.gd
@@ -233,7 +233,7 @@ func _apply(_cmd: Dictionary) -> void:
     pass  # Befehle kommen ab MS1
 ```
 
-- [ ] **Step 5: Run, expect `5 tests, 0 failures`, Commit** `ms0: Sim-Kern (TickAccumulator, SimWorld) und Test-Runner`
+- [x] **Step 5: Run, expect `5 tests, 0 failures`, Commit** `ms0: Sim-Kern (TickAccumulator, SimWorld) und Test-Runner`
 
 ---
 
@@ -247,7 +247,7 @@ func _apply(_cmd: Dictionary) -> void:
 **Interfaces:**
 - Produces: `GameConfig.TILE_SIZE = 64`, `GameConfig.PLAYER_SPEED_PX = 256.0`, `GameConfig.TICKS_PER_SECOND = 20`; `SimClock.world: SimWorld`, `SimClock.paused: bool`, `SimClock.last_tick_ms: float`, `SimClock.alpha`; `InputMapSetup.apply()` (static) registriert Aktionen `move_left/right/up/down, aim_left/right/up/down, tool_primary, tool_secondary, interact, cancel, build_menu, tool_swap, hotbar_prev, hotbar_next, tech_tree, pause, cursor_up/down/left/right, debug_overlay, toggle_fullscreen`; `EventBus` Signale `tick_done(tick_count)`, `device_changed(is_gamepad)`.
 
-- [ ] **Step 1: Failing test**
+- [x] **Step 1: Failing test**
 
 ```gdscript
 # tests/test_input_map.gd
@@ -264,7 +264,7 @@ func test_apply_is_idempotent() -> void:
     assert_eq(InputMap.action_get_events("move_left").size(), InputMapSetup.ACTIONS["move_left"].size())
 ```
 
-- [ ] **Step 2: InputMapSetup**
+- [x] **Step 2: InputMapSetup**
 
 ```gdscript
 # src/autoload/input_map_setup.gd
@@ -319,7 +319,7 @@ static func apply() -> void:
             InputMap.action_add_event(action, ev)
 ```
 
-- [ ] **Step 3: Übrige Autoloads**
+- [x] **Step 3: Übrige Autoloads**
 
 ```gdscript
 # src/autoload/game_config.gd
@@ -407,7 +407,7 @@ SaveManager="*res://src/autoload/save_manager.gd"
 InputRouter="*res://src/autoload/input_router.gd"
 ```
 
-- [ ] **Step 4: Tests grün (7 tests), Commit** `ms0: Autoloads, Input-Map zur Laufzeit, SimClock`
+- [x] **Step 4: Tests grün (7 tests), Commit** `ms0: Autoloads, Input-Map zur Laufzeit, SimClock`
 
 ---
 
@@ -422,9 +422,9 @@ InputRouter="*res://src/autoload/input_router.gd"
 **Interfaces:**
 - Produces: `Player` (CharacterBody2D) mit `aim_dir: Vector2`, `facing: Vector2`; `Main` baut Boden (Sprite2D, repeat, 120×90 Kacheln) und vier StaticBody2D-Wände; `DebugOverlay` liest `Engine.get_frames_per_second()`, `SimClock.last_tick_ms`, `SimClock.world.tick_count`.
 
-- [ ] **Step 1: SVGs** (Rusty 56 px: orange runder Körper, dunkle 4-px-Outline, zwei Augen, Antenne; Boden 64 px: sandgelb mit zwei helleren Kieseln)
+- [x] **Step 1: SVGs** (Rusty 56 px: orange runder Körper, dunkle 4-px-Outline, zwei Augen, Antenne; Boden 64 px: sandgelb mit zwei helleren Kieseln)
 
-- [ ] **Step 2: Theme**
+- [x] **Step 2: Theme**
 
 ```
 [gd_resource type="Theme" format=3]
@@ -432,7 +432,7 @@ InputRouter="*res://src/autoload/input_router.gd"
 default_font_size = 24
 ```
 
-- [ ] **Step 3: player.gd**
+- [x] **Step 3: player.gd**
 
 ```gdscript
 class_name Player
@@ -460,7 +460,7 @@ func _physics_process(_delta: float) -> void:
 
 Szene `player.tscn`: CharacterBody2D (motion_mode Floating) → CollisionShape2D (CircleShape2D r=24) → Sprite2D (rusty.svg) → AimMarker (Node2D) → Polygon2D (kleines Dreieck bei x=36) → Camera2D (position_smoothing_enabled, speed 8, zoom 1).
 
-- [ ] **Step 4: main.gd baut Boden und Wände**
+- [x] **Step 4: main.gd baut Boden und Wände**
 
 ```gdscript
 extends Node2D
@@ -494,7 +494,7 @@ func _ready() -> void:
     cam.limit_left = 0; cam.limit_top = 0; cam.limit_right = px; cam.limit_bottom = py
 ```
 
-- [ ] **Step 5: Debug-Overlay**
+- [x] **Step 5: Debug-Overlay**
 
 ```gdscript
 extends CanvasLayer
@@ -516,7 +516,7 @@ func _process(_delta: float) -> void:
         "Gamepad" if InputRouter.is_gamepad else "Tastatur"]
 ```
 
-- [ ] **Step 6: Editor-Import headless** `--headless --import`, dann Spiel kurz headless starten (`--headless --quit-after 60`) → keine Fehler im Log. Commit `ms0: Rusty bewegt sich, Kamera, Debug-Overlay`
+- [x] **Step 6: Editor-Import headless** `--headless --import`, dann Spiel kurz headless starten (`--headless --quit-after 60`) → keine Fehler im Log. Commit `ms0: Rusty bewegt sich, Kamera, Debug-Overlay`
 
 ---
 
@@ -526,10 +526,10 @@ func _process(_delta: float) -> void:
 - Create: `export_presets.cfg`, `build.ps1`
 - Modify: `README.md` (Build-Anleitung), `CHANGELOG.md`, `TODO.md`
 
-- [ ] **Step 1: Export-Templates 4.7.2 holen** (falls nicht unter `%APPDATA%/Godot/export_templates/4.7.2.stable/`): Download `Godot_v4.7.2-stable_export_templates.tpz` von github.com/godotengine/godot/releases, entpacken nach dort.
-- [ ] **Step 2: export_presets.cfg** für „Windows Desktop“, Pfad `export/windows/ScrapEmpire.exe`, embed_pck=true.
-- [ ] **Step 3: build.ps1** ruft `--headless --export-release "Windows Desktop" export/windows/ScrapEmpire.exe`.
-- [ ] **Step 4: Build läuft, EXE existiert.** CHANGELOG/TODO aktualisieren, Commit `ms0: Export-Preset und Build-Skript`.
+- [x] **Step 1: Export-Templates 4.7.2 holen** (falls nicht unter `%APPDATA%/Godot/export_templates/4.7.2.stable/`): Download `Godot_v4.7.2-stable_export_templates.tpz` von github.com/godotengine/godot/releases, entpacken nach dort.
+- [x] **Step 2: export_presets.cfg** für „Windows Desktop“, Pfad `export/windows/ScrapEmpire.exe`, embed_pck=true.
+- [x] **Step 3: build.ps1** ruft `--headless --export-release "Windows Desktop" export/windows/ScrapEmpire.exe`.
+- [x] **Step 4: Build läuft, EXE existiert.** CHANGELOG/TODO aktualisieren, Commit `ms0: Export-Preset und Build-Skript`.
 
 ---
 

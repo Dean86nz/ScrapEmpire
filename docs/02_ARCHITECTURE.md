@@ -207,7 +207,7 @@ Offline passiert nichts (GDD 7.3). `saved_at_unix` wird trotzdem gespeichert, da
 
 ### 4.9 Eingabe
 
-Input-Map-Aktionen (project.godot): `move_left/right/up/down` (Stick + WASD), `aim_x/aim_y` (rechter Stick), `tool_primary` (RT/LMB), `tool_secondary` (LT/RMB), `interact` (A/E), `cancel` (B/Esc), `build_menu` (Y/Tab), `tool_swap` (X/Q), `hotbar_prev/next` (LB/RB/Mausrad), `tech_tree` (Select/T), `pause` (Start/Esc), `cursor_*` (D-Pad). Deadzone 0,2. `InputRouter` erkennt das zuletzt benutzte Gerät und tauscht Button-Icons im HUD (Xbox-Layout für Ally).
+Input-Map-Aktionen werden zur Laufzeit von `InputMapSetup.apply()` (src/autoload/input_map_setup.gd) registriert, nicht in project.godot. Grund: lesbar, testbar (`tests/test_input_map.gd`), kein handgeschriebenes Serialisierungsformat. Aktionen: `move_left/right/up/down` (Stick + WASD), `aim_x/aim_y` (rechter Stick), `tool_primary` (RT/LMB), `tool_secondary` (LT/RMB), `interact` (A/E), `cancel` (B/Esc), `build_menu` (Y/Tab), `tool_swap` (X/Q), `hotbar_prev/next` (LB/RB/Mausrad), `tech_tree` (Select/T), `pause` (Start/Esc), `cursor_*` (D-Pad). Deadzone 0,2. `InputRouter` erkennt das zuletzt benutzte Gerät und tauscht Button-Icons im HUD (Xbox-Layout für Ally).
 
 ### 4.10 Lokalisierung
 
