@@ -33,6 +33,11 @@ signal helper_removed(id: int)
 signal helper_failed(reason: String)
 signal helper_quip(helper: Helper, key: String)
 signal helper_upgrade_bought(id: String, level: int)
+signal drone_added(drone: Drone)
+signal drone_removed(id: int)
+signal drone_changed(drone: Drone)
+signal drone_failed(reason: String)
+signal drone_upgrade_bought(id: String, level: int)
 signal zone_unlocked(zone_id: String)
 
 const TILE := 64
@@ -78,6 +83,9 @@ var _node_tiles: Dictionary = {}  # Vector2i → node id (für Bauprüfung)
 var _too_hard_cooldown := 0
 const TOO_HARD_INTERVAL := 20
 var blocked_tiles: Dictionary = {}  # Zaun-Kacheln (nicht bebaubar)
+var drones: Dictionary = {}          # id → Drone
+var drone_cfg: Dictionary = {}
+var drone_upgrades: Dictionary = {}  # id → level
 
 
 func _init() -> void:
@@ -105,11 +113,18 @@ func is_building_unlocked(def_id: String) -> bool:
 
 
 func recompute_modifiers() -> void:
-	mods = Modifiers.compute(skills.defs, skills.levels, tech.defs, tech.unlocked, helper_cfg.get("upgrades", []), helper_upgrades)
+	var upgrade_defs: Array = []
+	upgrade_defs.append_array(helper_cfg.get("upgrades", []))
+	upgrade_defs.append_array(drone_cfg.get("upgrades", []))
+	var upgrade_levels := helper_upgrades.duplicate()
+	upgrade_levels.merge(drone_upgrades)
+	mods = Modifiers.compute(skills.defs, skills.levels, tech.defs, tech.unlocked, upgrade_defs, upgrade_levels)
 	if player.apply_modifiers(mods):
 		inventory_resized.emit()
 	for h: Helper in helpers.values():
 		_apply_helper_mods(h)
+	for d: Drone in drones.values():
+		_apply_drone_mods(d)
 	for b: Building in buildings.values():
 		if b is SellTerminal:
 			(b as SellTerminal).sell_interval = int(mods["sell_interval"])
@@ -255,6 +270,7 @@ func tick() -> void:
 
 	tasks.tick(self, player)
 	_tick_helpers()
+	_tick_drones()
 	_tick_suction()
 	_tick_magnet()
 	_tick_hammer()
@@ -330,6 +346,153 @@ func add_helper(zone_tile: Vector2i, depot_tile: Vector2i, name_index: int = -1,
 	helpers[h.id] = h
 	helper_added.emit(h)
 	return h
+
+
+# --- Logistik-Drohnen -------------------------------------------------------
+
+func next_drone_cost() -> Dictionary:
+	var n := drones.size()
+	var base := float(drone_cfg.get("cost_base_bolts", 600))
+	var growth := float(drone_cfg.get("cost_growth", 1.4))
+	return {"bolts": int(round(base * pow(growth, n) / 10.0)) * 10, "circuit": int(drone_cfg.get("cost_circuit", 3))}
+
+
+static func _is_drone_source(b: Building) -> bool:
+	return b is Chest or b is Machine
+
+
+static func _is_drone_target(b: Building) -> bool:
+	return b is Chest or b is Machine or b is SellTerminal
+
+
+## "" wenn kaufbar, sonst: locked, max, bolts, circuit, no_source, no_target, same
+func can_buy_drone(source_tile: Vector2i, target_tile: Vector2i) -> String:
+	if not unlocked_features.has("drones"):
+		return "locked"
+	if drones.size() >= int(drone_cfg.get("max_drones", 4)):
+		return "max"
+	var cost := next_drone_cost()
+	if bolts < int(cost["bolts"]):
+		return "bolts"
+	if player.inventory.count_of("circuit") < int(cost["circuit"]):
+		return "circuit"
+	if source_tile.x < 0:
+		return ""
+	var src := grid.at(source_tile)
+	if src == null or not _is_drone_source(src):
+		return "no_source"
+	var dst := grid.at(target_tile)
+	if dst == null or not _is_drone_target(dst):
+		return "no_target"
+	if src.id == dst.id:
+		return "same"
+	return ""
+
+
+func _apply_drone_mods(d: Drone) -> void:
+	d.apply_modifiers(mods, int(drone_cfg.get("base_speed_px_per_s", 160)), int(drone_cfg.get("base_capacity", 10)))
+
+
+func add_drone(source_id: int, target_id: int) -> Drone:
+	var d := Drone.new()
+	d.id = next_id()
+	d.source_id = source_id
+	d.target_id = target_id
+	var src: Building = buildings.get(source_id)
+	d.pos = src.center_px() if src != null else player.pos
+	_apply_drone_mods(d)
+	drones[d.id] = d
+	drone_added.emit(d)
+	return d
+
+
+func _cmd_buy_drone(cmd: Dictionary) -> void:
+	var source_tile: Vector2i = cmd.get("source", Vector2i(-1, -1))
+	var target_tile: Vector2i = cmd.get("target", Vector2i(-1, -1))
+	var reason := can_buy_drone(source_tile, target_tile)
+	if reason != "":
+		drone_failed.emit(reason)
+		return
+	var cost := next_drone_cost()
+	bolts -= int(cost["bolts"])
+	player.inventory.remove("circuit", int(cost["circuit"]))
+	bolts_changed.emit(bolts)
+	add_drone(grid.at(source_tile).id, grid.at(target_tile).id)
+
+
+func _cmd_remove_drone(cmd: Dictionary) -> void:
+	var id := int(cmd.get("id", -1))
+	if not drones.has(id):
+		return
+	var d: Drone = drones[id]
+	for i in mini(d.carry_count, 20):
+		add_loose(d.carry_item, d.pos + _scatter())
+	drones.erase(id)
+	drone_removed.emit(id)
+
+
+func _cmd_set_drone_filter(cmd: Dictionary) -> void:
+	var d: Drone = drones.get(int(cmd.get("id", -1)))
+	if d == null:
+		return
+	d.item_filter = str(cmd.get("item", ""))
+	drone_changed.emit(d)
+
+
+func _cmd_set_drone_limit(cmd: Dictionary) -> void:
+	var d: Drone = drones.get(int(cmd.get("id", -1)))
+	if d == null:
+		return
+	d.limit = maxi(int(cmd.get("limit", 0)), 0)
+	drone_changed.emit(d)
+
+
+func drone_upgrade_def(id: String) -> Dictionary:
+	for u: Dictionary in drone_cfg.get("upgrades", []):
+		if str(u["id"]) == id:
+			return u
+	return {}
+
+
+func can_buy_drone_upgrade(id: String) -> String:
+	var u := drone_upgrade_def(id)
+	if u.is_empty():
+		return "unknown"
+	var level := int(drone_upgrades.get(id, 0))
+	if level >= int(u.get("max_level", 1)):
+		return "max"
+	if not unlocked_features.has(str(u.get("requires_feature", "drones"))):
+		return "locked"
+	if bolts < int(u["cost_bolts"][level]):
+		return "bolts"
+	if player.inventory.count_of("circuit") < int(u["cost_circuit"][level]):
+		return "circuit"
+	return ""
+
+
+func _cmd_buy_drone_upgrade(cmd: Dictionary) -> void:
+	var id := str(cmd.get("id", ""))
+	var reason := can_buy_drone_upgrade(id)
+	if reason != "":
+		drone_failed.emit("upgrade_" + reason)
+		return
+	var u := drone_upgrade_def(id)
+	var level := int(drone_upgrades.get(id, 0))
+	bolts -= int(u["cost_bolts"][level])
+	player.inventory.remove("circuit", int(u["cost_circuit"][level]))
+	bolts_changed.emit(bolts)
+	drone_upgrades[id] = level + 1
+	recompute_modifiers()
+	drone_upgrade_bought.emit(id, level + 1)
+
+
+func _tick_drones() -> void:
+	for d: Drone in drones.values():
+		var before := d.state
+		var before_carry := d.carry_count
+		d.tick(self)
+		if d.state != before or d.carry_count != before_carry:
+			drone_changed.emit(d)
 
 
 func _cmd_buy_helper(cmd: Dictionary) -> void:
@@ -570,6 +733,16 @@ func _apply(cmd: Dictionary) -> void:
 			_cmd_buy_helper_upgrade(cmd)
 		"remove_helper":
 			_cmd_remove_helper(cmd)
+		"buy_drone":
+			_cmd_buy_drone(cmd)
+		"remove_drone":
+			_cmd_remove_drone(cmd)
+		"set_drone_filter":
+			_cmd_set_drone_filter(cmd)
+		"set_drone_limit":
+			_cmd_set_drone_limit(cmd)
+		"buy_drone_upgrade":
+			_cmd_buy_drone_upgrade(cmd)
 
 
 # --- Bauen ----------------------------------------------------------------

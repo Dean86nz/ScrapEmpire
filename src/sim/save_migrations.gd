@@ -10,7 +10,14 @@ const SHIFT_PX := Vector2(0, 30 * 64)
 
 
 static func all() -> Dictionary:
-	return {1: Callable(SaveMigrations, "v1_to_v2"), 2: Callable(SaveMigrations, "v2_to_v3"), 3: Callable(SaveMigrations, "v3_to_v4")}
+	return {1: Callable(SaveMigrations, "v1_to_v2"), 2: Callable(SaveMigrations, "v2_to_v3"), 3: Callable(SaveMigrations, "v3_to_v4"), 4: Callable(SaveMigrations, "v4_to_v5")}
+
+
+static func v4_to_v5(data: Dictionary) -> Dictionary:
+	data["drones"] = []
+	data["drone_upgrades"] = {}
+	data["version"] = 5
+	return data
 
 
 ## 3 → 4: Kapitel (freigeschaltete Zonen). Alte Stände beginnen mit der Startzone.

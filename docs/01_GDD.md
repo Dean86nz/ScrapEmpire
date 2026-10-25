@@ -386,7 +386,8 @@ Umsetzung: `data/nature.json` steuert Dichten je Stufe (Gras ab Stufe 1, Blumen 
 - **Zen-Modus** (Kamera auf Fabrik oder Zone, UI aus, Musik) und **Fotomodus** (freie Kamera, Filter, Vorher/Nachher, Bild speichern).
 - **Aufgaben vom Planeten-Rat:** optionale Ziele mit kosmetischer Belohnung (Deko, Roboter-Skins, Farben). Daten: `council_quests.json`.
 
-### D. Logistik-Drohnen (nach den Helfer-Robotern)
+### D. Logistik-Drohnen (MS14, umgesetzt in v1.3.0)
+Umsetzung: `data/drones.json`; Tech „Drohnen-Hangar“ nach der Helfer-Werkstatt. Jede Drohne hat Quelle (Kiste oder Maschinen-Ausgang), Ziel (Kiste, Maschine, Terminal), Material-Filter (alles oder ein Item) und Limit (Zielbestand, 0 = keins). Kapazität 10 je Flug, 160 px/s, Wartezeit 3 s bei leerer Quelle, vollem Ziel oder erreichtem Limit. Keine Kollision. Upgrades Tempo und Tragkraft gelten für alle. Save v5 speichert Quelle und Ziel als Kacheln. Prioritäten und Offline-Mitarbeit sind noch offen.
 - Fliegende Drohnen transportieren zwischen Lagern, Maschinen und Terminal; flexibler als Bänder, aber langsamer und teurer.
 - Konfiguration per Gamepad: Quelle, Ziel, Material, Schwellwert („auffüllen, bis 50 im Lager“). Upgrades: Tragkraft, Geschwindigkeit, Anzahl, Prioritäten.
 - Arbeiten in der Offline-Progression mit (sobald diese kommt, 8-h-Grenze). Nutzen `WorkerBrain` mit Flugpfad statt Bodenweg.

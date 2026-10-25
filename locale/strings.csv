@@ -320,3 +320,42 @@ QUIP_RAIN_2,Tropfen auf dem Kopf. Ich bin wasserdicht. Glaube ich.,Drops on my h
 QUIP_CRITTER_1,"Ein Tier! Es ist nicht aus Metall. Seltsam, aber nett.","An animal! Not made of metal. Strange, but nice."
 QUIP_CRITTER_2,Da krabbelt was. Nicht einsaugen. Nicht einsaugen.,Something is crawling. Do not suck it up. Do not.
 MAP_LEGEND,Zustand:,State:
+MENU_TAB_DRONES,Drohnen,Drones
+MENU_PROGRESS_FOOTER_DRONES,D-Pad: wählen · A: Material wechseln · X: Limit wechseln · LT: Drohne entfernen · B: schließen,D-pad: select · A: change material · X: change limit · LT: remove drone · B: close
+TECH_DRONE_HANGAR,Drohnen-Hangar,Drone hangar
+TECH_DRONE_HANGAR_DESC,Fliegende Logistik-Drohnen tragen Items zwischen Kisten und Maschinen und zum Terminal.,Flying logistics drones carry items between chests and machines and to the terminal.
+DRONE_UPGRADES,Drohnen-Upgrades (gelten für alle Drohnen),Drone upgrades (apply to all drones)
+DRONE_BUY,Drohne kaufen,Buy drone
+DRONE_BUY_HINT,A: Quelle und Ziel wählen,A: pick source and target
+DRONE_LOCKED,Braucht Tech Drohnen-Hangar,Needs tech Drone hangar
+DRONE_MAX,Maximal %d Drohnen,Maximum %d drones
+DRONE_MISSING_CIRCUIT,es fehlen %d Schaltkreise,missing %d circuits
+DRONE_NAME,Drohne,Drone
+DRONE_FILTER,Material,Material
+DRONE_FILTER_ALL,alles,anything
+DRONE_LIMIT,Limit,Limit
+DRONE_LIMIT_NONE,keins,none
+DRONE_TRIPS,Fahrten:,Trips:
+DRONE_STATE_FETCH,holt,fetching
+DRONE_STATE_DELIVER,liefert,delivering
+DRONE_WAIT_SOURCE_EMPTY,wartet: Quelle leer,waiting: source empty
+DRONE_WAIT_TARGET_FULL,wartet: Ziel nimmt nichts an,waiting: target accepts nothing
+DRONE_WAIT_LIMIT,wartet: Limit erreicht,waiting: limit reached
+DRONE_WAIT_MISSING,wartet: Gebäude fehlt,waiting: building missing
+DRONE_PICK_SOURCE,Woher soll die Drohne holen? Kiste oder Maschine wählen.,Where should the drone fetch from? Pick a chest or machine.
+DRONE_PICK_TARGET,"Und wohin? Kiste, Maschine oder Terminal wählen.","And where to? Pick a chest, machine or terminal."
+DRONE_UPG_SPEED,Drohnen-Tempo,Drone speed
+DRONE_UPG_SPEED_DESC,+25 % Fluggeschwindigkeit je Stufe,+25% flight speed per level
+DRONE_UPG_CAPACITY,Drohnen-Tragkraft,Drone capacity
+DRONE_UPG_CAPACITY_DESC,+10 Items je Flug und Stufe,+10 items per flight and level
+DRONE_BOUGHT_1,Eine Drohne! Sie fliegt. Ich bin ein bisschen neidisch.,A drone! It flies. I am a little jealous.
+DRONE_BOUGHT_2,Summ summ. Das ist jetzt meine Luftpost.,Buzz buzz. That is my air mail now.
+QUIP_DRONE_LOCKED,Dafür brauche ich erst den Drohnen-Hangar.,I need the drone hangar for that first.
+QUIP_DRONE_MAX,Mehr Drohnen und der Himmel wird voll.,More drones and the sky gets crowded.
+QUIP_DRONE_CIRCUIT,Zu wenig Schaltkreise. Die Presse und der Ofen helfen.,Not enough circuits. The press and the furnace help.
+QUIP_DRONE_NO_SOURCE,Da ist keine Kiste und keine Maschine.,No chest and no machine there.
+QUIP_DRONE_NO_TARGET,"Das Ziel muss Kiste, Maschine oder Terminal sein.","The target must be a chest, machine or terminal."
+QUIP_DRONE_SAME,Von A nach A? Das fliegt nicht weit.,From A to A? That does not fly far.
+QUIP_DRONE_UPG_MAX,Das ist schon die höchste Stufe.,That is already the highest level.
+GOAL_DRONES,Drohnen,Drones
+CH_TIP_DRONES,"Drohnen: Quelle und Ziel wählen, A wechselt das Material, X das Limit.","Drones: pick source and target, A changes the material, X the limit."

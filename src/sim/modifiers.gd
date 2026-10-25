@@ -26,6 +26,8 @@ const DEFAULTS := {
 	"helper_tier": 1,
 	"helper_speed_mult": 1.0,
 	"helper_capacity_add": 0,
+	"drone_speed_mult": 1.0,
+	"drone_capacity_add": 0,
 }
 
 

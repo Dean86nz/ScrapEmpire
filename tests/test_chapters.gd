@@ -84,7 +84,7 @@ func test_save_keeps_unlocked_zones() -> void:
 	w.setup_progression_data(TechState.load_defs("res://data/tech.json"), SkillState.load_file("res://data/skills.json"))
 	w.zones.unlocked["b"] = true
 	var data := SaveCodec.encode(w, "x", Vector2(320, 352), 0)
-	assert_eq(int(data["version"]), 4)
+	assert_eq(int(data["version"]), SaveCodec.VERSION)
 	var w2 := SimWorld.new()
 	w2.defs = w.defs
 	MapLoader.apply(w2, _map(), false)
