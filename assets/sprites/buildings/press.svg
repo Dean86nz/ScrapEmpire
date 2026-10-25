@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Presse 2×2: blauer Rahmen, Stempel oben. Eingänge links und oben, Ausgang rechts. -->
+  <ellipse cx="64" cy="112" rx="52" ry="10" fill="#000" opacity="0.12"/>
+  <rect x="18" y="26" width="92" height="82" rx="14" fill="#3A7BD5" stroke="#2A2A33" stroke-width="5"/>
+  <rect x="34" y="36" width="60" height="14" rx="5" fill="#2A2A33"/>
+  <rect x="50" y="48" width="28" height="22" rx="4" fill="#9AA0A6" stroke="#2A2A33" stroke-width="4"/>
+  <rect x="38" y="70" width="52" height="10" rx="4" fill="#F2D77B" stroke="#2A2A33" stroke-width="3"/>
+  <rect x="30" y="84" width="68" height="14" rx="5" fill="#2F5FA8"/>
+  <circle cx="30" cy="98" r="5" fill="#2A2A33"/>
+  <circle cx="98" cy="98" r="5" fill="#2A2A33"/>
+  <!-- Pfeile: Eingang links und oben, Ausgang rechts -->
+  <path d="M4 58 L18 50 L18 66 Z" fill="#F28C28" stroke="#2A2A33" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M34 4 L42 18 L26 18 Z" fill="#F28C28" stroke="#2A2A33" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M110 50 L124 58 L110 66 Z" fill="#3FB47C" stroke="#2A2A33" stroke-width="3" stroke-linejoin="round"/>
+</svg>

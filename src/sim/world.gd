@@ -19,6 +19,7 @@ signal building_removed(id: int)
 signal place_failed(reason: String)
 signal bolts_changed(value: int)
 signal item_sold(item_id: String, value: int, pos: Vector2i)
+signal deposit_rejected(building: Building, item_id: String)
 
 const TILE := 64
 const LOOT_SCATTER_PX := 40
@@ -35,6 +36,8 @@ var grid := Grid.new(120, 90)
 var buildings: Dictionary = {}  # id → Building
 var defs: Dictionary = {}       # def_id → BuildingDef (von außen gesetzt)
 var item_values: Dictionary = {}  # item_id → Bolts (von außen gesetzt)
+var recipes: Array[RecipeDef] = []  # alle Rezepte (von außen gesetzt)
+var unlocked_tech: Dictionary = {}  # tech_id → true (ab MS6 befüllt)
 var bolts: int = 0
 
 var _commands: Array[Dictionary] = []
@@ -201,9 +204,27 @@ func _cmd_place(cmd: Dictionary) -> void:
 	Economy.pay(player.inventory, cost)
 	var b := Building.create(next_id(), def, tile, rot)
 	b.paid_cost = cost
+	if b is Machine:
+		(b as Machine).recipes = available_recipes(def.id)
 	grid.place(b)
 	buildings[b.id] = b
 	building_placed.emit(b)
+
+
+## Rezepte einer Maschinenart, die ohne Tech oder mit freigeschalteter Tech verfügbar sind.
+func available_recipes(machine_id: String) -> Array[RecipeDef]:
+	var result: Array[RecipeDef] = []
+	for r in recipes:
+		if r.machine == machine_id and (r.tech == "" or unlocked_tech.has(r.tech)):
+			result.append(r)
+	return result
+
+
+## Nach einer Tech-Freischaltung: Rezeptlisten aller Maschinen erneuern.
+func refresh_recipes() -> void:
+	for b: Building in buildings.values():
+		if b is Machine:
+			(b as Machine).recipes = available_recipes(b.def.id)
 
 
 func _cmd_remove(cmd: Dictionary) -> void:
@@ -237,6 +258,8 @@ func _cmd_deposit(cmd: Dictionary) -> void:
 	if accepted > 0:
 		player.inventory.remove(item, accepted)
 		building_changed.emit(b)
+	else:
+		deposit_rejected.emit(b, item)
 
 
 func _cmd_withdraw(cmd: Dictionary) -> void:

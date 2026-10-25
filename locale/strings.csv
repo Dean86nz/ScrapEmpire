@@ -40,3 +40,13 @@ HINT_DEMOLISH_KB,"Maus / Pfeile: Cursor   ·   LMB / E: abreißen   ·   RMB / E
 HINT_MENU_KB,"Pfeile / Maus: wählen   ·   Enter / Klick: bestätigen   ·   Esc: schließen","Arrows / mouse: select   ·   Enter / click: confirm   ·   Esc: close"
 HINT_DEPOSIT_KB,"E: %d %s in %s einlegen","E: put %d %s into %s"
 HINT_WITHDRAW_KB,"E: aus %s entnehmen (leeren Slot wählen)","E: take from %s (select an empty slot)"
+ITEM_IRON_BAR,Eisenbarren,Iron bar
+ITEM_COPPER_BAR,Kupferbarren,Copper bar
+ITEM_PLASTIC_SHEET,Plastikplatte,Plastic sheet
+ITEM_GEAR,Zahnrad,Gear
+ITEM_CIRCUIT,"Schaltkreis „Denkbrett“","Circuit ""Thinkboard"""
+BLD_FURNACE,Schmelzofen,Furnace
+BLD_PRESS,Presse,Press
+QUIP_REJECTED_1,Das passt da nicht rein.,That does not go in there.
+QUIP_REJECTED_2,Falsches Loch. Passiert den Besten.,Wrong slot. Happens to the best.
+QUIP_FIRST_MACHINE,Es brummt. Das ist gut. Glaube ich.,It hums. That is good. I think.

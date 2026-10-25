@@ -8,5 +8,7 @@
   "idle": ["QUIP_IDLE_1", "QUIP_IDLE_2"],
   "fail_cost": ["FAIL_COST"],
   "fail_blocked": ["FAIL_BLOCKED"],
-  "fail_range": ["FAIL_RANGE"]
+  "fail_range": ["FAIL_RANGE"],
+  "deposit_rejected": ["QUIP_REJECTED_1", "QUIP_REJECTED_2"],
+  "first_machine": ["QUIP_FIRST_MACHINE"]
 }
