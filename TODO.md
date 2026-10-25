@@ -2,7 +2,7 @@
 
 ## Jetzt
 
-- [ ] MS11 MVP-Politur umsetzen (Auftraggeber: ohne Go weitermachen bis MS11)
+- [x] MVP fertig (v1.0.0). Warten auf Rückmeldung des Auftraggebers: Ally-Test, Balancing-Eindruck, Wünsche für Phase 2
 - [ ] NIE wieder user://saves ohne Backup anfassen: Screenshot-Läufe nur über tests/shot.sh, Datei-Tests mit use_directory
 - [ ] Auftraggeber testet MS4–MS7 am Laptop / später am Ally: Speichern (F5 oder Pause), Beenden, Neustart, Sprache wechseln, Neues Spiel; Perf-Szenario F6 + F3
 
@@ -14,6 +14,13 @@
 - [x] Migrationsgerüst mit Tests
 - [x] Pause-Menü: Sprache DE/EN, Neues Spiel, Speichern und Beenden
 - [ ] Englische Texte einmal komplett gegenlesen (Politur MS10)
+
+## MS11 MVP-Politur (erledigt)
+
+- [x] MVP-Ende-Bildschirm, Sprechblasen im Bild, Baumenü ausgegraut, Helfer-Leerlaufsprüche, README
+- [ ] Balancing-Durchlauf 2–3 h durch einen Menschen (Zielkurve GDD 7.5 prüfen)
+- [ ] Schriftgrößen-Audit auf dem Ally (alle Texte ≥ 22 px sind eingestellt, Lesbarkeit real prüfen)
+- [ ] Item-Filter im Aufgaben-Editor (GDD 9) nachrüsten
 
 ## MS10 Helfer-Roboter (erledigt, selbst getestet)
 

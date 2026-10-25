@@ -20,6 +20,7 @@ var _last_loops := 0
 var _plan_cooldown := 0
 var suck_cooldown := 0
 var hammer_cooldown := 0
+var idle_quip_timer := 1200  # Ticks bis zum nächsten Leerlauf-Spruch
 
 
 func _init() -> void:

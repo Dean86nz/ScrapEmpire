@@ -462,6 +462,12 @@ func _find_suck_target_for(h: Helper) -> Variant:
 
 func _tick_helpers() -> void:
 	for h: Helper in helpers.values():
+		h.idle_quip_timer -= 1
+		if h.idle_quip_timer <= 0:
+			h.idle_quip_timer = rng.randi_range(60 * 20, 120 * 20)
+			var idle: Array = helper_cfg.get("quips_idle", [])
+			if not idle.is_empty():
+				helper_quip.emit(h, str(idle[rng.randi_range(0, idle.size() - 1)]))
 		if h.stuck_timer == 1:
 			h.pause_for_stuck(int(helper_cfg.get("stuck_pause_s", 5)) * 20)
 			var stuck: Array = helper_cfg.get("quips_stuck", [])

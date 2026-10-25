@@ -2,6 +2,19 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.0.0] – 2026-10-25 – MS11 MVP-Politur (MVP fertig)
+
+### Hinzugefügt
+- MVP-Ende-Bildschirm, sobald alle 17 Techknoten erforscht sind: Spielzeit, Bolts, Level, Helfer, saubere Zonen; einmalig, danach geht das Spiel weiter
+- Helfer sagen alle 60 bis 120 s einen Leerlauf-Spruch; Debug-Overlay zeigt die Helferzahl
+- README mit Steuerungstabelle, Entwickler-Tasten, Test- und Build-Anleitung
+- Dev-Szenario „endgame“ für den Ende-Bildschirm
+
+### Geändert
+- Sprechblasen bleiben im Bild: am oberen Rand erscheinen sie unter dem Sprecher, seitlich werden sie hereingeschoben
+- Baumenü graut nicht leistbare Gebäude zusätzlich aus
+- Alle englischen Texte automatisch auf deutsche Umlaute geprüft (0 Treffer)
+
 ## [0.10.0] – 2026-10-25 – MS10 Helfer-Roboter
 
 ### Hinzugefügt

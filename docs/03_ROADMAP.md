@@ -15,16 +15,15 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **4** | XP, Level und Schrott-Stufen | v0.4.0 |
 | **5** | Förderbänder und Saugstation | v0.5.0 (60 FPS, 2,7 ms Tick bei 1.884 Items am Laptop) |
 | **6** | Fortschritts-Menü: Techbaum, Skilltree, Nächste Ziele | v0.6.0 |
-| **7** | Speichern und Pause | v0.7.0, F7-Fix v0.7.1 |
+| **7** | Speichern und Pause | v0.7.0, F7-Fix v0.7.1, Testschutz v0.7.2 |
+| **8** | Tutorial und Autopilot | v0.8.0 |
+| **9** | Zonen, Minimap und Karte | v0.9.0 |
+| **10** | Helfer-Roboter | v0.10.0 |
+| **11** | MVP-Politur | v1.0.0 – **MVP fertig** |
 
 ## Offen
 
-| MS | Name | Inhalt | Fertig, wenn … |
-|---|---|---|---|
-| **8** | Tutorial und Autopilot | Fünf Tutorial-Schritte mit Belohnungen, Gebietsöffnung, Hauptgebiet-Map (120×90) mit allen Tiers und Zonen-Rechtecken, `WorkerBrain`, Aufgaben-Editor (Y lang), Ausführen, Unterbrechen, Aufgaben-HUD, Autopilot v0.2; Save-Version 2 (Aufgaben, Tutorial-Schritt) | … ein neuer Spielstand durch das Tutorial führt, Rusty eine Liste „Gehe zu Haufen → Sammle → Gehe zu Kiste → Lege ab“ mindestens 10-mal ohne Eingriff wiederholt, jede Stick-Eingabe sofort die Kontrolle zurückgibt. |
-| **9** | Zonen, Minimap und Karte (Grundlagen A) | Zonen in der Karten-JSON, Reinigungsgrad je Zone (Müll-Objekte zählen, Rohstoffquellen nicht), Respawn nur unter 50 %, Stufen vermüllt/unordentlich/aufgeräumt/sauber, Minimap unten rechts (ausblendbar), Tab „Karte“ im Fortschritts-Menü mit Scroll und Zoom per Gamepad, neue Objekte Palette/Betonbrocken/Sofa/Ruinenmauer, Materialien Holz und Stein | … die Minimap die Zonen in Stufenfarben zeigt, eine Zone nach dem Entfernen aller Müll-Objekte auf „sauber“ springt und dort nichts mehr respawnt, die große Karte per rechtem Stick scrollt und per Trigger zoomt, Zonennamen auf 7 Zoll lesbar sind. Tests für Reinigungsgrad und Respawn-Sperre grün. |
-| **10** | Helfer-Roboter | `helpers.json`, Tech Helfer-Werkstatt, Kauf mit Kostenkurve und Chrom, Zonen-Cursor, Lager-Wahl, Helfer nutzen `WorkerBrain`, globale Upgrades, Namen, Farben, Sprüche, „Steckenbleiben“-Ereignis, Tab „Helfer“ im Fortschritts-Menü | … zwei Helfer gleichzeitig in verschiedenen Zonen abbauen und in Kisten liefern, der zweite Helfer teurer ist, ein Helfer ohne passende Werkzeug-Stufe ein Tier-2-Objekt sichtbar ignoriert und das kommentiert, das Spiel mit 6 Helfern 60 FPS hält. |
-| **11** | MVP-Politur | Alle Sprüche, Humor-Pass, Platzhalter-Grafik vereinheitlicht, Button-Icons je Gerät, Schriftgrößen-Audit, Tastatur/Maus-Pfad, englische Texte gegengelesen, Balancing-Durchlauf 2–3 h mit Level 20 am Ende, MVP-Ende-Bildschirm, README | … ein kompletter Durchlauf vom Tutorial bis Techbaum-Ende und Level 20 auf dem Ally in 2 bis 3 Stunden ohne Absturz, ohne Maus und ohne unlesbaren Text möglich ist, und der Export-Build aus einem Befehl entsteht. |
+Keine MVP-Meilensteine mehr offen. Nächste Schritte nach Rückmeldung des Auftraggebers: Ally-Test (Perf-Szenario F6, Lesbarkeit), Balancing-Durchlauf 2–3 h, dann Phase 2.
 
 ## Phase 2 (geplant, nicht im MVP)
 
