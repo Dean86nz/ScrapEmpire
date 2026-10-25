@@ -3,3 +3,4 @@ extends Node
 
 signal tick_done(tick_count: int)
 signal device_changed(is_gamepad: bool)
+signal quip(key: String)

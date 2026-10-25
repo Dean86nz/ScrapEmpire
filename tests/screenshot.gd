@@ -23,10 +23,12 @@ func _initialize() -> void:
 func _process(_delta: float) -> bool:
 	_frames += 1
 	if _hold_action != "" and _frames == 2:
-		Input.action_press(_hold_action)
+		for a in _hold_action.split(","):
+			Input.action_press(a)
 	if _frames == _target_frames:
 		if _hold_action != "":
-			Input.action_release(_hold_action)
+			for a in _hold_action.split(","):
+				Input.action_release(a)
 		var img := root.get_viewport().get_texture().get_image()
 		var err := img.save_png(_out_path)
 		print("screenshot %s -> %s (%d)" % [_out_path, "ok" if err == OK else "FEHLER", err])

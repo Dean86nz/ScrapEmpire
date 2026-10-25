@@ -23,6 +23,6 @@ func _process(_delta: float) -> void:
 		Engine.get_frames_per_second(),
 		SimClock.last_tick_ms,
 		SimClock.world.tick_count,
-		item_count,
+		SimClock.world.loose.size() + item_count,
 		"Gamepad" if InputRouter.is_gamepad else "Tastatur/Maus",
 	]

@@ -41,6 +41,7 @@ DataRegistry="*res://src/autoload/data_registry.gd"
 SimClock="*res://src/autoload/sim_clock.gd"
 SaveManager="*res://src/autoload/save_manager.gd"
 InputRouter="*res://src/autoload/input_router.gd"
+Quips="*res://src/autoload/quips.gd"
 
 [internationalization]
 
