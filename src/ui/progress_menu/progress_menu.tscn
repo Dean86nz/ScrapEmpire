@@ -74,6 +74,12 @@ theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
 theme_override_font_sizes/font_size = 34
 text = "Karte"
 
+[node name="TabHelpers" type="Label" parent="Center/Panel/VBox/Tabs"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
+theme_override_font_sizes/font_size = 34
+text = "Helfer"
+
 [node name="Next" type="Label" parent="Center/Panel/VBox/Tabs"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.3, 0.36, 1)
@@ -142,6 +148,40 @@ theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
 theme_override_font_sizes/font_size = 24
 text = ""
 autowrap_mode = 3
+
+[node name="HelpersTab" type="HBoxContainer" parent="Center/Panel/VBox/Content"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Left" type="VBoxContainer" parent="Center/Panel/VBox/Content/HelpersTab"]
+custom_minimum_size = Vector2(760, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BuyButton" type="Button" parent="Center/Panel/VBox/Content/HelpersTab/Left"]
+custom_minimum_size = Vector2(740, 80)
+layout_mode = 2
+text = "Helfer kaufen"
+
+[node name="HelperList" type="VBoxContainer" parent="Center/Panel/VBox/Content/HelpersTab/Left"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Right" type="VBoxContainer" parent="Center/Panel/VBox/Content/HelpersTab"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="UpgradeTitle" type="Label" parent="Center/Panel/VBox/Content/HelpersTab/Right"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
+theme_override_font_sizes/font_size = 28
+text = "Globale Upgrades"
+
+[node name="UpgradeList" type="VBoxContainer" parent="Center/Panel/VBox/Content/HelpersTab/Right"]
+layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="Footer" type="Label" parent="Center/Panel/VBox"]
 layout_mode = 2

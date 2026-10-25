@@ -2,7 +2,7 @@
 
 ## Jetzt
 
-- [ ] MS10 Helfer-Roboter umsetzen (Auftraggeber: ohne Go weitermachen bis MS11)
+- [ ] MS11 MVP-Politur umsetzen (Auftraggeber: ohne Go weitermachen bis MS11)
 - [ ] NIE wieder user://saves ohne Backup anfassen: Screenshot-Läufe nur über tests/shot.sh, Datei-Tests mit use_directory
 - [ ] Auftraggeber testet MS4–MS7 am Laptop / später am Ally: Speichern (F5 oder Pause), Beenden, Neustart, Sprache wechseln, Neues Spiel; Perf-Szenario F6 + F3
 
@@ -14,6 +14,13 @@
 - [x] Migrationsgerüst mit Tests
 - [x] Pause-Menü: Sprache DE/EN, Neues Spiel, Speichern und Beenden
 - [ ] Englische Texte einmal komplett gegenlesen (Politur MS10)
+
+## MS10 Helfer-Roboter (erledigt, selbst getestet)
+
+- [x] helpers.json, Kauf mit Kostenkurve und Chrom, Zonen- und Lagerwahl per Cursor
+- [x] Helfer-Planer auf Basis der Aufgabenlogik, Steckenbleiben-Ereignis, Namen, Farben, Sprüche
+- [x] Globale Upgrades, Tab „Helfer“, Save v3
+- [ ] Helfer weichen Gebäuden nicht aus (fahren darüber); Wegfindung ist Phase 2
 
 ## MS9 Zonen, Minimap und Karte (erledigt, selbst getestet)
 

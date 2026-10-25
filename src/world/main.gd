@@ -23,6 +23,8 @@ var _gate_nodes: Array[Node] = []
 var _build_press_time := -1.0
 var _tech_press_time := -1.0
 var _pending_task_type := -1
+var _helper_flow := 0  # 0 aus, 1 Zone wählen, 2 Lager wählen
+var _helper_zone := Vector2i.ZERO
 var _first_collected: Dictionary = {}
 var _autosave_timer := AUTOSAVE_SECONDS
 var _loaded_from_save := false
@@ -35,6 +37,7 @@ func _ready() -> void:
 	_world.recipes = DataRegistry.recipes
 	_world.progression = DataRegistry.new_progression()
 	_world.rare_items = DataRegistry.rare_items()
+	_world.helper_cfg = DataRegistry.helper_config()
 	_world.setup_progression_data(DataRegistry.tech_defs(), DataRegistry.skill_data())
 	var start_px: Vector2
 	var save_data := SaveManager.read()
@@ -70,6 +73,9 @@ func _ready() -> void:
 		_player.selected_slot = int(save_data.get("player", {}).get("selected_slot", 0))
 		_hud.set_selected_slot(_player.selected_slot)
 		_first_collected = {"scrap": true, "copper": true, "plastic": true, "chrome": true}
+	_progress_menu.helper_purchase_requested.connect(_start_helper_flow)
+	_world.helper_failed.connect(func(reason: String) -> void: Quips.say("helper_fail_" + reason, true))
+	_world.helper_added.connect(func(_h: Helper) -> void: _player.celebrate())
 	_task_editor.bind(_world)
 	_task_editor.target_requested.connect(_on_task_target_requested)
 	_cursor.target_chosen.connect(_on_target_chosen)
@@ -249,6 +255,15 @@ func debug_scenario(name: String) -> void:
 			_world.place_free("conveyor", o + Vector2i(7, 0), 0)
 			_world.place_free("sell_terminal", o + Vector2i(8, 0), 0)
 			EventBus.quip.emit("DEBUG_CHAIN")
+		"helpers":
+			_world.unlocked_features["helpers"] = true
+			_world.unlocked_features["helper_tools"] = true
+			_world.bolts += 3000
+			_world.player.inventory.add("chrome", 20)
+			var depot := _world.player_tile() + Vector2i(2, 2)
+			_world.place_free("chest", depot, 0)
+			_world.queue_command({"type": "buy_helper", "zone": _world.player_tile() + Vector2i(-4, -3), "depot": depot})
+			_world.queue_command({"type": "buy_helper", "zone": _world.player_tile() + Vector2i(5, 3), "depot": depot})
 		"auto":
 			# Autopilot-Demo: Autopilot freischalten, Haufen bei (16,42) sammeln, zur Kiste bringen.
 			_world.unlocked_features["autopilot"] = true
@@ -307,7 +322,26 @@ func _on_task_target_requested(type: int) -> void:
 	_cursor.start_target()
 
 
+func _start_helper_flow() -> void:
+	_helper_flow = 1
+	EventBus.quip.emit("HELPER_PICK_ZONE")
+	_cursor.start_target()
+
+
 func _on_target_chosen(tile: Vector2i, ok: bool) -> void:
+	if _helper_flow > 0:
+		if not ok:
+			_helper_flow = 0
+			return
+		if _helper_flow == 1:
+			_helper_zone = tile
+			_helper_flow = 2
+			EventBus.quip.emit("HELPER_PICK_DEPOT")
+			_cursor.call_deferred("start_target")
+			return
+		_helper_flow = 0
+		_world.queue_command({"type": "buy_helper", "zone": _helper_zone, "depot": tile})
+		return
 	if _pending_task_type < 0:
 		return
 	var t := _pending_task_type

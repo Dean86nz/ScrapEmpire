@@ -2,6 +2,20 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [0.10.0] – 2026-10-25 – MS10 Helfer-Roboter
+
+### Hinzugefügt
+- `data/helpers.json`: Kostenkurve 400 × 1,5^n Bolts + 5 Chrom, maximal 6 Helfer, Namen (Bolte, Knirps, Dübel, Fräulein Flex, Schraubi, Rostnase), Farben, Sprüche, Steckenbleiben alle 4 bis 6 Minuten für 5 s
+- Helfer arbeiten in einer Zone (Radius 6 Kacheln) alle Objekte bis zu ihrer Werkzeug-Stufe ab und bringen die Ladung zum Lager (Kiste oder Terminal); sie planen nach jedem Durchlauf neu und nutzen die Aufgabenlogik des Autopiloten
+- Tab „Helfer“ im Fortschritts-Menü: Kauf mit Zone und Lager per Fadenkreuz, Liste mit Zustand, Zone und Ladung (A entlässt), drei globale Upgrades: Tempo (+20 %/Stufe), Tragkraft (+10 Items je Slot/Stufe), Werkzeug (T2, T3 nach Tech „Helfer-Werkzeug II“)
+- Helfer-Figuren in eigener Farbe mit Namensschild und eigener Sprechblase; Konfetti beim Kauf
+- Spielstand-Version 3 mit Helfern und Upgrades; Migration 2 → 3
+- Dev-Szenario „helpers“; 11 neue Tests (162 gesamt)
+
+### Geändert
+- Tech „Helfer-Werkzeug II“ schaltet jetzt das Upgrade „Helfer-Werkzeug“ frei statt direkt die Stufe zu setzen
+- Aufgabenliste zählt Schleifendurchläufe (für Helfer-Planung)
+
 ## [0.9.0] – 2026-10-25 – MS9 Zonen, Minimap und Karte
 
 ### Hinzugefügt

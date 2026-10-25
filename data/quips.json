@@ -110,5 +110,23 @@
   ],
   "task_wait_no_building": [
     "QUIP_WAIT_NO_BUILDING"
+  ],
+  "helper_fail_locked": [
+    "QUIP_HELPER_LOCKED"
+  ],
+  "helper_fail_max": [
+    "QUIP_HELPER_MAX"
+  ],
+  "helper_fail_bolts": [
+    "QUIP_RESEARCH_BOLTS"
+  ],
+  "helper_fail_chrome": [
+    "QUIP_RESEARCH_ITEMS"
+  ],
+  "helper_fail_no_depot": [
+    "QUIP_HELPER_NO_DEPOT"
+  ],
+  "helper_fail_unknown": [
+    "QUIP_WAIT_GENERIC"
   ]
 }
