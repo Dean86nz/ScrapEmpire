@@ -31,6 +31,10 @@ func helper_config() -> Dictionary:
 	return _read_json("res://data/helpers.json")
 
 
+func drone_config() -> Dictionary:
+	return _read_json("res://data/drones.json")
+
+
 func tech_defs() -> Array:
 	return TechState.load_defs("res://data/tech.json")
 

@@ -328,6 +328,26 @@
           "id": "helper_tools"
         }
       ]
+    },
+    {
+      "id": "drone_hangar",
+      "name_key": "TECH_DRONE_HANGAR",
+      "desc_key": "TECH_DRONE_HANGAR_DESC",
+      "cost_bolts": 1200,
+      "cost_items": {
+        "circuit": 10,
+        "gear": 15
+      },
+      "time_s": 60,
+      "requires": [
+        "helper_workshop"
+      ],
+      "effects": [
+        {
+          "type": "unlock_feature",
+          "id": "drones"
+        }
+      ]
     }
   ]
 }

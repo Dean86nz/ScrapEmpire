@@ -26,7 +26,7 @@ func _research(w: SimWorld, id: String, give: bool = true) -> void:
 
 func test_defs_and_initial_state() -> void:
 	var w := _world()
-	assert_eq(w.tech.defs.size(), 17)
+	assert_eq(w.tech.defs.size(), 18)
 	assert_true(w.tech.is_unlocked("terminal"), "Gratis-Knoten ist frei")
 	assert_true(w.is_building_unlocked("sell_terminal"))
 	assert_false(w.is_building_unlocked("furnace"), "Ofen braucht Forschung")

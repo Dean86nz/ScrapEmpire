@@ -29,6 +29,8 @@ var _build_press_time := -1.0
 var _tech_press_time := -1.0
 var _pending_task_type := -1
 var _helper_flow := 0  # 0 aus, 1 Zone wählen, 2 Lager wählen
+var _drone_flow := 0   # 0 aus, 1 Quelle wählen, 2 Ziel wählen
+var _drone_source := Vector2i.ZERO
 var _helper_zone := Vector2i.ZERO
 var _first_collected: Dictionary = {}
 var _autosave_timer := AUTOSAVE_SECONDS
@@ -43,6 +45,7 @@ func _ready() -> void:
 	_world.progression = DataRegistry.new_progression()
 	_world.rare_items = DataRegistry.rare_items()
 	_world.helper_cfg = DataRegistry.helper_config()
+	_world.drone_cfg = DataRegistry.drone_config()
 	_world.setup_progression_data(DataRegistry.tech_defs(), DataRegistry.skill_data())
 	var start_px: Vector2
 	var save_data := SaveManager.read()
@@ -80,6 +83,11 @@ func _ready() -> void:
 		_hud.set_selected_slot(_player.selected_slot)
 		_first_collected = {"scrap": true, "copper": true, "plastic": true, "chrome": true}
 	_progress_menu.helper_purchase_requested.connect(_start_helper_flow)
+	_progress_menu.drone_purchase_requested.connect(_start_drone_flow)
+	_world.drone_failed.connect(func(reason: String) -> void: Quips.say("drone_fail_" + reason, true))
+	_world.drone_added.connect(func(_d: Drone) -> void:
+		_player.celebrate()
+		Quips.say("drone_bought", true))
 	_world.helper_failed.connect(func(reason: String) -> void: Quips.say("helper_fail_" + reason, true))
 	_world.helper_added.connect(func(_h: Helper) -> void: _player.celebrate())
 	_task_editor.bind(_world)
@@ -285,6 +293,32 @@ func debug_scenario(name: String) -> void:
 			_world.place_free("chest", depot, 0)
 			_world.queue_command({"type": "buy_helper", "zone": _world.player_tile() + Vector2i(-4, -3), "depot": depot})
 			_world.queue_command({"type": "buy_helper", "zone": _world.player_tile() + Vector2i(5, 3), "depot": depot})
+		"drones":
+			# Drohnen-Demo: Kiste mit Schrott → Ofen → Terminal, zwei Drohnen
+			_world.unlocked_features["drones"] = true
+			_world.unlocked_tech["furnace"] = true
+			_world.refresh_recipes()
+			_world.bolts += 3000
+			_world.player.inventory.add("circuit", 10)
+			var p0 := Vector2i.ZERO
+			var ok := false
+			for dy in [3, 4, 5, 2, 6, 7, 8]:
+				p0 = _world.player_tile() + Vector2i(-6, dy)
+				p0.x = clampi(p0.x, 0, _world.width_tiles - 15)
+				p0.y = clampi(p0.y, 0, _world.height_tiles - 2)
+				ok = _world.grid.can_place(p0, Vector2i(1, 1), _world._tile_blocked) 					and _world.grid.can_place(p0 + Vector2i(6, 0), Vector2i(2, 2), _world._tile_blocked) 					and _world.grid.can_place(p0 + Vector2i(12, 0), Vector2i(2, 2), _world._tile_blocked)
+				if ok:
+					break
+			if not ok:
+				EventBus.quip.emit("DEBUG_CHAIN_FAIL")
+				return
+			var chest := _world.place_free("chest", p0, 0) as Chest
+			var furnace := _world.place_free("furnace", p0 + Vector2i(6, 0), 0)
+			var term := _world.place_free("sell_terminal", p0 + Vector2i(12, 0), 0)
+			if chest != null and furnace != null and term != null:
+				chest.inventory.add("scrap", 200)
+				_world.queue_command({"type": "buy_drone", "source": chest.tile, "target": furnace.tile})
+				_world.queue_command({"type": "buy_drone", "source": furnace.tile, "target": term.tile})
 		"auto":
 			# Autopilot-Demo: Autopilot freischalten, Haufen bei (16,42) sammeln, zur Kiste bringen.
 			_world.unlocked_features["autopilot"] = true
@@ -353,6 +387,12 @@ func _on_task_target_requested(type: int) -> void:
 	_cursor.start_target()
 
 
+func _start_drone_flow() -> void:
+	_drone_flow = 1
+	EventBus.quip.emit("DRONE_PICK_SOURCE")
+	_cursor.start_target()
+
+
 func _start_helper_flow() -> void:
 	_helper_flow = 1
 	EventBus.quip.emit("HELPER_PICK_ZONE")
@@ -360,6 +400,24 @@ func _start_helper_flow() -> void:
 
 
 func _on_target_chosen(tile: Vector2i, ok: bool) -> void:
+	if _drone_flow > 0:
+		if not ok:
+			_drone_flow = 0
+			return
+		if _drone_flow == 1:
+			var src := _world.grid.at(tile)
+			if src == null or not (src is Chest or src is Machine):
+				_drone_flow = 0
+				Quips.say("drone_fail_no_source", true)
+				return
+			_drone_source = tile
+			_drone_flow = 2
+			EventBus.quip.emit("DRONE_PICK_TARGET")
+			_cursor.call_deferred("start_target")
+			return
+		_drone_flow = 0
+		_world.queue_command({"type": "buy_drone", "source": _drone_source, "target": tile})
+		return
 	if _helper_flow > 0:
 		if not ok:
 			_helper_flow = 0

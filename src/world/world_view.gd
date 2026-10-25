@@ -7,6 +7,7 @@ var _node_views: Dictionary = {}      # node id → ResourceNodeView
 var _loose_views: Dictionary = {}     # loose id → LooseItemView
 var _building_views: Dictionary = {}  # building id → BuildingView
 var _helper_views: Dictionary = {}    # helper id → HelperView
+var _drone_views: Dictionary = {}     # drone id → DroneView
 var _zone_tints: Dictionary = {}      # zone id → Polygon2D
 const ZONE_TINTS := [Color(0.35, 0.22, 0.1, 0.28), Color(0.4, 0.4, 0.35, 0.18), Color(0.5, 0.85, 0.3, 0.16), Color(0.25, 0.8, 0.35, 0.26)]
 const LOCKED_TINT := Color(0.15, 0.15, 0.22, 0.5)
@@ -45,6 +46,10 @@ func bind(world: SimWorld, player: Node2D) -> void:
 	world.zone_unlocked.connect(func(_id: String) -> void: _refresh_zone_tints())
 	world.helper_added.connect(_on_helper_added)
 	world.helper_removed.connect(_on_helper_removed)
+	for d: Drone in world.drones.values():
+		_on_drone_added(d)
+	world.drone_added.connect(_on_drone_added)
+	world.drone_removed.connect(_on_drone_removed)
 	world.helper_quip.connect(_on_helper_quip)
 
 
@@ -79,6 +84,19 @@ func _on_helper_added(h: Helper) -> void:
 	view.setup(h, _world.helper_cfg.get("names", []), _world.helper_cfg.get("colors", []))
 	add_child(view)
 	_helper_views[h.id] = view
+
+
+func _on_drone_added(d: Drone) -> void:
+	var view := DroneView.new()
+	view.setup(d)
+	add_child(view)
+	_drone_views[d.id] = view
+
+
+func _on_drone_removed(id: int) -> void:
+	if _drone_views.has(id):
+		_drone_views[id].queue_free()
+		_drone_views.erase(id)
 
 
 func _on_helper_removed(id: int) -> void:

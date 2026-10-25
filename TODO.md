@@ -2,12 +2,20 @@
 
 ## Jetzt
 
+- [x] MS14 Logistik-Drohnen (v1.3.0): Hangar-Tech, Drohnen mit Quelle, Ziel, Material, Limit, Upgrades, Tab, Save v5
 - [x] MS13 Zonen-Heilung (v1.2.0): Gras, Blumen, Büsche, Teiche, Tiere, Tageslicht, Regen, Kartenlegende
 - [x] MS12 Gameplay-Klarheit (v1.1.0): Kapitel mit Toren, Nebel auf der Karte, Kapitel-Tab, Rezept-Hinweise, Titelbildschirm, Produkte als Baustoff, Zonen-Auffüllung alter Spielstände
-- [ ] Phase 2 weiter: (2) Logistik-Drohnen (MS14), (3) Deko und Fundstücke (MS15), (4) Rest
+- [ ] Phase 2 weiter: (3) Deko und Fundstücke (MS15), (4) Rest (Besucher, Fischen, Fahrzeuge, Zen/Foto, Rat)
 - [ ] Auftraggeber prüft am Laptop: Titelbildschirm, Kapitel-Tab (Select), Tor nach 50 % Startlager, Maschinen-Hinweis am Schmelzofen, alter Spielstand hat wieder Objekte in allen Zonen
 - [ ] NIE wieder user://saves ohne Backup anfassen: Screenshot-Läufe nur über tests/shot.sh, Datei-Tests mit use_directory
 - [ ] Auftraggeber testet MS4–MS7 am Laptop / später am Ally: Speichern (F5 oder Pause), Beenden, Neustart, Sprache wechseln, Neues Spiel; Perf-Szenario F6 + F3
+
+## MS14 Logistik-Drohnen (erledigt, selbst getestet)
+
+- [x] Drone-Sim, Kauf-Flow, Tab mit A/X/LT, Upgrades, Save v5, 9 Tests, Szenario
+- [ ] Prioritäten zwischen Drohnen (GDD D) fehlen; jede Drohne arbeitet unabhängig
+- [ ] Drohnen holen aus Maschinen nur den Ausgang (bewusst), aus Kisten den ersten passenden Slot
+- [ ] Offline-Progression für Drohnen kommt mit der Offline-Progression allgemein
 
 ## MS13 Zonen-Heilung (erledigt, selbst getestet)
 

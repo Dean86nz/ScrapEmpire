@@ -3,7 +3,7 @@ extends RefCounted
 ## Wandelt die SimWorld in ein JSON-taugliches Dictionary und zurück (Architektur 4.8, 12).
 ## Reine Logik ohne Datei-IO; SaveManager kümmert sich um Dateien, Rotation und Migration.
 
-const VERSION := 4
+const VERSION := 5
 
 
 static func v2(v: Vector2i) -> Array:
@@ -66,10 +66,19 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		"tasks": world.tasks.to_dict(),
 		"helpers": _helpers(world),
 		"helper_upgrades": world.helper_upgrades.duplicate(),
+		"drones": _drones(world),
+		"drone_upgrades": world.drone_upgrades.duplicate(),
 		"flags": world.flags.duplicate(),
 		"unlocked_zones": world.zones.unlocked.keys(),
 		"tutorial": {"step": int(world.flags.get("tutorial_step", 0)), "done": bool(world.flags.get("tutorial_done", false))},
 	}
+
+
+static func _drones(world: SimWorld) -> Array:
+	var arr: Array = []
+	for d: Drone in world.drones.values():
+		arr.append(d.to_dict(world))
+	return arr
 
 
 static func _helpers(world: SimWorld) -> Array:
@@ -143,6 +152,18 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 	for hd: Dictionary in data.get("helpers", []):
 		var h := world.add_helper(SaveCodec.to_v2(hd.get("zone")), SaveCodec.to_v2(hd.get("depot")), int(hd.get("name_index", 0)), int(hd.get("color_index", 0)))
 		h.from_dict(hd)
+	for k in data.get("drone_upgrades", {}):
+		world.drone_upgrades[str(k)] = int(data["drone_upgrades"][k])
+	for dd: Dictionary in data.get("drones", []):
+		var src := world.grid.at(to_v2(dd.get("source_tile")))
+		var dst := world.grid.at(to_v2(dd.get("target_tile")))
+		if src == null or dst == null:
+			push_warning("Spielstand: Drohne ohne Quelle oder Ziel übersprungen")
+			continue
+		var d := world.add_drone(src.id, dst.id)
+		d.from_dict(dd)
+	if not data.get("drone_upgrades", {}).is_empty():
+		world.recompute_modifiers()
 	for k in data.get("flags", {}):
 		world.flags[str(k)] = data["flags"][k]
 	for z in data.get("unlocked_zones", []):

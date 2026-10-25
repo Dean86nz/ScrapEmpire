@@ -139,5 +139,42 @@
   "critter": [
     "QUIP_CRITTER_1",
     "QUIP_CRITTER_2"
+  ],
+  "drone_fail_locked": [
+    "QUIP_DRONE_LOCKED"
+  ],
+  "drone_fail_max": [
+    "QUIP_DRONE_MAX"
+  ],
+  "drone_fail_bolts": [
+    "QUIP_FAIL_COST_1"
+  ],
+  "drone_fail_circuit": [
+    "QUIP_DRONE_CIRCUIT"
+  ],
+  "drone_fail_no_source": [
+    "QUIP_DRONE_NO_SOURCE"
+  ],
+  "drone_fail_no_target": [
+    "QUIP_DRONE_NO_TARGET"
+  ],
+  "drone_fail_same": [
+    "QUIP_DRONE_SAME"
+  ],
+  "drone_fail_upgrade_bolts": [
+    "QUIP_FAIL_COST_1"
+  ],
+  "drone_fail_upgrade_circuit": [
+    "QUIP_DRONE_CIRCUIT"
+  ],
+  "drone_fail_upgrade_max": [
+    "QUIP_DRONE_UPG_MAX"
+  ],
+  "drone_fail_upgrade_locked": [
+    "QUIP_DRONE_LOCKED"
+  ],
+  "drone_bought": [
+    "DRONE_BOUGHT_1",
+    "DRONE_BOUGHT_2"
   ]
 }

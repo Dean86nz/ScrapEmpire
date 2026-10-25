@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.3.0] – 2026-10-25 – MS14 Logistik-Drohnen (Phase 2, Teil 2)
+
+### Hinzugefügt
+- **Tech „Drohnen-Hangar“** (nach Helfer-Werkstatt, 1200 Bolts, 10 Schaltkreise, 15 Zahnräder, 60 s) schaltet Logistik-Drohnen frei; damit 18 Techknoten
+- **Drohnen** fliegen über alles hinweg zwischen einer Quelle (Kiste oder Maschinen-Ausgang) und einem Ziel (Kiste, Maschine oder Terminal). Sie tragen 10 Items je Flug, warten 3 s, wenn die Quelle leer ist, das Ziel nichts annimmt oder das Limit erreicht ist. Maximal 4, Kosten 600 × 1,4ⁿ Bolts + 3 Schaltkreise
+- **Tab „Drohnen“** im Fortschritts-Menü (erst nach dem Hangar sichtbar): Kauf mit Quelle und Ziel per Fadenkreuz, Karte je Drohne mit Zustand, Ladung, Material, Limit und Fahrten. A wechselt das Material (alles oder ein bestimmtes Item), X das Limit (keins, 10, 25, 50, 100 im Ziel), LT entfernt die Drohne. Upgrades: Tempo (+25 %/Stufe, 3 Stufen), Tragkraft (+10/Stufe, 2 Stufen)
+- Drohnen-Figur (Quadcopter mit Schatten, Schwebe-Bob, getragenes Item als Symbol; halbtransparent beim Warten); Rusty kommentiert Kauf und Fehler
+- Tab „Kapitel“ nennt den Hangar als nächstes Ziel, sobald Helfer da sind
+- `data/drones.json`, `src/sim/drone.gd`, `src/world/drone_view.gd`; Spielstand-Version 5 (Drohnen mit Quelle und Ziel als Kacheln, Upgrades), Migration 4 → 5
+- Tests: `tests/test_drones.gd` (Kaufbedingungen, Kostenkurve, Kiste → Ofen, Material-Filter, Limit, leere Quelle, fehlendes Gebäude, Upgrades, Speichern und Migration). Dev-Szenario `drones` (Kiste mit Schrott → Ofen → Terminal, zwei Drohnen)
+
 ## [1.2.0] – 2026-10-25 – MS13 Zonen-Heilung (Phase 2, Teil 1)
 
 ### Hinzugefügt

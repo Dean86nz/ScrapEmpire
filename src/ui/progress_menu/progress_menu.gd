@@ -2,15 +2,23 @@ extends CanvasLayer
 ## Fortschritts-Menü (Select / T) mit drei Tabs: Techbaum, Skilltree, Nächste Ziele.
 ## LB/RB wechseln den Tab, D-Pad bewegt den Fokus, A forscht / kauft, B schließt.
 
-enum Tab { GOALS, TECH, SKILLS, MAP, HELPERS }
-const TAB_COUNT := 5
+enum Tab { GOALS, TECH, SKILLS, MAP, HELPERS, DRONES }
+const TAB_COUNT := 6
 
 signal helper_purchase_requested
+signal drone_purchase_requested
 
 const CARD_SCENE_MIN := Vector2(362, 150)
 const REFRESH_SECONDS := 0.5
 
-@onready var _tab_labels: Array[Label] = [$Center/Panel/VBox/Tabs/TabGoals, $Center/Panel/VBox/Tabs/TabTech, $Center/Panel/VBox/Tabs/TabSkills, $Center/Panel/VBox/Tabs/TabMap, $Center/Panel/VBox/Tabs/TabHelpers]
+@onready var _tab_labels: Array[Label] = [$Center/Panel/VBox/Tabs/TabGoals, $Center/Panel/VBox/Tabs/TabTech, $Center/Panel/VBox/Tabs/TabSkills, $Center/Panel/VBox/Tabs/TabMap, $Center/Panel/VBox/Tabs/TabHelpers, $Center/Panel/VBox/Tabs/TabDrones]
+@onready var _drones_tab: Control = $Center/Panel/VBox/Content/DronesTab
+@onready var _drone_buy_btn: Button = $Center/Panel/VBox/Content/DronesTab/Left/BuyButton
+@onready var _drone_list: VBoxContainer = $Center/Panel/VBox/Content/DronesTab/Left/DroneList
+@onready var _drone_upgrade_list: VBoxContainer = $Center/Panel/VBox/Content/DronesTab/Right/UpgradeList
+@onready var _drone_upgrade_title: Label = $Center/Panel/VBox/Content/DronesTab/Right/UpgradeTitle
+var _drone_upgrade_cards: Dictionary = {}
+var _drone_cards: Dictionary = {}  # Button → drone id
 @onready var _helpers_tab: Control = $Center/Panel/VBox/Content/HelpersTab
 @onready var _buy_btn: Button = $Center/Panel/VBox/Content/HelpersTab/Left/BuyButton
 @onready var _helper_list: VBoxContainer = $Center/Panel/VBox/Content/HelpersTab/Left/HelperList
@@ -55,6 +63,18 @@ func bind(world: SimWorld) -> void:
 		btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_helper_upgrade", "id": id}))
 		_upgrade_list.add_child(btn)
 		_upgrade_cards[id] = btn
+	_drone_buy_btn.pressed.connect(func() -> void:
+		visible = false
+		drone_purchase_requested.emit())
+	_drone_upgrade_title.text = tr("DRONE_UPGRADES")
+	for u: Dictionary in _world.drone_cfg.get("upgrades", []):
+		var uid := str(u["id"])
+		var ubtn := _make_card(tr(str(u["name_key"])))
+		ubtn.custom_minimum_size = Vector2(560, 120)
+		ubtn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_drone_upgrade", "id": uid}))
+		_drone_upgrade_list.add_child(ubtn)
+		_drone_upgrade_cards[uid] = ubtn
+	_tab_labels[Tab.DRONES].text = tr("MENU_TAB_DRONES")
 	_tab_labels[Tab.HELPERS].text = tr("MENU_TAB_HELPERS")
 	_tab_labels[Tab.GOALS].text = tr("MENU_TAB_CHAPTER")
 	_tab_labels[Tab.TECH].text = tr("MENU_TAB_TECH")
@@ -63,7 +83,11 @@ func bind(world: SimWorld) -> void:
 
 
 func _tab_enabled(t: int) -> bool:
-	return t != Tab.HELPERS or _world.unlocked_features.has("helpers")
+	if t == Tab.HELPERS:
+		return _world.unlocked_features.has("helpers")
+	if t == Tab.DRONES:
+		return _world.unlocked_features.has("drones")
+	return true
 
 
 func _next_tab(dir: int) -> void:
@@ -144,6 +168,117 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif _tab == Tab.MAP and _map_view.handle_input(event):
 		get_viewport().set_input_as_handled()
+	elif _tab == Tab.DRONES and _handle_drone_input(event):
+		get_viewport().set_input_as_handled()
+
+
+## X: Limit wechseln, LT: Drohne entfernen (A auf der Karte wechselt den Filter).
+func _handle_drone_input(event: InputEvent) -> bool:
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused == null or not _drone_cards.has(focused):
+		return false
+	var did: int = _drone_cards[focused]
+	var d: Drone = _world.drones.get(did)
+	if d == null:
+		return false
+	if event.is_action_pressed("tool_swap"):
+		var limits: Array = _world.drone_cfg.get("limits", [0, 10, 25, 50, 100])
+		var idx := limits.find(d.limit)
+		var next_limit := int(limits[(idx + 1) % limits.size()])
+		SimClock.world.queue_command({"type": "set_drone_limit", "id": did, "limit": next_limit})
+		return true
+	if event.is_action_pressed("tool_secondary"):
+		SimClock.world.queue_command({"type": "remove_drone", "id": did})
+		return true
+	return false
+
+
+func _cycle_drone_filter(did: int) -> void:
+	var d: Drone = _world.drones.get(did)
+	if d == null:
+		return
+	var items: Array = [""]
+	items.append_array(_world.item_values.keys())
+	var idx := items.find(d.item_filter)
+	SimClock.world.queue_command({"type": "set_drone_filter", "id": did, "item": str(items[(idx + 1) % items.size()])})
+
+
+func _building_label(b: Building) -> String:
+	return "%s (%d, %d)" % [tr(b.def.name_key), b.tile.x, b.tile.y] if b != null else "?"
+
+
+func _refresh_drones() -> void:
+	var w := _world
+	var cost := w.next_drone_cost()
+	var reason := w.can_buy_drone(Vector2i(-1, -1), Vector2i(-1, -1))
+	var status := ""
+	match reason:
+		"locked":
+			status = tr("DRONE_LOCKED")
+		"max":
+			status = tr("DRONE_MAX") % int(w.drone_cfg.get("max_drones", 4))
+		"bolts":
+			status = tr("TECH_MISSING_BOLTS") % (int(cost["bolts"]) - w.bolts)
+		"circuit":
+			status = tr("DRONE_MISSING_CIRCUIT") % (int(cost["circuit"]) - w.player.inventory.count_of("circuit"))
+		_:
+			status = tr("DRONE_BUY_HINT")
+	_drone_buy_btn.text = "%s  –  %d %s, %d %s   (%s)" % [tr("DRONE_BUY"), int(cost["bolts"]), tr("HUD_BOLTS"), int(cost["circuit"]), DataRegistry.item_name("circuit"), status]
+	_drone_buy_btn.disabled = reason != ""
+	var focused_id := -1
+	var f := get_viewport().gui_get_focus_owner()
+	if f != null and _drone_cards.has(f):
+		focused_id = _drone_cards[f]
+	for c in _drone_list.get_children():
+		c.queue_free()
+	_drone_cards.clear()
+	var i := 0
+	for d: Drone in w.drones.values():
+		i += 1
+		var src: Building = w.buildings.get(d.source_id)
+		var dst: Building = w.buildings.get(d.target_id)
+		var card := _make_card("%s %d:  %s  →  %s" % [tr("DRONE_NAME"), i, _building_label(src), _building_label(dst)])
+		card.custom_minimum_size = Vector2(740, 100)
+		var state := ""
+		match d.state:
+			Drone.State.WAIT:
+				state = tr("DRONE_WAIT_" + d.wait_reason.to_upper()) if d.wait_reason != "" else tr("HELPER_STATE_WAIT")
+			Drone.State.TO_TARGET:
+				state = tr("DRONE_STATE_DELIVER")
+			_:
+				state = tr("DRONE_STATE_FETCH")
+		var load_txt := ("%d %s" % [d.carry_count, DataRegistry.item_name(d.carry_item)]) if d.is_carrying() else "–"
+		var filter_txt := DataRegistry.item_name(d.item_filter) if d.item_filter != "" else tr("DRONE_FILTER_ALL")
+		var limit_txt := str(d.limit) if d.limit > 0 else tr("DRONE_LIMIT_NONE")
+		_set_card(card, "%s · %s: %s/%d · %s: %s · %s: %s · %s %d" % [state, tr("HELPER_LOAD"), load_txt, d.capacity, tr("DRONE_FILTER"), filter_txt, tr("DRONE_LIMIT"), limit_txt, tr("DRONE_TRIPS"), d.trips], Color.WHITE)
+		var did := d.id
+		card.pressed.connect(func() -> void: _cycle_drone_filter(did))
+		_drone_list.add_child(card)
+		_drone_cards[card] = did
+		if did == focused_id:
+			card.call_deferred("grab_focus")
+	for u: Dictionary in w.drone_cfg.get("upgrades", []):
+		var id := str(u["id"])
+		var level := int(w.drone_upgrades.get(id, 0))
+		var maxl := int(u["max_level"])
+		var r := w.can_buy_drone_upgrade(id)
+		var cost_txt := ""
+		if level < maxl:
+			cost_txt = "%d %s, %d %s" % [int(u["cost_bolts"][level]), tr("HUD_BOLTS"), int(u["cost_circuit"][level]), DataRegistry.item_name("circuit")]
+		var st := ""
+		match r:
+			"max":
+				st = tr("SKILL_MAXED")
+			"locked":
+				st = tr("HELPER_UPG_LOCKED")
+			"bolts":
+				st = tr("TECH_MISSING_BOLTS") % (int(u["cost_bolts"][level]) - w.bolts)
+			"circuit":
+				st = tr("TECH_MISSING_ITEMS")
+			_:
+				st = tr("HELPER_UPG_BUY")
+		_set_card(_drone_upgrade_cards[id], "%d / %d · %s\n%s · %s" % [level, maxl, tr(str(u["desc_key"])), cost_txt, st],
+			Color(0.75, 1.0, 0.8) if level >= maxl else (Color.WHITE if r == "" else Color(0.85, 0.85, 0.85)))
 
 
 # --- Aufbau ---------------------------------------------------------------
@@ -286,11 +421,14 @@ func _refresh_all() -> void:
 	_refresh_skills()
 	_refresh_goals()
 	_refresh_helpers()
+	_refresh_drones()
 	match _tab:
 		Tab.MAP:
 			_footer.text = tr("MENU_PROGRESS_FOOTER_MAP")
 		Tab.HELPERS:
 			_footer.text = tr("MENU_PROGRESS_FOOTER_HELPERS")
+		Tab.DRONES:
+			_footer.text = tr("MENU_PROGRESS_FOOTER_DRONES")
 		_:
 			_footer.text = tr("MENU_PROGRESS_FOOTER")
 
@@ -406,6 +544,9 @@ func _refresh_goals() -> void:
 	if not _world.unlocked_features.has("helpers"):
 		var hw: Dictionary = _world.tech.by_id["helper_workshop"]
 		lines.append("🤖 %s: %s – %s" % [tr("GOAL_HELPERS"), tr(str(hw["name_key"])), _cost_text(hw)])
+	elif not _world.unlocked_features.has("drones") and _world.tech.by_id.has("drone_hangar"):
+		var dh: Dictionary = _world.tech.by_id["drone_hangar"]
+		lines.append("🚁 %s: %s – %s" % [tr("GOAL_DRONES"), tr(str(dh["name_key"])), _cost_text(dh)])
 	# Level
 	if not _world.progression.is_max_level():
 		lines.append("⭐ %s: %d / %d XP" % [tr("HUD_LEVEL") % (_world.progression.level + 1), _world.progression.xp, _world.progression.xp_needed()])
@@ -456,6 +597,7 @@ func _show_tab() -> void:
 	_goals_tab.visible = _tab == Tab.GOALS
 	_map_tab.visible = _tab == Tab.MAP
 	_helpers_tab.visible = _tab == Tab.HELPERS
+	_drones_tab.visible = _tab == Tab.DRONES
 	for i in _tab_labels.size():
 		_tab_labels[i].visible = _tab_enabled(i)
 		_tab_labels[i].add_theme_color_override("font_color", Color(0.95, 0.55, 0.16) if i == _tab else Color(0.165, 0.165, 0.2))
@@ -476,6 +618,8 @@ func _show_tab() -> void:
 			first = _goals_list.get_child(0) if _goals_list.get_child_count() > 0 else null
 		Tab.HELPERS:
 			first = _buy_btn
+		Tab.DRONES:
+			first = _drone_buy_btn
 	if first:
 		first.grab_focus()
 
