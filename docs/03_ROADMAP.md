@@ -25,6 +25,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **14** | Phase 2: Logistik-Drohnen | v1.3.0 |
 | **15** | Phase 2: Deko und Fundstücke (Werkbank, Museum, Journal) | v1.4.0 |
 | **16** | Überarbeitung Block 1: Ally-Bugs (A in Menüs, Trigger-Schwelle, Sauger-Reset) | v1.5.0 |
+| **17** | Überarbeitung Block 7: `world.gd` in acht Teilsysteme aufgeteilt | v1.6.0 |
 
 ## Überarbeitung nach dem Ally-Test (Go 2026-10-25)
 

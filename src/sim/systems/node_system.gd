@@ -1,0 +1,78 @@
+class_name NodeSystem
+extends RefCounted
+## Schrott-Objekte, lose Items, Respawn, Streuung, Zu-hart-Hinweis.
+## Teilsystem von SimWorld: statische Funktionen, `w` ist die Welt (Daten und Signale bleiben dort).
+
+
+## Beliebiges Schrott-Objekt aus scrap_objects.json. amount_override nur für Haufen.
+static func add_object(w: SimWorld, kind: String, tile: Vector2i, amount_override: int = -1) -> ResourceNode:
+	var n := ResourceNode.from_kind(w.next_id(), kind, tile, amount_override)
+	w.nodes[n.id] = n
+	w._node_tiles[tile] = n.id
+	w.node_added.emit(n)
+	return n
+
+
+static func add_pile(w: SimWorld, kind: String, tile: Vector2i, amount: int) -> ResourceNode:
+	return add_object(w, kind, tile, amount)
+
+
+## Endliches Hammer-Objekt mit expliziter Ausbeute (Tests, alte Karten).
+static func add_wreck(w: SimWorld, tile: Vector2i, loot: Dictionary, kind: String = ResourceNode.KIND_WRECK) -> ResourceNode:
+	var n := ResourceNode.make_wreck(w.next_id(), tile, loot, kind)
+	w.nodes[n.id] = n
+	w._node_tiles[tile] = n.id
+	w.node_added.emit(n)
+	return n
+
+
+static func add_loose(w: SimWorld, item_id: String, pos: Vector2i, tier: int = 1) -> LooseItem:
+	var item := LooseItem.new(w.next_id(), item_id, pos, tier)
+	w.loose[item.id] = item
+	w.loose_added.emit(item)
+	return item
+
+
+static func _tick_respawns(w: SimWorld) -> void:
+	var i := w.respawns.size() - 1
+	while i >= 0:
+		var r := w.respawns[i]
+		r["ticks_left"] = int(r["ticks_left"]) - 1
+		if int(r["ticks_left"]) <= 0:
+			w.respawns.remove_at(i)
+			var kind := str(r["kind"])
+			var is_res: bool = ResourceNode.has_kind(kind) and (bool(ResourceNode.defs[kind].get("resource", false)) or str(ResourceNode.defs[kind].get("type", "pile")) == "pile")
+			if not is_res and not w.zones.allows_trash_respawn(r["tile"], w.nodes):
+				i -= 1
+				continue  # Zone inzwischen sauber genug: kein Müll mehr
+			if not w._node_tiles.has(r["tile"]) and w.grid.at(r["tile"]) == null:
+				var n := add_object(w, kind, r["tile"])
+				w.node_respawned.emit(n)
+				w.zones.refresh(w.nodes)
+			else:
+				r["ticks_left"] = 100  # Kachel belegt: spaeter noch einmal versuchen
+				w.respawns.append(r)
+		i -= 1
+
+
+static func _remove_node(w: SimWorld, n: ResourceNode) -> void:
+	w.nodes.erase(n.id)
+	w._node_tiles.erase(n.tile)
+	w.node_removed.emit(n.id)
+	# Rohstoffquellen respawnen immer; Müll nur, solange die Zone unter 50 % sauber ist.
+	if n.respawn_ticks > 0 and (n.is_resource() or w.zones.allows_trash_respawn(n.tile, w.nodes)):
+		w.respawns.append({"kind": n.kind, "tile": n.tile, "ticks_left": n.respawn_ticks})
+	w.zones.refresh(w.nodes)
+
+
+static func _emit_too_hard(w: SimWorld, n: ResourceNode, tool: String) -> void:
+	if w._too_hard_cooldown > 0:
+		return
+	w._too_hard_cooldown = SimWorld.TOO_HARD_INTERVAL
+	w.too_hard.emit(n, tool)
+
+
+static func _scatter(w: SimWorld) -> Vector2i:
+	return Vector2i(
+		w.rng.randi_range(-SimWorld.LOOT_SCATTER_PX, SimWorld.LOOT_SCATTER_PX),
+		w.rng.randi_range(-SimWorld.LOOT_SCATTER_PX, SimWorld.LOOT_SCATTER_PX))

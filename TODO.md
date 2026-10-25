@@ -2,6 +2,7 @@
 
 ## Jetzt
 
+- [x] MS17 Sim-Aufteilung (v1.6.0): world.gd 1.259 → 388 Zeilen, acht Teilsysteme, keine Verhaltensänderung
 - [x] MS16 Ally-Bugs (v1.5.0): A in allen Menüs, Trigger-Schwelle 0,5, Sauger-Reset, Baumenü zeigt fehlendes Material, Gamepad-Prüfung
 - [ ] Überarbeitung nach Ally-Test (Go vom 2026-10-25): MS17 world.gd aufteilen → MS18a Schiff, Heilungsbalken, Aufgabenkette → MS18b Intro, Jubel, Endtext → MS19 Menüs entschlacken → MS20 Balancing (Zahlen vorher zeigen) → MS21a Animationen, Effekte, Sound (Musikrichtung abstimmen) → MS21b Zonenthemen, schmutzige Zonen, Haufen-Optik → MS21c Überraschungen, Müllberg-Boss, Rusty-Reaktionen → MS22 zweiter Balancing-Durchlauf
 - [x] MS15 Deko und Fundstücke (v1.4.0): Deko-Werkbank, sechs Deko-Objekte, Museum, neun Fundstücke, Journal
@@ -12,6 +13,11 @@
 - [ ] Auftraggeber prüft am Laptop: Titelbildschirm, Kapitel-Tab (Select), Tor nach 50 % Startlager, Maschinen-Hinweis am Schmelzofen, alter Spielstand hat wieder Objekte in allen Zonen
 - [ ] NIE wieder user://saves ohne Backup anfassen: Screenshot-Läufe nur über tests/shot.sh, Datei-Tests mit use_directory
 - [ ] Auftraggeber testet MS4–MS7 am Laptop / später am Ally: Speichern (F5 oder Pause), Beenden, Neustart, Sprache wechseln, Neues Spiel; Perf-Szenario F6 + F3
+
+## MS17 Sim-Aufteilung (erledigt, selbst getestet)
+
+- [x] Acht Teilsysteme unter src/sim/systems, Tick und Befehle rufen direkt, 36 Weiterleitungen für die öffentliche API
+- [ ] Tests für die Teilsysteme bleiben über die SimWorld-API; eigene System-Tests erst, wenn ein System eigene Regeln bekommt (Schiff in MS18a)
 
 ## MS16 Ally-Bugs (erledigt, selbst getestet)
 
