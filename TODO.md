@@ -2,14 +2,21 @@
 
 ## Jetzt
 
+- [x] MS16 Ally-Bugs (v1.5.0): A in allen Menüs, Trigger-Schwelle 0,5, Sauger-Reset, Baumenü zeigt fehlendes Material, Gamepad-Prüfung
+- [ ] Überarbeitung nach Ally-Test (Go vom 2026-10-25): MS17 world.gd aufteilen → MS18a Schiff, Heilungsbalken, Aufgabenkette → MS18b Intro, Jubel, Endtext → MS19 Menüs entschlacken → MS20 Balancing (Zahlen vorher zeigen) → MS21a Animationen, Effekte, Sound (Musikrichtung abstimmen) → MS21b Zonenthemen, schmutzige Zonen, Haufen-Optik → MS21c Überraschungen, Müllberg-Boss, Rusty-Reaktionen → MS22 zweiter Balancing-Durchlauf
 - [x] MS15 Deko und Fundstücke (v1.4.0): Deko-Werkbank, sechs Deko-Objekte, Museum, neun Fundstücke, Journal
 - [x] MS14 Logistik-Drohnen (v1.3.0): Hangar-Tech, Drohnen mit Quelle, Ziel, Material, Limit, Upgrades, Tab, Save v5
 - [x] MS13 Zonen-Heilung (v1.2.0): Gras, Blumen, Büsche, Teiche, Tiere, Tageslicht, Regen, Kartenlegende
 - [x] MS12 Gameplay-Klarheit (v1.1.0): Kapitel mit Toren, Nebel auf der Karte, Kapitel-Tab, Rezept-Hinweise, Titelbildschirm, Produkte als Baustoff, Zonen-Auffüllung alter Spielstände
-- [ ] Phase 2 Rest (MS16+): Besucher mit Tauschaufträgen, Scrap-Fischen, Fahrzeuge, Zen- und Fotomodus, Planeten-Rat-Aufgaben, Offline-Progression
+- [ ] Phase 2 Rest (nach der Überarbeitung): Besucher mit Tauschaufträgen, Scrap-Fischen, Fahrzeuge, Zen- und Fotomodus, Planeten-Rat-Aufgaben, Offline-Progression
 - [ ] Auftraggeber prüft am Laptop: Titelbildschirm, Kapitel-Tab (Select), Tor nach 50 % Startlager, Maschinen-Hinweis am Schmelzofen, alter Spielstand hat wieder Objekte in allen Zonen
 - [ ] NIE wieder user://saves ohne Backup anfassen: Screenshot-Läufe nur über tests/shot.sh, Datei-Tests mit use_directory
 - [ ] Auftraggeber testet MS4–MS7 am Laptop / später am Ally: Speichern (F5 oder Pause), Beenden, Neustart, Sprache wechseln, Neues Spiel; Perf-Szenario F6 + F3
+
+## MS16 Ally-Bugs (erledigt, selbst getestet)
+
+- [x] A-Fallback in allen Menüs, ui_accept/ui_cancel/D-Pad fest gebunden, Trigger-Schwelle, Sauger-Reset, Baumenü-Hinweis, gamepad_check.sh
+- [ ] Am Ally prüfen, ob Armoury Crate im Gamepad-Modus steht (Hinweisleiste zeigt Stick/A/Y statt WASD/E/Tab)
 
 ## MS15 Deko und Fundstücke (erledigt, selbst getestet)
 

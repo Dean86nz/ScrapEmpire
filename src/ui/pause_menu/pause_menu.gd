@@ -46,9 +46,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		else:
 			open()
 		get_viewport().set_input_as_handled()
-	elif visible and event.is_action_pressed("ui_cancel"):
+	elif visible and MenuInput.back_pressed(event):
 		close()
 		get_viewport().set_input_as_handled()
+	elif visible and MenuInput.accept_pressed(event):
+		if MenuInput.press_focused(get_viewport()):
+			get_viewport().set_input_as_handled()
 
 
 func open() -> void:

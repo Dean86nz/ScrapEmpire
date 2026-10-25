@@ -78,9 +78,11 @@ func start(body: WorkerBody) -> bool:
 	return true
 
 
-func stop() -> void:
+func stop(body: WorkerBody = null) -> void:
 	if not active:
 		return
+	if body != null:
+		_release(body)
 	active = false
 	state_changed.emit(false)
 

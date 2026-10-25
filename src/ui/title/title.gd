@@ -31,6 +31,11 @@ func _ready() -> void:
 	(_continue_btn if _continue_btn.visible else _new_btn).grab_focus()
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if MenuInput.accept_pressed(event) and MenuInput.press_focused(get_viewport()):
+		get_viewport().set_input_as_handled()
+
+
 func _process(delta: float) -> void:
 	_t += delta
 	_rusty.rotation = sin(_t * 1.5) * 0.08

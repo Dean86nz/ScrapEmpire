@@ -6,6 +6,9 @@ extends RefCounted
 ## auf D-Pad, linken Stick, A und B gemappt.
 
 const DEADZONE := 0.2
+## Abzüge (RT/LT) brauchen eine höhere Schwelle: der Ally X liefert in Ruhe Werte über 0,2 (Dauersaugen).
+const TRIGGER_DEADZONE := 0.5
+const DEADZONES := {"tool_primary": TRIGGER_DEADZONE, "tool_secondary": TRIGGER_DEADZONE}
 
 
 static func _key(code: Key) -> InputEventKey:
@@ -80,5 +83,20 @@ static func apply() -> void:
 			InputMap.action_erase_events(action)
 		else:
 			InputMap.add_action(action, DEADZONE)
+		InputMap.action_set_deadzone(action, float(DEADZONES.get(action, DEADZONE)))
 		for ev: InputEvent in ACTIONS[action]:
 			InputMap.action_add_event(action, ev)
+	# Menü-Navigation: A bestätigt, B bricht ab – auch wenn ein Projekt-Export die Godot-Standards verliert.
+	_ensure("ui_accept", _btn(JOY_BUTTON_A))
+	_ensure("ui_cancel", _btn(JOY_BUTTON_B))
+	_ensure("ui_up", _btn(JOY_BUTTON_DPAD_UP))
+	_ensure("ui_down", _btn(JOY_BUTTON_DPAD_DOWN))
+	_ensure("ui_left", _btn(JOY_BUTTON_DPAD_LEFT))
+	_ensure("ui_right", _btn(JOY_BUTTON_DPAD_RIGHT))
+
+
+static func _ensure(action: String, ev: InputEvent) -> void:
+	if not InputMap.has_action(action):
+		InputMap.add_action(action, DEADZONE)
+	if not InputMap.action_has_event(action, ev):
+		InputMap.action_add_event(action, ev)

@@ -163,3 +163,15 @@ func test_migration_v1_to_v2_shifts_tutorial_map() -> void:
 	assert_eq(m["player"]["pos"], [1312.0, 2912.0])
 	assert_true(bool(m["tutorial"]["done"]))
 	assert_true(bool(m["flags"]["gate_open"]))
+
+
+func test_stop_with_body_releases_suction() -> void:
+	var w := _world()
+	w.add_pile("scrap_pile", Vector2i(10, 5), 10)
+	w.tasks.add_step(TaskList.Type.COLLECT, Vector2i(10, 5))
+	w.tasks.start(w.player)
+	_run(w, 30)
+	w.player.suck_held = true  # wie mitten im Saugen
+	w.tasks.stop(w.player)
+	assert_false(w.tasks.active)
+	assert_false(w.player.suck_held, "Stopp gibt den Sauger frei")

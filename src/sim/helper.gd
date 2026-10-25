@@ -64,7 +64,7 @@ func tick(world: SimWorld) -> void:
 
 ## Sucht das nächste abbaubare Objekt in der Zone; ohne Ziel: nur abliefern oder warten.
 func _plan(world: SimWorld) -> void:
-	tasks.stop()
+	tasks.stop(self)
 	tasks.steps.clear()
 	tasks.index = 0
 	tasks.loops = 0
