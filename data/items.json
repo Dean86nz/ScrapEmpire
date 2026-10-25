@@ -1,25 +1,12 @@
 {
   "items": [
-    {
-      "id": "scrap",
-      "name_key": "ITEM_SCRAP",
-      "sell_value": 1,
-      "color": "#9AA0A6",
-      "icon": "res://assets/sprites/items/scrap.svg"
-    },
-    {
-      "id": "copper",
-      "name_key": "ITEM_COPPER",
-      "sell_value": 3,
-      "color": "#E07B39",
-      "icon": "res://assets/sprites/items/copper.svg"
-    },
-    {
-      "id": "plastic",
-      "name_key": "ITEM_PLASTIC",
-      "sell_value": 2,
-      "color": "#4FB6E8",
-      "icon": "res://assets/sprites/items/plastic.svg"
-    }
+    { "id": "scrap", "name_key": "ITEM_SCRAP", "sell_value": 1, "color": "#9AA0A6", "icon": "res://assets/sprites/items/scrap.svg" },
+    { "id": "copper", "name_key": "ITEM_COPPER", "sell_value": 3, "color": "#E07B39", "icon": "res://assets/sprites/items/copper.svg" },
+    { "id": "plastic", "name_key": "ITEM_PLASTIC", "sell_value": 2, "color": "#4FB6E8", "icon": "res://assets/sprites/items/plastic.svg" },
+    { "id": "iron_bar", "name_key": "ITEM_IRON_BAR", "sell_value": 6, "color": "#7D848C", "icon": "res://assets/sprites/items/iron_bar.svg" },
+    { "id": "copper_bar", "name_key": "ITEM_COPPER_BAR", "sell_value": 10, "color": "#D9742F", "icon": "res://assets/sprites/items/copper_bar.svg" },
+    { "id": "plastic_sheet", "name_key": "ITEM_PLASTIC_SHEET", "sell_value": 7, "color": "#6CC6F0", "icon": "res://assets/sprites/items/plastic_sheet.svg" },
+    { "id": "gear", "name_key": "ITEM_GEAR", "sell_value": 20, "color": "#5C6670", "icon": "res://assets/sprites/items/gear.svg" },
+    { "id": "circuit", "name_key": "ITEM_CIRCUIT", "sell_value": 30, "color": "#3FB47C", "icon": "res://assets/sprites/items/circuit.svg" }
   ]
 }

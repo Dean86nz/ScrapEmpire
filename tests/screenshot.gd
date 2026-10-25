@@ -41,10 +41,11 @@ func _process(_delta: float) -> bool:
 		for a in _hold_actions:
 			_send_action(a, true)
 	if _frames == 3 and _cheat != "":
-		var kv := _cheat.split("=")
 		# Autoloads sind beim Kompilieren eines -s-Skripts nicht bekannt, daher dynamisch.
 		var clock: Node = root.get_node("/root/SimClock")
-		clock.world.player.inventory.add(kv[0], int(kv[1]))
+		for pair in _cheat.split(","):
+			var kv := pair.split("=")
+			clock.world.player.inventory.add(kv[0], int(kv[1]))
 	for step in _sequence:
 		if step["frame"] == _frames:
 			_send_action(step["action"], step["pressed"])

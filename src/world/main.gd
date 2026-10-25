@@ -18,6 +18,7 @@ func _ready() -> void:
 	_world = SimWorld.new()
 	_world.defs = DataRegistry.building_defs
 	_world.item_values = DataRegistry.item_values()
+	_world.recipes = DataRegistry.recipes
 	var start := MapLoader.load_into(_world, MAP_PATH)
 	SimClock.reset_world(_world)
 
@@ -46,6 +47,8 @@ func _ready() -> void:
 	_world.wreck_destroyed.connect(func(_id: int) -> void: Quips.say("wreck_destroyed"))
 	_world.item_collected.connect(_on_item_collected)
 	_world.place_failed.connect(func(reason: String) -> void: Quips.say("fail_" + reason, true))
+	_world.deposit_rejected.connect(func(_b: Building, _item: String) -> void: Quips.say("deposit_rejected", true))
+	_world.building_placed.connect(_on_building_placed)
 	get_tree().create_timer(1.0).timeout.connect(func() -> void: Quips.say("start"))
 
 
@@ -79,6 +82,15 @@ func _current_hint() -> String:
 		if not b.contents().is_empty():
 			return tr("HINT_WITHDRAW" + kb) % tr(b.def.name_key)
 	return tr("HUD_HINT_GAME" + kb)
+
+
+var _first_machine := false
+
+
+func _on_building_placed(b: Building) -> void:
+	if b is Machine and not _first_machine:
+		_first_machine = true
+		Quips.say("first_machine", true)
 
 
 func _on_item_collected(item_id: String, _from: Vector2i) -> void:

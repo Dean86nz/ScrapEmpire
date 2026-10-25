@@ -2,16 +2,17 @@
 
 ## Jetzt
 
-- [ ] Go des Auftraggebers für die neue Reihenfolge (docs/03_ROADMAP.md): MS3 Maschinen, dann MS4 XP/Level/Tiers
-- [ ] MS2 auf dem Ally testen (`export/windows/ScrapEmpire_v0.2.1.exe`), Maus-Platzierung am PC bestätigen
+- [ ] MS3 testen (`export/windows/ScrapEmpire_v0.3.0.exe`): Ofen und Presse bauen, füttern, Barren verkaufen, Stau „!“ sehen
+- [ ] Nach Feedback: Branch `ms/3-maschinen` nach `main` mergen, MS4 beginnen
 
-## MS3 Maschinen (nächster Meilenstein)
+## MS3 Maschinen (erledigt, wartet auf Test)
 
-- [ ] data/recipes.json, Rezeptsystem
-- [ ] Schmelzofen (Schrott → Eisenbarren, Kupfer → Kupferbarren)
-- [ ] Presse (Plastik → Plastikplatte; Zahnrad/Schaltkreis erst mit Tech)
-- [ ] Ein-/Ausgangspuffer (10/10), Fortschrittsanzeige, Stau-Feedback „!“
-- [ ] Manuelles Entnehmen aus dem Ausgang
+- [x] data/recipes.json, Rezeptsystem
+- [x] Schmelzofen (Schrott → Eisenbarren, Kupfer → Kupferbarren)
+- [x] Presse (Plastik → Plastikplatte; Zahnrad/Schaltkreis erst mit Tech)
+- [x] Ein-/Ausgangspuffer (10/10), Fortschrittsanzeige, Stau-Feedback „!“
+- [x] Manuelles Entnehmen aus dem Ausgang
+- [ ] Auf dem Ally getestet
 
 ## MS4 XP, Level und Schrott-Stufen
 

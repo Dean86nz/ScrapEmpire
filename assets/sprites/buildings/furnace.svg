@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Schmelzofen 2×2: Ziegelkörper, Feuerfenster, Schornstein. Eingang links, Ausgang rechts. -->
+  <ellipse cx="64" cy="112" rx="52" ry="10" fill="#000" opacity="0.12"/>
+  <rect x="82" y="8" width="20" height="30" rx="6" fill="#5C6670" stroke="#2A2A33" stroke-width="4"/>
+  <circle cx="92" cy="6" r="6" fill="#DADDE0" opacity="0.8"/>
+  <rect x="18" y="30" width="92" height="78" rx="14" fill="#C85A3C" stroke="#2A2A33" stroke-width="5"/>
+  <rect x="26" y="40" width="36" height="12" rx="4" fill="#A9472E"/>
+  <rect x="68" y="40" width="34" height="12" rx="4" fill="#A9472E"/>
+  <rect x="26" y="88" width="30" height="12" rx="4" fill="#A9472E"/>
+  <!-- Feuerfenster -->
+  <rect x="38" y="56" width="52" height="30" rx="10" fill="#2A2A33"/>
+  <path d="M48 82 C44 70, 54 66, 54 58 C60 66, 64 62, 66 56 C74 64, 80 72, 76 82 Z" fill="#FFB84A"/>
+  <path d="M54 82 C52 74, 60 70, 62 64 C68 70, 70 76, 68 82 Z" fill="#FFE27A"/>
+  <!-- Eingangspfeil links, Ausgangspfeil rechts -->
+  <path d="M4 58 L18 50 L18 66 Z" fill="#F28C28" stroke="#2A2A33" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M110 50 L124 58 L110 66 Z" fill="#3FB47C" stroke="#2A2A33" stroke-width="3" stroke-linejoin="round"/>
+</svg>

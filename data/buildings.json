@@ -10,6 +10,24 @@
       "ports": [{ "side": "left", "dir": "in", "cell": [0, 0] }]
     },
     {
+      "id": "furnace",
+      "name_key": "BLD_FURNACE",
+      "size": [2, 2],
+      "cost": { "scrap": 40, "copper": 10 },
+      "cost_growth": 1.35,
+      "sprite": "res://assets/sprites/buildings/furnace.svg",
+      "ports": [{ "side": "left", "dir": "in", "cell": [0, 0] }, { "side": "right", "dir": "out", "cell": [1, 0] }]
+    },
+    {
+      "id": "press",
+      "name_key": "BLD_PRESS",
+      "size": [2, 2],
+      "cost": { "scrap": 60, "plastic": 20 },
+      "cost_growth": 1.35,
+      "sprite": "res://assets/sprites/buildings/press.svg",
+      "ports": [{ "side": "left", "dir": "in", "cell": [0, 0] }, { "side": "top", "dir": "in", "cell": [0, 0] }, { "side": "right", "dir": "out", "cell": [1, 0] }]
+    },
+    {
       "id": "chest",
       "name_key": "BLD_CHEST",
       "size": [1, 1],
