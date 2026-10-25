@@ -2,6 +2,15 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.6.0] – 2026-10-25 – MS17 Sim-Aufteilung (Überarbeitung Block 7)
+
+Reiner Umbau ohne Verhaltensänderung; Vorbereitung für die Raumschiff-Basis (MS18a).
+
+### Geändert
+- `src/sim/world.gd` von 1.259 auf 388 Zeilen. Die Logik liegt jetzt in acht Teilsystemen unter `src/sim/systems/`: Forschung (`ResearchSystem`: Tech, Skills, Modifikatoren, Rezepte, Verkaufswert), Objekte (`NodeSystem`: Haufen, Wracks, lose Items, Respawn), Bauen (`BuildingSystem`), Förderbänder (`ConveyorSystem`), Werkzeuge (`ToolSystem`: Saugen, Hämmern, Magnet, Helfer-Arbeit), Helfer (`HelperSystem`), Drohnen (`DroneSystem`), Fundstücke (`CollectibleSystem`)
+- Teilsysteme sind statische Funktionen mit der Welt als erstem Parameter: keine Referenzzyklen, kein Zustand außerhalb von `SimWorld`. `SimWorld` behält Daten, Signale, Tick-Reihenfolge und Befehlsverteilung und leitet 36 öffentliche Funktionen weiter, damit Tests, Ansichten und Spielstand unverändert bleiben
+- Alle 194 Tests und die 31 Gamepad-Prüfungen laufen unverändert; Spielstand-Format unverändert (Version 6)
+
 ## [1.5.0] – 2026-10-25 – MS16 Ally-Bugs (Überarbeitung Block 1)
 
 Erste Runde der Überarbeitung nach dem Praxistest auf dem ROG Ally X. Keine neuen Systeme.

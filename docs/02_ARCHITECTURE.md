@@ -48,7 +48,16 @@ ScrapEmpire/
 │   │   ├── save_manager.gd      JSON-Save, Versionierung, Migrationen, Autosave
 │   │   └── input_router.gd      Kontextwechsel (Spiel / Baumodus / Menü), Gerätetyp-Erkennung
 │   ├── sim/                     reine Logik, keine Nodes
-│   │   ├── world.gd             Grid, Gebäudeliste, tick(), serialize()
+│   │   ├── world.gd             SimWorld: Daten, Signale, tick(), Befehlsverteilung, Weiterleitungen (388 Zeilen)
+│   │   ├── systems/             Teilsysteme als statische Funktionen mit `w: SimWorld` als erstem Parameter
+│   │   │   ├── research_system.gd    Tech, Skills, Modifikatoren, Rezepte, Verkaufswert
+│   │   │   ├── node_system.gd        Haufen, Wracks, lose Items, Respawn
+│   │   │   ├── building_system.gd    Bauen, Abreißen, Drehen, Einlegen, Entnehmen, Kosten
+│   │   │   ├── conveyor_system.gd    Bandnetz, Transport, Ausgänge, Saugstationen
+│   │   │   ├── tool_system.gd        Saugen, Hämmern, Magnet, Helfer-Arbeit
+│   │   │   ├── helper_system.gd      Helfer-Kauf, Upgrades, Tick
+│   │   │   ├── drone_system.gd       Drohnen-Kauf, Filter, Limit, Tick
+│   │   │   └── collectible_system.gd Fundstücke
 │   │   ├── grid.gd              Vector2i → Building, Belegungsprüfung
 │   │   ├── inventory.gd         Slots, add/remove/can_add
 │   │   ├── item_stack.gd
@@ -274,6 +283,14 @@ Kein ECS, kein C# (erst wenn Perf-Messung es verlangt; Kandidat wäre `conveyor_
 | `src/sim/spawn_manager.gd` | Respawn-Timer je Objekt, Spawn-Punkte aus der Karte |
 
 Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers → Player-Werkzeuge → Progression (XP-Buchungen des Ticks) → SpawnManager.
+
+## 10a. Teilsysteme (seit v1.6.0, MS17)
+
+`SimWorld` ist die Fassade: Felder, Signale, `tick()`, `queue_command()` und `_apply()`. Die Logik steht in `src/sim/systems/*.gd` als `static func name(w: SimWorld, …)`. Regeln:
+
+- Systeme halten keinen Zustand und keine Referenz auf die Welt (keine Zyklen zwischen RefCounted-Objekten); alles Veränderliche liegt in `SimWorld`.
+- Funktionen, die von Ansichten, Tests oder anderen Systemen gebraucht werden, haben eine gleichnamige Weiterleitung in `SimWorld` (z. B. `w.place_free(...)` → `BuildingSystem.place_free(w, ...)`). Nur intern genutzte Funktionen ruft `tick()`/`_apply()` direkt über das System auf.
+- Neue Spielregeln kommen als neues System dazu (z. B. `ShipSystem` für die Basis), nicht in `world.gd`.
 
 ## 11. Neue Darstellung und UI
 
