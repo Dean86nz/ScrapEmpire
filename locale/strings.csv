@@ -177,3 +177,39 @@ HUD_SAVED,Gespeichert ✔,Saved ✔
 QUIP_LOADED_1,Alles noch da. Ich habe aufgepasst.,Everything still here. I kept watch.
 QUIP_LOADED_2,Willkommen zurück. Nichts explodiert.,Welcome back. Nothing exploded.
 DEBUG_CHAIN_FAIL,[DEV] Kein Platz für die Kette. Woanders hinstellen.,[DEV] No room for the chain. Move somewhere else.
+TUT_1,Bewege dich mit dem linken Stick (WASD).,Move with the left stick (WASD).
+TUT_1_DONE,Räder funktionieren. Guter Anfang.,Wheels work. Good start.
+TUT_2,Sauge 30 Schrott aus den grauen Haufen (RT).,Suck 30 scrap from the grey piles (RT).
+TUT_2_DONE,Taschen voll Schrott. Reich bin ich nicht. Noch nicht.,Pockets full of scrap. Not rich. Yet.
+TUT_3,Baue ein Verkaufsterminal (Y) und lege Schrott ein (A).,Build a sell terminal (Y) and insert scrap (A).
+TUT_3_DONE,Erste Bolts! Und 20 extra. Bitte sehr.,First bolts! And 20 extra. You are welcome.
+TUT_4,Zerlege einen Rostigen Toaster mit dem Hammer (LT).,Smash a rusty toaster with the hammer (LT).
+TUT_4_DONE,Toaster besiegt. Er hatte es verdient.,Toaster defeated. It deserved it.
+TUT_5,Öffne den Fortschritt (Select) und erforsche den Schmelzofen.,Open progress (Select) and research the furnace.
+TUT_5_DONE,Das Tor ist offen. Da draußen liegt noch mehr Schrott. Viel mehr.,The gate is open. More scrap out there. Much more.
+TASK_TITLE,Aufgaben (Autopilot),Tasks (autopilot)
+TASK_ADD,+ Schritt,+ Step
+TASK_START,▶ Starten,▶ Start
+TASK_STOP,■ Stoppen,■ Stop
+TASK_CLEAR,Leeren,Clear
+TASK_EMPTY,Noch keine Schritte. Mit + Schritt anfangen.,No steps yet. Start with + Step.
+TASK_FOOTER,A: wählen · X: löschen · LB/RB: verschieben · B: schließen,A: select · X: delete · LB/RB: move · B: close
+TASK_GOTO,Gehe zu,Go to
+TASK_COLLECT,Sammle hier,Collect here
+TASK_HAMMER,Hämmere hier,Hammer here
+TASK_DEPOSIT,Lege ab in,Put into
+TASK_WITHDRAW,Nimm aus,Take from
+TASK_HUD,Autopilot:,Autopilot:
+TASK_HUD_ON,läuft,running
+TASK_HUD_OFF,aus (Y lang),off (hold Y)
+HINT_TARGET,"D-Pad / rechter Stick: Ziel   ·   A: bestätigen   ·   B: abbrechen","D-pad / right stick: target   ·   A: confirm   ·   B: cancel"
+HINT_TARGET_KB,"Maus / Pfeile: Ziel   ·   LMB / E: bestätigen   ·   RMB / Esc: abbrechen","Mouse / arrows: target   ·   LMB / E: confirm   ·   RMB / Esc: cancel"
+QUIP_AUTOPILOT_LOCKED,Autopilot? Erst erforschen. Select öffnet den Techbaum.,Autopilot? Research it first. Select opens the tech tree.
+QUIP_AUTOPILOT_START_1,Autopilot an. Ich mache das jetzt. Du darfst zuschauen.,Autopilot on. I will handle it. You may watch.
+QUIP_AUTOPILOT_START_2,Schleife läuft. Ich bin jetzt ein Prozess.,Loop running. I am a process now.
+QUIP_AUTOPILOT_STOP,Du übernimmst? Gut. Ich merke mir den Schritt.,You take over? Fine. I will remember the step.
+QUIP_WAIT_STUCK,Ich komme nicht durch. Ich warte. Ich bin gut im Warten.,Cannot get through. I will wait. I am good at waiting.
+QUIP_WAIT_EMPTY,"Hier ist nichts mehr. Ich warte, bis was nachwächst.",Nothing left here. Waiting for regrowth.
+QUIP_WAIT_GENERIC,Hm. Das klappt gerade nicht. Kurz warten.,Hm. Not working right now. Short wait.
+QUIP_WAIT_FULL,Kiste voll. Ich warte. Ich bin gut im Warten.,Chest full. I will wait. I am good at waiting.
+QUIP_WAIT_NO_BUILDING,Da steht nichts mehr. Wo soll das hin?,Nothing there anymore. Where does this go?

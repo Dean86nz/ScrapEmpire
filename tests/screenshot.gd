@@ -60,8 +60,10 @@ func _process(_delta: float) -> bool:
 				"tier":
 					clock.world.player.suction_tier = int(kv[1])
 					clock.world.player.hammer_tier = int(kv[1])
-				"scenario":  # scenario=chain | perf (siehe Main.debug_scenario)
+				"scenario":  # scenario=chain | perf | auto (siehe Main.debug_scenario)
 					current_scene.debug_scenario(kv[1])
+				"feature":
+					clock.world.unlocked_features[kv[1]] = true
 				_:
 					clock.world.player.inventory.add(kv[0], int(kv[1]))
 	for step in _sequence:

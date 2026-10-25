@@ -3,7 +3,7 @@ extends RefCounted
 ## Wandelt die SimWorld in ein JSON-taugliches Dictionary und zurück (Architektur 4.8, 12).
 ## Reine Logik ohne Datei-IO; SaveManager kümmert sich um Dateien, Rotation und Migration.
 
-const VERSION := 1
+const VERSION := 2
 
 
 static func v2(v: Vector2i) -> Array:
@@ -63,6 +63,9 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		"loose": loose,
 		"buildings": buildings,
 		"respawns": respawns,
+		"tasks": world.tasks.to_dict(),
+		"flags": world.flags.duplicate(),
+		"tutorial": {"step": int(world.flags.get("tutorial_step", 0)), "done": bool(world.flags.get("tutorial_done", false))},
 	}
 
 
@@ -124,6 +127,12 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 	for rd: Dictionary in data.get("respawns", []):
 		world.respawns.append({"kind": str(rd.get("kind", "")), "tile": to_v2(rd.get("tile")), "ticks_left": int(rd.get("ticks_left", 100))})
 
+	world.tasks.from_dict(data.get("tasks", {}))
+	for k in data.get("flags", {}):
+		world.flags[str(k)] = data["flags"][k]
+	var tut: Dictionary = data.get("tutorial", {})
+	world.flags["tutorial_step"] = int(tut.get("step", 0))
+	world.flags["tutorial_done"] = bool(tut.get("done", false))
 	var pd: Dictionary = data.get("player", {})
 	world.player.inventory.from_dict(pd.get("inventory", {}))
 	world.recompute_modifiers()

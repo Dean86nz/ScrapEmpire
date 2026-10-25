@@ -48,6 +48,8 @@ var recipes: Array[RecipeDef] = []  # alle Rezepte (von außen gesetzt)
 var unlocked_tech: Dictionary = {}  # tech_id → true (Spiegel von tech.unlocked)
 var tech := TechState.new()
 var skills := SkillState.new()
+var tasks := TaskList.new()
+var flags: Dictionary = {}  # tutorial_step, tutorial_done, gate_open
 var mods: Dictionary = Modifiers.DEFAULTS.duplicate()
 var unlocked_buildings: Dictionary = {}  # def_id → true
 var unlocked_features: Dictionary = {}   # autopilot, helpers
@@ -233,6 +235,7 @@ func tick() -> void:
 	if _too_hard_cooldown > 0:
 		_too_hard_cooldown -= 1
 
+	tasks.tick(self, player)
 	_tick_suction()
 	_tick_magnet()
 	_tick_hammer()

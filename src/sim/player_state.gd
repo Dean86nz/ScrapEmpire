@@ -1,5 +1,5 @@
 class_name PlayerState
-extends RefCounted
+extends WorkerBody
 ## Sim-Sicht auf Rusty: Position und Eingaben (vom Player-Node pro Frame geschrieben),
 ## Inventar, Werkzeugwerte (aus Modifiers) und Cooldowns (von der Sim im Tick verwaltet).
 
@@ -11,28 +11,22 @@ const HAMMER_REACH_PX := 48          # Zielpunkt vor Rusty
 const BASE_HAMMER_INTERVAL := 10     # 1 Schlag / 0,5 s
 const INVENTORY_SLOTS := 6
 const STACK_SIZE := 20
-const TILE := 64
-
-# Eingaben (werden vom Player-Node gesetzt)
-var pos := Vector2i.ZERO
-var aim := Vector2.RIGHT
-var suck_held := false
-var hammer_pressed := false
 
 # Zustand (von der Sim verwaltet)
-var inventory := Inventory.new(INVENTORY_SLOTS, STACK_SIZE)
 var suck_cooldown := 0
 var hammer_cooldown := 0
 
 # Aus Modifiers abgeleitete Werkzeugwerte
-var suction_tier := 1
-var hammer_tier := 1
-var suck_range_px := BASE_SUCK_RANGE_PX
-var hammer_range_px := BASE_HAMMER_RANGE_PX
 var suck_interval := BASE_SUCK_INTERVAL
 var hammer_interval := BASE_HAMMER_INTERVAL
 var hammer_items := 1
 var magnet_radius_px := 0
+
+
+func _init() -> void:
+	inventory = Inventory.new(INVENTORY_SLOTS, STACK_SIZE)
+	suck_range_px = BASE_SUCK_RANGE_PX
+	hammer_range_px = BASE_HAMMER_RANGE_PX
 
 
 ## Übernimmt die Boni. Liefert true, wenn sich das Inventar vergrößert hat.

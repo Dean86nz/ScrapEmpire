@@ -12,7 +12,7 @@ var save_dir := DEFAULT_SAVE_DIR
 var meta_file := DEFAULT_SAVE_DIR + "save_meta.json"
 
 ## version → Callable(data) -> data (hebt genau um eine Version)
-var migrations: Dictionary = {}
+var migrations: Dictionary = SaveMigrations.all()
 
 var _last_written := ""
 

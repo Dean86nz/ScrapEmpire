@@ -1,14 +1,134 @@
 {
   "objects": [
-    { "id": "scrap_pile", "name_key": "NODE_SCRAP_PILE", "tier": 1, "tool": "suction", "type": "pile", "item": "scrap", "max": 10, "regen_s": 30, "sprite": "res://assets/sprites/nodes/scrap_pile.svg" },
-    { "id": "copper_tangle", "name_key": "NODE_COPPER_TANGLE", "tier": 1, "tool": "suction", "type": "pile", "item": "copper", "max": 10, "regen_s": 30, "sprite": "res://assets/sprites/nodes/copper_tangle.svg" },
-    { "id": "plastic_crumbs", "name_key": "NODE_PLASTIC_CRUMBS", "tier": 1, "tool": "suction", "type": "pile", "item": "plastic", "max": 10, "regen_s": 30, "sprite": "res://assets/sprites/nodes/plastic_crumbs.svg" },
-    { "id": "toaster", "name_key": "NODE_TOASTER", "tier": 1, "tool": "hammer", "type": "loot", "yield": { "scrap": 8, "copper": 2 }, "respawn_s": 180, "sprite": "res://assets/sprites/nodes/toaster.svg" },
-    { "id": "fridge", "name_key": "NODE_FRIDGE", "tier": 2, "tool": "hammer", "type": "loot", "yield": { "scrap": 15, "copper": 6, "plastic": 6 }, "respawn_s": 300, "sprite": "res://assets/sprites/nodes/fridge.svg" },
-    { "id": "cart", "name_key": "NODE_CART", "tier": 2, "tool": "suction", "type": "loot", "yield": { "scrap": 12, "copper": 8 }, "respawn_s": 300, "sprite": "res://assets/sprites/nodes/cart.svg" },
-    { "id": "ship_part", "name_key": "NODE_SHIP_PART", "tier": 3, "tool": "hammer", "type": "loot", "yield": { "scrap": 10, "copper": 6, "chrome": 4 }, "respawn_s": 480, "sprite": "res://assets/sprites/nodes/ship_part.svg" },
-    { "id": "satellite", "name_key": "NODE_SATELLITE", "tier": 3, "tool": "suction", "type": "loot", "yield": { "copper": 6, "plastic": 6, "chrome": 3 }, "respawn_s": 480, "sprite": "res://assets/sprites/nodes/satellite.svg" },
-    { "id": "robot_arm", "name_key": "NODE_ROBOT_ARM", "tier": 4, "tool": "hammer", "type": "loot", "yield": { "titanium": 5, "chrome": 2 }, "respawn_s": 720, "sprite": "res://assets/sprites/nodes/robot_arm.svg" },
-    { "id": "monolith", "name_key": "NODE_MONOLITH", "tier": 5, "tool": "hammer", "type": "loot", "yield": { "stardust": 3 }, "respawn_s": 0, "sprite": "res://assets/sprites/nodes/monolith.svg" }
+    {
+      "id": "scrap_pile",
+      "name_key": "NODE_SCRAP_PILE",
+      "tier": 1,
+      "tool": "suction",
+      "type": "pile",
+      "item": "scrap",
+      "max": 10,
+      "regen_s": 30,
+      "sprite": "res://assets/sprites/nodes/scrap_pile.svg",
+      "resource": true
+    },
+    {
+      "id": "copper_tangle",
+      "name_key": "NODE_COPPER_TANGLE",
+      "tier": 1,
+      "tool": "suction",
+      "type": "pile",
+      "item": "copper",
+      "max": 10,
+      "regen_s": 30,
+      "sprite": "res://assets/sprites/nodes/copper_tangle.svg",
+      "resource": true
+    },
+    {
+      "id": "plastic_crumbs",
+      "name_key": "NODE_PLASTIC_CRUMBS",
+      "tier": 1,
+      "tool": "suction",
+      "type": "pile",
+      "item": "plastic",
+      "max": 10,
+      "regen_s": 30,
+      "sprite": "res://assets/sprites/nodes/plastic_crumbs.svg",
+      "resource": true
+    },
+    {
+      "id": "toaster",
+      "name_key": "NODE_TOASTER",
+      "tier": 1,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "scrap": 8,
+        "copper": 2
+      },
+      "respawn_s": 180,
+      "sprite": "res://assets/sprites/nodes/toaster.svg"
+    },
+    {
+      "id": "fridge",
+      "name_key": "NODE_FRIDGE",
+      "tier": 2,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "scrap": 15,
+        "copper": 6,
+        "plastic": 6
+      },
+      "respawn_s": 300,
+      "sprite": "res://assets/sprites/nodes/fridge.svg"
+    },
+    {
+      "id": "cart",
+      "name_key": "NODE_CART",
+      "tier": 2,
+      "tool": "suction",
+      "type": "loot",
+      "yield": {
+        "scrap": 12,
+        "copper": 8
+      },
+      "respawn_s": 300,
+      "sprite": "res://assets/sprites/nodes/cart.svg"
+    },
+    {
+      "id": "ship_part",
+      "name_key": "NODE_SHIP_PART",
+      "tier": 3,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "scrap": 10,
+        "copper": 6,
+        "chrome": 4
+      },
+      "respawn_s": 480,
+      "sprite": "res://assets/sprites/nodes/ship_part.svg"
+    },
+    {
+      "id": "satellite",
+      "name_key": "NODE_SATELLITE",
+      "tier": 3,
+      "tool": "suction",
+      "type": "loot",
+      "yield": {
+        "copper": 6,
+        "plastic": 6,
+        "chrome": 3
+      },
+      "respawn_s": 480,
+      "sprite": "res://assets/sprites/nodes/satellite.svg",
+      "resource": true
+    },
+    {
+      "id": "robot_arm",
+      "name_key": "NODE_ROBOT_ARM",
+      "tier": 4,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "titanium": 5,
+        "chrome": 2
+      },
+      "respawn_s": 720,
+      "sprite": "res://assets/sprites/nodes/robot_arm.svg"
+    },
+    {
+      "id": "monolith",
+      "name_key": "NODE_MONOLITH",
+      "tier": 5,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "stardust": 3
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/monolith.svg"
+    }
   ]
 }

@@ -11,6 +11,9 @@ const ITEM_SLOT := preload("res://src/ui/widgets/item_slot.tscn")
 @onready var _research_label: Label = $Research/Label
 @onready var _research_bar: ProgressBar = $Research/Bar
 @onready var _research_time: Label = $Research/Time
+@onready var _task_row: Label = $TaskRow
+@onready var _tutorial: PanelContainer = $Tutorial
+@onready var _tutorial_label: Label = $Tutorial/Label
 
 var _inventory: Inventory
 var _world: SimWorld
@@ -65,6 +68,24 @@ func set_bolts(value: int) -> void:
 
 func set_hint(text: String) -> void:
 	_hint.text = text
+
+
+func set_tutorial(text: String) -> void:
+	_tutorial.visible = text != ""
+	_tutorial_label.text = text
+
+
+## Aufgaben-Kette: Icons, aktueller Schritt in Klammern, Status.
+func refresh_tasks(tasks: TaskList, status: String = "") -> void:
+	if tasks.steps.is_empty():
+		_task_row.text = ""
+		return
+	var parts: Array[String] = []
+	for i in tasks.steps.size():
+		var icon := TaskList.type_icon(int(tasks.steps[i]["type"]))
+		parts.append("[%s]" % icon if (tasks.active and i == tasks.index) else icon)
+	var state := tr("TASK_HUD_ON") if tasks.active else tr("TASK_HUD_OFF")
+	_task_row.text = "%s  %s %s" % [tr("TASK_HUD"), " ".join(parts), state + (("  ·  " + status) if status != "" else "")]
 
 
 func set_selected_slot(index: int) -> void:

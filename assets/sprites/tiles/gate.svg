@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Absperrung (Tor der Tutorial-Zone), verschwindet nach dem Tutorial -->
+  <rect x="26" y="4" width="12" height="56" rx="4" fill="#F2C94C" stroke="#2A2A33" stroke-width="4"/>
+  <path d="M26 12 L38 20 M26 28 L38 36 M26 44 L38 52" stroke="#2A2A33" stroke-width="4"/>
+  <circle cx="32" cy="8" r="5" fill="#E8453C" stroke="#2A2A33" stroke-width="3"/>
+</svg>
