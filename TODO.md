@@ -8,7 +8,8 @@
 - [x] MS23 Erfolgserlebnisse (v1.12.0): Meilensteine, 7 neue kurze Aufgaben, Abliefer-Effekt, erste Sounds, Kapitel-Tab scrollbar
 - [x] MS24 Menüs entschlacken (v1.13.0): 3 Tabs am Anfang, Tab-Icons, Karten mit Icons und Kostenfarbe, Bot abbauen mit LT
 - [x] MS25 Skill und Schiff getrennt (v1.14.0): XP für Rusty, Bolts fürs Schiff, Migration v9
-- [ ] Runde „Spielgefühl“ (Go 2026-10-26): MS26 Jubel nach Kauf → MS27 Saugen → MS28 Rusty sichtbar → MS29 Wiese → MS30 Müll endlich und Ereignisse → MS31 Menüs schöner → MS32 Sound und Musik (Stücke vorschlagen, Auftraggeber wählt)
+- [x] MS26 Jubel nach Kauf (v1.15.0)
+- [ ] Runde „Spielgefühl“ (Go 2026-10-26): MS27 Saugen → MS28 Rusty sichtbar → MS29 Wiese → MS30 Müll endlich und Ereignisse → MS31 Menüs schöner → MS32 Sound und Musik (Stücke vorschlagen, Auftraggeber wählt)
 - [ ] MS26: Putzwelle des Schiffs (Radius 16 auf Stufe 5) gegen Tor-Schwelle abwägen
 - [ ] MS26: Prüfen, ob 50 % geputzte Fläche fürs Tor zu lang dauert
 - [ ] Ally-Rückmeldung: Minuten bis erstes Upgrade und Schiffsstufe 2 (für MS26)

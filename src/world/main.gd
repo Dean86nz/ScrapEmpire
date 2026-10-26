@@ -134,9 +134,13 @@ func _ready() -> void:
 		Quips.say("upgrade_bought", true))
 	_world.ship_delivered.connect(_on_ship_delivered)
 	_world.milestone_reached.connect(_on_milestone_reached)
-	_world.ship_upgrade_bought.connect(func(_id: String, _l: int) -> void: Sfx.play("buy", 0.05))
-	_world.helper_added.connect(func(_h: Helper) -> void: Sfx.play("buy", 0.05))
-	_world.drone_added.connect(func(_d: Drone) -> void: Sfx.play("buy", 0.05))
+	# Jeder Kauf: Menü zu, Rusty jubelt ca. 1 s, dann Steuerung zurück
+	_world.ship_upgrade_bought.connect(func(_id: String, _l: int) -> void: _celebrate_purchase())
+	_world.skill_bought.connect(func(_id: String, _l: int) -> void: _celebrate_purchase())
+	_world.helper_upgrade_bought.connect(func(_id: String, _l: int) -> void: _celebrate_purchase())
+	_world.drone_upgrade_bought.connect(func(_id: String, _l: int) -> void: _celebrate_purchase())
+	_world.helper_added.connect(func(_h: Helper) -> void: _celebrate_purchase())
+	_world.drone_added.connect(func(_d: Drone) -> void: _celebrate_purchase())
 	_world.zone_unlocked.connect(_on_zone_unlocked)
 	_world.collectible_found.connect(_on_collectible_found)
 	_setup_nature()
@@ -434,11 +438,30 @@ func _on_quest_completed(_id: String, def: Dictionary) -> void:
 	_chapter_timer = 2.5
 
 
+## Kauf-Jubel: Menü schließen, Rusty hüpft, dreht sich, Sterne, Jingle. Eingaben ruhen so lange
+## (höchstens CHEER_SECONDS), danach geht es sofort weiter. Mehrere Käufe im selben Frame jubeln einmal.
+func _celebrate_purchase(jingle: bool = true) -> void:
+	if _launching or _player.is_cheering():
+		return
+	if _progress_menu.visible:
+		_progress_menu.close()
+	InputRouter.context = InputRouter.Context.MENU
+	_player.cheer()
+	if jingle:
+		Sfx.play("cheer", 0.03)
+	get_tree().create_timer(Player.CHEER_SECONDS).timeout.connect(func() -> void:
+		if not _launching and InputRouter.context == InputRouter.Context.MENU and not _any_menu_open():
+			InputRouter.context = InputRouter.Context.GAME)
+
+
+func _any_menu_open() -> bool:
+	return _progress_menu.visible or _build_menu.visible or _pause_menu.visible or _task_editor.visible or _end_screen.visible
+
+
 ## Reparatur: Menü zu, Kamera zum Schiff, Konfetti, Putzring, Jubel-Schild. Auf der letzten Stufe
 ## folgt der Abflug.
 func _on_ship_upgraded(s: Ship) -> void:
-	if _progress_menu.visible:
-		_progress_menu.close()
+	_celebrate_purchase(false)
 	_player.celebrate()
 	Sfx.play("repair")
 	Quips.say("ship_upgraded", true)
@@ -452,7 +475,7 @@ func _on_ship_upgraded(s: Ship) -> void:
 	var view := _world_view.ship_view()
 	if view != null and view.ship_fx != null:
 		view.ship_fx.celebrate(ShipSystem.clean_target(_world, s))
-		_focus_camera(view, 3.0)
+		_focus_camera(view, 1.2)
 	if s.stage >= ShipSystem.max_stage(_world):
 		save_game()
 		get_tree().create_timer(2.5).timeout.connect(_launch_sequence)
@@ -620,7 +643,7 @@ func _on_build_selected(def_id: String) -> void:
 ## Hinweiszeile je nach Kontext und Eingabegerät (Gamepad-Tasten oder Tastatur/Maus).
 func _current_hint() -> String:
 	var kb := "" if InputRouter.is_gamepad else "_KB"
-	if _launching:
+	if _launching or _player.is_cheering():
 		return ""
 	match InputRouter.context:
 		InputRouter.Context.BUILD:

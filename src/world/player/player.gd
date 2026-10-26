@@ -27,6 +27,11 @@ var _boost_cooldown := 0.0
 
 
 var _confetti: CPUParticles2D
+var _stars: CPUParticles2D
+var _cheer_t := -1.0   # läuft der Jubel: vergangene Sekunden, sonst -1
+
+## Dauer des Jubels nach einem Kauf (hüpfen, einmal drehen, Sterne).
+const CHEER_SECONDS := 0.9
 
 
 func _ready() -> void:
@@ -60,6 +65,40 @@ func celebrate() -> void:
 		add_child(_confetti)
 	_confetti.restart()
 	_confetti.emitting = true
+
+
+## Jubel nach einem Kauf: zweimal hüpfen, einmal um sich selbst drehen, Sterne sprühen.
+func cheer() -> void:
+	if _stars == null:
+		_stars = CPUParticles2D.new()
+		_stars.texture = load("res://assets/sprites/ui/star.svg")
+		_stars.one_shot = true
+		_stars.explosiveness = 0.85
+		_stars.amount = 18
+		_stars.lifetime = 0.8
+		_stars.spread = 180.0
+		_stars.direction = Vector2(0, -1)
+		_stars.initial_velocity_min = 160.0
+		_stars.initial_velocity_max = 300.0
+		_stars.gravity = Vector2(0, 380)
+		_stars.scale_amount_min = 0.6
+		_stars.scale_amount_max = 1.2
+		_stars.angular_velocity_min = -300.0
+		_stars.angular_velocity_max = 300.0
+		var fade := Gradient.new()
+		fade.set_color(0, Color.WHITE)
+		fade.set_color(1, Color(1, 1, 1, 0))
+		fade.add_point(0.7, Color.WHITE)
+		_stars.color_ramp = fade
+		_stars.z_index = 40
+		add_child(_stars)
+	_stars.restart()
+	_stars.emitting = true
+	_cheer_t = 0.0
+
+
+func is_cheering() -> bool:
+	return _cheer_t >= 0.0
 
 
 func _physics_process(delta: float) -> void:
@@ -117,6 +156,17 @@ func _physics_process(delta: float) -> void:
 	# Körper dreht sich weich in Laufrichtung; das Sprite blickt nach +X.
 	_sprite.rotation = rotate_toward(_sprite.rotation, facing.angle(), TURN_SPEED * float(mods["turn_mult"]) * delta)
 	_aim_marker.rotation = aim_dir.angle()
+	if _cheer_t >= 0.0:
+		_cheer_t += delta
+		var k := minf(_cheer_t / CHEER_SECONDS, 1.0)
+		_sprite.position.y = -absf(sin(k * TAU)) * 26.0
+		_sprite.rotation = facing.angle() + TAU * ease(k, -1.8)
+		_sprite.scale = Vector2.ONE * (1.0 + 0.18 * sin(k * PI))
+		if k >= 1.0:
+			_cheer_t = -1.0
+			_sprite.position = Vector2.ZERO
+			_sprite.scale = Vector2.ONE
+			_sprite.rotation = facing.angle()
 
 	var state: PlayerState = SimClock.world.player
 	state.pos = Vector2i(global_position.round())

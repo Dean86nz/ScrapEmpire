@@ -34,6 +34,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **23** | Kurswechsel Block 5: Erfolgserlebnisse (Meilensteine, kurze Aufgaben, Abliefer-Effekt, erste Sounds) | v1.12.0 |
 | **24** | Kurswechsel Block 6: Menüs entschlacken (3 Tabs am Anfang, Icons, Kostenfarbe, Bot abbauen mit LT) | v1.13.0 |
 | **25** | Spielgefühl 1: Skill (XP, Rusty) und Schiff (Bolts) getrennt | v1.14.0 |
+| **26** | Spielgefühl 2: Jubel nach jedem Kauf (Menü zu, Rusty hüpft und dreht sich, Sterne, Jingle, 0,9 s) | v1.15.0 |
 
 ## Runde „Spielgefühl“ nach dem dritten Praxistest (Go 2026-10-26)
 
