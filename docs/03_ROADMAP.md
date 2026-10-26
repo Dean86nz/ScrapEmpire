@@ -30,6 +30,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **19** | Kurswechsel Block 1: Weiterspielen absichern (Lade-Protokoll, Ladeschutz, F-Tasten nur Debug) | v1.8.0 |
 | **20** | Kurswechsel Block 2: Kern-Ablauf sammeln, abliefern, aufrüsten; Fabrik entfernt | v1.9.0 |
 | **21** | Kurswechsel Block 3: Sichtbar sauber (Schmutz je Kachel, Gras wächst nach, Sauberkeit aus Fläche) | v1.10.0 |
+| **22** | Kurswechsel Block 4: Schiff als Herz (fünf Schiffsbilder, Putzwelle, Jubel, Stufenleiste, Abflug-Szene) | v1.11.0 |
 
 ## Kurswechsel nach dem zweiten Ally-Test (Go 2026-10-26)
 

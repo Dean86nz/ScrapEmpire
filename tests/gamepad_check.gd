@@ -129,6 +129,10 @@ func _build_steps() -> void:
 		func() -> bool: return progress.visible and progress._tab == progress.Tab.SHIP)
 	_step("A auf „Schiff reparieren“ (Fokus): Stufe 2", func() -> void: _tap(JOY_BUTTON_A),
 		func() -> bool: return _world.ship().stage == 2 and _world.unlocked_features.has("helpers"), 8, 200)
+	_step("Nach der Reparatur schließt das Menü (Feier am Schiff), Rusty fährt wieder", func() -> void: pass,
+		func() -> bool: return not progress.visible and router.context == router.Context.GAME, 4)
+	_step("X öffnet das Schiff-Menü wieder", func() -> void: _tap(JOY_BUTTON_X),
+		func() -> bool: return progress.visible and progress._tab == progress.Tab.SHIP)
 	_step("D-Pad rechts zum Laderaum, A kauft", func() -> void:
 			_tap(JOY_BUTTON_DPAD_RIGHT)
 			_tap(JOY_BUTTON_A),

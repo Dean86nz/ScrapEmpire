@@ -496,3 +496,16 @@ QUIP_SHIP_EMPTY,Meine Taschen sind leer. Erst sammeln.,My pockets are empty. Col
 QUIP_SHIP_PLANET,Erst muss der Planet gesünder werden. Dann starten wir.,The planet needs to heal first. Then we launch.
 QUIP_NO_SHIP,Ohne Schiff geht das nicht.,Not without the ship.
 TITLE_OLD_SAVE,Neue Version mit neuem Spielablauf: Dein alter Spielstand passt nicht mehr und wurde gesichert. Viel Spaß beim neuen Start!,New version with new gameplay: your old save no longer fits and was backed up. Enjoy the fresh start!
+GIFT_HELPERS,Sammel-Bot,Collector bot
+GIFT_DRONES,Drohne,Drone
+GIFT_DECOR,Deko,Decor
+GIFT_HELPER_TOOLS,Bot-Werkzeug,Bot tools
+GIFT_MUSEUM,Museum,Museum
+GIFT_LAUNCH,Abflug!,Launch!
+STAGE_BANNER_TITLE,Schiff repariert!,Ship repaired!
+STAGE_BANNER_SUB,Stufe %d · %s,Stage %d · %s
+STAGE_BANNER_NEW,Neu: %s,New: %s
+STAGE_TRACK_NEXT,Nächste Reparatur: %d / %d Bolts,Next repair: %d / %d bolts
+STAGE_TRACK_PLANET,Planet erst zu %d %% geheilt (braucht %d %%),Planet only %d %% healed (needs %d %%)
+STAGE_TRACK_DONE,Das Schiff ist startklar!,The ship is ready for launch!
+LAUNCH_Q,"Festhalten! Zündung in drei, zwei … ach, einfach los!","Hold on! Ignition in three, two … oh, just go!"

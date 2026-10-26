@@ -1,5 +1,5 @@
 {
-  "_comment": "Rustys Schiff: Abgabe zahlt sofort Bolts (Wert × Ertrag). Upgrades kosten Bolts. Stufen reparieren das Schiff und schalten Blaupausen frei; Stufe 5 = Abflug (Spielende).",
+  "_comment": "Rustys Schiff: Abgabe zahlt sofort Bolts (Wert × Ertrag). Upgrades kosten Bolts. Stufen reparieren das Schiff und schalten Blaupausen frei; Stufe 5 = Abflug (Spielende). clean_radius: so weit putzt das Schiff den Boden um sich (wächst als Welle nach jeder Reparatur).",
   "upgrades": [
     {
       "id": "cargo",
@@ -135,7 +135,8 @@
       "stage": 1,
       "name_key": "SHIP_STAGE_1",
       "sprite": "res://assets/sprites/buildings/ship_1.svg",
-      "unlocks": []
+      "unlocks": [],
+      "clean_radius": 4
     },
     {
       "stage": 2,
@@ -144,37 +145,42 @@
       "cost_bolts": 500,
       "unlocks": [
         "helpers"
-      ]
+      ],
+      "clean_radius": 7
     },
     {
       "stage": 3,
       "name_key": "SHIP_STAGE_3",
-      "sprite": "res://assets/sprites/buildings/ship_2.svg",
+      "sprite": "res://assets/sprites/buildings/ship_3.svg",
       "cost_bolts": 3000,
       "unlocks": [
         "drones",
         "decor"
-      ]
+      ],
+      "clean_radius": 10
     },
     {
       "stage": 4,
       "name_key": "SHIP_STAGE_4",
-      "sprite": "res://assets/sprites/buildings/ship_3.svg",
+      "sprite": "res://assets/sprites/buildings/ship_4.svg",
       "cost_bolts": 12000,
       "unlocks": [
         "helper_tools",
         "museum"
-      ]
+      ],
+      "clean_radius": 13
     },
     {
       "stage": 5,
       "name_key": "SHIP_STAGE_5",
-      "sprite": "res://assets/sprites/buildings/ship_3.svg",
+      "sprite": "res://assets/sprites/buildings/ship_5.svg",
       "cost_bolts": 40000,
       "requires_planet": 0.8,
       "unlocks": [
         "launch"
-      ]
+      ],
+      "clean_radius": 16
     }
-  ]
+  ],
+  "clean_wave_ticks": 3
 }

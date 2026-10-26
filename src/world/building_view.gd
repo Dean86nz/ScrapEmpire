@@ -18,6 +18,7 @@ var _bar_fill: ColorRect
 var _status: Label
 var _buffer_root := Node2D.new()
 var _half_h := 64.0
+var ship_fx: ShipFx   # nur beim Schiff
 
 
 
@@ -43,6 +44,10 @@ func setup(b: Building) -> void:
 	_label.size = Vector2(160, 30)
 	add_child(_label)
 
+	if b is Ship:
+		ship_fx = ShipFx.new()
+		add_child(ship_fx)
+		ship_fx.setup(_sprite, (b as Ship).stage)
 	refresh(b)
 
 
@@ -62,6 +67,8 @@ func refresh(b: Building) -> void:
 		var sh := b as Ship
 		if sh.sprite_path != "" and (_sprite.texture == null or _sprite.texture.resource_path != sh.sprite_path):
 			_sprite.texture = load(sh.sprite_path)
+		if ship_fx != null and ship_fx.stage != sh.stage:
+			ship_fx.set_stage(sh.stage)
 		_label.visible = false
 		return
 	if s.has("buffer"):

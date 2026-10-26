@@ -140,3 +140,40 @@ func test_old_save_without_dirt_gets_generated() -> void:
 	assert_false(w.dirt.is_active())
 	MapLoader.ensure_dirt(w, _map())
 	assert_true(w.dirt.is_active())
+
+
+func test_ship_repair_sends_cleaning_wave() -> void:
+	var w := _world()
+	var s := w.ship()
+	var c := s.tile + s.size() / 2
+	var near := c + Vector2i(6, 0)
+	var far := c + Vector2i(9, 0)
+	w.dirt.soil(near, 200)
+	w.dirt.soil(far, 200)
+	TestWorlds.run(w, 30)
+	assert_eq(s.clean_radius, 4, "Stufe 1: Welle bis Radius 4")
+	assert_eq(w.dirt.value(near), 200, "außerhalb noch dreckig")
+	w.bolts = 1000
+	w.queue_command({"type": "upgrade_ship"})
+	TestWorlds.run(w, 30)
+	assert_eq(s.stage, 2)
+	assert_eq(s.clean_radius, 7, "Stufe 2: Welle bis Radius 7")
+	assert_eq(w.dirt.value(near), 0, "Welle hat geputzt")
+	assert_eq(w.dirt.value(far), 200, "jenseits der Welle unberührt")
+	assert_eq(w.player.inventory.count_of("scrap"), 0, "Schiffswelle gibt keinen Kleinschrott")
+
+
+func test_ship_wave_radius_is_saved() -> void:
+	var w := _world()
+	w.bolts = 1000
+	w.queue_command({"type": "upgrade_ship"})
+	TestWorlds.run(w, 10)
+	var r := w.ship().clean_radius
+	assert_true(r > 0 and r < 7, "Welle mitten im Wachsen: %d" % r)
+	var data := SaveCodec.encode(w, "main", Vector2(32, 32), 0)
+	var w2 := TestWorlds.make()
+	w2.dirt_cfg = DirtMap.load_config()
+	MapLoader.apply(w2, _map(), false)
+	SaveCodec.decode(JSON.parse_string(JSON.stringify(data)), w2)
+	assert_eq(w2.ship().clean_radius, r)
+	assert_eq(w2.ship().stage, 2)

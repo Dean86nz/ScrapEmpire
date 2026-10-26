@@ -42,6 +42,7 @@ var _tab: Tab = Tab.SHIP
 var _ship_cards: Dictionary = {}   # "upg:<id>", "repair", "bot", "drone" → Button
 var _skill_cards: Dictionary = {}  # id → Button
 var _refresh_timer := 0.0
+var _stage_track := StageTrack.new()
 
 
 func _ready() -> void:
@@ -50,6 +51,15 @@ func _ready() -> void:
 
 func bind(world: SimWorld) -> void:
 	_world = world
+	# Schiff-Tab: Stufenleiste über dem Kartenraster (ScrollContainer braucht genau ein Kind)
+	var col := VBoxContainer.new()
+	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	col.add_theme_constant_override("separation", 10)
+	_ship_tab.remove_child(_ship_grid)
+	_ship_tab.add_child(col)
+	col.add_child(_stage_track)
+	col.add_child(_ship_grid)
+	_stage_track.bind(world)
 	_build_ship_cards()
 	_build_skill_cards()
 	_map_view.zone_selected.connect(_on_zone_selected)
@@ -282,6 +292,7 @@ func _missing_text(cost: int) -> String:
 func _refresh_ship() -> void:
 	var w := _world
 	var s := w.ship()
+	_stage_track.refresh()
 	# Reparatur
 	var repair: Button = _ship_cards["repair"]
 	if s == null:

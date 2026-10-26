@@ -2,6 +2,29 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.11.0] – 2026-10-26 – MS22 Schiff als Herz (Kurswechsel Block 4)
+
+Jede Reparatur ist jetzt ein Ereignis, und am Ende hebt das Schiff wirklich ab.
+
+### Neu
+- **Fünf Schiffsbilder:** Wrack (schief, verbeult, raucht), notdürftig geflickt (Flicken, Klebeband), Funk geht wieder (Antenne, Blinklichter), glänzend (Solarflügel, Schüssel), startklar (Landebeine, glühende Düsen, Fähnchen)
+- **Das Schiff heilt seine Umgebung:** Nach jeder Reparatur läuft eine Putzwelle vom Schiff aus (Radius 4, 7, 10, 13, 16 Kacheln). Dort wächst danach Gras. Zählt zur Sauberkeit der Zone
+- **Jubel bei jeder Reparatur:** Das Menü schließt sich, die Kamera schaut zum Schiff, Konfetti, das Schiff hüpft und blitzt, ein Ring läuft über den Boden, und ein großes Schild zeigt „Schiff repariert! Stufe 3 · Funkt wieder · Neu: Drohne · Deko“
+- **Stufenleiste im Schiff-Menü:** Oben das Schiff in der aktuellen Stufe und alle fünf Stufen mit Namen und Geschenken. Ein Balken zeigt die Bolts bis zur nächsten Reparatur (oder wie weit der Planet für den Abflug noch fehlt)
+- **Abflug als Endszene:** Nach der letzten Reparatur rüttelt das Schiff, die Düsen zünden, Staub wirbelt, das Schiff steigt aus dem Bild, die Kamera folgt, Weißblende, dann der Endbildschirm. Mit „Weiterspielen“ steht das Schiff wieder da und es geht weiter
+
+### Technik
+- `ShipSystem._tick_clean_wave` (Sim, Radius in `data/ship.json` je Stufe), `Ship.clean_radius` im Spielstand (Version bleibt 8)
+- `ShipFx` (Rauch, Lichter, Düsen, Feier, Abflug), `StageBanner` im HUD, `StageTrack` im Schiff-Tab
+- 167 Unit-Tests, 31 Gamepad-Prüfungen (jetzt: Menü schließt nach der Reparatur, X öffnet es wieder) und 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Neues Spiel: Das Wrack steht schief und raucht
+2. 500 Bolts sammeln, X am Schiff, oberste Karte „Schiff reparieren“: Menü geht zu, Konfetti, großes Schild, Boden rund ums Schiff wird sauber, Gras wächst
+3. X erneut: Oben im Menü die Stufenleiste mit Haken bei 1, Stufe 2 orange, Balken zur nächsten Reparatur
+4. Gefühl: Ist die Feier zu lang, zu kurz, zu laut für die Augen?
+5. Wer es bis Stufe 5 schafft: Abflug anschauen, dann „Weiterspielen“. Das Schiff steht wieder und Rusty kann weiterfahren
+
 ## [1.10.0] – 2026-10-26 – MS21 Sichtbar sauber (Kurswechsel Block 3)
 
 Der Planet sieht jetzt so dreckig aus, wie er ist, und man sieht jede geputzte Stelle.
