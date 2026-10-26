@@ -85,14 +85,14 @@ func progress(w: SimWorld) -> Array:
 			return [mini(int(counters.get("sold_value", 0)), amount), amount]
 		"wrecks":
 			return [mini(int(counters.get("wrecks", 0)), amount), amount]
-		"research":
-			return [1 if w.tech.is_unlocked(str(q.get("tech", ""))) else 0, 1]
+		"bolts_earned":
+			return [mini(int(counters.get("sold_value", 0)), amount), amount]
+		"upgrades_bought":
+			return [mini(ShipSystem.upgrades_total(w), amount), amount]
+		"upgrade_level":
+			return [mini(ShipSystem.upgrade_level(w, str(q.get("upgrade", ""))), amount), amount]
 		"build":
 			return [mini(w.building_count(str(q.get("def", ""))), amount), amount]
-		"have":
-			return [mini(ShipSystem.count_available(w, str(q.get("item", ""))), amount), amount]
-		"belt_to_ship":
-			return [1 if ConveyorSystem.belt_reaches_ship(w, str(q.get("def", ""))) else 0, 1]
 		"zone_gate":
 			var cur := w.zones.current_chapter_zone()
 			var pct := int(round(w.zones.cleanliness(cur, w.nodes) * 100.0)) if cur != "" else 100

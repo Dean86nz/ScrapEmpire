@@ -28,6 +28,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **17** | Überarbeitung Block 7: `world.gd` in acht Teilsysteme aufgeteilt | v1.6.0 |
 | **18a** | Überarbeitung Block 2: Raumschiff-Basis mit Stufen, Planeten-Heilungsbalken, geführte Aufgabenkette, Außenposten | v1.7.0 |
 | **19** | Kurswechsel Block 1: Weiterspielen absichern (Lade-Protokoll, Ladeschutz, F-Tasten nur Debug) | v1.8.0 |
+| **20** | Kurswechsel Block 2: Kern-Ablauf sammeln, abliefern, aufrüsten; Fabrik entfernt | v1.9.0 |
 
 ## Kurswechsel nach dem zweiten Ally-Test (Go 2026-10-26)
 

@@ -50,17 +50,17 @@ theme_override_colors/font_color = Color(0.3, 0.3, 0.36, 1)
 theme_override_font_sizes/font_size = 26
 text = "◀ LB"
 
+[node name="TabTech" type="Label" parent="Center/Panel/VBox/Tabs"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
+theme_override_font_sizes/font_size = 34
+text = "Schiff"
+
 [node name="TabGoals" type="Label" parent="Center/Panel/VBox/Tabs"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
 theme_override_font_sizes/font_size = 34
 text = "Kapitel"
-
-[node name="TabTech" type="Label" parent="Center/Panel/VBox/Tabs"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.165, 0.165, 0.2, 1)
-theme_override_font_sizes/font_size = 34
-text = "Forschung"
 
 [node name="TabSkills" type="Label" parent="Center/Panel/VBox/Tabs"]
 layout_mode = 2
@@ -112,7 +112,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/h_separation = 14
 theme_override_constants/v_separation = 12
-columns = 4
+columns = 3
 
 [node name="SkillsTab" type="VBoxContainer" parent="Center/Panel/VBox/Content"]
 visible = false

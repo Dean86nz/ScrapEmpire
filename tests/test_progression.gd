@@ -62,11 +62,8 @@ func test_sources() -> void:
 	assert_eq(p.total_xp, 212)
 
 
-func test_world_grants_xp_for_collect_build_sell() -> void:
-	var w := SimWorld.new()
-	w.set_size(40, 30)
-	w.defs = BuildingDef.load_all("res://data/buildings.json")
-	w.item_values = Economy.load_item_values("res://data/items.json")
+func test_world_grants_xp_for_collect_build_deliver() -> void:
+	var w := TestWorlds.make()
 	w.player.pos = Vector2i(320, 320)
 	w.player.aim = Vector2.RIGHT
 	w.add_pile("scrap_pile", Vector2i(6, 5), 10)
@@ -74,13 +71,13 @@ func test_world_grants_xp_for_collect_build_sell() -> void:
 	w.tick()
 	w.player.suck_held = false
 	assert_eq(w.progression.total_xp, 1)
-	w.player.inventory.add("scrap", 40)
-	w.player.inventory.add("iron_bar", 5)
-	w.queue_command({"type": "place", "def_id": "sell_terminal", "tile": Vector2i(7, 5)})
+	w.unlocked_features["decor"] = true
+	w.player.inventory.add("wood", 10)
+	w.queue_command({"type": "place", "def_id": "bench", "tile": Vector2i(7, 7)})
 	w.tick()
-	assert_eq(w.progression.total_xp, 6)
-	w.player.inventory.add("scrap", 10)  # nach dem Bezahlen wieder Schrott in Slot 0
-	w.queue_command({"type": "deposit", "tile": Vector2i(7, 5), "slot": 0})
-	for i in 60:
-		w.tick()
-	assert_true(w.progression.total_xp >= 7, "Verkauf bringt XP")
+	assert_eq(w.progression.total_xp, 6, "Bauen gibt 5 XP")
+	TestWorlds.with_ship(w, Vector2i(10, 2))
+	w.player.inventory.add("chrome", 10)
+	w.queue_command({"type": "deliver_all"})
+	w.tick()
+	assert_true(w.progression.total_xp >= 7, "Abliefern bringt XP")

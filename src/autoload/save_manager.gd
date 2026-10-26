@@ -133,9 +133,25 @@ func read() -> Dictionary:
 			continue
 		var data := _read_file(save_dir + file)
 		if not data.is_empty():
+			if int(data.get("version", 0)) < SaveCodec.MIN_VERSION:
+				log_step("Spielstand %s ist Version %d, zu alt (mindestens %d)" % [file, int(data.get("version", 0)), SaveCodec.MIN_VERSION])
+				continue
 			last_read_file = file
 			return migrate(data)
 	return {}
+
+
+## true, wenn es Spielstände gibt, aber keiner zur aktuellen Version passt (Kurswechsel MS20).
+func has_only_old_saves() -> bool:
+	var any := false
+	for s in SLOTS:
+		var data := _read_file(save_dir + s)
+		if data.is_empty():
+			continue
+		any = true
+		if int(data.get("version", 0)) >= SaveCodec.MIN_VERSION:
+			return false
+	return any
 
 
 func delete_all() -> void:

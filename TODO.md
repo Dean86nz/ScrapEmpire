@@ -2,6 +2,9 @@
 
 ## Jetzt
 
+- [x] MS20 Kern-Ablauf sammeln/abliefern/aufrüsten (v1.9.0): Schiff-Menü, 5 Upgrades, Reparatur mit Blaupausen, Bots und Drohnen am Schiff, Fabrik entfernt, Doppelkauf behoben
+- [ ] MS21 Sichtbar sauber: Schmutz je Kachel, Gras wächst nach, Sauberkeit aus gereinigter Fläche
+- [ ] Ally-Rückmeldung: Minuten bis erstes Upgrade und Schiffsstufe 2 (für MS26)
 - [x] MS19 Weiterspielen absichern (v1.8.0): Lade-Protokoll, Ladeschutz mit Rettung, F-Tasten nur Debug, Weiterspielen-Test über drei Programmstarts
 - [ ] Ally-Spielstand und godot.log nach einem Absturz einsammeln, Ursache beheben
 - [ ] Kurswechsel (Go 2026-10-26): MS20 Kern-Ablauf Sammeln/Abliefern/Aufrüsten → MS21 Sichtbar sauber → MS22 Schiff als Herz → MS23 Erfolgserlebnisse → MS24 Menüs → MS25 Animation und Sound (Musik abstimmen) → MS26 Balancing

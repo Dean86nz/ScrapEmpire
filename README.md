@@ -13,7 +13,7 @@ Stand: **MVP (Version 1.0.0)**, Meilensteine 0 bis 11 fertig. Siehe `CHANGELOG.m
 
 ## ROG Ally X
 
-Controller in Armoury Crate auf **Gamepad-Modus** stellen (nicht Desktop-Modus). Woran man es erkennt: Die Hinweisleiste unten zeigt „Stick · RT · Y · Select“. Zeigt sie „WASD · LMB · Tab · T“, sendet der Ally Maus und Tastatur, dann klickt A statt zu bestätigen. RT und LT reagieren erst ab halbem Weg (Schwelle 0,5), damit ein leicht gedrückter Abzug nicht dauerhaft saugt.
+Controller in Armoury Crate auf **Gamepad-Modus** stellen (nicht Desktop-Modus). Woran man es erkennt: Die Hinweisleiste unten zeigt „Stick · RT · LT · Select“. Zeigt sie „WASD · LMB · Tab · T“, sendet der Ally Maus und Tastatur, dann klickt A statt zu bestätigen. RT und LT reagieren erst ab halbem Weg (Schwelle 0,5), damit ein leicht gedrückter Abzug nicht dauerhaft saugt.
 
 ## Steuerung (Gamepad / Tastatur)
 
@@ -22,25 +22,25 @@ Controller in Armoury Crate auf **Gamepad-Modus** stellen (nicht Desktop-Modus).
 | Bewegen | linker Stick | WASD |
 | Zielen | rechter Stick | Maus |
 | Saugen / Hämmern | RT / LT | linke / rechte Maustaste |
-| Einlegen, Entnehmen, Bestätigen | A | E |
+| Am Schiff: alles abliefern / Bestätigen | A | E |
 | Zurück / Abbrechen | B | Esc |
-| Baumenü (kurz) / Aufgaben-Editor (lang) | Y | Tab / L |
-| Fortschritt (kurz) / Minimap ein-aus (lang) | Select | T / M |
+| Baumenü (Deko, ab Schiffsstufe 3) | Y | Tab |
+| Schiff und Ziele (kurz) / Minimap ein-aus (lang) | Select | T / M |
 | Hotbar-Slot | LB / RB | Mausrad |
 | Turbo-Boost (Skill) | L3 | Shift |
 | Baumodus: platzieren, drehen, abbrechen | A, X, B | LMB, Q, RMB |
-| Schiff ausbauen (am Schiff) | X | Q |
+| Schiff-Menü: Upgrades, Reparatur, Bots, Drohnen (am Schiff) | X | Q |
 | Pause-Menü | Start | Esc |
 
-Entwickler-Tasten (nur Debug-Builds, in der Release-EXE ohne Wirkung): F3 Debug-Overlay, F4 Cheat (Bolts, Material, XP), F5 speichern, F6 Perf-Szenario, F7 Beispielkette. Screenshot-Werkzeug (`tests/shot.sh`) kennt zusätzlich die Szenarien `auto`, `helpers`, `drones`, `cozy`, `endgame`.
+Entwickler-Tasten (nur Debug-Builds, in der Release-EXE ohne Wirkung): F3 Debug-Overlay, F4 Cheat (Bolts, Material, XP), F5 speichern, F6 zwei Bots, F7 zwei Drohnen. Screenshot-Werkzeug (`tests/shot.sh`) kennt zusätzlich die Szenarien `auto`, `helpers`, `drones`, `cozy`, `endgame`.
 
 ## Spielablauf in Kürze
 
-1. **Startlager (Kapitel 1):** Rusty ist mit seinem Schiff abgestürzt. Das Wrack ist die Basis: Schrott hineinlegen (A), das Schiff verkauft alles über der Reserve von allein. Der Schmelzofen macht aus 3 Schrott einen Eisenbarren; Barren sind Baustoff für Förderband, Saugstation und den Schiffsausbau (X am Schiff).
-2. **Aufgaben:** Oben steht immer genau eine Aufgabe mit Kästchen. Die Kette führt durch das ganze Spiel; Tab „Kapitel“ (Select) zeigt erledigte und kommende Aufgaben.
-3. **Zone säubern:** Müll-Objekte (Toaster, Kühlschränke …) zerhämmern. Ab der Tor-Schwelle öffnet sich das Tor zur nächsten Zone. Der Planetenbalken links oben zeigt die Heilung des ganzen Planeten; der Boden wird mit jeder Stufe grüner.
-4. **Automatisieren:** Saugstation an einen Haufen, Band zum Ofen, Band zum Schiff. Später Autopilot, Helfer-Roboter und Drohnen. Verkaufsterminals sind Außenposten für entfernte Zonen (eines je Zone).
-5. **Weiterkommen:** Forschung kostet Bolts und Produkte; Rustys Inventar und das Schiffslager zählen, Kisten nicht. Skills kosten Skillpunkte aus Leveln.
+1. **Sammeln:** Rusty saugt Schrott (RT) und zerhämmert Müll (LT). Am Anfang passen 4 × 10 Teile in die Taschen.
+2. **Abliefern:** Am abgestürzten Schiff liefert A alles auf einmal ab, das Schiff zahlt sofort Bolts.
+3. **Aufrüsten:** X am Schiff öffnet das Schiff-Menü: Laderaum, Ertrag, Fahrtempo, Saugtempo, Werkzeugstufe.
+4. **Reparieren:** Schiffsstufen schalten Blaupausen frei: Sammel-Bots (Stufe 2), Drohnen und Deko (Stufe 3), bessere Bots und Museum (Stufe 4). Stufe 5 hebt ab, wenn der Planet zu 80 % geheilt ist.
+5. **Automatisieren:** Bots sammeln dort, wo du sie baust, Drohnen fliegen lose Teile einsammeln. Mehr und bessere Bots sind der Incremental-Teil.
 
 ## Entwickeln
 

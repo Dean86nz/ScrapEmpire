@@ -1,9 +1,0 @@
-{
-  "recipes": [
-    { "id": "iron_bar", "machine": "furnace", "inputs": { "scrap": 3 }, "output": { "item": "iron_bar", "count": 1 }, "ticks": 80, "tech": "" },
-    { "id": "copper_bar", "machine": "furnace", "inputs": { "copper": 2 }, "output": { "item": "copper_bar", "count": 1 }, "ticks": 80, "tech": "" },
-    { "id": "plastic_sheet", "machine": "press", "inputs": { "plastic": 2 }, "output": { "item": "plastic_sheet", "count": 1 }, "ticks": 60, "tech": "" },
-    { "id": "gear", "machine": "press", "inputs": { "iron_bar": 2 }, "output": { "item": "gear", "count": 1 }, "ticks": 100, "tech": "gear" },
-    { "id": "circuit", "machine": "press", "inputs": { "copper_bar": 1, "plastic_sheet": 1 }, "output": { "item": "circuit", "count": 1 }, "ticks": 120, "tech": "circuit" }
-  ]
-}

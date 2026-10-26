@@ -13,14 +13,11 @@ var _zone_tints: Dictionary = {}      # zone id → Polygon2D
 const ZONE_TINTS := [Color(0.35, 0.22, 0.1, 0.28), Color(0.4, 0.4, 0.35, 0.18), Color(0.5, 0.85, 0.3, 0.16), Color(0.25, 0.8, 0.35, 0.26)]
 const LOCKED_TINT := Color(0.15, 0.15, 0.22, 0.5)
 var _player: Node2D
-var conveyor_renderer := ConveyorRenderer.new()
 
 
 func bind(world: SimWorld, player: Node2D) -> void:
 	_world = world
 	_player = player
-	add_child(conveyor_renderer)
-	conveyor_renderer.bind(world)
 	for n: ResourceNode in world.nodes.values():
 		_on_node_added(n)
 	for item: LooseItem in world.loose.values():

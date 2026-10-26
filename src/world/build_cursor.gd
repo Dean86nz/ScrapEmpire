@@ -118,25 +118,8 @@ func _process(delta: float) -> void:
 	_update_visuals()
 
 
-## Band-Ziehen: A/LMB gehalten und Cursor auf eine Nachbarkachel bewegt → Band in Laufrichtung
-## legen und das vorherige Band mitdrehen.
 func _handle_drag() -> void:
-	if mode != Mode.PLACE or def == null or def.id != "conveyor":
-		return
-	var held := Input.is_action_pressed("interact") or Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
-	if not held:
-		_drag_prev = Vector2i(-9999, -9999)
-		return
-	if _drag_prev.x == -9999 or tile == _drag_prev:
-		return
-	var delta := tile - _drag_prev
-	if absi(delta.x) + absi(delta.y) == 1:
-		rot = Conveyor.DIRS.find(delta)
-		var w := SimClock.world
-		if w.grid.at(_drag_prev) is Conveyor:
-			w.queue_command({"type": "rotate", "tile": _drag_prev, "rot": rot})
-	SimClock.world.queue_command({"type": "place", "def_id": def.id, "tile": tile, "rot": rot})
-	_drag_prev = tile
+	pass
 
 
 func _handle_movement(delta: float) -> void:

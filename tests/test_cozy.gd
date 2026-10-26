@@ -22,7 +22,6 @@ func _world() -> SimWorld:
 	var w := SimWorld.new()
 	w.defs = BuildingDef.load_all("res://data/buildings.json")
 	w.item_values = Economy.load_item_values("res://data/items.json")
-	w.recipes = RecipeDef.load_all("res://data/recipes.json")
 	w.helper_cfg = JSON.parse_string(FileAccess.get_file_as_string("res://data/helpers.json"))
 	w.drone_cfg = JSON.parse_string(FileAccess.get_file_as_string("res://data/drones.json"))
 	w.collectible_cfg = _cfg()
@@ -53,16 +52,11 @@ func test_decor_requires_feature_and_costs_wood() -> void:
 	assert_eq(def.category, "decor")
 
 
-func test_museum_unlocks_via_tech_effect() -> void:
+func test_museum_unlocks_via_ship_feature() -> void:
 	var w := _world()
 	assert_true(not w.is_building_unlocked("museum"))
-	w._apply_tech_effects("museum")
+	w.unlocked_features["museum"] = true
 	assert_true(w.is_building_unlocked("museum"))
-	var defs := TechState.load_defs("res://data/tech.json")
-	var ids := []
-	for d in defs:
-		ids.append(str(d["id"]))
-	assert_true(ids.has("decor_bench") and ids.has("museum"), "Techs vorhanden")
 
 
 func test_collectibles_spawn_deterministically_in_their_zone() -> void:

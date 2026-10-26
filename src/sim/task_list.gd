@@ -280,8 +280,6 @@ func _tick_transfer(world: SimWorld, body: WorkerBody, step: Dictionary, deposit
 			if accepted > 0:
 				body.inventory.remove(s["item"], accepted)
 				world.building_changed.emit(b)
-				if b is Ship:
-					world.ship_received.emit(str(s["item"]), accepted)
 				moved = true
 				break  # ein Stapel je Tick
 	else:

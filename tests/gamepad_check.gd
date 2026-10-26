@@ -37,6 +37,8 @@ func _process(_delta: float) -> bool:
 	if _i >= 0:
 		var step := _steps[_i]
 		var ok: bool = step["check"].call()
+		if not ok and _world != null:
+			print("   Zustand: bolts=%d inv=%d stage=%d cargo=%d bots=%d drohnen=%d tick=%d befehle=%d" % [_world.bolts, _world.player.inventory.total(), _world.ship().stage if _world.ship() else -1, int(_world.ship_upgrades.get("cargo", 0)), _world.helpers.size(), _world.drones.size(), _world.tick_count, _world.pending_commands()])
 		print(("PASS " if ok else "FAIL ") + str(step["name"]))
 		if not ok:
 			_fails.append(str(step["name"]))
@@ -98,67 +100,62 @@ func _build_steps() -> void:
 	var pause := _node("PauseMenu")
 	var router: Node = root.get_node("/root/InputRouter")
 
+	var player: Node2D = _node("Player")
+
 	_step("Vorbereitung: Material, Bolts, Features",
 		func() -> void:
-			# 6 Slots × 20: nicht überfüllen, sonst kommen Chrom und Schaltkreise nicht an
-			_world.player.inventory.add("scrap", 40)
 			_world.player.inventory.add("wood", 20)
-			_world.player.inventory.add("chrome", 10)
-			_world.player.inventory.add("circuit", 10)
 			_world.bolts = 5000
-			for f in ["autopilot", "helpers", "drones", "decor"]:
-				_world.unlocked_features[f] = true
-			var chest := _world.place_free("chest", _world.player_tile() + Vector2i(3, 3), 0)
-			_world.place_free("furnace", _world.player_tile() + Vector2i(6, 3), 0)
-			assert(chest != null),
-		func() -> bool: return _world.player.inventory.count_of("scrap") >= 40 and _world.player.inventory.count_of("chrome") >= 10 and _world.player.inventory.count_of("circuit") >= 10)
+			for f in ["autopilot", "decor"]:
+				_world.unlocked_features[f] = true,
+		func() -> bool: return _world.player.inventory.count_of("wood") >= 20 and _world.ship() != null)
 
-	# Baumenü
+	# Baumenü (Deko)
 	_step("Y kurz öffnet das Baumenü", func() -> void: _tap(JOY_BUTTON_Y), func() -> bool: return build_menu.visible)
-	_step("A wählt das fokussierte Gebäude (Baumodus startet)", func() -> void: _tap(JOY_BUTTON_A),
-		func() -> bool: return not build_menu.visible and cursor.mode == cursor.Mode.PLACE)
+	_step("A wählt das fokussierte Deko-Objekt (Baumodus startet)", func() -> void: _tap(JOY_BUTTON_A),
+		func() -> bool: return not build_menu.visible and cursor.mode == cursor.Mode.PLACE and cursor.def.category == "decor")
 	_step("B bricht den Baumodus ab", func() -> void: _tap(JOY_BUTTON_B),
 		func() -> bool: return cursor.mode == cursor.Mode.OFF and router.context == router.Context.GAME)
-	_step("Y öffnet Baumenü erneut", func() -> void: _tap(JOY_BUTTON_Y), func() -> bool: return build_menu.visible)
-	_step("RB wechselt auf die Deko-Seite", func() -> void: _tap(JOY_BUTTON_RIGHT_SHOULDER), func() -> bool: return build_menu._page == 1)
-	_step("A wählt Deko-Objekt", func() -> void: _tap(JOY_BUTTON_A),
-		func() -> bool: return cursor.mode == cursor.Mode.PLACE and cursor.def != null and cursor.def.category == "decor")
-	_step("B verlässt Deko-Baumodus", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return cursor.mode == cursor.Mode.OFF)
 
-	# Fortschritts-Menü
-	_step("Select kurz öffnet Fortschritt (Tab Kapitel)", func() -> void: _tap(JOY_BUTTON_BACK),
-		func() -> bool: return progress.visible and progress._tab == progress.Tab.GOALS)
-	_step("RB wechselt auf Forschung", func() -> void: _tap(JOY_BUTTON_RIGHT_SHOULDER), func() -> bool: return progress._tab == progress.Tab.TECH)
-	_step("Fokus auf erste erforschbare Karte (wie per D-Pad)", func() -> void:
-			var avail: Array = _world.tech.available()
-			if not avail.is_empty():
-				(progress._tech_cards[str(avail[0])] as Button).grab_focus(),
-		func() -> bool:
-			var f := root.gui_get_focus_owner()
-			return f is Button and progress._tech_cards.values().has(f))
-	_step("A auf Forschungskarte startet Forschung", func() -> void: _tap(JOY_BUTTON_A),
-		func() -> bool: return _world.tech.is_researching() or _new_quips(), 8, 200)
-	_step("B schließt Fortschritt", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return not progress.visible and router.context == router.Context.GAME)
+	# Am Schiff: A liefert ab, X öffnet das Schiff-Menü
+	_step("Rusty fährt ans Schiff, Taschen voll Schrott", func() -> void:
+			var s := _world.ship()
+			player.global_position = Vector2(s.center_px()) + Vector2(0, 140)
+			_world.player.inventory.add("scrap", 10),
+		func() -> bool: return player.nearby_building() is Ship, 4, 100)
+	_step("A liefert alles ab (Schrott und Holz), Bolts steigen", func() -> void: _tap(JOY_BUTTON_A),
+		func() -> bool: return _world.player.inventory.total() == 0 and _world.bolts == 5000 + 10 + 20 * 2, 6, 200)
+	_step("X öffnet das Schiff-Menü", func() -> void: _tap(JOY_BUTTON_X),
+		func() -> bool: return progress.visible and progress._tab == progress.Tab.SHIP)
+	_step("A auf „Schiff reparieren“ (Fokus): Stufe 2", func() -> void: _tap(JOY_BUTTON_A),
+		func() -> bool: return _world.ship().stage == 2 and _world.unlocked_features.has("helpers"), 8, 200)
+	_step("D-Pad rechts zum Laderaum, A kauft", func() -> void:
+			_tap(JOY_BUTTON_DPAD_RIGHT)
+			_tap(JOY_BUTTON_A),
+		func() -> bool: return int(_world.ship_upgrades.get("cargo", 0)) == 1 and _world.player.inventory.slot_count == 5, 8, 200)
+	_step("B schließt das Schiff-Menü", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return not progress.visible and router.context == router.Context.GAME)
 
-	# Helfer-Tab
-	_step("Select öffnet Fortschritt", func() -> void: _tap(JOY_BUTTON_BACK), func() -> bool: return progress.visible)
-	_step("RB x4 erreicht Tab Helfer", func() -> void:
+	# Bots-Tab
+	_step("Select öffnet Schiff und Ziele", func() -> void: _tap(JOY_BUTTON_BACK),
+		func() -> bool: return progress.visible and progress._tab == progress.Tab.SHIP)
+	_step("RB x4 erreicht Tab Bots", func() -> void:
 			for n in 4:
 				_tap(JOY_BUTTON_RIGHT_SHOULDER),
 		func() -> bool: return progress._tab == progress.Tab.HELPERS, 6)
-	_step("A auf „Helfer kaufen“ startet Zonenwahl", func() -> void: _tap(JOY_BUTTON_A),
-		func() -> bool: return not progress.visible and cursor.mode == cursor.Mode.TARGET)
-	_step("B bricht Zonenwahl ab", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return cursor.mode == cursor.Mode.OFF)
+	_step("A auf „Sammel-Bot bauen“ baut einen Bot", func() -> void: _tap(JOY_BUTTON_A),
+		func() -> bool: return _world.helpers.size() == 1, 8, 200)
+	_step("B schließt", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return not progress.visible)
 
 	# Drohnen-Tab
-	_step("Select öffnet Fortschritt (2)", func() -> void: _tap(JOY_BUTTON_BACK), func() -> bool: return progress.visible)
+	_step("Drohnen-Blaupause frei", func() -> void: _world.unlocked_features["drones"] = true, func() -> bool: return true)
+	_step("Select öffnet Schiff und Ziele (2)", func() -> void: _tap(JOY_BUTTON_BACK), func() -> bool: return progress.visible)
 	_step("RB x5 erreicht Tab Drohnen", func() -> void:
 			for n in 5:
 				_tap(JOY_BUTTON_RIGHT_SHOULDER),
 		func() -> bool: return progress._tab == progress.Tab.DRONES, 6)
-	_step("A auf „Drohne kaufen“ startet Quellenwahl", func() -> void: _tap(JOY_BUTTON_A),
-		func() -> bool: return not progress.visible and cursor.mode == cursor.Mode.TARGET)
-	_step("B bricht Quellenwahl ab", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return cursor.mode == cursor.Mode.OFF)
+	_step("A auf „Drohne bauen“ baut eine Drohne", func() -> void: _tap(JOY_BUTTON_A),
+		func() -> bool: return _world.drones.size() == 1, 8, 200)
+	_step("B schließt (2)", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return not progress.visible and router.context == router.Context.GAME)
 
 	# Aufgaben-Editor (Y lang)
 	_step("Y lang (halten)", func() -> void: _btn(JOY_BUTTON_Y, true), func() -> bool: return true, 2, 700)

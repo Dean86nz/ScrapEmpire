@@ -361,6 +361,20 @@ Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten 
 - **Produkte als Baustoff:** Tech- und Gebäudekosten enthalten Maschinenprodukte (Eisenbarren für Band und Saugstation, Platten für den Rucksack, Zahnräder und Schaltkreise für höhere Forschung). Das beantwortet „was macht der Schmelzofen“: Barren sind das Material für alles Weitere, nicht nur Verkaufsware.
 - Bodenfärbung je Zone (unentdeckt dunkel, vermüllt braun, unordentlich grau, aufgeräumt hellgrün, sauber grün) ist die Basis der Zonen-Heilung in Phase 2.
 
+### 23c. Kern-Ablauf nach dem Kurswechsel (MS20, v1.9.0)
+
+Sammeln → am Schiff abliefern (sofort Bolts) → Upgrades am Schiff → Schiff reparieren → Blaupausen für Bots und Drohnen → mehr und bessere Bots. Förderbänder, Maschinen, Rezepte, Produkte, Verkaufsterminals und der Forschungsbaum sind entfernt. Alle Zahlen in `data/ship.json`, `data/items.json`, `data/helpers.json`, `data/drones.json`:
+
+| Upgrade | Wirkung je Stufe | Stufen | Kosten |
+|---|---|---|---|
+| Laderaum | +1 Inventarplatz (Start 4 × 10) | 8 | 25, ×1,6 |
+| Ertrag | +10 % Bolts beim Abliefern | 10 | 60, ×1,7 |
+| Fahrtempo | +8 % | 8 | 40, ×1,6 |
+| Saugtempo | +12 % Takt, +0,1 Kachel Reichweite | 8 | 50, ×1,6 |
+| Werkzeugstufe | Hammer und Sauger +1 Stufe | 4 | 300, 1.500, 6.000, 20.000 |
+
+Schiffsstufen: 2 (500) Sammel-Bot, 3 (3.000) Drohne und Deko, 4 (12.000) bessere Bots und Museum, 5 (40.000, Planet ≥ 80 %) Abflug = Spielende. Bots 150 × 1,5ⁿ (max. 10), Drohnen 400 × 1,5ⁿ (max. 6).
+
 ### 23b. Raumschiff-Basis, Heilungsbalken, Aufgabenkette (MS18a, umgesetzt in v1.7.0)
 
 - **Schiff:** Rustys Absturzwrack neben dem Start ist die Basis. Abgabe (A, Band, Drohne), automatischer Verkauf über der Reserve je Item, Lager zählt bei allen Kosten. Drei Stufen (Wrack → notdürftig repariert → startklar) mit sichtbarer Optik, größerem Lager und schnellerem Verkauf; Ausbau mit X am Schiff gegen Bolts und Produkte. Terminals bleiben als Außenposten: feste Kosten, eines je Zone.

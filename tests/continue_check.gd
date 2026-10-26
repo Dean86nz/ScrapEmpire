@@ -90,8 +90,8 @@ func _snapshot() -> Dictionary:
 	var w := _world()
 	var s := w.ship()
 	return {
-		"bolts": w.bolts, "ship_storage": s.storage.total() if s != null else -1,
-		"buildings": w.buildings.size(), "nodes": w.nodes.size(), "quest": w.quests.index,
+		"bolts": w.bolts, "ship_stage": s.stage if s != null else -1, "cargo": int(w.ship_upgrades.get("cargo", 0)),
+		"slots": w.player.inventory.slot_count, "buildings": w.buildings.size(), "nodes": w.nodes.size(), "quest": w.quests.index,
 		"inventory": w.player.inventory.total(), "level": w.progression.level, "xp": w.progression.xp,
 		"tile": [w.player_tile().x, w.player_tile().y],
 	}
@@ -124,17 +124,15 @@ func _build() -> void:
 
 func _build_play() -> void:
 	_step("Neues Spiel läuft, Schiff steht", func() -> void: pass, func() -> bool: return _world() != null and _world().ship() != null)
-	_step("Spielen: Material, Kiste, ins Schiff abliefern", func() -> void:
+	_step("Spielen: abliefern und Laderaum-Upgrade kaufen", func() -> void:
 			var w := _world()
 			w.bolts = 123
 			w.player.inventory.add("copper", 15)
-			w.place_free("chest", w.player_tile() + Vector2i(3, 2), 0)
-			var s := w.ship()
-			for i in w.player.inventory.slots.size():
-				if w.player.inventory.slots[i]["item"] == "copper":
-					w.queue_command({"type": "deposit", "tile": s.tile, "slot": i})
-			w.player.inventory.add("scrap", 7),
-		func() -> bool: return _world().ship().storage.count_of("copper") == 15, 6, 200)
+			w.queue_command({"type": "deliver_all"})
+			w.queue_command({"type": "buy_upgrade", "id": "cargo"}),
+		func() -> bool:
+			_world().player.inventory.add("scrap", 7)  # etwas in der Tasche, das gespeichert werden muss
+			return _world().bolts == 123 + 45 - 25 and int(_world().ship_upgrades.get("cargo", 0)) == 1, 6, 200)
 	_step("Fahren mit dem Stick", func() -> void: _axis(JOY_AXIS_LEFT_X, 1.0),
 		func() -> bool: return true, 30, 600)
 	_step("Stick loslassen", func() -> void: _axis(JOY_AXIS_LEFT_X, 0.0), func() -> bool: return true, 4, 100)
@@ -165,14 +163,10 @@ func _build_continue() -> void:
 	_step("Zustand wie beim Speichern", func() -> void: pass, func() -> bool:
 			var now := _snapshot()
 			var ok := true
-			for k in ["buildings", "nodes", "quest", "inventory", "level", "xp", "tile"]:
+			for k in ["bolts", "ship_stage", "cargo", "slots", "buildings", "nodes", "quest", "inventory", "level", "xp", "tile"]:
 				if JSON.stringify(now[k]) != JSON.stringify(JSON.parse_string(JSON.stringify(expect[k]))) and str(_ints(now[k])) != str(_ints(expect[k])):
 					print("   %s: erwartet %s, ist %s" % [k, str(expect[k]), str(now[k])])
 					ok = false
-			# Das Schiff verkauft weiter: Lager darf nur schrumpfen, Bolts nur wachsen.
-			if int(now["bolts"]) < int(expect["bolts"]) or int(now["ship_storage"]) > int(expect["ship_storage"]):
-				print("   Bolts/Lager unplausibel: %s / %s" % [str(now), str(expect)])
-				ok = false
 			return ok)
 	_step("Weiterspielen: fahren, Zeit läuft", func() -> void: _axis(JOY_AXIS_LEFT_Y, 1.0),
 		func() -> bool: return _world().tick_count > 0, 30, 600)

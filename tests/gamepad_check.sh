@@ -17,5 +17,5 @@ cleanup() {
   fi
 }
 trap cleanup EXIT
-cd "$ROOT" && timeout 180 "$GODOT" --headless --path . -s tests/gamepad_check.gd 2>&1 | grep -E "^PASS|^FAIL|Prüfungen|SCRIPT ERROR|Parse Error"
+cd "$ROOT" && timeout 180 "$GODOT" --headless --path . -s tests/gamepad_check.gd 2>&1 | grep -E "^PASS|^FAIL|Prüfungen|SCRIPT ERROR|Parse Error|Zustand"
 exit "${PIPESTATUS[0]}"

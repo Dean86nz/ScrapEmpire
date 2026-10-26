@@ -9,8 +9,8 @@ const BASE_SUCK_INTERVAL := 5        # 1 Item / 0,25 s
 const BASE_HAMMER_RANGE_PX := 64     # 1 Kachel
 const HAMMER_REACH_PX := 48          # Zielpunkt vor Rusty
 const BASE_HAMMER_INTERVAL := 10     # 1 Schlag / 0,5 s
-const INVENTORY_SLOTS := 6
-const STACK_SIZE := 20
+const INVENTORY_SLOTS := 4
+const STACK_SIZE := 10
 
 # Zustand (von der Sim verwaltet)
 var suck_cooldown := 0
@@ -37,7 +37,7 @@ func apply_modifiers(m: Dictionary) -> bool:
 	suck_range_px = BASE_SUCK_RANGE_PX + range_add
 	hammer_range_px = BASE_HAMMER_RANGE_PX + range_add
 	var mine_mult: float = float(m["mine_speed_mult"])
-	suck_interval = maxi(int(round(BASE_SUCK_INTERVAL * float(m["suck_interval_mult"]) / mine_mult)), 1)
+	suck_interval = maxi(int(round(BASE_SUCK_INTERVAL * float(m["suck_interval_mult"]) / (mine_mult * float(m["suck_speed_mult"])))), 1)
 	hammer_interval = maxi(int(round(BASE_HAMMER_INTERVAL / mine_mult)), 2)
 	hammer_items = int(m["hammer_items"])
 	magnet_radius_px = int(m["magnet_radius"]) * TILE

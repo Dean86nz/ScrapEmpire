@@ -1,29 +1,141 @@
 {
-  "_comment": "Geführte Aufgabenkette: immer genau eine aktive Aufgabe im HUD. Typen: moved, collect, ship_delivered, sold_value, wrecks, research, build, have, belt_to_ship, zone_gate, zone_clean, ship_stage, helpers, drones, collectibles, planet, level. tutorial=true: gilt als erledigt, wenn ein alter Spielstand das Tutorial schon abgeschlossen hat.",
+  "_comment": "Geführte Aufgabenkette: immer genau eine aktive Aufgabe im HUD.",
   "quests": [
-    { "id": "q_move", "text_key": "QUEST_MOVE", "type": "moved", "amount": 200, "tutorial": true, "xp": 10 },
-    { "id": "q_collect", "text_key": "QUEST_COLLECT", "type": "collect", "item": "scrap", "amount": 30, "tutorial": true, "xp": 15 },
-    { "id": "q_deliver", "text_key": "QUEST_DELIVER", "type": "ship_delivered", "amount": 20, "tutorial": true, "xp": 15, "bolts": 20 },
-    { "id": "q_bolts", "text_key": "QUEST_BOLTS", "type": "sold_value", "amount": 30, "tutorial": true, "xp": 10 },
-    { "id": "q_hammer", "text_key": "QUEST_HAMMER", "type": "wrecks", "amount": 1, "tutorial": true, "xp": 15 },
-    { "id": "q_research_furnace", "text_key": "QUEST_RESEARCH_FURNACE", "type": "research", "tech": "furnace", "tutorial": true, "xp": 20 },
-    { "id": "q_build_furnace", "text_key": "QUEST_BUILD_FURNACE", "type": "build", "def": "furnace", "amount": 1, "xp": 20 },
-    { "id": "q_bars", "text_key": "QUEST_BARS", "type": "have", "item": "iron_bar", "amount": 10, "xp": 25 },
-    { "id": "q_research_conveyor", "text_key": "QUEST_RESEARCH_CONVEYOR", "type": "research", "tech": "conveyor", "xp": 20 },
-    { "id": "q_belt", "text_key": "QUEST_BELT", "type": "belt_to_ship", "def": "furnace", "xp": 40, "bolts": 50 },
-    { "id": "q_research_extractor", "text_key": "QUEST_RESEARCH_EXTRACTOR", "type": "research", "tech": "extractor", "xp": 20 },
-    { "id": "q_extractor", "text_key": "QUEST_EXTRACTOR", "type": "build", "def": "extractor", "amount": 1, "xp": 30 },
-    { "id": "q_ship2", "text_key": "QUEST_SHIP2", "type": "ship_stage", "amount": 2, "xp": 60 },
-    { "id": "q_zone1", "text_key": "QUEST_ZONE1", "type": "zone_gate", "xp": 60 },
-    { "id": "q_research_press", "text_key": "QUEST_RESEARCH_PRESS", "type": "research", "tech": "press", "xp": 20 },
-    { "id": "q_build_press", "text_key": "QUEST_BUILD_PRESS", "type": "build", "def": "press", "amount": 1, "xp": 25 },
-    { "id": "q_autopilot", "text_key": "QUEST_AUTOPILOT", "type": "research", "tech": "autopilot", "xp": 40 },
-    { "id": "q_helper_ws", "text_key": "QUEST_HELPER_WS", "type": "research", "tech": "helper_workshop", "xp": 40 },
-    { "id": "q_helper", "text_key": "QUEST_HELPER", "type": "helpers", "amount": 1, "xp": 40 },
-    { "id": "q_drone_hangar", "text_key": "QUEST_DRONE_HANGAR", "type": "research", "tech": "drone_hangar", "xp": 40 },
-    { "id": "q_drone", "text_key": "QUEST_DRONE", "type": "drones", "amount": 1, "xp": 40 },
-    { "id": "q_ship3", "text_key": "QUEST_SHIP3", "type": "ship_stage", "amount": 3, "xp": 100 },
-    { "id": "q_collectibles", "text_key": "QUEST_COLLECTIBLES", "type": "collectibles", "amount": 3, "xp": 60 },
-    { "id": "q_planet", "text_key": "QUEST_PLANET", "type": "planet", "amount": 100, "xp": 200 }
+    {
+      "id": "q_move",
+      "text_key": "QUEST_MOVE",
+      "type": "moved",
+      "amount": 200,
+      "xp": 10
+    },
+    {
+      "id": "q_collect",
+      "text_key": "QUEST_COLLECT",
+      "type": "collect",
+      "item": "scrap",
+      "amount": 20,
+      "xp": 10
+    },
+    {
+      "id": "q_deliver",
+      "text_key": "QUEST_DELIVER",
+      "type": "ship_delivered",
+      "amount": 20,
+      "xp": 15,
+      "bolts": 10
+    },
+    {
+      "id": "q_upgrade",
+      "text_key": "QUEST_UPGRADE",
+      "type": "upgrades_bought",
+      "amount": 1,
+      "xp": 15
+    },
+    {
+      "id": "q_hammer",
+      "text_key": "QUEST_HAMMER",
+      "type": "wrecks",
+      "amount": 1,
+      "xp": 15
+    },
+    {
+      "id": "q_cargo",
+      "text_key": "QUEST_CARGO",
+      "type": "upgrade_level",
+      "upgrade": "cargo",
+      "amount": 2,
+      "xp": 20
+    },
+    {
+      "id": "q_earn",
+      "text_key": "QUEST_EARN",
+      "type": "bolts_earned",
+      "amount": 300,
+      "xp": 20
+    },
+    {
+      "id": "q_tool",
+      "text_key": "QUEST_TOOL",
+      "type": "upgrade_level",
+      "upgrade": "tool",
+      "amount": 1,
+      "xp": 30
+    },
+    {
+      "id": "q_zone1",
+      "text_key": "QUEST_ZONE1",
+      "type": "zone_gate",
+      "xp": 50
+    },
+    {
+      "id": "q_ship2",
+      "text_key": "QUEST_SHIP2",
+      "type": "ship_stage",
+      "amount": 2,
+      "xp": 60
+    },
+    {
+      "id": "q_bot",
+      "text_key": "QUEST_BOT",
+      "type": "helpers",
+      "amount": 1,
+      "xp": 40
+    },
+    {
+      "id": "q_earn2",
+      "text_key": "QUEST_EARN2",
+      "type": "bolts_earned",
+      "amount": 2000,
+      "xp": 40
+    },
+    {
+      "id": "q_ship3",
+      "text_key": "QUEST_SHIP3",
+      "type": "ship_stage",
+      "amount": 3,
+      "xp": 80
+    },
+    {
+      "id": "q_drone",
+      "text_key": "QUEST_DRONE",
+      "type": "drones",
+      "amount": 1,
+      "xp": 40
+    },
+    {
+      "id": "q_collectibles",
+      "text_key": "QUEST_COLLECTIBLES",
+      "type": "collectibles",
+      "amount": 3,
+      "xp": 60
+    },
+    {
+      "id": "q_bots3",
+      "text_key": "QUEST_BOTS3",
+      "type": "helpers",
+      "amount": 3,
+      "xp": 60
+    },
+    {
+      "id": "q_ship4",
+      "text_key": "QUEST_SHIP4",
+      "type": "ship_stage",
+      "amount": 4,
+      "xp": 120
+    },
+    {
+      "id": "q_planet",
+      "text_key": "QUEST_PLANET",
+      "type": "planet",
+      "amount": 80,
+      "xp": 150
+    },
+    {
+      "id": "q_launch",
+      "text_key": "QUEST_LAUNCH",
+      "type": "ship_stage",
+      "amount": 5,
+      "xp": 200
+    }
   ]
 }

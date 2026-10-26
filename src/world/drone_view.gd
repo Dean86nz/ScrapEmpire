@@ -49,11 +49,11 @@ func _process(delta: float) -> void:
 	_sprite.rotation = sin(_t * 1.7) * 0.06
 	_shadow.scale = Vector2.ONE * (1.0 - bob * 0.02)
 	if _drone.is_carrying():
-		var path := "res://assets/sprites/items/%s.svg" % _drone.carry_item
+		var path := "res://assets/sprites/items/%s.svg" % str(_drone.carry.keys()[0])
 		if not _item.visible or _item.texture == null or _item.texture.resource_path != path:
 			_item.texture = load(path) if ResourceLoader.exists(path) else null
 		_item.visible = _item.texture != null
 		_item.position.y = 4.0 + bob
 	else:
 		_item.visible = false
-	_sprite.modulate = Color(1, 1, 1, 0.7) if _drone.state == Drone.State.WAIT else Color.WHITE
+	_sprite.modulate = Color(1, 1, 1, 0.7) if _drone.state == Drone.State.IDLE else Color.WHITE

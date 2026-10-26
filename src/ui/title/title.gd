@@ -35,7 +35,14 @@ func _ready() -> void:
 	_warning.visible = false
 	$Center/VBox.add_child(_warning)
 	$Center/VBox.move_child(_warning, _tagline.get_index() + 1)
-	if not SaveManager.failed_load().is_empty():
+	if SaveManager.has_only_old_saves():
+		# Kurswechsel MS20: alte Fabrik-Spielstände passen nicht mehr; sichern statt löschen.
+		SaveManager.archive_all()
+		SaveManager.log_step("Titel: alter Spielstand gesichert (Version zu alt)")
+		_warning.text = tr("TITLE_OLD_SAVE")
+		_warning.visible = true
+		_continue_btn.visible = false
+	elif not SaveManager.failed_load().is_empty():
 		_setup_rescue()
 	_continue_btn.pressed.connect(_on_continue)
 	_new_btn.pressed.connect(_new_game)

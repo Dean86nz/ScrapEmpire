@@ -10,7 +10,6 @@ signal closed
 var _inventory_hint := Label.new()
 
 var _buttons: Array[Button] = []
-var _page := 0  # 0 Gebäude, 1 Deko
 
 
 func _ready() -> void:
@@ -25,13 +24,17 @@ func _ready() -> void:
 	_title.get_parent().move_child(_inventory_hint, _title.get_index() + 1)
 
 
-func _decor_available() -> bool:
-	return SimClock.world.unlocked_features.has("decor")
+## Gibt es überhaupt etwas zu bauen? (zu Spielbeginn nicht: Deko kommt mit Schiffsstufe 3)
+func has_entries() -> bool:
+	var w := SimClock.world
+	for def_id in DataRegistry.building_defs:
+		var def: BuildingDef = DataRegistry.building_defs[def_id]
+		if def.buildable and w.is_building_unlocked(def_id):
+			return true
+	return false
 
 
 func open() -> void:
-	if not _decor_available():
-		_page = 0
 	_rebuild()
 	visible = true
 	InputRouter.context = InputRouter.Context.MENU
@@ -50,29 +53,20 @@ func _rebuild() -> void:
 		c.queue_free()
 	_buttons.clear()
 	var w := SimClock.world
-	var pages := _decor_available()
 	var any_missing := false
-	_title.text = tr("BUILD_PAGE_DECOR") if _page == 1 else tr("MENU_BUILD_TITLE")
-	if pages:
-		_title.text = "◀ LB   %s   RB ▶" % _title.text
+	_title.text = tr("MENU_BUILD_TITLE")
 	for def_id in DataRegistry.building_defs:
 		if not w.is_building_unlocked(def_id):
 			continue
 		var def: BuildingDef = DataRegistry.building_defs[def_id]
-		if (def.category == "decor") != (_page == 1) or not def.buildable:
+		if not def.buildable:
 			continue
 		var btn := Button.new()
 		btn.custom_minimum_size = Vector2(520, 76)
 		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		btn.icon = load(def.sprite)
 		btn.expand_icon = true
-		var makes := ""
-		var outputs: Array[String] = []
-		for r in w.available_recipes(def.id):
-			outputs.append(DataRegistry.item_name(r.output_item))
-		if not outputs.is_empty():
-			makes = "   (%s %s)" % [tr("BUILD_MAKES"), ", ".join(outputs)]
-		btn.text = "%s   –   %s%s" % [tr(def.name_key), _cost_text(w.next_cost(def)), makes]
+		btn.text = "%s   –   %s" % [tr(def.name_key), _cost_text(w.next_cost(def))]
 		if not w.can_afford(w.next_cost(def)):
 			any_missing = true
 			btn.text += "   (%s)" % (tr("BUILD_MISSING") % _missing_text(w.missing_for(w.next_cost(def))))
@@ -130,9 +124,4 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif MenuInput.accept_pressed(event):
 		MenuInput.press_focused(get_viewport())
-	elif (event.is_action_pressed("hotbar_next") or event.is_action_pressed("hotbar_prev")) and _decor_available():
-		_page = 1 - _page
-		_rebuild()
-		if not _buttons.is_empty():
-			_buttons[0].grab_focus()
-		get_viewport().set_input_as_handled()
+
