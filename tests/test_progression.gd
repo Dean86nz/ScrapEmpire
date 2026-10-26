@@ -22,9 +22,9 @@ func test_level_up_gives_skill_point() -> void:
 	assert_eq(p.level, 1)
 	p.add_xp(1)
 	assert_eq(p.level, 2)
-	assert_eq(p.skill_points, 1)
+	assert_eq(p.skill_points, 2)
 	assert_eq(p.xp, 0)
-	assert_eq(ups, [[2, 1]])
+	assert_eq(ups, [[2, 2]])
 
 
 func test_overflow_carries_over_multiple_levels() -> void:
@@ -32,14 +32,14 @@ func test_overflow_carries_over_multiple_levels() -> void:
 	p.add_xp(100 + 115 + 10)
 	assert_eq(p.level, 3)
 	assert_eq(p.xp, 10)
-	assert_eq(p.skill_points, 2)
+	assert_eq(p.skill_points, 4)
 
 
 func test_level_cap() -> void:
 	var p := _prog()
 	p.add_xp(100000)
-	assert_eq(p.level, 20)
-	assert_eq(p.skill_points, 19)
+	assert_eq(p.level, 25)
+	assert_eq(p.skill_points, 48)
 	assert_eq(p.xp, 0)
 	p.add_xp(50)
 	assert_eq(p.xp, 0, "am Limit keine XP mehr")

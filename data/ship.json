@@ -1,30 +1,6 @@
 {
-  "_comment": "Rustys Schiff: Abgabe zahlt sofort Bolts (Wert × Ertrag). Upgrades kosten Bolts. Stufen reparieren das Schiff und schalten Blaupausen frei; Stufe 5 = Abflug (Spielende). clean_radius: so weit putzt das Schiff den Boden um sich (wächst als Welle nach jeder Reparatur).",
+  "_comment": "Rustys Schiff: Abgabe zahlt sofort Bolts (Wert × Ertrag). Schiff-Upgrades kosten Bolts (nur Ertrag; Rustys Fähigkeiten sind Skills). Stufen reparieren das Schiff und schalten Blaupausen frei; Stufe 5 = Abflug. clean_radius: Putzwelle je Stufe.",
   "upgrades": [
-    {
-      "id": "cargo",
-      "name_key": "UPG_CARGO",
-      "desc_key": "UPG_CARGO_DESC",
-      "icon": "res://assets/sprites/ui/upg_cargo.svg",
-      "max_level": 8,
-      "cost_bolts": [
-        25,
-        40,
-        65,
-        100,
-        165,
-        260,
-        420,
-        670
-      ],
-      "effects": [
-        {
-          "key": "slots_add",
-          "op": "add",
-          "per_level": 1
-        }
-      ]
-    },
     {
       "id": "yield",
       "name_key": "UPG_YIELD",
@@ -48,84 +24,11 @@
           "key": "sell_mult",
           "op": "add",
           "per_level": 0.1
-        }
-      ]
-    },
-    {
-      "id": "speed",
-      "name_key": "UPG_SPEED",
-      "desc_key": "UPG_SPEED_DESC",
-      "icon": "res://assets/sprites/ui/upg_speed.svg",
-      "max_level": 8,
-      "cost_bolts": [
-        40,
-        65,
-        100,
-        165,
-        260,
-        420,
-        670,
-        1075
-      ],
-      "effects": [
-        {
-          "key": "speed_mult",
-          "op": "add",
-          "per_level": 0.08
-        }
-      ]
-    },
-    {
-      "id": "suction",
-      "name_key": "UPG_SUCTION",
-      "desc_key": "UPG_SUCTION_DESC",
-      "icon": "res://assets/sprites/ui/upg_suction.svg",
-      "max_level": 8,
-      "cost_bolts": [
-        50,
-        80,
-        130,
-        205,
-        330,
-        525,
-        840,
-        1340
-      ],
-      "effects": [
-        {
-          "key": "suck_speed_mult",
-          "op": "add",
-          "per_level": 0.12
         },
         {
-          "key": "range_add",
+          "key": "rare_mult",
           "op": "add",
-          "per_level": 0.1
-        }
-      ]
-    },
-    {
-      "id": "tool",
-      "name_key": "UPG_TOOL",
-      "desc_key": "UPG_TOOL_DESC",
-      "icon": "res://assets/sprites/ui/upg_tool.svg",
-      "max_level": 4,
-      "cost_bolts": [
-        300,
-        1500,
-        6000,
-        20000
-      ],
-      "effects": [
-        {
-          "key": "hammer_tier",
-          "op": "add",
-          "per_level": 1
-        },
-        {
-          "key": "suction_tier",
-          "op": "add",
-          "per_level": 1
+          "per_level": 0.03
         }
       ]
     }

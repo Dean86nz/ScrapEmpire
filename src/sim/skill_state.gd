@@ -1,6 +1,6 @@
 class_name SkillState
 extends RefCounted
-## Skilltree: Stufen je Skill aus data/skills.json, bezahlt mit Skillpunkten (1 je Stufe).
+## Skilltree: Stufen je Skill aus data/skills.json, bezahlt mit Skillpunkten (cost_points je Stufe, Standard 1).
 
 signal skill_changed(id: String, level: int)
 
@@ -25,6 +25,17 @@ func setup(data: Dictionary) -> void:
 	by_id.clear()
 	for d: Dictionary in defs:
 		by_id[str(d["id"])] = d
+
+
+func cost(id: String) -> int:
+	return int(by_id.get(id, {}).get("cost_points", 1))
+
+
+func total_bought() -> int:
+	var n := 0
+	for k in levels:
+		n += int(levels[k])
+	return n
 
 
 func level_of(id: String) -> int:
@@ -52,7 +63,7 @@ func can_buy(id: String, skill_points: int) -> String:
 		return "max"
 	if not missing_requirement(id).is_empty():
 		return "requires"
-	if skill_points < 1:
+	if skill_points < cost(id):
 		return "points"
 	return ""
 

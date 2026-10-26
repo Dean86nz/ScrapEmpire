@@ -38,7 +38,7 @@ func _process(_delta: float) -> bool:
 		var step := _steps[_i]
 		var ok: bool = step["check"].call()
 		if not ok and _world != null:
-			print("   Zustand: bolts=%d inv=%d stage=%d cargo=%d bots=%d drohnen=%d tick=%d befehle=%d" % [_world.bolts, _world.player.inventory.total(), _world.ship().stage if _world.ship() else -1, int(_world.ship_upgrades.get("cargo", 0)), _world.helpers.size(), _world.drones.size(), _world.tick_count, _world.pending_commands()])
+			print("   Zustand: bolts=%d inv=%d stage=%d ertrag=%d bots=%d drohnen=%d tick=%d befehle=%d" % [_world.bolts, _world.player.inventory.total(), _world.ship().stage if _world.ship() else -1, int(_world.ship_upgrades.get("yield", 0)), _world.helpers.size(), _world.drones.size(), _world.tick_count, _world.pending_commands()])
 		print(("PASS " if ok else "FAIL ") + str(step["name"]))
 		if not ok:
 			_fails.append(str(step["name"]))
@@ -145,10 +145,10 @@ func _build_steps() -> void:
 		func() -> bool: return not progress.visible and router.context == router.Context.GAME, 4)
 	_step("X öffnet das Schiff-Menü wieder", func() -> void: _tap(JOY_BUTTON_X),
 		func() -> bool: return progress.visible and progress._tab == progress.Tab.SHIP)
-	_step("D-Pad rechts zum Laderaum, A kauft", func() -> void:
+	_step("D-Pad rechts zum Ertrag, A kauft", func() -> void:
 			_tap(JOY_BUTTON_DPAD_RIGHT)
 			_tap(JOY_BUTTON_A),
-		func() -> bool: return int(_world.ship_upgrades.get("cargo", 0)) == 1 and _world.player.inventory.slot_count == 5, 8, 200)
+		func() -> bool: return int(_world.ship_upgrades.get("yield", 0)) == 1, 8, 200)
 	_step("B schließt das Schiff-Menü", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return not progress.visible and router.context == router.Context.GAME)
 
 	# Bots-Tab

@@ -53,36 +53,27 @@ func test_start_inventory_is_small() -> void:
 
 func test_upgrade_costs_follow_table() -> void:
 	var w := TestWorlds.make()
-	assert_eq(ShipSystem.upgrade_cost(w, "cargo"), 25)
 	assert_eq(ShipSystem.upgrade_cost(w, "yield"), 60)
-	assert_eq(ShipSystem.upgrade_cost(w, "speed"), 40)
-	assert_eq(ShipSystem.upgrade_cost(w, "suction"), 50)
-	assert_eq(ShipSystem.upgrade_cost(w, "tool"), 300)
-	w.ship_upgrades["cargo"] = 1
-	assert_eq(ShipSystem.upgrade_cost(w, "cargo"), 40, "25 × 1,6 auf 5 gerundet")
-	w.ship_upgrades["cargo"] = 8
-	assert_eq(ShipSystem.upgrade_cost(w, "cargo"), -1)
-	assert_eq(ShipSystem.can_buy_upgrade(w, "cargo"), "max")
+	w.ship_upgrades["yield"] = 1
+	assert_eq(ShipSystem.upgrade_cost(w, "yield"), 100)
+	w.ship_upgrades["yield"] = 10
+	assert_eq(ShipSystem.upgrade_cost(w, "yield"), -1)
+	assert_eq(ShipSystem.can_buy_upgrade(w, "yield"), "max")
 
 
-func test_buy_upgrades_change_rusty() -> void:
+func test_buy_yield_upgrade() -> void:
 	var w := TestWorlds.make()
 	TestWorlds.with_ship(w)
-	w.bolts = 100000
+	w.bolts = 1000
 	var bought := []
 	w.ship_upgrade_bought.connect(func(id: String, lvl: int) -> void: bought.append([id, lvl]))
-	for id in ["cargo", "cargo", "yield", "speed", "suction", "tool"]:
-		w.queue_command({"type": "buy_upgrade", "id": id})
+	w.queue_command({"type": "buy_upgrade", "id": "yield"})
+	w.queue_command({"type": "buy_upgrade", "id": "yield"})
 	w.tick()
-	assert_eq(bought.size(), 6)
-	assert_eq(w.player.inventory.slot_count, 6, "4 + 2 Laderaum")
-	assert_true(absf(float(w.mods["sell_mult"]) - 1.1) < 0.001)
-	assert_true(absf(float(w.mods["speed_mult"]) - 1.08) < 0.001)
-	assert_eq(w.player.suck_interval, 4, "5 / 1,12 = 4,5 → 4")
-	assert_eq(w.player.hammer_tier, 2)
-	assert_eq(w.player.suction_tier, 2)
-	assert_eq(w.bolts, 100000 - 25 - 40 - 60 - 40 - 50 - 300)
-	assert_eq(ShipSystem.upgrades_total(w), 6)
+	assert_eq(bought, [["yield", 1], ["yield", 2]])
+	assert_true(absf(float(w.mods["sell_mult"]) - 1.2) < 0.001)
+	assert_eq(w.bolts, 1000 - 60 - 100)
+	assert_eq(ShipSystem.upgrades_total(w), 2)
 
 
 func test_yield_upgrade_raises_delivery_value() -> void:
@@ -100,7 +91,7 @@ func test_upgrade_without_bolts_fails() -> void:
 	var w := TestWorlds.make()
 	var fails := []
 	w.ship_failed.connect(func(r: String) -> void: fails.append(r))
-	w.queue_command({"type": "buy_upgrade", "id": "cargo"})
+	w.queue_command({"type": "buy_upgrade", "id": "yield"})
 	w.tick()
 	assert_eq(fails, ["upgrade_bolts"])
 	assert_eq(w.player.inventory.slot_count, 4)
@@ -154,7 +145,7 @@ func test_save_roundtrip_keeps_stage_and_upgrades() -> void:
 	var s := TestWorlds.with_ship(w)
 	s.stage = 3
 	ShipSystem.apply_stage(w, s)
-	w.ship_upgrades["cargo"] = 2
+	w.ship_upgrades["yield"] = 2
 	w.recompute_modifiers()
 	var data := SaveCodec.encode(w, "main", Vector2(32, 32), 0)
 	assert_eq(int(data["version"]), SaveCodec.VERSION)
@@ -163,7 +154,7 @@ func test_save_roundtrip_keeps_stage_and_upgrades() -> void:
 	var s2 := w2.ship()
 	assert_eq(s2.stage, 3)
 	assert_true(w2.unlocked_features.has("drones"), "Freischaltungen aus der Stufe")
-	assert_eq(w2.player.inventory.slot_count, 6)
+	assert_true(absf(float(w2.mods["sell_mult"]) - 1.2) < 0.001, "Ertrag nach dem Laden")
 
 
 func test_ensure_ship_and_planet_health() -> void:

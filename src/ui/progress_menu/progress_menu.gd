@@ -405,8 +405,8 @@ func _build_skill_cards() -> void:
 		col.add_child(header)
 		for d: Dictionary in skills:
 			var id := str(d["id"])
-			var btn := _make_card(tr(str(d["name_key"])))
-			btn.custom_minimum_size = Vector2(350, 150)
+			var btn := _make_card(tr(str(d["name_key"])), str(d.get("icon", "")))
+			btn.custom_minimum_size = Vector2(350, 170)
 			btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_skill", "id": id}))
 			col.add_child(btn)
 			_skill_cards[id] = btn
@@ -623,21 +623,18 @@ func _refresh_skills() -> void:
 		var btn: Button = _skill_cards[id]
 		var level := _world.skills.level_of(id)
 		var maxl := int(d["max_level"])
-		var desc := tr(str(d.get("desc_key", "")))
 		var reason := _world.skills.can_buy(id, _world.progression.skill_points)
-		var status := ""
+		_set_pips(btn, level, maxl)
+		_set_card(btn, tr(str(d.get("desc_key", ""))), TINT_DONE if level >= maxl else (TINT_OK if reason == "" else TINT_NO))
+		var pts := _world.skills.cost(id)
 		match reason:
 			"max":
-				status = tr("SKILL_MAXED")
+				_set_cost(btn, "✓ " + tr("SKILL_MAXED"), COST_OK, false)
 			"requires":
 				var miss := _world.skills.missing_requirement(id)
-				status = tr("SKILL_NEEDS") % [tr(str(_world.skills.by_id[miss["skill"]]["name_key"])), int(miss["level"])]
-			"points":
-				status = tr("SKILL_NO_POINTS")
+				_set_cost(btn, tr("SKILL_NEEDS") % [tr(str(_world.skills.by_id[miss["skill"]]["name_key"])), int(miss["level"])], COST_NO, false)
 			_:
-				status = tr("SKILL_BUY")
-		_set_card(btn, "%d / %d · %s\n%s" % [level, maxl, desc, status],
-			TINT_DONE if level >= maxl else (TINT_OK if reason == "" else TINT_NO))
+				_set_cost(btn, "★ " + (tr("SKILL_COST_POINTS") % pts if pts > 1 else tr("SKILL_COST_ONE")), COST_OK if reason == "" else COST_NO, false)
 
 
 func _refresh_goals() -> void:
@@ -683,7 +680,7 @@ func _refresh_goals() -> void:
 	var next_tier_obj := _next_locked_object()
 	if not next_tier_obj.is_empty():
 		lines.append("🔧 %s: %s (T%d) – %s" % [tr("GOAL_OBJECT"), tr(str(next_tier_obj["name_key"])), int(next_tier_obj["tier"]),
-			tr("GOAL_NEEDS_TOOL") % [int(next_tier_obj["tier"]), tr("UPG_TOOL")]])
+			tr("GOAL_NEEDS_TOOL") % [int(next_tier_obj["tier"]), tr("SKILL_TOOL")]])
 	if _world.collectible_total() > 0:
 		lines.append("🧸 %s: %d / %d" % [tr("GOAL_COLLECTIBLES"), _world.collectibles_found.size(), _world.collectible_total()])
 	if not _world.progression.is_max_level():

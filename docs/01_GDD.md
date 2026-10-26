@@ -359,6 +359,8 @@ Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten 
 
 **Seit MS24 (v1.13.0): Menüs.** Am Anfang drei Tabs (Schiff, Ziele, Karte); weitere erscheinen, wenn sie etwas zu bieten haben (Skills ab Level 2, Journal ab dem ersten Fundstück, Bots ab Schiffsstufe 2, Drohnen ab Stufe 3), mit Neu-Punkt. Karten: Icon, Stufen-Punkte, Kosten mit Bolt-Symbol in Grün oder Rot statt Fehlbetrag als Text. Abbauen (Bot, Drohne) nur mit LT, nie mit A.
 
+**Seit MS25 (v1.14.0): XP verbessert Rusty, Bolts das Schiff.** Skills (XP, 2 Punkte je Level bis 25): Fahrtempo, Boost, Saugtempo, Reichweite, Magnet, Taschen, Werkzeug (3 Punkte je Stufe). Schiff (Bolts): Reparatur, Ertrag (inkl. Bonus seltene Teile), Bots, Drohnen. Kein Wert darf an beiden Stellen vorkommen (Test).
+
 ### 23a. Kapitel und Tore (MS12, umgesetzt)
 
 - Die Zonen einer Karte haben eine feste Reihenfolge (`zone_order` in der Karten-JSON); jede Zone ist ein **Kapitel**. Nur die erste Zone ist zu Beginn freigeschaltet.

@@ -28,11 +28,11 @@ func test_chain_starts_simple_and_ends_with_launch() -> void:
 	assert_eq(ids[0], "q_move")
 	assert_eq(ids[1], "q_collect")
 	assert_eq(ids[2], "q_deliver")
-	assert_eq(ids[3], "q_upgrade")
+	assert_eq(ids[3], "q_yield1")
 	assert_eq(ids[-1], "q_launch")
 	for q in w.quests.defs:
 		assert_true(["moved", "collect", "ship_delivered", "upgrades_bought", "wrecks", "upgrade_level", "bolts_earned",
-			"zone_gate", "ship_stage", "helpers", "drones", "collectibles", "planet", "cleaned", "deliveries"].has(str(q["type"])), "bekannter Typ: " + str(q["type"]))
+			"zone_gate", "ship_stage", "helpers", "drones", "collectibles", "planet", "cleaned", "deliveries", "skills_bought", "skill_level"].has(str(q["type"])), "bekannter Typ: " + str(q["type"]))
 
 
 func test_first_minutes_move_collect_deliver_upgrade() -> void:
@@ -53,17 +53,20 @@ func test_first_minutes_move_collect_deliver_upgrade() -> void:
 	TestWorlds.run(w, 10)
 	assert_eq(done.back(), "q_deliver")
 	assert_eq(w.bolts, 30, "20 Schrott + 10 Bonus")
-	w.queue_command({"type": "buy_upgrade", "id": "cargo"})
+	w.bolts = 100
+	w.queue_command({"type": "buy_upgrade", "id": "yield"})
 	TestWorlds.run(w, 10)
-	assert_eq(done.back(), "q_upgrade")
+	assert_eq(done.back(), "q_yield1")
 
 
 func test_upgrade_level_and_bolts_earned() -> void:
 	var w := _world()
-	_goto(w, "q_cargo")
+	_goto(w, "q_bags2")
 	assert_eq(w.quests.progress(w), [0, 2])
-	w.ship_upgrades["cargo"] = 2
+	w.skills.levels["bags"] = 2
 	assert_true(w.quests.is_satisfied(w))
+	_goto(w, "q_skill")
+	assert_true(w.quests.is_satisfied(w), "zwei Taschen-Stufen = Skill gelernt")
 	_goto(w, "q_earn")
 	w.player.inventory.add("chrome", 10)
 	w.queue_command({"type": "deliver_all"})

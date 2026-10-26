@@ -1,4 +1,5 @@
 {
+  "_comment": "Skilltree (XP → Skillpunkte): nur Rustys eigene Fähigkeiten. Schiff-Sachen (Bolts) stehen in ship.json. cost_points = Punkte je Stufe (Standard 1).",
   "branches": [
     {
       "id": "movement",
@@ -6,29 +7,53 @@
       "color": "#4FB6E8"
     },
     {
+      "id": "suction",
+      "name_key": "SKILL_BRANCH_SUCTION",
+      "color": "#E07B39"
+    },
+    {
       "id": "inventory",
       "name_key": "SKILL_BRANCH_INVENTORY",
       "color": "#3FB47C"
     },
     {
-      "id": "trade",
-      "name_key": "SKILL_BRANCH_TRADE",
-      "color": "#F2C94C"
-    },
-    {
       "id": "tools",
       "name_key": "SKILL_BRANCH_TOOLS",
-      "color": "#F28C28"
+      "color": "#9B6BD6"
     }
   ],
   "skills": [
+    {
+      "id": "drive",
+      "branch": "movement",
+      "name_key": "SKILL_DRIVE",
+      "desc_key": "SKILL_DRIVE_DESC",
+      "icon": "res://assets/sprites/ui/upg_speed.svg",
+      "max_level": 8,
+      "requires": {},
+      "effects": [
+        {
+          "key": "speed_mult",
+          "op": "add",
+          "per_level": 0.08
+        },
+        {
+          "key": "turn_mult",
+          "op": "add",
+          "per_level": 0.1
+        }
+      ]
+    },
     {
       "id": "boost",
       "branch": "movement",
       "name_key": "SKILL_BOOST",
       "desc_key": "SKILL_BOOST_DESC",
+      "icon": "res://assets/sprites/ui/skill_boost.svg",
       "max_level": 3,
-      "requires": {},
+      "requires": {
+        "drive": 1
+      },
       "effects": [
         {
           "key": "boost_cooldown",
@@ -42,45 +67,46 @@
       ]
     },
     {
-      "id": "agility",
-      "branch": "movement",
-      "name_key": "SKILL_AGILITY",
-      "desc_key": "SKILL_AGILITY_DESC",
-      "max_level": 3,
-      "requires": {
-        "boost": 2
-      },
+      "id": "suck",
+      "branch": "suction",
+      "name_key": "SKILL_SUCK",
+      "desc_key": "SKILL_SUCK_DESC",
+      "icon": "res://assets/sprites/ui/upg_suction.svg",
+      "max_level": 8,
+      "requires": {},
       "effects": [
         {
-          "key": "turn_mult",
+          "key": "mine_speed_mult",
           "op": "add",
-          "per_level": 0.25
+          "per_level": 0.12
         }
       ]
     },
     {
-      "id": "stacker",
-      "branch": "inventory",
-      "name_key": "SKILL_STACKER",
-      "desc_key": "SKILL_STACKER_DESC",
+      "id": "reach",
+      "branch": "suction",
+      "name_key": "SKILL_REACH",
+      "desc_key": "SKILL_REACH_DESC",
+      "icon": "res://assets/sprites/ui/skill_reach.svg",
       "max_level": 4,
       "requires": {},
       "effects": [
         {
-          "key": "stack_add",
+          "key": "range_add",
           "op": "add",
-          "per_level": 5
+          "per_level": 0.5
         }
       ]
     },
     {
       "id": "magnet",
-      "branch": "inventory",
+      "branch": "suction",
       "name_key": "SKILL_MAGNET",
       "desc_key": "SKILL_MAGNET_DESC",
+      "icon": "res://assets/sprites/ui/skill_magnet.svg",
       "max_level": 3,
       "requires": {
-        "stacker": 2
+        "suck": 2
       },
       "effects": [
         {
@@ -91,47 +117,45 @@
       ]
     },
     {
-      "id": "connoisseur",
-      "branch": "trade",
-      "name_key": "SKILL_CONNOISSEUR",
-      "desc_key": "SKILL_CONNOISSEUR_DESC",
+      "id": "bags",
+      "branch": "inventory",
+      "name_key": "SKILL_BAGS",
+      "desc_key": "SKILL_BAGS_DESC",
+      "icon": "res://assets/sprites/ui/upg_cargo.svg",
+      "max_level": 8,
+      "requires": {},
+      "effects": [
+        {
+          "key": "slots_add",
+          "op": "add",
+          "per_level": 1
+        },
+        {
+          "key": "stack_add",
+          "op": "add",
+          "per_level": 2
+        }
+      ]
+    },
+    {
+      "id": "tool",
+      "branch": "tools",
+      "name_key": "SKILL_TOOL",
+      "desc_key": "SKILL_TOOL_DESC",
+      "icon": "res://assets/sprites/ui/upg_tool.svg",
       "max_level": 3,
+      "cost_points": 3,
       "requires": {},
       "effects": [
         {
-          "key": "rare_mult",
+          "key": "hammer_tier",
           "op": "add",
-          "per_level": 0.1
-        }
-      ]
-    },
-    {
-      "id": "tempo",
-      "branch": "tools",
-      "name_key": "SKILL_TEMPO",
-      "desc_key": "SKILL_TEMPO_DESC",
-      "max_level": 5,
-      "requires": {},
-      "effects": [
+          "per_level": 1
+        },
         {
-          "key": "mine_speed_mult",
+          "key": "suction_tier",
           "op": "add",
-          "per_level": 0.15
-        }
-      ]
-    },
-    {
-      "id": "reach",
-      "branch": "tools",
-      "name_key": "SKILL_REACH",
-      "desc_key": "SKILL_REACH_DESC",
-      "max_level": 4,
-      "requires": {},
-      "effects": [
-        {
-          "key": "range_add",
-          "op": "add",
-          "per_level": 0.5
+          "per_level": 1
         }
       ]
     }

@@ -10,12 +10,12 @@ func _populated() -> SimWorld:
 	w.bolts = 777
 	w.progression.add_xp(250)
 	w.progression.skill_points = 3
-	w.queue_command({"type": "buy_skill", "id": "tempo"})
+	w.queue_command({"type": "buy_skill", "id": "bags"})
 	w.tick()
 	var s := TestWorlds.with_ship(w, Vector2i(12, 5))
 	s.stage = 2
 	ShipSystem.apply_stage(w, s)
-	w.ship_upgrades["cargo"] = 1
+	w.ship_upgrades["yield"] = 1
 	w.recompute_modifiers()
 	w.add_pile("scrap_pile", Vector2i(4, 5), 7)
 	var toaster := w.add_object("toaster", Vector2i(2, 2))
@@ -34,9 +34,10 @@ func test_roundtrip_restores_everything() -> void:
 	assert_eq(w2.bolts, 777)
 	assert_eq(w2.player.inventory.count_of("scrap"), 23)
 	assert_eq(w2.player.inventory.count_of("chrome"), 2)
-	assert_eq(w2.player.inventory.slot_count, 5, "Laderaum-Upgrade nach dem Laden")
+	assert_eq(w2.player.inventory.slot_count, 5, "Taschen-Skill nach dem Laden")
 	assert_eq(w2.progression.level, 3)
-	assert_eq(w2.skills.level_of("tempo"), 1)
+	assert_eq(w2.skills.level_of("bags"), 1)
+	assert_eq(int(w2.ship_upgrades.get("yield", 0)), 1)
 	assert_eq(w2.ship().stage, 2)
 	assert_true(w2.unlocked_features.has("helpers"))
 	assert_eq(w2.nodes.size(), 2)
