@@ -6,7 +6,7 @@ enum Tab { SHIP, GOALS, SKILLS, MAP, HELPERS, DRONES, JOURNAL }
 const TAB_COUNT := 7
 
 const CARD_SCENE_MIN := Vector2(440, 150)
-const SHIP_CARD_MIN := Vector2(440, 160)
+const SHIP_CARD_MIN := Vector2(670, 160)
 const COST_OK := Color(0.18, 0.55, 0.24)
 const COST_NO := Color(0.75, 0.25, 0.2)
 const UPG_ICONS := {"speed": "res://assets/sprites/ui/upg_speed.svg", "capacity": "res://assets/sprites/ui/upg_cargo.svg", "tool": "res://assets/sprites/ui/upg_tool.svg"}
@@ -49,7 +49,8 @@ var _ship_cards: Dictionary = {}   # "upg:<id>", "repair", "bot", "drone" → Bu
 var _skill_cards: Dictionary = {}  # id → Button
 var _refresh_timer := 0.0
 var _stage_track := StageTrack.new()
-var _goal_lines: Array[String] = []   # zuletzt gezeigte Ziele (nur bei Änderung neu bauen, sonst geht der Fokus verloren)
+var _goals_sig := ""                  # zuletzt gezeigter Ziele-Stand (nur bei Änderung neu bauen, sonst geht der Fokus verloren)
+var _goals_show_done := false
 var _journal_sig := ""
 
 
@@ -68,6 +69,7 @@ func bind(world: SimWorld) -> void:
 	col.add_child(_stage_track)
 	col.add_child(_ship_grid)
 	_stage_track.bind(world)
+	_ship_grid.columns = 2   # seit MS25 nur noch vier Karten: Reparatur, Ertrag, Bot, Drohne
 	_build_ship_cards()
 	_build_skill_cards()
 	_map_view.zone_selected.connect(_on_zone_selected)
@@ -197,6 +199,13 @@ func _on_zone_selected(info: Dictionary) -> void:
 func open(tab: Tab = Tab.SHIP) -> void:
 	_tab = tab
 	visible = true
+	var panel: Control = $Center/Panel
+	panel.pivot_offset = panel.size * 0.5
+	panel.scale = Vector2(0.9, 0.9)
+	panel.modulate.a = 0.0
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(panel, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_property(panel, "modulate:a", 1.0, 0.15)
 	InputRouter.context = InputRouter.Context.MENU
 	_refresh_all()
 	_show_tab()
@@ -317,7 +326,27 @@ func _make_card(title: String, icon_path: String = "") -> Button:
 	box.add_child(detail)
 	box.add_child(cost)
 	row.add_child(box)
+	_lift_on_focus(btn)
 	return btn
+
+
+## Tabwechsel: Inhalt blendet weich ein und wächst ein kleines Stück.
+func _pop_content() -> void:
+	var content: Control = $Center/Panel/VBox/Content
+	content.pivot_offset = content.size * 0.5
+	content.scale = Vector2(0.97, 0.97)
+	content.modulate.a = 0.0
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(content, "scale", Vector2.ONE, 0.18).set_ease(Tween.EASE_OUT)
+	tw.tween_property(content, "modulate:a", 1.0, 0.14)
+
+
+## Fokus hebt Karten leicht an.
+func _lift_on_focus(btn: Control) -> void:
+	btn.focus_entered.connect(func() -> void:
+		btn.pivot_offset = btn.size * 0.5
+		btn.create_tween().tween_property(btn, "scale", Vector2(1.03, 1.03), 0.1))
+	btn.focus_exited.connect(func() -> void: btn.create_tween().tween_property(btn, "scale", Vector2.ONE, 0.1))
 
 
 func _part(btn: Button, part: String) -> Control:
@@ -638,81 +667,249 @@ func _refresh_skills() -> void:
 
 
 func _refresh_goals() -> void:
-	var lines: Array[String] = []
-	var cur := _world.zones.current_chapter_zone()
-	if cur != "":
-		var z := _world.zones.zone_by_id(cur)
-		var idx := _world.zones.chapter_index(cur) + 1
-		var pct := int(round(_world.zones.cleanliness(cur, _world.nodes) * 100.0))
-		var goal_pct := int(round(_world.zones.unlock_cleanliness * 100.0))
-		lines.append("📍 %s %d: %s" % [tr("CH_CHAPTER"), idx, str(z.get("name", cur))])
-		var next := _world.zones.next_chapter_zone()
-		if next != "":
-			lines.append("%s %s" % ["☑" if pct >= goal_pct else "☐", tr("CH_GOAL_CLEAN") % [goal_pct, pct]])
-			lines.append("🚪 " + tr("CH_NEXT") % str(_world.zones.zone_by_id(next).get("name", next)))
-		else:
-			lines.append("☑ " + tr("CH_GOAL_CLEAN_LAST") % pct)
-	# Aufgabenkette: zwei erledigte, die aktuelle, zwei kommende
-	var q := _world.quests
-	lines.append("")
-	lines.append("📋 %s (%d / %d)" % [tr("GOAL_QUESTS"), q.index, q.total()])
-	for i in range(maxi(q.index - 2, 0), mini(q.index + 3, q.total())):
-		var qd: Dictionary = q.defs[i]
-		var text := tr(str(qd.get("text_key", "")))
-		if i < q.index:
-			lines.append("☑ " + text)
-		elif i == q.index:
-			var p := q.progress(_world)
-			lines.append("☐ " + text + ("  (%d/%d)" % [int(p[0]), int(p[1])] if int(p[1]) > 1 else ""))
-		else:
-			lines.append("○ " + text)
-	if q.is_done():
-		lines.append("☑ " + tr("HUD_QUESTS_DONE"))
-	lines.append("")
-	# Nächste Schiffsstufe
-	var s := _world.ship()
-	if s != null and ShipSystem.next_stage_cost(_world, s) > 0:
-		var gifts: Array[String] = []
-		for f in ShipSystem.next_stage_unlocks(_world, s):
-			gifts.append(tr("UNLOCK_" + str(f).to_upper()))
-		lines.append("🚀 %s: %s → %s" % [tr("GOAL_SHIP_STAGE") % (s.stage + 1), _bolts_text(ShipSystem.next_stage_cost(_world, s)), ", ".join(gifts)])
-	# Werkzeug für härteren Müll
-	var next_tier_obj := _next_locked_object()
-	if not next_tier_obj.is_empty():
-		lines.append("🔧 %s: %s (T%d) – %s" % [tr("GOAL_OBJECT"), tr(str(next_tier_obj["name_key"])), int(next_tier_obj["tier"]),
-			tr("GOAL_NEEDS_TOOL") % [int(next_tier_obj["tier"]), tr("SKILL_TOOL")]])
-	if _world.collectible_total() > 0:
-		lines.append("🧸 %s: %d / %d" % [tr("GOAL_COLLECTIBLES"), _world.collectibles_found.size(), _world.collectible_total()])
-	if not _world.progression.is_max_level():
-		lines.append("⭐ %s: %d / %d XP" % [tr("HUD_LEVEL") % (_world.progression.level + 1), _world.progression.xp, _world.progression.xp_needed()])
-	# Meilensteine: nächste Schwelle je Zähler
-	lines.append("")
-	lines.append("🏆 " + tr("MS_HEADER"))
-	for md: Dictionary in _world.milestones.defs:
-		var nxt := _world.milestones.next_step(md)
-		var cur_v := MilestoneState.stat(_world, str(md.get("stat", "")))
-		var stars := "★".repeat(_world.milestones.steps_done(str(md["id"]))) + "☆".repeat((md.get("steps", []) as Array).size() - _world.milestones.steps_done(str(md["id"])))
-		if nxt < 0:
-			lines.append("%s  %s · %s" % [stars, tr(str(md["name_key"])) % Fmt.int_str(cur_v), tr("MS_ALL_DONE")])
-		else:
-			lines.append("%s  %s  (%s / %s)" % [stars, tr(str(md["name_key"])) % Fmt.int_str(nxt), Fmt.int_str(mini(cur_v, nxt)), Fmt.int_str(nxt)])
-	if lines == _goal_lines and _goals_list.get_child_count() == lines.size():
+	var w := _world
+	var q := w.quests
+	var sig := "%d|%s|%d|%d|%d|%s|%d" % [q.index, str(q.progress(w)), w.bolts, int(round(w.zones.planet_health(w.nodes) * 100.0)),
+		w.ship().stage if w.ship() != null else 0, str(w.milestones.done), int(_goals_show_done)]
+	if sig == _goals_sig and _goals_list.get_child_count() > 0:
 		return
-	_goal_lines = lines
+	_goals_sig = sig
 	var focus_idx := _clear_keep_focus(_goals_list)
-	for text in lines:
-		if text == "":
-			var gap := Control.new()
-			gap.custom_minimum_size = Vector2(0, 14)
-			_goals_list.add_child(gap)
-			continue
-		var card := _make_card(text)
-		card.custom_minimum_size = Vector2(1360, 110 if text.length() > 80 else 72)
-		var title := _part(card, "Title") as Label
-		title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		_part(card, "Detail").visible = false
-		_goals_list.add_child(card)
+	# 1) Aktuelle Aufgabe groß
+	if q.is_done():
+		_goals_list.add_child(_hero_card("res://assets/sprites/ui/trophy.svg", tr("GOAL_NOW"), tr("HUD_QUESTS_DONE"), 1.0, ""))
+	else:
+		var qd: Dictionary = q.current()
+		var p := q.progress(w)
+		var frac := float(p[0]) / float(maxi(int(p[1]), 1))
+		var count := "%s / %s" % [Fmt.int_str(int(p[0])), Fmt.int_str(int(p[1]))] if int(p[1]) > 1 else ""
+		_goals_list.add_child(_hero_card(_quest_icon(qd), tr("GOAL_NOW"), tr(str(qd.get("text_key", ""))), frac, count))
+	# 2) Als Nächstes: höchstens zwei
+	var next_row := HBoxContainer.new()
+	next_row.add_theme_constant_override("separation", 14)
+	for i in range(q.index + 1, mini(q.index + 3, q.total())):
+		var nd: Dictionary = q.defs[i]
+		var c := _mini_card(_quest_icon(nd), tr("GOAL_NEXT"), tr(str(nd.get("text_key", ""))), -1.0)
+		c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		next_row.add_child(c)
+	if next_row.get_child_count() > 0:
+		_goals_list.add_child(next_row)
+	# 3) Erledigt: eingeklappt, A klappt auf
+	if q.index > 0:
+		var done := _mini_card("res://assets/sprites/ui/tab_goals.svg", tr("GOAL_DONE_N") % q.index, tr("GOAL_DONE_HIDE") if _goals_show_done else tr("GOAL_DONE_SHOW"), -1.0)
+		done.pressed.connect(func() -> void:
+			_goals_show_done = not _goals_show_done
+			_refresh_goals())
+		_goals_list.add_child(done)
+		if _goals_show_done:
+			for i in q.index:
+				var dd: Dictionary = q.defs[i]
+				var l := Label.new()
+				l.text = "   ✓  " + tr(str(dd.get("text_key", "")))
+				l.add_theme_color_override("font_color", Color(0.25, 0.5, 0.25))
+				l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+				_goals_list.add_child(l)
+	# 4) Kapitel und Schiff nebeneinander
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 14)
+	var cur := w.zones.current_chapter_zone()
+	if cur != "":
+		var z := w.zones.zone_by_id(cur)
+		var pct := w.zones.cleanliness(cur, w.nodes)
+		var goal := w.zones.unlock_cleanliness
+		var sub := tr("CH_GOAL_CLEAN") % [int(round(goal * 100.0)), int(round(pct * 100.0))] if w.zones.next_chapter_zone() != "" else tr("CH_GOAL_CLEAN_LAST") % int(round(pct * 100.0))
+		var cc := _mini_card("res://assets/sprites/ui/tab_map.svg", "%s %d · %s" % [tr("CH_CHAPTER"), w.zones.chapter_index(cur) + 1, str(z.get("name", cur))], sub, clampf(pct / maxf(goal, 0.01), 0.0, 1.0))
+		cc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(cc)
+	var s := w.ship()
+	if s != null and ShipSystem.next_stage_cost(w, s) > 0:
+		var cost := ShipSystem.next_stage_cost(w, s)
+		var gifts: Array[String] = []
+		for f in ShipSystem.next_stage_unlocks(w, s):
+			gifts.append(tr("GIFT_" + str(f).to_upper()))
+		var sc := _mini_card(str(ShipSystem.stage_def(w, s.stage + 1).get("sprite", "")), tr("GOAL_SHIP_STAGE") % (s.stage + 1),
+			"%s / %s Bolts · %s" % [Fmt.int_str(mini(w.bolts, cost)), Fmt.int_str(cost), ", ".join(gifts)], clampf(float(w.bolts) / float(cost), 0.0, 1.0))
+		sc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(sc)
+	if row.get_child_count() > 0:
+		_goals_list.add_child(row)
+	# 5) Tipp zum Werkzeug, falls härterer Müll wartet
+	var obj := _next_locked_object()
+	if not obj.is_empty():
+		_goals_list.add_child(_mini_card("res://assets/sprites/ui/upg_tool.svg", tr("GOAL_OBJECT") + ": " + tr(str(obj["name_key"])),
+			tr("GOAL_NEEDS_TOOL") % [int(obj["tier"]), tr("SKILL_TOOL")], -1.0))
+	# 6) Meilensteine als kleine Kacheln, drei je Reihe
+	var head := Label.new()
+	head.text = tr("MS_HEADER")
+	head.add_theme_font_size_override("font_size", 28)
+	head.add_theme_color_override("font_color", Color(0.95, 0.5, 0.12))
+	_goals_list.add_child(head)
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 14)
+	grid.add_theme_constant_override("v_separation", 14)
+	for md: Dictionary in w.milestones.defs:
+		var nxt := w.milestones.next_step(md)
+		var cur_v := MilestoneState.stat(w, str(md.get("stat", "")))
+		var done_n := w.milestones.steps_done(str(md["id"]))
+		var stars := "★".repeat(done_n) + "☆".repeat((md.get("steps", []) as Array).size() - done_n)
+		var title := tr(str(md["name_key"])) % Fmt.int_str(nxt if nxt >= 0 else cur_v)
+		var mc := _mini_card(str(md.get("icon", "")), title, stars + ("  " + tr("MS_ALL_DONE") if nxt < 0 else "  %s / %s" % [Fmt.int_str(mini(cur_v, nxt)), Fmt.int_str(nxt)]),
+			1.0 if nxt < 0 else clampf(float(cur_v) / float(maxi(nxt, 1)), 0.0, 1.0))
+		mc.custom_minimum_size = Vector2(673, 112)
+		grid.add_child(mc)
+	_goals_list.add_child(grid)
 	_restore_focus(_goals_list, focus_idx)
+
+
+## Bild zur Aufgabe nach ihrem Typ.
+func _quest_icon(qd: Dictionary) -> String:
+	match str(qd.get("type", "")):
+		"collect":
+			return "res://assets/sprites/items/%s.svg" % str(qd.get("item", "scrap"))
+		"ship_delivered", "deliveries":
+			return "res://assets/sprites/ui/ms_crate.svg"
+		"upgrades_bought", "upgrade_level":
+			return "res://assets/sprites/ui/upg_%s.svg" % str(qd.get("upgrade", "yield"))
+		"skills_bought", "level":
+			return "res://assets/sprites/ui/tab_skills.svg"
+		"skill_level":
+			return str(_world.skills.by_id.get(str(qd.get("skill", "")), {}).get("icon", "res://assets/sprites/ui/tab_skills.svg"))
+		"wrecks":
+			return "res://assets/sprites/ui/ms_hammer.svg"
+		"bolts_earned":
+			return "res://assets/sprites/ui/bolt.svg"
+		"zone_gate", "planet":
+			return "res://assets/sprites/ui/tab_map.svg"
+		"ship_stage":
+			return "res://assets/sprites/buildings/ship_%d.svg" % clampi(int(qd.get("amount", 2)), 1, 5)
+		"helpers":
+			return "res://assets/sprites/robot/rusty.svg"
+		"drones":
+			return "res://assets/sprites/robot/drone.svg"
+		"collectibles":
+			return "res://assets/sprites/ui/tab_journal.svg"
+		"cleaned":
+			return "res://assets/sprites/ui/ms_broom.svg"
+	return "res://assets/sprites/robot/rusty.svg"
+
+
+func _bar(frac: float, height: int) -> ProgressBar:
+	var bar := ProgressBar.new()
+	bar.custom_minimum_size = Vector2(0, height)
+	bar.max_value = 1.0
+	bar.step = 0.001
+	bar.value = frac
+	bar.show_percentage = false
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = Color(0.165, 0.165, 0.2, 0.15)
+	bg.set_corner_radius_all(height / 2)
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color(0.45, 0.8, 0.35) if frac < 1.0 else Color(0.95, 0.65, 0.2)
+	fill.set_corner_radius_all(height / 2)
+	bar.add_theme_stylebox_override("background", bg)
+	bar.add_theme_stylebox_override("fill", fill)
+	return bar
+
+
+## Große Karte für die aktuelle Aufgabe: Bild, Überschrift, Text, Balken.
+func _hero_card(icon: String, kicker: String, text: String, frac: float, count: String) -> Button:
+	var btn := Button.new()
+	btn.custom_minimum_size = Vector2(1360, 210)
+	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	row.offset_left = 26
+	row.offset_right = -26
+	row.offset_top = 16
+	row.offset_bottom = -16
+	row.add_theme_constant_override("separation", 26)
+	btn.add_child(row)
+	var pic := TextureRect.new()
+	pic.texture = load(icon)
+	pic.custom_minimum_size = Vector2(170, 170)
+	pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	pic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(pic)
+	var col := VBoxContainer.new()
+	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	col.alignment = BoxContainer.ALIGNMENT_CENTER
+	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_theme_constant_override("separation", 8)
+	row.add_child(col)
+	var k := Label.new()
+	k.text = kicker
+	k.add_theme_font_size_override("font_size", 24)
+	k.add_theme_color_override("font_color", Color(0.95, 0.5, 0.12))
+	col.add_child(k)
+	var t := Label.new()
+	t.text = text
+	t.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	t.add_theme_font_size_override("font_size", 34)
+	t.add_theme_color_override("font_color", Color(0.165, 0.165, 0.2))
+	col.add_child(t)
+	var brow := HBoxContainer.new()
+	brow.add_theme_constant_override("separation", 14)
+	var bar := _bar(frac, 30)
+	bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	brow.add_child(bar)
+	if count != "":
+		var c := Label.new()
+		c.text = count
+		c.add_theme_font_size_override("font_size", 26)
+		c.add_theme_color_override("font_color", Color(0.165, 0.165, 0.2))
+		brow.add_child(c)
+	col.add_child(brow)
+	_lift_on_focus(btn)
+	return btn
+
+
+## Kleine Karte: Bild, Titel, Untertitel, optional Balken (frac < 0: ohne).
+func _mini_card(icon: String, title: String, sub: String, frac: float) -> Button:
+	var btn := Button.new()
+	btn.custom_minimum_size = Vector2(0, 112)
+	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	row.offset_left = 16
+	row.offset_right = -16
+	row.offset_top = 10
+	row.offset_bottom = -10
+	row.add_theme_constant_override("separation", 14)
+	btn.add_child(row)
+	if icon != "":
+		var pic := TextureRect.new()
+		pic.texture = load(icon)
+		pic.custom_minimum_size = Vector2(72, 72)
+		pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		pic.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		pic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(pic)
+	var col := VBoxContainer.new()
+	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	col.alignment = BoxContainer.ALIGNMENT_CENTER
+	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(col)
+	var t := Label.new()
+	t.text = title
+	t.add_theme_font_size_override("font_size", 26)
+	t.add_theme_color_override("font_color", Color(0.165, 0.165, 0.2))
+	t.clip_text = true
+	col.add_child(t)
+	var s2 := Label.new()
+	s2.text = sub
+	s2.add_theme_font_size_override("font_size", 22)
+	s2.add_theme_color_override("font_color", Color(0.35, 0.35, 0.4))
+	s2.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	col.add_child(s2)
+	if frac >= 0.0:
+		col.add_child(_bar(frac, 16))
+	_lift_on_focus(btn)
+	return btn
 
 
 ## Leert eine Liste sofort und merkt sich, welcher Eintrag den Fokus hatte (-1: keiner).
@@ -720,7 +917,8 @@ func _clear_keep_focus(list: Container) -> int:
 	var f := get_viewport().gui_get_focus_owner()
 	var idx := -1
 	for i in list.get_child_count():
-		if list.get_child(i) == f:
+		var c := list.get_child(i)
+		if f != null and (c == f or c.is_ancestor_of(f)):
 			idx = i
 	for c in list.get_children():
 		list.remove_child(c)
@@ -732,10 +930,20 @@ func _restore_focus(list: Container, idx: int) -> void:
 	if idx < 0:
 		return
 	for i in range(mini(idx, list.get_child_count() - 1), -1, -1):
-		var c := list.get_child(i) as Control
-		if c != null and c.focus_mode != Control.FOCUS_NONE:
+		var c := _first_focusable(list.get_child(i))
+		if c != null:
 			c.grab_focus()
 			return
+
+
+func _first_focusable(n: Node) -> Control:
+	if n is Control and (n as Control).focus_mode != Control.FOCUS_NONE and (n as Control).visible:
+		return n as Control
+	for ch in n.get_children():
+		var f := _first_focusable(ch)
+		if f != null:
+			return f
+	return null
 
 
 ## Journal: Fundstücke mit Text, Unbekannte mit Kapitel-Hinweis.
@@ -793,6 +1001,7 @@ func _show_tab() -> void:
 	_drones_tab.visible = _tab == Tab.DRONES
 	_journal_tab.visible = _tab == Tab.JOURNAL
 	_world.flags["tab_seen_%d" % int(_tab)] = true
+	_pop_content()
 	for i in _tab_labels.size():
 		var box := _tab_labels[i].get_parent() as Control
 		box.visible = _tab_enabled(i)
@@ -821,3 +1030,5 @@ func _show_tab() -> void:
 			first = _journal_list.get_child(0) if _journal_list.get_child_count() > 0 else null
 	if first:
 		first.grab_focus()
+	if _tab == Tab.GOALS:
+		(_goals_tab as ScrollContainer).set_deferred("scroll_vertical", 0)

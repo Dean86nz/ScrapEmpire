@@ -2,6 +2,24 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.20.0] – 2026-10-26 – MS31 Menüs schöner (Spielgefühl, Punkt 2)
+
+### Neu
+- **Ziele-Tab neu aufgebaut:** Oben groß die aktuelle Aufgabe mit Bild und Fortschrittsbalken („Jetzt dran“), darunter die nächsten zwei Aufgaben nebeneinander. Erledigte Aufgaben sind eingeklappt („12 Aufgaben erledigt · A: anzeigen“). Darunter Kapitel und nächste Schiffsstufe als kleine Karten mit Balken, der Werkzeug-Tipp und die Meilensteine als Kacheln mit Sternen und Balken
+- **Schiff-Tab entschlackt:** Nur noch vier große Karten im 2×2-Raster
+- **Nur eine Hinweiszeile:** Bei offenem Menü verschwindet die zweite Zeile unten
+- **Verspielter:** Karten runder mit weichem Schatten, Fokus orange mit Glühen; die fokussierte Karte hebt sich leicht an. Das Menü ploppt beim Öffnen auf, beim Tabwechsel blendet der Inhalt weich ein
+
+### Technik
+- `_hero_card`, `_mini_card`, `_bar`, `_quest_icon`; der Ziele-Tab baut nur bei Änderung neu, der Fokus bleibt auch in verschachtelten Reihen erhalten
+- 188 Unit-Tests, 41 Gamepad-Prüfungen, 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Select, Tab „Ziele“: Ist auf einen Blick klar, was jetzt zu tun ist?
+2. D-Pad nach unten bis zu den Meilensteinen und zurück; auf „Aufgaben erledigt“ A drücken klappt auf und zu
+3. Unten nur eine Hinweiszeile
+4. Fühlen sich die Animationen beim Öffnen und Tabwechsel flott an oder bremsen sie?
+
 ## [1.19.0] – 2026-10-26 – MS30 Müll ist endlich, Nachschub kommt per Ereignis (Spielgefühl, Punkt 7)
 
 ### Geändert

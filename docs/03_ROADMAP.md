@@ -39,6 +39,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **28** | Spielgefühl 4: Anbauteile an Rusty je Skill in drei Stufen, Lackierung | v1.17.0 |
 | **29** | Spielgefühl 5: geputzter Boden wird Wiese, Schiff und saubere Zonen begrünen | v1.18.0 |
 | **30** | Spielgefühl 6: Müll endlich, Haufen als Müll gezeichnet, Touristen und Meteoriten als Nachschub | v1.19.0 |
+| **31** | Spielgefühl 7: Ziele-Tab mit Hauptaufgabe, Schiff-Tab 2×2, eine Hinweiszeile, runder und animiert | v1.20.0 |
 
 ## Runde „Spielgefühl“ nach dem dritten Praxistest (Go 2026-10-26)
 
