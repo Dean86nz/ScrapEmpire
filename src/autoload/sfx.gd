@@ -11,6 +11,7 @@ const BUS_DB := -6.0
 var _streams: Dictionary = {}
 var _players: Array[AudioStreamPlayer] = []
 var _next := 0
+var _last_play: Dictionary = {}   # id → Zeitpunkt (ms), für gedrosselte Sounds
 
 
 func _ready() -> void:
@@ -37,6 +38,15 @@ func play(id: String, pitch_jitter: float = 0.0, volume_db: float = 0.0) -> void
 	p.pitch_scale = 1.0 + randf_range(-pitch_jitter, pitch_jitter)
 	p.volume_db = volume_db
 	p.play()
+
+
+## Wie play, aber höchstens einmal je `min_gap` Sekunden (z. B. Plopp beim Dauersaugen).
+func play_throttled(id: String, min_gap: float, pitch_jitter: float = 0.0, volume_db: float = 0.0) -> void:
+	var now := Time.get_ticks_msec()
+	if now - int(_last_play.get(id, -100000)) < int(min_gap * 1000.0):
+		return
+	_last_play[id] = now
+	play(id, pitch_jitter, volume_db)
 
 
 # --- Erzeugung ----------------------------------------------------------------
@@ -74,6 +84,10 @@ func _build() -> void:
 	for i in cheer.size():
 		_mix_tone(buf, i * 0.09, 0.55 if i == 2 else 0.3, cheer[i], "sine", 0.22, 4.0 if i == 2 else 8.0)
 	_streams["cheer"] = _to_stream(buf)
+	# Einsaug-Plopp: sehr kurz, tief, leise
+	buf = _silence(0.09)
+	_mix_sweep(buf, 0.0, 0.07, 520.0, 240.0, 0.28)
+	_streams["plop"] = _to_stream(buf)
 	# Plopp: kurzer fallender Ton
 	buf = _silence(0.12)
 	_mix_sweep(buf, 0.0, 0.09, 950.0, 380.0, 0.5)

@@ -550,3 +550,6 @@ QUEST_BAGS2,Bau den Skill Taschen auf Stufe 2 aus.,Raise the Bags skill to level
 QUEST_DRIVE1,Lerne den Skill Fahrtempo.,Learn the Driving skill.
 QUEST_SUCK2,Bau den Skill Saugtempo auf Stufe 2 aus.,Raise the Suction speed skill to level 2.
 SKILL_COST_ONE,1 Punkt,1 point
+HUD_GOAL_LEFT,Noch %s Bolts bis %s,%s more bolts to %s
+HUD_GOAL_READY,%s: jetzt leistbar!,%s: affordable now!
+HUD_GOAL_SKILL,Skillpunkt frei! Select → Skills,Skill point ready! Select → Skills

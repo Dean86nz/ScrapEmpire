@@ -23,13 +23,21 @@ var _world: SimWorld
 var _slots: Array = []
 var _selected := 0
 var stage_banner := StageBanner.new()
+var _goal_panel := PanelContainer.new()
+var _goal_icon := TextureRect.new()
+var _goal_label := Label.new()
+var _goal_timer := 0.0
 var _bolts_shown := 0
 var _bolts_tween: Tween
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if _world == null:
 		return
+	_goal_timer -= delta
+	if _goal_timer <= 0.0:
+		_goal_timer = 0.4
+		_refresh_goal()
 	var t := _world.tech
 	_research.visible = t.is_researching()
 	if t.is_researching():
@@ -53,6 +61,7 @@ func rebuild_hotbar() -> void:
 
 func _ready() -> void:
 	add_child(stage_banner)
+	_build_goal_panel()
 	set_hint(tr("HUD_HINT_GAME"))
 	set_bolts(0)
 
@@ -101,6 +110,37 @@ func set_bolts(value: int) -> void:
 func _show_bolts(value: int) -> void:
 	_bolts_shown = value
 	_bolts_label.text = "%s %s" % [Fmt.int_str(value), tr("HUD_BOLTS")]
+
+
+func _build_goal_panel() -> void:
+	_goal_panel.add_theme_stylebox_override("panel", ($BoltsPanel as PanelContainer).get_theme_stylebox("panel"))
+	_goal_panel.position = Vector2(24, 136)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	_goal_icon.custom_minimum_size = Vector2(36, 36)
+	_goal_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_goal_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_goal_label.add_theme_font_size_override("font_size", 24)
+	row.add_child(_goal_icon)
+	row.add_child(_goal_label)
+	_goal_panel.add_child(row)
+	_goal_panel.visible = false
+	add_child(_goal_panel)
+
+
+## Nächstes Ziel im HUD: Leistbares zuerst (grün), sonst ein freier Skillpunkt, sonst das
+## günstigste Schiff-Ziel mit „noch N Bolts“.
+func _refresh_goal() -> void:
+	var g := GoalHint.next_goal(_world)
+	_goal_panel.visible = not g.is_empty()
+	if g.is_empty():
+		return
+	_goal_label.text = str(g["text"])
+	_goal_label.add_theme_color_override("font_color", Color(0.55, 0.95, 0.5) if g["ready"] else Color(1, 1, 1))
+	var path := str(g["icon"])
+	if _goal_icon.texture == null or _goal_icon.texture.resource_path != path:
+		_goal_icon.texture = load(path)
+	_goal_panel.reset_size()
 
 
 func set_hint(text: String) -> void:
