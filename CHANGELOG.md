@@ -2,6 +2,31 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.19.0] – 2026-10-26 – MS30 Müll ist endlich, Nachschub kommt per Ereignis (Spielgefühl, Punkt 7)
+
+### Geändert
+- **Aller Müll ist endlich:** Haufen wachsen nicht mehr nach und verschwinden ganz, wenn sie leer sind (auch Treibholz, Geröll, Satellit). Nichts respawnt mehr
+- **Haufen sehen nach Müll aus** statt nach grauen Bergen: Schrotthaufen mit Reifen, Dosen und Blech, Kupfer-Kabelsalat mit Steckern, bunter Plastikhaufen mit Flaschen und Bechern
+
+### Neu
+- **Weltraum-Touristen** (erstmals nach 4 Minuten, dann alle 4–6 Minuten): „Hup hup!“, 5 s später fliegt ein knallbuntes Camping-UFO vorbei und wirft 4–6 Müllsäcke ab. Rusty schimpft („Hey! Das ist kein Mülleimer!“). Säcke mit dem Hammer öffnen
+- **Meteoritenschauer** (ab Schiffsstufe 2, alle 7–10 Minuten): Der Himmel färbt sich orange, 20 s Vorwarnung, dann stürzen 5–8 Brocken mit Feuerschweif herab. Sie enthalten Chrom, Titan und Sternenstaub
+- **Bonus-Müll liegt obendrauf:** Er verschmutzt den Boden nicht, die Wiese bleibt Wiese. Er ist ergiebiger als normaler Müll: Ein Sack enthält 15–22 Teile (Toaster: 10), ein Meteor 16–24
+- Höchstens 40 Bonus-Objekte gleichzeitig; alle Werte in `data/events.json`
+
+### Hinweis zur Umsetzung
+- Den „Wert ×1,5 / ×2“ aus dem Vorschlag habe ich als **mehr Inhalt** umgesetzt (Teile × 1,5 bzw. × 2), nicht als höheren Preis je Teil. Sonst müsste sich jedes einzelne Teil merken, woher es kommt
+
+### Technik
+- `EventSystem` (Sim, deterministisch, Zustand im Spielstand), `EventView` (Schild, UFO, fallende Säcke, Meteore, Staub, Himmel), `NodeSystem.after_take`, `ResourceNode.bonus/is_used_up`; Sounds `honk`, `thud` vorläufig selbst erzeugt
+- 188 Unit-Tests (5 neue für Ereignisse, Regeltests auf „endlich“ umgestellt), 41 Gamepad-Prüfungen, 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Einen Schrotthaufen leer saugen: Er verschwindet ganz
+2. Nach 4 Minuten: „Hup hup!“, UFO fliegt vorbei, Säcke fallen neben Rusty. Mit LT öffnen
+3. Ab Schiffsstufe 2: orange Himmel, Meteore. Sind die Abstände gut, zu oft, zu selten?
+4. Bleibt nach dem Aufräumen genug zu tun, oder wird es zwischen den Ereignissen zu leer?
+
 ## [1.18.0] – 2026-10-26 – MS29 Sauber wird Wiese (Spielgefühl, Punkt 6)
 
 ### Neu

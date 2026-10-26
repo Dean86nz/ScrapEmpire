@@ -6,10 +6,10 @@ func _map() -> Dictionary:
 		"width": 40, "height": 30,
 		"zones": [{"id": "a", "name": "A", "x": 0, "y": 0, "w": 20, "h": 30}, {"id": "b", "name": "B", "x": 20, "y": 0, "w": 20, "h": 30}],
 		"nodes": [
-			{"kind": "scrap_pile", "x": 2, "y": 2, "amount": 10},   # Rohstoff, kein Müll
+			{"kind": "scrap_pile", "x": 22, "y": 2, "amount": 10},  # seit MS30 auch Müll (Zone B)
 			{"kind": "toaster", "x": 5, "y": 5},                    # 10 Müll
 			{"kind": "pallet", "x": 7, "y": 5},                     # 8 Müll
-			{"kind": "satellite", "x": 9, "y": 5},                  # Rohstoffquelle, kein Müll
+			{"kind": "satellite", "x": 29, "y": 5},                 # seit MS30 endlich (Zone B)
 			{"kind": "fridge", "x": 25, "y": 5},                    # Zone B: 27 Müll
 		],
 	}
@@ -33,7 +33,7 @@ func test_new_objects_and_items_exist() -> void:
 	assert_eq(values["wood"], 2)
 	assert_eq(values["stone"], 2)
 	var n := ResourceNode.from_kind(1, "satellite", Vector2i.ZERO)
-	assert_true(n.is_resource())
+	assert_false(n.is_resource(), "seit MS30 ist alles Müll und endlich")
 	var p := ResourceNode.from_kind(2, "pallet", Vector2i.ZERO)
 	assert_false(p.is_resource())
 
@@ -41,7 +41,7 @@ func test_new_objects_and_items_exist() -> void:
 func test_start_trash_counts_only_trash() -> void:
 	var w := _world()
 	assert_eq(w.zones.start_trash["a"], 18, "Toaster 10 + Palette 8")
-	assert_eq(w.zones.start_trash["b"], 27)
+	assert_eq(w.zones.start_trash["b"], 27 + 15, "Kühlschrank und Satellit (Haufen zählen über die Schmutzfläche)")
 	assert_eq(w.zones.zone_id_at(Vector2i(25, 5)), "b")
 	assert_eq(w.zones.zone_id_at(Vector2i(99, 99)), "")
 
@@ -101,10 +101,10 @@ func test_trash_respawns_below_50_percent() -> void:
 			w.tick()
 	# Kühlschrank ganz weg → 100 %: Respawn wurde beim Entfernen geprüft (Zone sauber) → kein Eintrag
 	assert_eq(w.respawns.size(), 0)
-	assert_eq(w.zones.stage("b", w.nodes), 3)
+	assert_eq(w.zones.stage("b", w.nodes), 2, "27 von 42: der Satellit liegt noch da")
 
 
-func test_resource_always_respawns() -> void:
+func test_satellite_is_finite_now() -> void:
 	var w := _world()
 	w.player.suction_tier = 3
 	var sat: ResourceNode = null
@@ -117,8 +117,7 @@ func test_resource_always_respawns() -> void:
 	for i in 15 * 6:
 		w.tick()
 	assert_false(w.nodes.has(sat.id))
-	assert_eq(w.respawns.size(), 1, "Satellit respawnt immer")
-	assert_eq(w.respawns[0]["kind"], "satellite")
+	assert_eq(w.respawns.size(), 0, "nichts wächst nach")
 
 
 func test_summary() -> void:
@@ -127,4 +126,4 @@ func test_summary() -> void:
 	assert_eq(s.size(), 2)
 	assert_eq(s[0]["name"], "A")
 	assert_eq(s[0]["trash_by_tier"], {1: 2})
-	assert_eq(s[1]["trash_by_tier"], {2: 1})
+	assert_eq(s[1]["trash_by_tier"], {2: 1, 3: 1})

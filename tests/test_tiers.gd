@@ -14,12 +14,12 @@ func test_defs_loaded() -> void:
 	ResourceNode.load_defs("res://data/scrap_objects.json")
 	assert_true(ResourceNode.has_kind("toaster"))
 	assert_true(ResourceNode.has_kind("monolith"))
-	assert_eq(ResourceNode.defs.size(), 17, "16 Objekte + eingebautes Wrack")
+	assert_eq(ResourceNode.defs.size(), 19, "16 Objekte + Müllsack + Meteor + eingebautes Wrack")
 	var n := ResourceNode.from_kind(1, "fridge", Vector2i.ZERO)
 	assert_eq(n.tier, 2)
 	assert_true(n.uses_hammer())
 	assert_eq(n.amount, 27)
-	assert_eq(n.respawn_ticks, 6000)
+	assert_eq(n.respawn_ticks, 0, "seit MS30 respawnt nichts")
 
 
 func test_hammer_too_hard_for_tier2() -> void:
@@ -82,7 +82,7 @@ func test_suction_prefers_collectable_pile_over_hard_object() -> void:
 	assert_eq(pile.amount, 4)
 
 
-func test_suction_loot_object_depletes_and_respawns() -> void:
+func test_suction_loot_object_depletes_and_never_respawns() -> void:
 	var w := _world()
 	w.player.suction_tier = 3
 	var sat := w.add_object("satellite", Vector2i(6, 5))  # 15 Items, Respawn 480 s
@@ -93,31 +93,25 @@ func test_suction_loot_object_depletes_and_respawns() -> void:
 		w.tick()
 	assert_eq(removed, [sat.id])
 	assert_eq(w.player.inventory.count_of("chrome"), 3)
-	assert_eq(w.respawns.size(), 1)
+	assert_eq(w.respawns.size(), 0, "kein Nachwachsen")
 	w.player.suck_held = false
-	var respawned := []
-	w.node_respawned.connect(func(n: ResourceNode) -> void: respawned.append(n.kind))
 	for i in 480 * 20:
 		w.tick()
-	assert_eq(respawned, ["satellite"])
-	assert_eq(w.nodes.size(), 1)
+	assert_eq(w.nodes.size(), 0)
 
 
-func test_hammer_object_respawns_after_timer() -> void:
+func test_hammer_object_is_gone_for_good() -> void:
 	var w := _world()
-	var toaster := w.add_object("toaster", Vector2i(5, 5))  # Tier 1, 10 Items, Respawn 180 s
+	var toaster := w.add_object("toaster", Vector2i(5, 5))  # Tier 1, 10 Items
 	for i in 10:
 		for j in 10:
 			w.player.hammer_pressed = true
 			w.tick()
 	assert_false(w.nodes.has(toaster.id))
-	assert_eq(w.respawns[0]["ticks_left"] <= 3600, true)
+	assert_eq(w.respawns.size(), 0, "seit MS30 kommt nichts zurück")
 	for i in 3600:
 		w.tick()
-	assert_eq(w.nodes.size(), 1)
-	var n: ResourceNode = w.nodes.values()[0]
-	assert_eq(n.kind, "toaster")
-	assert_eq(n.amount, 10)
+	assert_eq(w.nodes.size(), 0)
 
 
 func test_monolith_never_respawns_and_is_too_hard() -> void:

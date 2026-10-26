@@ -44,6 +44,9 @@ signal zone_unlocked(zone_id: String)
 signal ship_received(item: String, n: int)
 signal ship_delivered(items: Dictionary, bolts: int, by_player: bool)
 signal milestone_reached(def: Dictionary, step: int, value: int, bolts: int)
+signal event_warning(type: String, seconds: float, center_px: Vector2)
+signal event_started(type: String, targets_px: Array, delays_s: Array)
+signal event_landed(type: String, node: ResourceNode)
 signal ship_upgraded(ship: Ship)
 signal ship_upgrade_bought(id: String, level: int)
 signal ship_failed(reason: String)
@@ -99,6 +102,8 @@ var ship_cfg: Dictionary = {}              # data/ship.json
 var ship_upgrades: Dictionary = {}         # upgrade id → Stufe (Laderaum, Ertrag, Tempo, Saugen, Werkzeug)
 var quests := QuestState.new()             # geführte Aufgabenkette
 var milestones := MilestoneState.new()     # Meilensteine (MS23)
+var events_cfg: Dictionary = {}            # data/events.json (MS30)
+var events_state: Dictionary = {}          # nächste Termine, Vorwarnungen, Abwürfe
 var dirt := DirtMap.new()                  # Schmutz je Kachel (MS21)
 var dirt_cfg: Dictionary = {}              # data/dirt.json
 var _dirt_reward := 0                      # geputzte Kacheln seit dem letzten Kleinschrott
@@ -229,6 +234,7 @@ func tick() -> void:
 	ToolSystem._tick_magnet(self)
 	_tick_hammer()
 	NodeSystem._tick_respawns(self)
+	EventSystem._tick(self)
 	if tick_count % 20 == 0:
 		zones.check_unlocks(nodes)
 		if dirt.is_active():

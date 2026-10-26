@@ -8,9 +8,9 @@
       "type": "pile",
       "item": "scrap",
       "max": 10,
-      "regen_s": 30,
+      "regen_s": 0,
       "sprite": "res://assets/sprites/nodes/scrap_pile.svg",
-      "resource": true
+      "resource": false
     },
     {
       "id": "copper_tangle",
@@ -20,9 +20,9 @@
       "type": "pile",
       "item": "copper",
       "max": 10,
-      "regen_s": 30,
+      "regen_s": 0,
       "sprite": "res://assets/sprites/nodes/copper_tangle.svg",
-      "resource": true
+      "resource": false
     },
     {
       "id": "plastic_crumbs",
@@ -32,9 +32,9 @@
       "type": "pile",
       "item": "plastic",
       "max": 10,
-      "regen_s": 30,
+      "regen_s": 0,
       "sprite": "res://assets/sprites/nodes/plastic_crumbs.svg",
-      "resource": true
+      "resource": false
     },
     {
       "id": "toaster",
@@ -46,8 +46,9 @@
         "scrap": 8,
         "copper": 2
       },
-      "respawn_s": 180,
-      "sprite": "res://assets/sprites/nodes/toaster.svg"
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/toaster.svg",
+      "resource": false
     },
     {
       "id": "fridge",
@@ -60,8 +61,9 @@
         "copper": 6,
         "plastic": 6
       },
-      "respawn_s": 300,
-      "sprite": "res://assets/sprites/nodes/fridge.svg"
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/fridge.svg",
+      "resource": false
     },
     {
       "id": "cart",
@@ -73,8 +75,9 @@
         "scrap": 12,
         "copper": 8
       },
-      "respawn_s": 300,
-      "sprite": "res://assets/sprites/nodes/cart.svg"
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/cart.svg",
+      "resource": false
     },
     {
       "id": "ship_part",
@@ -87,8 +90,9 @@
         "copper": 6,
         "chrome": 4
       },
-      "respawn_s": 480,
-      "sprite": "res://assets/sprites/nodes/ship_part.svg"
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/ship_part.svg",
+      "resource": false
     },
     {
       "id": "satellite",
@@ -101,9 +105,9 @@
         "plastic": 6,
         "chrome": 3
       },
-      "respawn_s": 480,
+      "respawn_s": 0,
       "sprite": "res://assets/sprites/nodes/satellite.svg",
-      "resource": true
+      "resource": false
     },
     {
       "id": "robot_arm",
@@ -115,8 +119,9 @@
         "titanium": 5,
         "chrome": 2
       },
-      "respawn_s": 720,
-      "sprite": "res://assets/sprites/nodes/robot_arm.svg"
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/robot_arm.svg",
+      "resource": false
     },
     {
       "id": "monolith",
@@ -128,7 +133,8 @@
         "stardust": 3
       },
       "respawn_s": 0,
-      "sprite": "res://assets/sprites/nodes/monolith.svg"
+      "sprite": "res://assets/sprites/nodes/monolith.svg",
+      "resource": false
     },
     {
       "id": "driftwood_pile",
@@ -138,9 +144,9 @@
       "type": "pile",
       "item": "wood",
       "max": 10,
-      "regen_s": 30,
+      "regen_s": 0,
       "sprite": "res://assets/sprites/nodes/driftwood_pile.svg",
-      "resource": true
+      "resource": false
     },
     {
       "id": "rubble_field",
@@ -150,9 +156,9 @@
       "type": "pile",
       "item": "stone",
       "max": 10,
-      "regen_s": 30,
+      "regen_s": 0,
       "sprite": "res://assets/sprites/nodes/rubble_field.svg",
-      "resource": true
+      "resource": false
     },
     {
       "id": "pallet",
@@ -164,8 +170,9 @@
         "wood": 6,
         "scrap": 2
       },
-      "respawn_s": 180,
-      "sprite": "res://assets/sprites/nodes/pallet.svg"
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/pallet.svg",
+      "resource": false
     },
     {
       "id": "concrete",
@@ -177,8 +184,9 @@
         "stone": 6,
         "scrap": 1
       },
-      "respawn_s": 180,
-      "sprite": "res://assets/sprites/nodes/concrete.svg"
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/concrete.svg",
+      "resource": false
     },
     {
       "id": "sofa",
@@ -191,8 +199,9 @@
         "plastic": 4,
         "copper": 2
       },
-      "respawn_s": 300,
-      "sprite": "res://assets/sprites/nodes/sofa.svg"
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/sofa.svg",
+      "resource": false
     },
     {
       "id": "ruin_wall",
@@ -204,8 +213,36 @@
         "stone": 10,
         "scrap": 3
       },
-      "respawn_s": 300,
-      "sprite": "res://assets/sprites/nodes/ruin_wall.svg"
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/ruin_wall.svg",
+      "resource": false
+    },
+    {
+      "id": "trash_bag",
+      "name_key": "OBJ_TRASH_BAG",
+      "tier": 1,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "scrap": 6,
+        "plastic": 4
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/trash_bag.svg"
+    },
+    {
+      "id": "meteor",
+      "name_key": "OBJ_METEOR",
+      "tier": 1,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "chrome": 4,
+        "stardust": 1
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/meteor.svg"
     }
-  ]
+  ],
+  "_comment": "Müll-Objekte. Seit MS30 ist alles endlich: Haufen wachsen nicht nach, nichts respawnt, leere Haufen verschwinden. Nachschub kommt über Ereignisse (data/events.json): trash_bag und meteor."
 }

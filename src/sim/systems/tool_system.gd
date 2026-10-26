@@ -21,11 +21,7 @@ static func helper_work(w: SimWorld, h: Helper) -> void:
 				else:
 					var node := target as ResourceNode
 					item_id = node.take_one()
-					if node.is_wreck() and node.is_depleted():
-						w._remove_node(node)
-						w.wreck_destroyed.emit(node.id)
-					else:
-						w.node_changed.emit(node)
+					NodeSystem.after_take(w, node)
 				h.inventory.add(item_id, 1)
 				h.suck_cooldown = PlayerState.BASE_SUCK_INTERVAL
 				w.progression.on_collect(1)
@@ -44,11 +40,7 @@ static func helper_work(w: SimWorld, h: Helper) -> void:
 					if item_id != "":
 						w.add_loose(item_id, n.center_px() + w._scatter(), n.tier)
 					w.wreck_hit.emit(n)
-					if n.is_depleted():
-						w._remove_node(n)
-						w.wreck_destroyed.emit(n.id)
-					else:
-						w.node_changed.emit(n)
+					NodeSystem.after_take(w, n)
 					break
 	if h.hammer_cooldown > 0:
 		h.hammer_cooldown -= 1
@@ -119,11 +111,7 @@ static func _tick_suction(w: SimWorld) -> void:
 		from_pos = node.center_px()
 		tier = node.tier
 		node.take_one()
-		if node.is_wreck() and node.is_depleted():
-			w._remove_node(node)
-			w.wreck_destroyed.emit(node.id)
-		else:
-			w.node_changed.emit(node)
+		NodeSystem.after_take(w, node)
 	w.player.inventory.add(item_id, 1)
 	w.player.suck_cooldown = w.player.suck_interval
 	w.progression.on_collect(tier)
@@ -255,11 +243,7 @@ static func _tick_hammer(w: SimWorld) -> void:
 			break
 		w.add_loose(item_id, wreck.center_px() + w._scatter(), wreck.tier)
 	w.wreck_hit.emit(wreck)
-	if wreck.is_depleted():
-		w._remove_node(wreck)
-		w.wreck_destroyed.emit(wreck.id)
-	else:
-		w.node_changed.emit(wreck)
+	NodeSystem.after_take(w, wreck)
 
 
 static func _find_wreck_target(w: SimWorld) -> ResourceNode:

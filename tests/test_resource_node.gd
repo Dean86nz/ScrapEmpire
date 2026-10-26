@@ -1,14 +1,16 @@
 extends TestCase
 
 
-func test_pile_regenerates_after_600_ticks() -> void:
+func test_piles_are_finite_since_ms30() -> void:
+	ResourceNode.load_defs("res://data/scrap_objects.json")
 	var n := ResourceNode.make_pile(1, "scrap_pile", Vector2i(3, 4), 5)
-	var changed := false
-	for i in 599:
-		changed = n.tick() or changed
-	assert_false(changed, "vor Tick 600 keine Änderung")
-	assert_true(n.tick(), "bei Tick 600 +1")
-	assert_eq(n.amount, 6)
+	for i in 2000:
+		assert_false(n.tick(), "Haufen wachsen nicht mehr nach")
+	assert_eq(n.amount, 5)
+	assert_false(n.is_resource(), "Haufen sind Müll")
+	for i in 5:
+		n.take_one()
+	assert_true(n.is_used_up(), "leer = verschwindet")
 
 
 func test_pile_stops_at_max() -> void:
