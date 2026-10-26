@@ -115,6 +115,7 @@ func _init() -> void:
 	ship_received.connect(_quest_ship_received)
 	quests.completed.connect(_on_quest_completed)
 	milestones.reached.connect(_on_milestone_reached)
+	zones.stage_changed.connect(_on_zone_stage_changed)
 
 
 func _quest_collected(item: String, _pos: Vector2i) -> void:
@@ -135,6 +136,14 @@ func _quest_ship_received(_item: String, n: int) -> void:
 
 func _on_quest_completed(id: String, def: Dictionary) -> void:
 	quest_completed.emit(id, def)
+
+
+## Saubere Zone (Stufe 3): der ganze saubere Boden wird Wiese.
+func _on_zone_stage_changed(zone_id: String, stage: int) -> void:
+	if stage >= 3 and dirt.is_active():
+		var z := zones.zone_by_id(zone_id)
+		if z.has("rect"):
+			dirt.heal_rect(z["rect"])
 
 
 func _on_milestone_reached(def: Dictionary, step: int, value: int, bolts: int) -> void:

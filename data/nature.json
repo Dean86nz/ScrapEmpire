@@ -1,5 +1,5 @@
 {
-  "_comment": "Zonen-Heilung. per_tile: Chance je geputzter (anfangs schmutziger) Kachel, dass dort nach delay_s Gras oder Blumen wachsen. decor: Büsche und Teiche je Reinigungsstufe. Rein kosmetisch, deterministisch.",
+  "_comment": "Zonen-Heilung. per_tile: Chance je Wiesen-Kachel (geputzt, von der Schiffswelle geheilt oder Zone sauber), dass dort nach delay_s Gras oder Blumen wachsen. decor: Büsche und Teiche je Reinigungsstufe. Rein kosmetisch, deterministisch.",
   "decor": {
     "2": {
       "bush": 0.006
@@ -39,12 +39,14 @@
     "duration_s": 30
   },
   "per_tile": {
-    "grass": 0.22,
-    "flower_yellow": 0.05,
-    "flower_pink": 0.05,
+    "grass": 0.26,
+    "grass_tall": 0.1,
+    "flower_yellow": 0.07,
+    "flower_pink": 0.07,
+    "flower_blue": 0.05,
     "delay_s": [
-      1.0,
-      5.0
+      0.6,
+      2.4
     ]
   }
 }

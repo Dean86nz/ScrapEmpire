@@ -24,6 +24,7 @@ void fragment() {
 """
 const UPDATE_SECONDS := 1.0 / 15.0
 const MAP_COLOR := Color(0.36, 0.29, 0.21)
+const MAP_GREEN := Color(0.42, 0.74, 0.32)
 
 var map_texture: ImageTexture
 var _world: SimWorld
@@ -68,7 +69,10 @@ func bind(world: SimWorld) -> void:
 func _set_pixel(t: Vector2i, v: int) -> void:
 	var f := float(v) / 255.0
 	_mask_img.set_pixel(t.x, t.y, Color(f, 0, 0))
-	_map_img.set_pixel(t.x, t.y, Color(MAP_COLOR, minf(f * 1.6, 0.9)))
+	if v == 0 and _world.dirt.is_green(t):
+		_map_img.set_pixel(t.x, t.y, Color(MAP_GREEN, 0.85))
+	else:
+		_map_img.set_pixel(t.x, t.y, Color(MAP_COLOR, minf(f * 1.6, 0.9)))
 
 
 func _process(delta: float) -> void:
