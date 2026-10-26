@@ -205,5 +205,36 @@
   ],
   "fail_ship": [
     "QUIP_FAIL_SHIP"
+  ],
+  "upgrade_bought": [
+    "QUIP_UPGRADE_1",
+    "QUIP_UPGRADE_2"
+  ],
+  "first_delivery": [
+    "QUIP_FIRST_DELIVERY"
+  ],
+  "big_delivery": [
+    "QUIP_BIG_DELIVERY"
+  ],
+  "build_locked": [
+    "QUIP_BUILD_LOCKED"
+  ],
+  "ship_fail_empty": [
+    "QUIP_SHIP_EMPTY"
+  ],
+  "ship_fail_planet": [
+    "QUIP_SHIP_PLANET"
+  ],
+  "ship_fail_upgrade_bolts": [
+    "QUIP_FAIL_COST_1"
+  ],
+  "ship_fail_upgrade_max": [
+    "QUIP_SHIP_MAX"
+  ],
+  "helper_fail_no_ship": [
+    "QUIP_NO_SHIP"
+  ],
+  "drone_fail_no_ship": [
+    "QUIP_NO_SHIP"
   ]
 }

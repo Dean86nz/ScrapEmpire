@@ -25,24 +25,24 @@ BLD_SELL_TERMINAL,Verkaufsterminal,Sell terminal
 BLD_CHEST,Kiste,Chest
 MENU_BUILD_TITLE,Bauen,Build
 MENU_DEMOLISH,Abreißen,Demolish
-HINT_PLACE,"D-Pad / rechter Stick: Cursor   ·   A: platzieren   ·   X: drehen   ·   B: abbrechen   ·   Y: Menü","D-pad / right stick: cursor   ·   A: place   ·   X: rotate   ·   B: cancel   ·   Y: menu"
-HINT_DEMOLISH,"D-Pad / rechter Stick: Cursor   ·   A: abreißen   ·   B: abbrechen   ·   Y: Menü","D-pad / right stick: cursor   ·   A: demolish   ·   B: cancel   ·   Y: menu"
-HINT_MENU,"D-Pad: wählen   ·   A: bestätigen   ·   B: schließen","D-pad: select   ·   A: confirm   ·   B: close"
-HINT_DEPOSIT,"A: %d %s in %s einlegen","A: put %d %s into %s"
-HINT_WITHDRAW,"A: aus %s entnehmen (leeren Slot wählen)","A: take from %s (select an empty slot)"
+HINT_PLACE,D-Pad / rechter Stick: Cursor   ·   A: platzieren   ·   X: drehen   ·   B: abbrechen   ·   Y: Menü,D-pad / right stick: cursor   ·   A: place   ·   X: rotate   ·   B: cancel   ·   Y: menu
+HINT_DEMOLISH,D-Pad / rechter Stick: Cursor   ·   A: abreißen   ·   B: abbrechen   ·   Y: Menü,D-pad / right stick: cursor   ·   A: demolish   ·   B: cancel   ·   Y: menu
+HINT_MENU,D-Pad: wählen   ·   A: bestätigen   ·   B: schließen,D-pad: select   ·   A: confirm   ·   B: close
+HINT_DEPOSIT,A: %d %s in %s einlegen,A: put %d %s into %s
+HINT_WITHDRAW,A: aus %s entnehmen (leeren Slot wählen),A: take from %s (select an empty slot)
 FAIL_COST,Zu wenig Material. Erst sammeln.,Not enough material. Collect first.
 FAIL_BLOCKED,Hier ist kein Platz.,No room here.
 FAIL_RANGE,Zu weit weg. Näher ran.,Too far away. Get closer.
-HINT_PLACE_KB,"Maus / Pfeile: Cursor   ·   LMB / E: platzieren   ·   Q: drehen   ·   RMB / Esc: abbrechen   ·   Tab: Menü","Mouse / arrows: cursor   ·   LMB / E: place   ·   Q: rotate   ·   RMB / Esc: cancel   ·   Tab: menu"
-HINT_DEMOLISH_KB,"Maus / Pfeile: Cursor   ·   LMB / E: abreißen   ·   RMB / Esc: abbrechen   ·   Tab: Menü","Mouse / arrows: cursor   ·   LMB / E: demolish   ·   RMB / Esc: cancel   ·   Tab: menu"
-HINT_MENU_KB,"Pfeile / Maus: wählen   ·   Enter / Klick: bestätigen   ·   Esc: schließen","Arrows / mouse: select   ·   Enter / click: confirm   ·   Esc: close"
-HINT_DEPOSIT_KB,"E: %d %s in %s einlegen","E: put %d %s into %s"
-HINT_WITHDRAW_KB,"E: aus %s entnehmen (leeren Slot wählen)","E: take from %s (select an empty slot)"
+HINT_PLACE_KB,Maus / Pfeile: Cursor   ·   LMB / E: platzieren   ·   Q: drehen   ·   RMB / Esc: abbrechen   ·   Tab: Menü,Mouse / arrows: cursor   ·   LMB / E: place   ·   Q: rotate   ·   RMB / Esc: cancel   ·   Tab: menu
+HINT_DEMOLISH_KB,Maus / Pfeile: Cursor   ·   LMB / E: abreißen   ·   RMB / Esc: abbrechen   ·   Tab: Menü,Mouse / arrows: cursor   ·   LMB / E: demolish   ·   RMB / Esc: cancel   ·   Tab: menu
+HINT_MENU_KB,Pfeile / Maus: wählen   ·   Enter / Klick: bestätigen   ·   Esc: schließen,Arrows / mouse: select   ·   Enter / click: confirm   ·   Esc: close
+HINT_DEPOSIT_KB,E: %d %s in %s einlegen,E: put %d %s into %s
+HINT_WITHDRAW_KB,E: aus %s entnehmen (leeren Slot wählen),E: take from %s (select an empty slot)
 ITEM_IRON_BAR,Eisenbarren,Iron bar
 ITEM_COPPER_BAR,Kupferbarren,Copper bar
 ITEM_PLASTIC_SHEET,Plastikplatte,Plastic sheet
 ITEM_GEAR,Zahnrad,Gear
-ITEM_CIRCUIT,"Schaltkreis „Denkbrett“","Circuit ""Thinkboard"""
+ITEM_CIRCUIT,Schaltkreis „Denkbrett“,"Circuit ""Thinkboard"""
 BLD_FURNACE,Schmelzofen,Furnace
 BLD_PRESS,Presse,Press
 QUIP_REJECTED_1,Das passt da nicht rein.,That does not go in there.
@@ -57,7 +57,7 @@ NODE_CART,Kaputter Einkaufswagen,Broken shopping cart
 NODE_SHIP_PART,Gestrandetes Raumschiff-Teil,Stranded spaceship part
 NODE_SATELLITE,Alter Satellit,Old satellite
 NODE_ROBOT_ARM,Vergrabener Roboter-Arm,Buried robot arm
-NODE_MONOLITH,"Monolith „Warum steht der hier?“","Monolith ""Why is this here?"""
+NODE_MONOLITH,Monolith „Warum steht der hier?“,"Monolith ""Why is this here?"""
 HUD_LEVEL,Lv %d,Lv %d
 HUD_SKILL_POINTS,Skillpunkte: %d,Skill points: %d
 QUIP_TOO_HARD_1,Zu hart! Mein Hammer weint.,Too hard! My hammer is crying.
@@ -114,7 +114,7 @@ TECH_MISSING_ITEMS,Material fehlt,Missing material
 TECH_BUSY,Andere Forschung läuft,Other research running
 TECH_READY,A: Forschen,A: Research
 HUD_RESEARCH,Forschung,Research
-MENU_PROGRESS_FOOTER,D-Pad: wählen · A: forschen / kaufen · LB/RB: Tab · B: schließen,D-pad: select · A: research / buy · LB/RB: tab · B: close
+MENU_PROGRESS_FOOTER,D-Pad: wählen · A: kaufen · LB/RB: Tab · B: schließen,D-pad: select · A: buy · LB/RB: tab · B: close
 SKILL_BRANCH_MOVEMENT,Bewegung,Movement
 SKILL_BRANCH_INVENTORY,Inventar,Inventory
 SKILL_BRANCH_TRADE,Handel,Trade
@@ -200,8 +200,8 @@ TASK_WITHDRAW,Nimm aus,Take from
 TASK_HUD,Autopilot:,Autopilot:
 TASK_HUD_ON,läuft,running
 TASK_HUD_OFF,aus (Y lang),off (hold Y)
-HINT_TARGET,"D-Pad / rechter Stick: Ziel   ·   A: bestätigen   ·   B: abbrechen","D-pad / right stick: target   ·   A: confirm   ·   B: cancel"
-HINT_TARGET_KB,"Maus / Pfeile: Ziel   ·   LMB / E: bestätigen   ·   RMB / Esc: abbrechen","Mouse / arrows: target   ·   LMB / E: confirm   ·   RMB / Esc: cancel"
+HINT_TARGET,D-Pad / rechter Stick: Ziel   ·   A: bestätigen   ·   B: abbrechen,D-pad / right stick: target   ·   A: confirm   ·   B: cancel
+HINT_TARGET_KB,Maus / Pfeile: Ziel   ·   LMB / E: bestätigen   ·   RMB / Esc: abbrechen,Mouse / arrows: target   ·   LMB / E: confirm   ·   RMB / Esc: cancel
 QUIP_AUTOPILOT_LOCKED,Autopilot? Erst erforschen. Select öffnet den Techbaum.,Autopilot? Research it first. Select opens the tech tree.
 QUIP_AUTOPILOT_START_1,Autopilot an. Ich mache das jetzt. Du darfst zuschauen.,Autopilot on. I will handle it. You may watch.
 QUIP_AUTOPILOT_START_2,Schleife läuft. Ich bin jetzt ein Prozess.,Loop running. I am a process now.
@@ -235,8 +235,8 @@ ZONE_Q_3,Zone sauber! Fast schon gemütlich.,Zone clean! Almost cozy.
 MENU_PROGRESS_FOOTER_MAP,D-Pad: Zone · RT/LT: Zoom · LB/RB: Tab · B: schließen,D-pad: zone · RT/LT: zoom · LB/RB: tab · B: close
 HUD_MINIMAP_HINT,M / Select lang: Minimap,M / hold Select: minimap
 MENU_TAB_HELPERS,Helfer,Helpers
-MENU_PROGRESS_FOOTER_HELPERS,"A: kaufen / Upgrade · A auf Helfer: entlassen · LB/RB: Tab · B: schließen","A: buy / upgrade · A on helper: dismiss · LB/RB: tab · B: close"
-HELPER_UPGRADES,Globale Upgrades (gelten für alle Helfer),Global upgrades (apply to all helpers)
+MENU_PROGRESS_FOOTER_HELPERS,D-Pad: wählen · A: Bot bauen / Upgrade kaufen · A auf Bot: abbauen · B: schließen,D-pad: select · A: build bot / buy upgrade · A on bot: dismantle · B: close
+HELPER_UPGRADES,Bot-Upgrades (für alle Bots),Bot upgrades (all bots)
 HELPER_BUY,Helfer kaufen,Buy helper
 HELPER_BUY_HINT,A: Zone und Lager wählen,A: pick zone and depot
 HELPER_LOCKED,Braucht Tech Helfer-Werkstatt,Needs tech Helper workshop
@@ -268,19 +268,19 @@ HELPER_STUCK_3,Moment. Wo bin ich? Ach so. Weiter.,Wait. Where am I? Oh right. O
 QUIP_HELPER_LOCKED,Helfer? Erst die Helfer-Werkstatt erforschen.,Helpers? Research the helper workshop first.
 QUIP_HELPER_MAX,Mehr als sechs Helfer werden chaotisch. Nein.,More than six helpers gets chaotic. No.
 QUIP_HELPER_NO_DEPOT,Das Lager muss ein Gebäude sein. Eine Kiste zum Beispiel.,The depot must be a building. A chest for example.
-END_TITLE,MVP geschafft! Der ganze Techbaum ist erforscht.,MVP complete! The whole tech tree is researched.
-END_BODY,"Spielzeit: %d Minuten · Bolts: %d · Level: %d · Helfer: %d · Saubere Zonen: %d von %d
+END_TITLE,Das Schiff hebt ab!,The ship lifts off!
+END_BODY,"Rustys Schiff ist repariert. Die Triebwerke husten, dann brummen sie. Unter ihm wird der Planet grün, Tiere kehren zurück, und irgendwo singt eine alte Spieluhr.
 
-Rusty sagt: Danke. Ich mache dann mal weiter. Allein. Wie geplant.
+Spielzeit: %d Minuten · Bolts: %d · Level: %d · Bots: %d · Saubere Zonen: %d von %d
 
-Alles danach ist Phase 2: Zonen-Heilung, Drohnen, Deko, Fundstücke, Besucher.","Play time: %d minutes · Bolts: %d · Level: %d · Helpers: %d · Clean zones: %d of %d
+Rusty sagt: Ich komme wieder. Spätestens, wenn hier jemand Müll fallen lässt.","Rusty's ship is repaired. The engines cough, then hum. Below, the planet turns green, animals return, and somewhere an old music box plays.
 
-Rusty says: Thanks. I will carry on then. Alone. As planned.
+Play time: %d minutes · Bolts: %d · Level: %d · Bots: %d · Clean zones: %d of %d
 
-Everything after this is phase 2: zone healing, drones, decoration, collectibles, visitors."
+Rusty says: I'll be back. At the latest when someone drops trash here."
 END_CLOSE,Weiterspielen,Keep playing
-HUD_HINT_GAME,"Stick: bewegen   ·   RT: saugen   ·   LT: hämmern   ·   Y: bauen   ·   Select: Kapitel und Forschung","Stick: move   ·   RT: suck   ·   LT: hammer   ·   Y: build   ·   Select: chapter and research"
-HUD_HINT_GAME_KB,"WASD: bewegen   ·   LMB: saugen   ·   RMB: hämmern   ·   Tab: bauen   ·   T: Kapitel und Forschung   ·   E: einlegen","WASD: move   ·   LMB: suck   ·   RMB: hammer   ·   Tab: build   ·   T: chapter and research   ·   E: insert"
+HUD_HINT_GAME,Stick: fahren   ·   RT: saugen   ·   LT: hämmern   ·   Select: Schiff und Ziele,Stick: drive   ·   RT: suck   ·   LT: hammer   ·   Select: ship and goals
+HUD_HINT_GAME_KB,WASD: fahren   ·   LMB: saugen   ·   RMB: hämmern   ·   T: Schiff und Ziele,WASD: drive   ·   LMB: suck   ·   RMB: hammer   ·   T: ship and goals
 HINT_DEPOSIT_SHORT,A: %d %s einlegen,A: put %d %s in
 HINT_DEPOSIT_SHORT_KB,E: %d %s einlegen,E: put %d %s in
 HINT_WITHDRAW_SHORT,A: entnehmen (leerer Slot),A: take out (empty slot)
@@ -311,13 +311,13 @@ QUIP_CRITTER_1,"Ein Tier! Es ist nicht aus Metall. Seltsam, aber nett.","An anim
 QUIP_CRITTER_2,Da krabbelt was. Nicht einsaugen. Nicht einsaugen.,Something is crawling. Do not suck it up. Do not.
 MAP_LEGEND,Zustand:,State:
 MENU_TAB_DRONES,Drohnen,Drones
-MENU_PROGRESS_FOOTER_DRONES,D-Pad: wählen · A: Material wechseln · X: Limit wechseln · LT: Drohne entfernen · B: schließen,D-pad: select · A: change material · X: change limit · LT: remove drone · B: close
+MENU_PROGRESS_FOOTER_DRONES,D-Pad: wählen · A: Drohne bauen / Upgrade kaufen · LT auf Drohne: abbauen · B: schließen,D-pad: select · A: build drone / buy upgrade · LT on drone: dismantle · B: close
 TECH_DRONE_HANGAR,Drohnen-Hangar,Drone hangar
 TECH_DRONE_HANGAR_DESC,Fliegende Logistik-Drohnen tragen Items zwischen Kisten und Maschinen und zum Terminal.,Flying logistics drones carry items between chests and machines and to the terminal.
 DRONE_UPGRADES,Drohnen-Upgrades (gelten für alle Drohnen),Drone upgrades (apply to all drones)
 DRONE_BUY,Drohne kaufen,Buy drone
 DRONE_BUY_HINT,A: Quelle und Ziel wählen,A: pick source and target
-DRONE_LOCKED,Braucht Tech Drohnen-Hangar,Needs tech Drone hangar
+DRONE_LOCKED,Blaupause ab Schiffsstufe 3,Blueprint from ship stage 3
 DRONE_MAX,Maximal %d Drohnen,Maximum %d drones
 DRONE_MISSING_CIRCUIT,es fehlen %d Schaltkreise,missing %d circuits
 DRONE_NAME,Drohne,Drone
@@ -326,8 +326,8 @@ DRONE_FILTER_ALL,alles,anything
 DRONE_LIMIT,Limit,Limit
 DRONE_LIMIT_NONE,keins,none
 DRONE_TRIPS,Fahrten:,Trips:
-DRONE_STATE_FETCH,holt,fetching
-DRONE_STATE_DELIVER,liefert,delivering
+DRONE_STATE_FETCH,sammelt,collecting
+DRONE_STATE_DELIVER,fliegt zum Schiff,flying to the ship
 DRONE_WAIT_SOURCE_EMPTY,wartet: Quelle leer,waiting: source empty
 DRONE_WAIT_TARGET_FULL,wartet: Ziel nimmt nichts an,waiting: target accepts nothing
 DRONE_WAIT_LIMIT,wartet: Limit erreicht,waiting: limit reached
@@ -373,34 +373,34 @@ QUIP_FOUND_3,Nicht einschmelzen. Nicht einschmelzen. Behalten.,Do not melt it. D
 COL_GNOME,Gartenzwerg Gunther,Garden gnome Gunther
 COL_GNOME_TEXT,"Hat 400 Jahre im Sand gestanden und bewacht. Was, weiß niemand. Er sagt es nicht.","Stood guard in the sand for 400 years. Guarding what, nobody knows. He will not say."
 COL_GUITAR,Alte Gitarre,Old guitar
-COL_GUITAR_TEXT,"Drei Saiten fehlen. Die anderen drei klingen nach Fernweh, wenn der Wind sie trifft.","Three strings missing. The other three sound like wanderlust when the wind hits them."
+COL_GUITAR_TEXT,"Drei Saiten fehlen. Die anderen drei klingen nach Fernweh, wenn der Wind sie trifft.",Three strings missing. The other three sound like wanderlust when the wind hits them.
 COL_COFFEE,Kaffeemaschine Kurt,Coffee machine Kurt
-COL_COFFEE_TEXT,"Blinkt noch. Sagt, er wolle „nur einen kurzen Espresso“ und dann weiterarbeiten. Seit Jahrzehnten.","Still blinking. Says he wants „just a quick espresso“ and then back to work. For decades."
+COL_COFFEE_TEXT,"Blinkt noch. Sagt, er wolle „nur einen kurzen Espresso“ und dann weiterarbeiten. Seit Jahrzehnten.",Still blinking. Says he wants „just a quick espresso“ and then back to work. For decades.
 COL_DUCK,Gummiente,Rubber duck
-COL_DUCK_TEXT,"Quietscht nicht mehr. Schaut aber so, als wüsste sie, wo das Wasser hin ist.","Does not squeak anymore. But looks like it knows where the water went."
+COL_DUCK_TEXT,"Quietscht nicht mehr. Schaut aber so, als wüsste sie, wo das Wasser hin ist.",Does not squeak anymore. But looks like it knows where the water went.
 COL_OCTOPUS,Plüschkrake,Plush octopus
 COL_OCTOPUS_TEXT,"Acht Arme, sieben davon noch dran. Umarmt Rusty beim Aufheben. Oder war das der Wind?","Eight arms, seven still attached. Hugged Rusty on pickup. Or was that the wind?"
 COL_SNOWGLOBE,Schneekugel,Snow globe
 COL_SNOWGLOBE_TEXT,"Innen eine Stadt, die es hier nie gab. Schütteln hilft nicht, sie wiederzufinden.","Inside, a city that never existed here. Shaking does not bring it back."
 COL_TROPHY,Rostige Trophäe,Rusty trophy
-COL_TROPHY_TEXT,"„1. Platz“ steht drauf. Wofür, ist abgerostet. Rusty vergibt ihn sich selbst.","Says „1st place“. For what has rusted away. Rusty awards it to himself."
+COL_TROPHY_TEXT,"„1. Platz“ steht drauf. Wofür, ist abgerostet. Rusty vergibt ihn sich selbst.",Says „1st place“. For what has rusted away. Rusty awards it to himself.
 COL_GLASSES,Lesebrille,Reading glasses
 COL_GLASSES_TEXT,"Macht alles schärfer, auch den Müll. Rusty trägt sie nicht. Er hat Kameras.","Makes everything sharper, including the trash. Rusty does not wear them. He has cameras."
 COL_MUSICBOX,Spieluhr,Music box
-COL_MUSICBOX_TEXT,"Spielt noch vier Töne. Rusty summt den fünften dazu. Das ist jetzt ihr Lied.","Still plays four notes. Rusty hums the fifth. That is their song now."
+COL_MUSICBOX_TEXT,Spielt noch vier Töne. Rusty summt den fünften dazu. Das ist jetzt ihr Lied.,Still plays four notes. Rusty hums the fifth. That is their song now.
 BUILD_MISSING,fehlt: %s,missing: %s
 BUILD_INVENTORY_ONLY,Rot = nicht bezahlbar. Es zählen Rustys Inventar und das Schiffslager (nicht Kisten).,Red = not affordable. Rusty's inventory and the ship storage count (not chests).
 BLD_SHIP,Rustys Raumschiff,Rusty's spaceship
 SHIP_STAGE_1,Wrack,Wreck
-SHIP_STAGE_2,Notdürftig repariert,Patched up
-SHIP_STAGE_3,Startklar,Ready for launch
-SHIP_HINT,"Schiff · Stufe %d (%s) · Lager %d/%d · A: einlegen / entnehmen · X: Ausbau %s","Ship · stage %d (%s) · storage %d/%d · A: put in / take out · X: upgrade %s"
-SHIP_HINT_KB,"Schiff · Stufe %d (%s) · Lager %d/%d · E: einlegen / entnehmen · Q: Ausbau %s","Ship · stage %d (%s) · storage %d/%d · E: put in / take out · Q: upgrade %s"
+SHIP_STAGE_2,Notdürftig geflickt,Patched up
+SHIP_STAGE_3,Funkt wieder,Radio works again
+SHIP_HINT,Schiff · Stufe %d (%s) · Lager %d/%d · A: einlegen / entnehmen · X: Ausbau %s,Ship · stage %d (%s) · storage %d/%d · A: put in / take out · X: upgrade %s
+SHIP_HINT_KB,Schiff · Stufe %d (%s) · Lager %d/%d · E: einlegen / entnehmen · Q: Ausbau %s,Ship · stage %d (%s) · storage %d/%d · E: put in / take out · Q: upgrade %s
 SHIP_UPGRADE_COST,(%d Bolts + %s),(%d bolts + %s)
 SHIP_UPGRADE_MISSING,(fehlt: %s),(missing: %s)
 SHIP_UPGRADE_MAX,(höchste Stufe),(max stage)
 SHIP_SELLS,Das Schiff verkauft alles über der Reserve von allein.,The ship sells anything above the reserve on its own.
-HUD_SHIP_UP,Schiff ausgebaut: Stufe %d · %s,Ship upgraded: stage %d · %s
+HUD_SHIP_UP,Schiff repariert: Stufe %d · %s,Ship repaired: stage %d · %s
 HUD_PLANET,Planet,Planet
 HUD_QUEST_DONE,Erledigt: %s,Done: %s
 HUD_QUESTS_DONE,Alle Aufgaben erledigt. Der Planet ist dein.,All tasks done. The planet is yours.
@@ -414,19 +414,19 @@ QUIP_QUEST_2,Das lief. Weiter im Plan.,That worked. On with the plan.
 QUIP_QUEST_3,Abgehakt! Ich mag Listen.,Checked off! I like lists.
 QUIP_FAIL_ZONE_LIMIT,Ein Außenposten je Zone reicht. Das Schiff ist die Basis.,One outpost per zone is enough. The ship is the base.
 QUIP_FAIL_SHIP,Das Schiff bleibt. Es ist mein Zuhause.,The ship stays. It is my home.
-QUEST_MOVE,Bewege dich mit dem linken Stick.,Move with the left stick.
-QUEST_COLLECT,Sauge 30 Schrott aus den grauen Haufen (RT).,Suck 30 scrap from the grey piles (RT).
-QUEST_DELIVER,Bring 20 Schrott zum Schiff und lege ihn ein (A).,Bring 20 scrap to the ship and put it in (A).
+QUEST_MOVE,Fahr ein Stück mit dem linken Stick.,Drive a bit with the left stick.
+QUEST_COLLECT,Sauge 20 Schrott aus den grauen Haufen (RT).,Suck 20 scrap from the grey piles (RT).
+QUEST_DELIVER,Fahr zum Schiff und liefere 20 Teile ab (A).,Drive to the ship and deliver 20 items (A).
 QUEST_BOLTS,Verdiene 30 Bolts. Das Schiff verkauft von allein.,Earn 30 bolts. The ship sells on its own.
 QUEST_HAMMER,Zerlege einen Rostigen Toaster mit dem Hammer (LT).,Smash a rusty toaster with the hammer (LT).
 QUEST_RESEARCH_FURNACE,Erforsche den Schmelzofen (Select → Forschung).,Research the furnace (Select → Research).
 QUEST_BUILD_FURNACE,Baue einen Schmelzofen (Y).,Build a furnace (Y).
-QUEST_BARS,"Schmelze 10 Eisenbarren (3 Schrott je Barren in den Ofen legen).","Smelt 10 iron bars (put 3 scrap per bar into the furnace)."
+QUEST_BARS,Schmelze 10 Eisenbarren (3 Schrott je Barren in den Ofen legen).,Smelt 10 iron bars (put 3 scrap per bar into the furnace).
 QUEST_RESEARCH_CONVEYOR,Erforsche das Förderband.,Research the conveyor belt.
 QUEST_BELT,Verbinde den Schmelzofen per Förderband mit dem Schiff.,Connect the furnace to the ship with a conveyor belt.
 QUEST_RESEARCH_EXTRACTOR,Erforsche die Saugstation.,Research the suction station.
 QUEST_EXTRACTOR,Baue eine Saugstation neben einen Schrotthaufen.,Build a suction station next to a scrap pile.
-QUEST_SHIP2,Baue das Schiff auf Stufe 2 aus (X am Schiff).,Upgrade the ship to stage 2 (X at the ship).
+QUEST_SHIP2,Repariere das Schiff auf Stufe 2.,Repair the ship to stage 2.
 QUEST_ZONE1,"Räume das Startlager auf, bis sich das Tor öffnet.",Clean up the start camp until the gate opens.
 QUEST_RESEARCH_PRESS,Erforsche die Presse.,Research the press.
 QUEST_BUILD_PRESS,Baue eine Presse.,Build a press.
@@ -434,10 +434,65 @@ QUEST_AUTOPILOT,Erforsche den Autopiloten.,Research the autopilot.
 QUEST_HELPER_WS,Erforsche die Helfer-Werkstatt.,Research the helper workshop.
 QUEST_HELPER,Kaufe einen Helfer (Select → Helfer).,Buy a helper (Select → Helpers).
 QUEST_DRONE_HANGAR,Erforsche den Drohnen-Hangar.,Research the drone hangar.
-QUEST_DRONE,Kaufe eine Drohne (Select → Drohnen).,Buy a drone (Select → Drones).
-QUEST_SHIP3,Baue das Schiff auf Stufe 3 aus.,Upgrade the ship to stage 3.
+QUEST_DRONE,Bau deine erste Drohne.,Build your first drone.
+QUEST_SHIP3,Repariere das Schiff auf Stufe 3.,Repair the ship to stage 3.
 QUEST_COLLECTIBLES,Finde 3 Fundstücke (sie funkeln im Müll).,Find 3 collectibles (they sparkle in the trash).
-QUEST_PLANET,Heile den ganzen Planeten: alle Zonen sauber.,Heal the whole planet: all zones clean.
-TITLE_LOAD_FAILED,"Das letzte Laden ist abgestürzt. Du kannst den vorherigen Spielstand laden oder neu beginnen; der alte Stand wird dabei gesichert.","Loading crashed last time. You can load the previous save or start over; the old save is kept as a backup."
+QUEST_PLANET,Heile den Planeten zu 80 %.,Heal the planet to 80%.
+TITLE_LOAD_FAILED,Das letzte Laden ist abgestürzt. Du kannst den vorherigen Spielstand laden oder neu beginnen; der alte Stand wird dabei gesichert.,Loading crashed last time. You can load the previous save or start over; the old save is kept as a backup.
 TITLE_LOAD_BACKUP,Vorherigen Spielstand laden,Load previous save
 TITLE_FRESH_SAFE,Neu beginnen (alter Stand wird gesichert),Start over (old save is kept)
+MENU_TAB_SHIP,Schiff,Ship
+MENU_TAB_BOTS,Bots,Bots
+SHIP_STAGE,Stufe,Stage
+SHIP_STAGE_4,Glänzend,Shiny
+SHIP_STAGE_5,Startklar,Ready for launch
+SHIP_REPAIR,Schiff reparieren,Repair ship
+SHIP_REPAIR_TITLE,Schiff reparieren   Stufe %d / %d,Repair ship   stage %d / %d
+SHIP_REPAIRED,Vollständig repariert!,Fully repaired!
+SHIP_UNLOCKS,Schaltet frei,Unlocks
+SHIP_BUY,A: kaufen,A: buy
+SHIP_NEEDS_PLANET,Planet erst zu %d %% heilen,Heal the planet to %d %% first
+SHIP_HINT_DELIVER,A: %d Teile abliefern,A: deliver %d items
+SHIP_HINT_DELIVER_KB,E: %d Teile abliefern,E: deliver %d items
+SHIP_HINT_EMPTY,Inventar leer: erst sammeln,Inventory empty: collect first
+SHIP_HINT_MENU,X: Schiff-Menü,X: ship menu
+SHIP_HINT_MENU_KB,Q: Schiff-Menü,Q: ship menu
+UNLOCK_HELPERS,Blaupause Sammel-Bot,Blueprint collector bot
+UNLOCK_DRONES,Blaupause Drohne,Blueprint drone
+UNLOCK_DECOR,Deko bauen,Build decor
+UNLOCK_HELPER_TOOLS,Bessere Bots,Better bots
+UNLOCK_MUSEUM,Museum,Museum
+UNLOCK_LAUNCH,Abflug!,Launch!
+UNLOCK_GARDEN,Garten,Garden
+BOT_BUILD,Sammel-Bot bauen,Build collector bot
+BOT_LOCKED,Blaupause ab Schiffsstufe 2,Blueprint from ship stage 2
+DRONE_BUILD,Drohne bauen,Build drone
+GOAL_SHIP_STAGE,Schiffsstufe %d,Ship stage %d
+UPG_CARGO,Laderaum,Cargo hold
+UPG_CARGO_DESC,+1 Inventarplatz,+1 inventory slot
+UPG_YIELD,Ertrag,Yield
+UPG_YIELD_DESC,+10 % Bolts beim Abliefern,+10% bolts when delivering
+UPG_SPEED,Fahrtempo,Speed
+UPG_SPEED_DESC,+8 % schneller fahren,+8% faster driving
+UPG_SUCTION,Saugtempo,Suction speed
+UPG_SUCTION_DESC,"+12 % schneller saugen, etwas mehr Reichweite","+12% faster suction, a bit more reach"
+UPG_TOOL,Werkzeugstufe,Tool tier
+UPG_TOOL_DESC,Hammer und Sauger knacken härteren Müll,Hammer and vacuum crack tougher trash
+QUEST_UPGRADE,Kauf dein erstes Upgrade am Schiff (X).,Buy your first upgrade at the ship (X).
+QUEST_CARGO,Bau den Laderaum auf Stufe 2 aus.,Upgrade the cargo hold to level 2.
+QUEST_EARN,Verdiene 300 Bolts.,Earn 300 bolts.
+QUEST_TOOL,Kauf Werkzeugstufe 2 für härteren Müll.,Buy tool tier 2 for tougher trash.
+QUEST_BOT,Bau deinen ersten Sammel-Bot.,Build your first collector bot.
+QUEST_EARN2,Verdiene insgesamt 2.000 Bolts.,"Earn 2,000 bolts in total."
+QUEST_BOTS3,Hab 3 Sammel-Bots im Einsatz.,Have 3 collector bots at work.
+QUEST_SHIP4,Repariere das Schiff auf Stufe 4.,Repair the ship to stage 4.
+QUEST_LAUNCH,Repariere das Schiff ganz und heb ab!,Fully repair the ship and lift off!
+QUIP_UPGRADE_1,Neues Teil! Ich fühle mich gleich viel nützlicher.,New part! I feel so much more useful.
+QUIP_UPGRADE_2,Upgrade eingebaut. Kaum Schrauben übrig. Gutes Zeichen.,Upgrade installed. Hardly any screws left over. Good sign.
+QUIP_FIRST_DELIVERY,Das Schiff frisst Schrott und spuckt Bolts aus. Wunderbar.,The ship eats scrap and spits out bolts. Wonderful.
+QUIP_BIG_DELIVERY,Volle Ladung! Das Schiff schnurrt.,Full load! The ship purrs.
+QUIP_BUILD_LOCKED,"Bauen kann ich erst, wenn das Schiff besser repariert ist.",I can only build once the ship is repaired more.
+QUIP_SHIP_EMPTY,Meine Taschen sind leer. Erst sammeln.,My pockets are empty. Collect first.
+QUIP_SHIP_PLANET,Erst muss der Planet gesünder werden. Dann starten wir.,The planet needs to heal first. Then we launch.
+QUIP_NO_SHIP,Ohne Schiff geht das nicht.,Not without the ship.
+TITLE_OLD_SAVE,Neue Version mit neuem Spielablauf: Dein alter Spielstand passt nicht mehr und wurde gesichert. Viel Spaß beim neuen Start!,New version with new gameplay: your old save no longer fits and was backed up. Enjoy the fresh start!

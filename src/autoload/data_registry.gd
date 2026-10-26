@@ -5,7 +5,6 @@ extends Node
 var items: Dictionary = {}          # id → Dictionary (id, name_key, sell_value, color, icon)
 var quips: Dictionary = {}          # trigger → Array[String] (Übersetzungs-Keys)
 var building_defs: Dictionary = {}  # id → BuildingDef
-var recipes: Array[RecipeDef] = []
 var _icon_cache: Dictionary = {}
 
 
@@ -19,7 +18,6 @@ func load_all() -> void:
 		items[str(entry["id"])] = entry
 	quips = _read_json("res://data/quips.json")
 	building_defs = BuildingDef.load_all("res://data/buildings.json")
-	recipes = RecipeDef.load_all("res://data/recipes.json")
 	ResourceNode.load_defs("res://data/scrap_objects.json")
 
 

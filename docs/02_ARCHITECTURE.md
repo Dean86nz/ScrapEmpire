@@ -53,7 +53,6 @@ ScrapEmpire/
 │   │   │   ├── research_system.gd    Tech, Skills, Modifikatoren, Rezepte, Verkaufswert
 │   │   │   ├── node_system.gd        Haufen, Wracks, lose Items, Respawn
 │   │   │   ├── building_system.gd    Bauen, Abreißen, Drehen, Einlegen, Entnehmen, Kosten
-│   │   │   ├── conveyor_system.gd    Bandnetz, Transport, Ausgänge, Saugstationen
 │   │   │   ├── tool_system.gd        Saugen, Hämmern, Magnet, Helfer-Arbeit
 │   │   │   ├── helper_system.gd      Helfer-Kauf, Upgrades, Tick
 │   │   │   ├── drone_system.gd       Drohnen-Kauf, Filter, Limit, Tick

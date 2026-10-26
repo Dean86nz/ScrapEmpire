@@ -1,6 +1,6 @@
 class_name BuildingSystem
 extends RefCounted
-## Bauen, Abreißen, Drehen, Einlegen, Entnehmen, Kosten, Reichweite.
+## Bauen (Deko, Museum) und Abreißen, Abliefern ans Schiff, Kosten, Reichweite.
 ## Teilsystem von SimWorld: statische Funktionen, `w` ist die Welt (Daten und Signale bleiben dort).
 
 
@@ -47,9 +47,6 @@ static func _cmd_place(w: SimWorld, cmd: Dictionary) -> void:
 		return
 	var tile: Vector2i = cmd.get("tile", Vector2i.ZERO)
 	var rot: int = int(cmd.get("rot", 0))
-	if def.max_per_zone > 0 and count_in_zone(w, def.id, tile) >= def.max_per_zone:
-		w.place_failed.emit("zone_limit")
-		return
 	if not in_build_range(w, tile, def.rotated_size(rot)):
 		w.place_failed.emit("range")
 		return
@@ -63,51 +60,22 @@ static func _cmd_place(w: SimWorld, cmd: Dictionary) -> void:
 	ShipSystem.pay(w, cost)
 	var b := Building.create(w.next_id(), def, tile, rot)
 	b.paid_cost = cost
-	if b is Machine:
-		(b as Machine).recipes = w.available_recipes(def.id)
-	if b is SellTerminal:
-		(b as SellTerminal).sell_interval = int(w.mods["sell_interval"])
 	w.grid.place(b)
 	w.buildings[b.id] = b
-	w._network_dirty = true
 	w.progression.on_build()
 	w.building_placed.emit(b)
 
 
-## Platziert ohne Kosten und Reichweite (Tests, Dev-Szenarien).
+## Platziert ohne Kosten und Reichweite (Karte, Spielstand, Tests, Dev-Szenarien).
 static func place_free(w: SimWorld, def_id: String, tile: Vector2i, rot: int = 0) -> Building:
 	var def: BuildingDef = w.defs[def_id]
 	if not can_place_def(w, def, tile, rot):
 		return null
 	var b := Building.create(w.next_id(), def, tile, rot)
-	if b is Machine:
-		(b as Machine).recipes = w.available_recipes(def.id)
 	w.grid.place(b)
 	w.buildings[b.id] = b
-	w._network_dirty = true
 	w.building_placed.emit(b)
 	return b
-
-
-## Gebäude einer Art in der Zone der Kachel (Außenposten-Grenze).
-static func count_in_zone(w: SimWorld, def_id: String, tile: Vector2i) -> int:
-	var zid := w.zones.zone_id_at(tile)
-	if zid == "":
-		return 0  # Karten ohne Zonen (Tests, Sonderfälle): keine Grenze
-	var n := 0
-	for b: Building in w.buildings.values():
-		if b.def.id == def_id and w.zones.zone_id_at(b.tile) == zid:
-			n += 1
-	return n
-
-
-static func _cmd_rotate(w: SimWorld, cmd: Dictionary) -> void:
-	var b := w.grid.at(cmd.get("tile", Vector2i.ZERO))
-	if b == null or not (b is Conveyor or b is Extractor):
-		return
-	b.rot = posmod(int(cmd.get("rot", 0)), 4)
-	w._network_dirty = true
-	w.building_changed.emit(b)
 
 
 static func _cmd_remove(w: SimWorld, cmd: Dictionary) -> void:
@@ -119,17 +87,14 @@ static func _cmd_remove(w: SimWorld, cmd: Dictionary) -> void:
 		return
 	w.grid.remove(b)
 	w.buildings.erase(b.id)
-	w._network_dirty = true
-	var to_refund: Dictionary = b.paid_cost.duplicate()
-	for item in b.contents():
-		to_refund[item] = to_refund.get(item, 0) + b.contents()[item]
-	var rest := Economy.refund(w.player.inventory, to_refund)
+	var rest := Economy.refund(w.player.inventory, b.paid_cost.duplicate())
 	for item in rest:
 		for i in int(rest[item]):
 			w.add_loose(item, b.center_px() + w._scatter())
 	w.building_removed.emit(b.id)
 
 
+## Einen Stapel aus Slot `slot` in ein Gebäude legen (nur das Schiff nimmt etwas an).
 static func _cmd_deposit(w: SimWorld, cmd: Dictionary) -> void:
 	var b := w.grid.at(cmd.get("tile", Vector2i.ZERO))
 	if b == null:
@@ -145,23 +110,8 @@ static func _cmd_deposit(w: SimWorld, cmd: Dictionary) -> void:
 	if accepted > 0:
 		w.player.inventory.remove(item, accepted)
 		w.building_changed.emit(b)
-		if b is Ship:
-			w.ship_received.emit(item, accepted)
 	else:
 		w.deposit_rejected.emit(b, item)
-
-
-static func _cmd_withdraw(w: SimWorld, cmd: Dictionary) -> void:
-	var b := w.grid.at(cmd.get("tile", Vector2i.ZERO))
-	if b == null:
-		return
-	var stack := b.withdraw_stack()
-	if stack.is_empty():
-		return
-	var rest := w.player.inventory.add(stack["item"], stack["count"])
-	if rest > 0:
-		b.accept_stack(stack["item"], rest)
-	w.building_changed.emit(b)
 
 
 ## Nächstes Gebäude, dessen Rechteck (um max_dist_px erweitert) pos enthält.

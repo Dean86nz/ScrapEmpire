@@ -3,7 +3,9 @@ extends RefCounted
 ## Wandelt die SimWorld in ein JSON-taugliches Dictionary und zurück (Architektur 4.8, 12).
 ## Reine Logik ohne Datei-IO; SaveManager kümmert sich um Dateien, Rotation und Migration.
 
-const VERSION := 7
+const VERSION := 8
+## Ältere Stände stammen aus der Fabrik-Version und werden nicht mehr geladen (Kurswechsel MS20).
+const MIN_VERSION := 8
 
 
 static func v2(v: Vector2i) -> Array:
@@ -68,6 +70,7 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		"helper_upgrades": world.helper_upgrades.duplicate(),
 		"drones": _drones(world),
 		"drone_upgrades": world.drone_upgrades.duplicate(),
+		"ship_upgrades": world.ship_upgrades.duplicate(),
 		"collectibles_found": world.collectibles_found.keys(),
 		"quests": world.quests.to_dict(),
 		"flags": world.flags.duplicate(),
@@ -79,7 +82,7 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 static func _drones(world: SimWorld) -> Array:
 	var arr: Array = []
 	for d: Drone in world.drones.values():
-		arr.append(d.to_dict(world))
+		arr.append(d.to_dict())
 	return arr
 
 
@@ -91,25 +94,8 @@ static func _helpers(world: SimWorld) -> Array:
 
 
 static func _building_state(b: Building) -> Dictionary:
-	if b is Machine:
-		var m := b as Machine
-		return {
-			"input": m.input.duplicate(), "output": m.output.duplicate(),
-			"progress": m.progress_ticks, "recipe": m.current_recipe.id if m.current_recipe != null else "",
-		}
-	if b is SellTerminal:
-		var t := b as SellTerminal
-		return {"buffer": t.buffer.duplicate(), "cooldown": t.get_cooldown()}
 	if b is Ship:
-		var s := b as Ship
-		return {"stage": s.stage, "storage": s.storage.to_dict(), "cooldown": s.get_cooldown()}
-	if b is Chest:
-		return {"inventory": (b as Chest).inventory.to_dict()}
-	if b is Conveyor:
-		return {"items": (b as Conveyor).items.duplicate(true)}
-	if b is Extractor:
-		var e := b as Extractor
-		return {"buffer": e.buffer.duplicate(), "counter": e.counter}
+		return {"stage": (b as Ship).stage}
 	return {}
 
 
@@ -172,16 +158,11 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 		h.from_dict(hd)
 	for k in data.get("drone_upgrades", {}):
 		world.drone_upgrades[str(k)] = int(data["drone_upgrades"][k])
+	for k in data.get("ship_upgrades", {}):
+		world.ship_upgrades[str(k)] = int(data["ship_upgrades"][k])
 	for dd: Dictionary in data.get("drones", []):
-		var src := world.grid.at(to_v2(dd.get("source_tile")))
-		var dst := world.grid.at(to_v2(dd.get("target_tile")))
-		if src == null or dst == null:
-			push_warning("Spielstand: Drohne ohne Quelle oder Ziel übersprungen")
-			continue
-		var d := world.add_drone(src.id, dst.id)
+		var d := world.add_drone()
 		d.from_dict(dd)
-	if not data.get("drone_upgrades", {}).is_empty():
-		world.recompute_modifiers()
 	for cid in data.get("collectibles_found", []):
 		world.collectibles_found[str(cid)] = true
 	world.quests.from_dict(data.get("quests", {}))
@@ -204,37 +185,7 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 
 
 static func _restore_building(b: Building, st: Dictionary, world: SimWorld) -> void:
-	if b is Machine:
-		var m := b as Machine
-		m.input = _int_dict(st.get("input", {}))
-		m.output = _int_dict(st.get("output", {}))
-		m.progress_ticks = int(st.get("progress", 0))
-		var rid := str(st.get("recipe", ""))
-		m.current_recipe = null
-		for r in world.recipes:
-			if r.id == rid:
-				m.current_recipe = r
-		if m.current_recipe == null:
-			m.progress_ticks = 0
-	elif b is SellTerminal:
-		var t := b as SellTerminal
-		for item in st.get("buffer", []):
-			t.buffer.append(str(item))
-		t.set_cooldown(int(st.get("cooldown", 0)))
-	elif b is Ship:
+	if b is Ship:
 		var s := b as Ship
 		s.stage = maxi(int(st.get("stage", 1)), 1)
 		ShipSystem.apply_stage(world, s)
-		s.storage.from_dict(st.get("storage", {}))
-		s.set_cooldown(int(st.get("cooldown", 0)))
-	elif b is Chest:
-		(b as Chest).inventory.from_dict(st.get("inventory", {}))
-	elif b is Conveyor:
-		var c := b as Conveyor
-		for it: Dictionary in st.get("items", []):
-			c.items.append({"item": str(it.get("item", "scrap")), "offset": int(it.get("offset", 0))})
-	elif b is Extractor:
-		var e := b as Extractor
-		for item in st.get("buffer", []):
-			e.buffer.append(str(item))
-		e.counter = int(st.get("counter", 0))

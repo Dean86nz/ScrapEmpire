@@ -3,6 +3,7 @@ extends RefCounted
 ## Wurzel der Simulation. Kennt keine Nodes, keine Sekunden. Positionen sind Vector2i in Pixeln.
 ## Befehle (Dictionaries) werden gesammelt und zu Beginn des nächsten Ticks angewandt.
 ## Änderungen werden per Signal gemeldet; die Darstellung hört darauf.
+## Kern-Ablauf (seit MS20): sammeln → am Schiff abliefern (Bolts) → Upgrades → Bots und Drohnen.
 
 signal node_added(node: ResourceNode)
 signal node_changed(node: ResourceNode)
@@ -23,7 +24,6 @@ signal deposit_rejected(building: Building, item_id: String)
 signal too_hard(node: ResourceNode, tool: String)
 signal node_respawned(node: ResourceNode)
 signal tech_unlocked(id: String)
-signal research_failed(reason: String)
 signal skill_bought(id: String, level: int)
 signal skill_failed(reason: String)
 signal modifiers_changed(mods: Dictionary)
@@ -42,7 +42,9 @@ signal collectible_added(c: Collectible)
 signal collectible_found(c: Collectible, def: Dictionary)
 signal zone_unlocked(zone_id: String)
 signal ship_received(item: String, n: int)
+signal ship_delivered(items: Dictionary, bolts: int)
 signal ship_upgraded(ship: Ship)
+signal ship_upgrade_bought(id: String, level: int)
 signal ship_failed(reason: String)
 signal quest_completed(id: String, def: Dictionary)
 
@@ -61,26 +63,23 @@ var grid := Grid.new(120, 90)
 var buildings: Dictionary = {}  # id → Building
 var defs: Dictionary = {}       # def_id → BuildingDef (von außen gesetzt)
 var item_values: Dictionary = {}  # item_id → Bolts (von außen gesetzt)
-var recipes: Array[RecipeDef] = []  # alle Rezepte (von außen gesetzt)
 var unlocked_tech: Dictionary = {}  # tech_id → true (Spiegel von tech.unlocked)
 var tech := TechState.new()
 var skills := SkillState.new()
 var tasks := TaskList.new()
-var flags: Dictionary = {}  # tutorial_step, tutorial_done, gate_open
+var flags: Dictionary = {}  # launched, mvp_done …
 var zones := ZoneTracker.new()
-var helpers: Dictionary = {}          # id → Helper
+var helpers: Dictionary = {}          # id → Helper (Sammel-Bots)
 var helper_cfg: Dictionary = {}       # data/helpers.json
 var helper_upgrades: Dictionary = {}  # upgrade id → Stufe
 var mods: Dictionary = Modifiers.DEFAULTS.duplicate()
 var unlocked_buildings: Dictionary = {}  # def_id → true
-var unlocked_features: Dictionary = {}   # autopilot, helpers
+var unlocked_features: Dictionary = {}   # helpers, drones, decor, museum, helper_tools, launch
 var rare_items: Dictionary = {}          # item_id → true (von außen gesetzt)
-var gate_buildings := false              # true sobald Tech-Daten geladen sind
+var gate_buildings := false              # true sobald Fortschrittsdaten geladen sind
 var bolts: int = 0
 var progression := Progression.new()
 var respawns: Array[Dictionary] = []  # [{kind, tile, ticks_left}]
-var conveyor_order: Array[Conveyor] = []  # Tick-Reihenfolge: Ziel vor Quelle
-var _network_dirty := true
 
 var _commands: Array[Dictionary] = []
 var _next_id: int = 1
@@ -96,6 +95,7 @@ var collectible_cfg: Dictionary = {}       # data/collectibles.json
 var collectibles: Dictionary = {}          # id → Collectible (noch nicht gefunden, in der Welt)
 var collectibles_found: Dictionary = {}    # def_id → true
 var ship_cfg: Dictionary = {}              # data/ship.json
+var ship_upgrades: Dictionary = {}         # upgrade id → Stufe (Laderaum, Ertrag, Tempo, Saugen, Werkzeug)
 var quests := QuestState.new()             # geführte Aufgabenkette
 
 
@@ -134,7 +134,7 @@ func _on_zone_unlocked(id: String) -> void:
 	zone_unlocked.emit(id)
 
 
-## Tech- und Skilldaten setzen; danach sind nur freigeschaltete Gebäude baubar.
+## Fortschrittsdaten setzen; danach sind nur freigeschaltete Gebäude baubar.
 func setup_progression_data(tech_defs: Array, skill_data: Dictionary) -> void:
 	tech.setup(tech_defs)
 	skills.setup(skill_data)
@@ -181,23 +181,10 @@ func tick() -> void:
 		if n.tick():
 			node_changed.emit(n)
 
-	if _network_dirty:
-		ConveyorSystem._rebuild_network(self)
-	ConveyorSystem._tick_conveyors(self)
-	ConveyorSystem._tick_outputs(self)
-	ConveyorSystem._tick_extractors(self)
-
 	for b: Building in buildings.values():
 		if b.tick():
-			if b is SellTerminal or b is Ship:
-				var sold: String = b.take_sold()
-				if sold != "":
-					var batch: int = (b as SellTerminal).buffer.size() + 1 if b is SellTerminal else (b as Ship).storage.total() + 1
-					var value: int = sale_value(sold, batch)
-					bolts += value
-					progression.on_sale(value)
-					item_sold.emit(sold, value, b.center_px())
-					bolts_changed.emit(bolts)
+			if b is Ship:
+				ShipSystem.credit(self, b as Ship)
 			building_changed.emit(b)
 
 	if player.suck_cooldown > 0:
@@ -237,12 +224,12 @@ func _apply(cmd: Dictionary) -> void:
 			BuildingSystem._cmd_remove(self, cmd)
 		"deposit":
 			BuildingSystem._cmd_deposit(self, cmd)
-		"withdraw":
-			BuildingSystem._cmd_withdraw(self, cmd)
-		"rotate":
-			BuildingSystem._cmd_rotate(self, cmd)
-		"research":
-			ResearchSystem._cmd_research(self, cmd)
+		"deliver_all":
+			ShipSystem._cmd_deliver_all(self, cmd)
+		"buy_upgrade":
+			ShipSystem._cmd_buy_upgrade(self, cmd)
+		"upgrade_ship":
+			ShipSystem._cmd_upgrade_ship(self, cmd)
 		"buy_skill":
 			ResearchSystem._cmd_buy_skill(self, cmd)
 		"buy_helper":
@@ -255,14 +242,8 @@ func _apply(cmd: Dictionary) -> void:
 			DroneSystem._cmd_buy_drone(self, cmd)
 		"remove_drone":
 			DroneSystem._cmd_remove_drone(self, cmd)
-		"set_drone_filter":
-			DroneSystem._cmd_set_drone_filter(self, cmd)
-		"set_drone_limit":
-			DroneSystem._cmd_set_drone_limit(self, cmd)
 		"buy_drone_upgrade":
 			DroneSystem._cmd_buy_drone_upgrade(self, cmd)
-		"upgrade_ship":
-			ShipSystem._cmd_upgrade_ship(self, cmd)
 
 
 # --- Weiterleitungen an die Teilsysteme (öffentliche API bleibt stabil) ------
@@ -285,6 +266,10 @@ func missing_for(cost: Dictionary) -> Dictionary:
 	return ShipSystem.missing(self, cost)
 
 
+func ship_upgrade_level(id: String) -> int:
+	return ShipSystem.upgrade_level(self, id)
+
+
 # ResearchSystem
 
 func is_building_unlocked(def_id: String) -> bool:
@@ -297,18 +282,6 @@ func recompute_modifiers() -> void:
 
 func _apply_tech_effects(id: String) -> void:
 	ResearchSystem._apply_tech_effects(self, id)
-
-
-func available_recipes(machine_id: String) -> Array[RecipeDef]:
-	return ResearchSystem.available_recipes(self, machine_id)
-
-
-func refresh_recipes() -> void:
-	ResearchSystem.refresh_recipes(self)
-
-
-func sale_value(item_id: String, buffer_size_at_sale: int) -> int:
-	return ResearchSystem.sale_value(self, item_id, buffer_size_at_sale)
 
 
 # NodeSystem
@@ -391,8 +364,8 @@ func next_helper_cost() -> Dictionary:
 	return HelperSystem.next_helper_cost(self)
 
 
-func can_buy_helper(depot_tile: Vector2i, zone_tile: Vector2i = Vector2i(-1, -1)) -> String:
-	return HelperSystem.can_buy_helper(self, depot_tile, zone_tile)
+func can_buy_helper() -> String:
+	return HelperSystem.can_buy_helper(self)
 
 
 func _apply_helper_mods(h: Helper) -> void:
@@ -413,16 +386,16 @@ func next_drone_cost() -> Dictionary:
 	return DroneSystem.next_drone_cost(self)
 
 
-func can_buy_drone(source_tile: Vector2i, target_tile: Vector2i) -> String:
-	return DroneSystem.can_buy_drone(self, source_tile, target_tile)
+func can_buy_drone() -> String:
+	return DroneSystem.can_buy_drone(self)
 
 
 func _apply_drone_mods(d: Drone) -> void:
 	DroneSystem._apply_drone_mods(self, d)
 
 
-func add_drone(source_id: int, target_id: int) -> Drone:
-	return DroneSystem.add_drone(self, source_id, target_id)
+func add_drone() -> Drone:
+	return DroneSystem.add_drone(self)
 
 
 func can_buy_drone_upgrade(id: String) -> String:

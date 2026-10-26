@@ -9,7 +9,6 @@ func _world() -> SimWorld:
 	w.set_size(40, 30)
 	w.defs = BuildingDef.load_all("res://data/buildings.json")
 	w.item_values = Economy.load_item_values("res://data/items.json")
-	w.recipes = RecipeDef.load_all("res://data/recipes.json")
 	w.player.pos = Vector2i(320, 320)
 	return w
 
@@ -61,15 +60,16 @@ func test_collect_fills_inventory_from_pile() -> void:
 	assert_true(w.player.inventory.count_of("scrap") >= 8, "hat %d Schrott" % w.player.inventory.count_of("scrap"))
 
 
-func test_collect_then_deposit_into_chest() -> void:
+func test_collect_then_deposit_into_ship() -> void:
 	var w := _world()
+	w.ship_cfg = ShipSystem.load_config()
 	w.add_pile("scrap_pile", Vector2i(10, 5), 10)
-	var chest: Chest = w.place_free("chest", Vector2i(5, 8), 0)
+	TestWorlds.with_ship(w, Vector2i(4, 8))
 	w.tasks.add_step(TaskList.Type.COLLECT, Vector2i(10, 5))
-	w.tasks.add_step(TaskList.Type.DEPOSIT, Vector2i(5, 8))
+	w.tasks.add_step(TaskList.Type.DEPOSIT, Vector2i(4, 8))
 	w.tasks.start(w.player)
 	_run(w, 600)
-	assert_true(chest.contents().get("scrap", 0) >= 10, "Kiste hat %s" % str(chest.contents()))
+	assert_true(w.bolts >= 10, "Schiff hat abgekauft: %d Bolts" % w.bolts)
 	assert_true(w.tasks.active, "läuft weiter in der Schleife")
 
 
@@ -107,18 +107,6 @@ func test_interrupt_stops_and_releases() -> void:
 	assert_false(w.tasks.active)
 	assert_false(w.player.has_move_target())
 	assert_false(w.player.suck_held)
-
-
-func test_withdraw_from_chest() -> void:
-	var w := _world()
-	var chest: Chest = w.place_free("chest", Vector2i(6, 5), 0)
-	chest.accept_stack("copper", 15)
-	w.tasks.add_step(TaskList.Type.WITHDRAW, Vector2i(6, 5))
-	w.tasks.add_step(TaskList.Type.GOTO, Vector2i(5, 5))
-	w.tasks.start(w.player)
-	_run(w, 60)
-	assert_eq(w.player.inventory.count_of("copper"), 15)
-	assert_eq(chest.contents(), {})
 
 
 func test_save_roundtrip_keeps_tasks() -> void:

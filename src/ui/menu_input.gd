@@ -7,8 +7,11 @@ extends RefCounted
 ## kann es nicht: ein Button, der ui_accept verarbeitet, markiert das Ereignis als erledigt.
 
 
+## Nur Bestätigungen, die der fokussierte Knopf NICHT selbst verarbeitet (z. B. Taste E).
+## Gamepad-A ist ui_accept: das löst der Knopf selbst aus. Würden wir es hier zusätzlich
+## auslösen, liefe jeder Kauf doppelt (gefunden im Gamepad-Test, MS20).
 static func accept_pressed(event: InputEvent) -> bool:
-	return event.is_action_pressed("interact") or event.is_action_pressed("ui_accept")
+	return event.is_action_pressed("interact") and not event.is_action("ui_accept")
 
 
 static func back_pressed(event: InputEvent) -> bool:

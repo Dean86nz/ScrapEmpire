@@ -1,177 +1,138 @@
 extends TestCase
+## Sammel-Drohnen: Bau am Schiff, fliegen zu losen Teilen und Haufen, liefern ans Schiff ab.
 
 
 func _world() -> SimWorld:
-	ResourceNode.load_defs("res://data/scrap_objects.json")
-	var w := SimWorld.new()
-	w.set_size(40, 30)
-	w.defs = BuildingDef.load_all("res://data/buildings.json")
-	w.item_values = Economy.load_item_values("res://data/items.json")
-	w.recipes = RecipeDef.load_all("res://data/recipes.json")
-	w.helper_cfg = JSON.parse_string(FileAccess.get_file_as_string("res://data/helpers.json"))
-	w.drone_cfg = JSON.parse_string(FileAccess.get_file_as_string("res://data/drones.json"))
-	w.setup_progression_data(TechState.load_defs("res://data/tech.json"), SkillState.load_file("res://data/skills.json"))
-	w.player.pos = Vector2i(32, 32)
+	var w := TestWorlds.make()
+	TestWorlds.with_ship(w, Vector2i(2, 2))
 	return w
 
 
 func _unlock(w: SimWorld) -> void:
 	w.unlocked_features["drones"] = true
-	w.unlocked_tech["furnace"] = true
-	w.refresh_recipes()
 
 
-func _run(w: SimWorld, ticks: int) -> void:
-	for i in ticks:
-		w.tick()
-
-
-func test_buy_requires_feature_and_buildings() -> void:
+func test_buy_requires_blueprint_and_bolts() -> void:
 	var w := _world()
 	var fails := []
 	w.drone_failed.connect(func(r: String) -> void: fails.append(r))
-	var chest := w.place_free("chest", Vector2i(5, 5), 0)
-	var furnace := w.place_free("furnace", Vector2i(15, 5), 0)
-	w.queue_command({"type": "buy_drone", "source": chest.tile, "target": furnace.tile})
+	w.queue_command({"type": "buy_drone"})
 	w.tick()
 	assert_eq(fails, ["locked"])
 	_unlock(w)
-	w.queue_command({"type": "buy_drone", "source": chest.tile, "target": furnace.tile})
+	w.queue_command({"type": "buy_drone"})
 	w.tick()
 	assert_eq(fails, ["locked", "bolts"])
-	w.bolts = 5000
-	w.player.inventory.add("circuit", 3)
-	w.queue_command({"type": "buy_drone", "source": Vector2i(20, 20), "target": furnace.tile})
-	w.tick()
-	assert_eq(fails[-1], "no_source")
-	w.queue_command({"type": "buy_drone", "source": chest.tile, "target": chest.tile})
-	w.tick()
-	assert_eq(fails[-1], "same")
-	w.queue_command({"type": "buy_drone", "source": chest.tile, "target": furnace.tile})
+	w.bolts = 400
+	w.queue_command({"type": "buy_drone"})
 	w.tick()
 	assert_eq(w.drones.size(), 1)
-	assert_eq(w.bolts, 5000 - 600)
-	assert_eq(w.player.inventory.count_of("circuit"), 0)
+	assert_eq(w.bolts, 0)
+	var d: Drone = w.drones.values()[0]
+	assert_eq(d.pos, w.ship().center_px(), "startet am Schiff")
 
 
-func test_cost_curve() -> void:
-	var w := _world()
-	assert_eq(w.next_drone_cost(), {"bolts": 600, "circuit": 3})
-	_unlock(w)
-	var chest := w.place_free("chest", Vector2i(5, 5), 0)
-	var furnace := w.place_free("furnace", Vector2i(15, 5), 0)
-	w.add_drone(chest.id, furnace.id)
-	assert_eq(w.next_drone_cost()["bolts"], 840)
-
-
-func test_drone_moves_scrap_from_chest_to_furnace() -> void:
+func test_cost_curve_and_max() -> void:
 	var w := _world()
 	_unlock(w)
-	var chest := w.place_free("chest", Vector2i(5, 5), 0) as Chest
-	var furnace := w.place_free("furnace", Vector2i(15, 5), 0) as Machine
-	chest.inventory.add("scrap", 30)
-	var d := w.add_drone(chest.id, furnace.id)
-	assert_eq(d.capacity, 10)
-	_run(w, 400)
-	# Ofen hat Schrott bekommen und schmilzt; Kiste wurde geleert
-	var total_in_furnace := int(furnace.input.get("scrap", 0)) + int(furnace.output.get("iron_bar", 0)) * 3
-	assert_true(chest.inventory.count_of("scrap") < 30, "Kiste geleert: %d" % chest.inventory.count_of("scrap"))
-	assert_true(total_in_furnace > 0 or furnace.progress_ticks > 0, "Ofen hat Material")
-	assert_true(d.trips >= 1, "mindestens eine Fahrt: %d" % d.trips)
+	assert_eq(w.next_drone_cost(), {"bolts": 400})
+	w.add_drone()
+	assert_eq(w.next_drone_cost()["bolts"], 600)
+	for i in 5:
+		w.add_drone()
+	w.bolts = 1000000
+	assert_eq(w.can_buy_drone(), "max")
 
 
-func test_filter_only_moves_matching_item() -> void:
+func test_drone_collects_loose_items_and_delivers() -> void:
 	var w := _world()
 	_unlock(w)
-	var a := w.place_free("chest", Vector2i(5, 5), 0) as Chest
-	var b := w.place_free("chest", Vector2i(12, 5), 0) as Chest
-	a.inventory.add("scrap", 20)
-	a.inventory.add("copper", 20)
-	var d := w.add_drone(a.id, b.id)
-	w.queue_command({"type": "set_drone_filter", "id": d.id, "item": "copper"})
-	_run(w, 600)
-	assert_eq(a.inventory.count_of("scrap"), 20)
-	assert_eq(a.inventory.count_of("copper"), 0)
-	assert_eq(b.inventory.count_of("copper"), 20)
+	for i in 8:
+		w.add_loose("copper", Vector2i(12 * 64 + i * 10, 10 * 64))
+	var d := w.add_drone()
+	assert_eq(d.capacity, 6)
+	TestWorlds.run(w, 20 * 30)
+	assert_eq(w.loose.size(), 0, "alle losen Teile eingesammelt")
+	assert_eq(w.bolts, 8 * 3, "Kupfer à 3 Bolts am Schiff")
+	assert_true(d.trips >= 2, "Tragkraft 6: mindestens zwei Flüge (%d)" % d.trips)
 
 
-func test_limit_stops_at_target_amount() -> void:
+func test_drone_takes_from_piles_when_no_loose_items() -> void:
 	var w := _world()
 	_unlock(w)
-	var a := w.place_free("chest", Vector2i(5, 5), 0) as Chest
-	var b := w.place_free("chest", Vector2i(12, 5), 0) as Chest
-	a.inventory.add("scrap", 60)
-	var d := w.add_drone(a.id, b.id)
-	w.queue_command({"type": "set_drone_limit", "id": d.id, "limit": 25})
-	_run(w, 900)
-	assert_eq(b.inventory.count_of("scrap"), 25)
-	assert_true(d.state == Drone.State.WAIT and d.wait_reason == "limit", "wartet wegen Limit: %s" % d.wait_reason)
+	var pile := w.add_pile("scrap_pile", Vector2i(12, 12), 10)
+	w.add_drone()
+	TestWorlds.run(w, 20 * 20)
+	assert_true(pile.amount < 10, "vom Haufen gesaugt")
+	assert_true(w.bolts > 0)
 
 
-func test_empty_source_waits_without_crash() -> void:
+func test_drone_ignores_hard_objects_and_locked_zones() -> void:
+	var w := TestWorlds.make()
+	MapLoader.apply(w, {"width": 40, "height": 30, "zone_order": ["a", "b"],
+		"zones": [{"id": "a", "name": "A", "x": 0, "y": 0, "w": 20, "h": 30}, {"id": "b", "name": "B", "x": 20, "y": 0, "w": 20, "h": 30}],
+		"nodes": [{"kind": "cart", "x": 8, "y": 8}, {"kind": "scrap_pile", "x": 25, "y": 5, "amount": 10}]})
+	TestWorlds.with_ship(w, Vector2i(2, 2))
+	_unlock(w)
+	w.add_loose("scrap", Vector2i(26 * 64, 6 * 64))
+	var d := w.add_drone()
+	TestWorlds.run(w, 20 * 20)
+	assert_eq(w.loose.size(), 1, "loses Teil in gesperrter Zone bleibt liegen")
+	assert_eq(d.state, Drone.State.IDLE, "nichts zu tun")
+	for n: ResourceNode in w.nodes.values():
+		if n.kind == "cart":
+			assert_eq(n.amount, 20, "Einkaufswagen (Stufe 2) bleibt")
+
+
+func test_two_drones_do_not_chase_the_same_item() -> void:
 	var w := _world()
 	_unlock(w)
-	var a := w.place_free("chest", Vector2i(5, 5), 0) as Chest
-	var b := w.place_free("chest", Vector2i(12, 5), 0) as Chest
-	var d := w.add_drone(a.id, b.id)
-	_run(w, 200)
-	assert_eq(d.wait_reason, "source_empty")
-	assert_eq(d.trips, 0)
-	# Quelle wird gefüllt: Drohne nimmt die Arbeit auf
-	a.inventory.add("scrap", 5)
-	_run(w, 300)
-	assert_eq(b.inventory.count_of("scrap"), 5)
-
-
-func test_removed_building_puts_drone_on_hold() -> void:
-	var w := _world()
-	_unlock(w)
-	var a := w.place_free("chest", Vector2i(5, 5), 0) as Chest
-	var b := w.place_free("chest", Vector2i(12, 5), 0) as Chest
-	var d := w.add_drone(a.id, b.id)
-	w.queue_command({"type": "remove", "tile": b.tile})
+	w.add_loose("scrap", Vector2i(12 * 64, 10 * 64))
+	w.add_loose("scrap", Vector2i(12 * 64, 14 * 64))
+	var a := w.add_drone()
+	var b := w.add_drone()
 	w.tick()
-	_run(w, 20)
-	assert_eq(d.wait_reason, "missing")
+	assert_true(a.target_loose != b.target_loose, "unterschiedliche Ziele")
 
 
-func test_upgrade_capacity_and_speed() -> void:
+func test_upgrades_change_speed_and_capacity() -> void:
 	var w := _world()
 	_unlock(w)
-	var a := w.place_free("chest", Vector2i(5, 5), 0)
-	var b := w.place_free("chest", Vector2i(12, 5), 0)
-	var d := w.add_drone(a.id, b.id)
+	var d := w.add_drone()
 	var base_speed := d.speed_px_per_tick
 	w.bolts = 10000
-	w.player.inventory.add("circuit", 20)
 	w.queue_command({"type": "buy_drone_upgrade", "id": "drone_capacity"})
 	w.queue_command({"type": "buy_drone_upgrade", "id": "drone_speed"})
 	w.tick()
 	assert_eq(int(w.drone_upgrades.get("drone_capacity", 0)), 1)
-	assert_eq(d.capacity, 20)
-	assert_true(d.speed_px_per_tick > base_speed, "schneller: %d > %d" % [d.speed_px_per_tick, base_speed])
+	assert_eq(d.capacity, 10)
+	assert_true(d.speed_px_per_tick > base_speed)
+	assert_eq(w.bolts, 10000 - 600 - 400)
 
 
-func test_save_roundtrip_and_migration() -> void:
+func test_remove_drops_cargo() -> void:
 	var w := _world()
 	_unlock(w)
-	var a := w.place_free("chest", Vector2i(5, 5), 0) as Chest
-	var b := w.place_free("chest", Vector2i(12, 5), 0)
-	a.inventory.add("scrap", 20)
-	var d := w.add_drone(a.id, b.id)
-	d.item_filter = "scrap"
-	d.limit = 50
-	_run(w, 50)
+	var d := w.add_drone()
+	d.carry = {"scrap": 3}
+	w.queue_command({"type": "remove_drone", "id": d.id})
+	w.tick()
+	assert_eq(w.drones.size(), 0)
+	assert_eq(w.loose.size(), 3)
+
+
+func test_save_roundtrip() -> void:
+	var w := _world()
+	_unlock(w)
+	var d := w.add_drone()
+	d.carry = {"copper": 2}
+	d.trips = 5
+	w.drone_upgrades["drone_speed"] = 1
 	var data := SaveCodec.encode(w, "main", Vector2(32, 32), 0)
-	assert_eq(int(data["version"]), SaveCodec.VERSION)
-	assert_eq(data["drones"].size(), 1)
-	var w2 := _world()
+	var w2 := TestWorlds.make()
 	SaveCodec.decode(JSON.parse_string(JSON.stringify(data)), w2)
 	assert_eq(w2.drones.size(), 1)
 	var d2: Drone = w2.drones.values()[0]
-	assert_eq(d2.item_filter, "scrap")
-	assert_eq(d2.limit, 50)
-	assert_true(w2.buildings.has(d2.source_id) and w2.buildings.has(d2.target_id), "Gebäude-IDs bleiben gültig")
-	var migrated := SaveMigrations.v4_to_v5({"version": 4})
-	assert_eq(int(migrated["version"]), 5)
-	assert_eq(migrated["drones"], [])
+	assert_eq(d2.carry, {"copper": 2})
+	assert_eq(d2.trips, 5)
+	assert_eq(d2.state, Drone.State.RETURN, "mit Ladung zurück zum Schiff")

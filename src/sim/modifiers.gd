@@ -21,7 +21,7 @@ const DEFAULTS := {
 	"suck_interval_mult": 1.0,  # Tech Turbo-Sauger
 	"range_add": 0.0,           # Kacheln Saug-/Hammerreichweite
 	"hammer_items": 1,          # Items pro Hammerschlag
-	"sell_interval": 10,        # Ticks pro Verkauf am Terminal
+	"suck_speed_mult": 1.0,     # Schiff-Upgrade Saugtempo (teilt den Saugtakt)
 	"autopilot_speed_mult": 1.0,
 	"helper_tier": 1,
 	"helper_speed_mult": 1.0,

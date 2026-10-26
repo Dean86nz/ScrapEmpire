@@ -21,9 +21,6 @@ func _process(_delta: float) -> void:
 		return
 	var w := SimClock.world
 	var belt_items := 0
-	for b: Building in w.buildings.values():
-		if b is Conveyor:
-			belt_items += (b as Conveyor).items.size()
 	_label.text = "FPS %d\nTick %.2f ms\nTicks %d\nItems %d (Band %d)\n%s\nSauger T%d  Hammer T%d\nXP %d\nHelfer %d" % [
 		Engine.get_frames_per_second(),
 		SimClock.last_tick_ms,

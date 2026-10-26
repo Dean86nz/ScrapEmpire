@@ -1,23 +1,116 @@
 {
-  "max_helpers": 6,
-  "cost_base_bolts": 400,
+  "max_helpers": 10,
+  "cost_base_bolts": 150,
   "cost_growth": 1.5,
-  "cost_chrome": 5,
-  "zone_radius_tiles": 6,
+  "cost_chrome": 0,
+  "zone_radius_tiles": 8,
   "base_speed_px_per_s": 224,
   "base_slots": 3,
   "base_stack": 10,
   "stuck_min_s": 240,
   "stuck_max_s": 360,
   "stuck_pause_s": 5,
-  "names": ["Bolte", "Knirps", "Dübel", "Fräulein Flex", "Schraubi", "Rostnase"],
-  "colors": ["#4FB6E8", "#F2C94C", "#7FB069", "#C77DFF", "#E8453C", "#F28C28"],
-  "quips_idle": ["HELPER_Q_1", "HELPER_Q_2", "HELPER_Q_3", "HELPER_Q_4"],
-  "quips_stuck": ["HELPER_STUCK_1", "HELPER_STUCK_2", "HELPER_STUCK_3"],
-  "quips_hired": ["HELPER_HIRED_1", "HELPER_HIRED_2"],
+  "names": [
+    "Bolte",
+    "Knirps",
+    "Dübel",
+    "Fräulein Flex",
+    "Schraubi",
+    "Rostnase"
+  ],
+  "colors": [
+    "#4FB6E8",
+    "#F2C94C",
+    "#7FB069",
+    "#C77DFF",
+    "#E8453C",
+    "#F28C28"
+  ],
+  "quips_idle": [
+    "HELPER_Q_1",
+    "HELPER_Q_2",
+    "HELPER_Q_3",
+    "HELPER_Q_4"
+  ],
+  "quips_stuck": [
+    "HELPER_STUCK_1",
+    "HELPER_STUCK_2",
+    "HELPER_STUCK_3"
+  ],
+  "quips_hired": [
+    "HELPER_HIRED_1",
+    "HELPER_HIRED_2"
+  ],
   "upgrades": [
-    { "id": "helper_speed", "name_key": "HELPER_UPG_SPEED", "desc_key": "HELPER_UPG_SPEED_DESC", "max_level": 3, "cost_bolts": [300, 600, 1200], "cost_chrome": [0, 0, 0], "requires_feature": "helpers", "effects": [{ "key": "helper_speed_mult", "op": "add", "per_level": 0.2 }] },
-    { "id": "helper_capacity", "name_key": "HELPER_UPG_CAPACITY", "desc_key": "HELPER_UPG_CAPACITY_DESC", "max_level": 3, "cost_bolts": [300, 600, 1200], "cost_chrome": [0, 0, 0], "requires_feature": "helpers", "effects": [{ "key": "helper_capacity_add", "op": "add", "per_level": 10 }] },
-    { "id": "helper_tool", "name_key": "HELPER_UPG_TOOL", "desc_key": "HELPER_UPG_TOOL_DESC", "max_level": 2, "cost_bolts": [1500, 3000], "cost_chrome": [10, 20], "requires_feature": "helper_tools", "effects": [{ "key": "helper_tier", "op": "add", "per_level": 1 }] }
+    {
+      "id": "helper_speed",
+      "name_key": "HELPER_UPG_SPEED",
+      "desc_key": "HELPER_UPG_SPEED_DESC",
+      "max_level": 3,
+      "cost_bolts": [
+        300,
+        600,
+        1200
+      ],
+      "cost_chrome": [
+        0,
+        0,
+        0
+      ],
+      "requires_feature": "helpers",
+      "effects": [
+        {
+          "key": "helper_speed_mult",
+          "op": "add",
+          "per_level": 0.2
+        }
+      ]
+    },
+    {
+      "id": "helper_capacity",
+      "name_key": "HELPER_UPG_CAPACITY",
+      "desc_key": "HELPER_UPG_CAPACITY_DESC",
+      "max_level": 3,
+      "cost_bolts": [
+        300,
+        600,
+        1200
+      ],
+      "cost_chrome": [
+        0,
+        0,
+        0
+      ],
+      "requires_feature": "helpers",
+      "effects": [
+        {
+          "key": "helper_capacity_add",
+          "op": "add",
+          "per_level": 10
+        }
+      ]
+    },
+    {
+      "id": "helper_tool",
+      "name_key": "HELPER_UPG_TOOL",
+      "desc_key": "HELPER_UPG_TOOL_DESC",
+      "max_level": 2,
+      "cost_bolts": [
+        1500,
+        3000
+      ],
+      "cost_chrome": [
+        0,
+        0
+      ],
+      "requires_feature": "helper_tools",
+      "effects": [
+        {
+          "key": "helper_tier",
+          "op": "add",
+          "per_level": 1
+        }
+      ]
+    }
   ]
 }

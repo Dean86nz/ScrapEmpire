@@ -13,26 +13,19 @@ static func next_helper_cost(w: SimWorld) -> Dictionary:
 	var base := float(w.helper_cfg.get("cost_base_bolts", 400))
 	var growth := float(w.helper_cfg.get("cost_growth", 1.5))
 	var bolts_cost := int(round(base * pow(growth, n) / 10.0)) * 10
-	return {"bolts": bolts_cost, "chrome": int(w.helper_cfg.get("cost_chrome", 5))}
+	return {"bolts": bolts_cost}
 
 
-## "" wenn kaufbar, sonst Grund: locked, max, bolts, chrome, no_depot, zone_locked
-static func can_buy_helper(w: SimWorld, depot_tile: Vector2i, zone_tile: Vector2i = Vector2i(-1, -1)) -> String:
+## "" wenn baubar, sonst Grund: locked, max, bolts, no_ship
+static func can_buy_helper(w: SimWorld) -> String:
 	if not w.unlocked_features.has("helpers"):
 		return "locked"
-	if zone_tile.x >= 0:
-		var zid := w.zones.zone_id_at(zone_tile)
-		if zid != "" and not w.zones.is_unlocked(zid):
-			return "zone_locked"
-	if helper_count(w) >= int(w.helper_cfg.get("max_helpers", 6)):
+	if helper_count(w) >= int(w.helper_cfg.get("max_helpers", 10)):
 		return "max"
-	var cost := next_helper_cost(w)
-	if w.bolts < int(cost["bolts"]):
+	if w.bolts < int(next_helper_cost(w)["bolts"]):
 		return "bolts"
-	if ShipSystem.count_available(w, "chrome") < int(cost["chrome"]):
-		return "chrome"
-	if w.grid.at(depot_tile) == null:
-		return "no_depot"
+	if ShipSystem.ship(w) == null:
+		return "no_ship"
 	return ""
 
 
@@ -64,18 +57,16 @@ static func add_helper(w: SimWorld, zone_tile: Vector2i, depot_tile: Vector2i, n
 	return h
 
 
+## Bot bauen: arbeitet im Umkreis der Stelle, an der Rusty gerade ist (oder `zone`), liefert ans Schiff.
 static func _cmd_buy_helper(w: SimWorld, cmd: Dictionary) -> void:
-	var zone_tile: Vector2i = cmd.get("zone", Vector2i.ZERO)
-	var depot_tile: Vector2i = cmd.get("depot", Vector2i.ZERO)
-	var reason := can_buy_helper(w, depot_tile, zone_tile)
+	var reason := can_buy_helper(w)
 	if reason != "":
 		w.helper_failed.emit(reason)
 		return
-	var cost := next_helper_cost(w)
-	w.bolts -= int(cost["bolts"])
-	ShipSystem.pay(w, {"chrome": int(cost["chrome"])})
+	var zone_tile: Vector2i = cmd.get("zone", w.player_tile())
+	w.bolts -= int(next_helper_cost(w)["bolts"])
 	w.bolts_changed.emit(w.bolts)
-	var h := add_helper(w, zone_tile, depot_tile)
+	var h := add_helper(w, zone_tile, ShipSystem.ship(w).tile)
 	var hired: Array = w.helper_cfg.get("quips_hired", [])
 	if not hired.is_empty():
 		w.helper_quip.emit(h, str(hired[h.id % hired.size()]))
@@ -115,8 +106,6 @@ static func can_buy_helper_upgrade(w: SimWorld, id: String) -> String:
 		return "locked"
 	if w.bolts < int(u["cost_bolts"][level]):
 		return "bolts"
-	if ShipSystem.count_available(w, "chrome") < int(u["cost_chrome"][level]):
-		return "chrome"
 	return ""
 
 
@@ -129,7 +118,6 @@ static func _cmd_buy_helper_upgrade(w: SimWorld, cmd: Dictionary) -> void:
 	var u := helper_upgrade_def(w, id)
 	var level := int(w.helper_upgrades.get(id, 0))
 	w.bolts -= int(u["cost_bolts"][level])
-	ShipSystem.pay(w, {"chrome": int(u["cost_chrome"][level])})
 	w.helper_upgrades[id] = level + 1
 	w.bolts_changed.emit(w.bolts)
 	w.recompute_modifiers()

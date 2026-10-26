@@ -2,6 +2,40 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.9.0] – 2026-10-26 – MS20 Neuer Kern-Ablauf: sammeln, abliefern, aufrüsten (Kurswechsel Block 2)
+
+Weniger Fabrik, mehr Incremental. Alte Spielstände passen nicht mehr: Beim Start werden sie gesichert (`save_a.json.bak_…`) und ein neues Spiel beginnt.
+
+### Neu
+- **Grundschleife:** Rusty startet mit 4 Inventarplätzen à 10 Teile. Volle Taschen bringt er zum Schiff, **A am Schiff liefert alles auf einmal ab** und zahlt sofort Bolts (Schrott 1, Holz, Stein, Plastik 2, Kupfer 3, Chrom 8, Titan 12, Sternenstaub 20). Die erste volle Ladung reicht für das erste Upgrade
+- **Schiff-Menü** (X am Schiff, oder Select): Reparatur und fünf Upgrades, alles nur gegen Bolts. Laderaum +1 Platz (8 Stufen, ab 25 Bolts), Ertrag +10 % (10 Stufen, ab 60), Fahrtempo +8 % (8 Stufen, ab 40), Saugtempo +12 % und etwas Reichweite (8 Stufen, ab 50), Werkzeugstufe für härteren Müll (300, 1.500, 6.000, 20.000). Zahlen in `data/ship.json`
+- **Schiffsreparatur mit Blaupausen:** Stufe 2 (500 Bolts) Sammel-Bot, Stufe 3 (3.000) Drohne und Deko, Stufe 4 (12.000) bessere Bots und Museum, Stufe 5 (40.000, Planet ab 80 % geheilt) hebt das Schiff ab und zeigt das Ende mit neuem Text ohne Entwicklersprache
+- **Sammel-Bots** (die bisherigen Helfer) werden am Schiff gebaut, arbeiten dort, wo Rusty beim Bau steht (Radius 8 Kacheln), und liefern ans Schiff. 150 Bolts, jeder weitere ×1,5, höchstens 10
+- **Drohnen** fliegen jetzt selbstständig: vom Schiff zu losen Teilen (Vorrang, z. B. Beute aus zerhämmertem Müll) oder Rohstoffhaufen in freigeschalteten Zonen, tragen 6 Teile, liefern am Schiff ab. 400 Bolts, ×1,5, höchstens 6. Kein Quelle-Ziel-Einstellen mehr
+- **Neue Aufgabenkette** (19 Aufgaben): fahren, sammeln, abliefern, erstes Upgrade, Toaster zerlegen, Laderaum 2, 300 Bolts, Werkzeug 2, Tor öffnen, Schiff 2, erster Bot, 2.000 Bolts, Schiff 3, erste Drohne, 3 Fundstücke, 3 Bots, Schiff 4, Planet 80 %, Abflug
+- Der Titel erklärt, wenn ein alter Spielstand gesichert wurde. Spielstand-Version 8
+
+### Entfernt (Code bleibt in der Git-Historie)
+- Förderbänder, Saugstation, Schmelzofen, Presse, Verkaufsterminal, Kiste, alle Rezepte und Produkte (Barren, Platten, Zahnräder, Schaltkreise)
+- Forschungsbaum: Freischaltungen kommen über Schiffsstufen. Tab „Forschung“ ist durch „Schiff“ ersetzt
+- Skills, die ins Schiff umgezogen sind (Taschen, Schnelle Räder, Feilschen, Schlagkraft, Saugkraft) und Großhändler. Es bleiben Turbo, Wendigkeit, Stapler, Magnet, Kenner, Tempo, Reichweite
+- Das Baumenü zeigt nur noch Deko und Museum und meldet sich vorher mit einem Spruch, statt leer aufzugehen
+
+### Behoben
+- **Doppelte Käufe mit A:** Seit v1.5.0 löste A in Menüs den fokussierten Knopf zweimal aus (der Knopf selbst plus meine Absicherung). Bei Käufen hätte das doppelt bezahlt. Gefunden im erweiterten Gamepad-Test; die Absicherung greift jetzt nur noch für die Tastatur
+
+### Technik
+- `ShipSystem` (Abliefern, Upgrades, Stufen), `Drone` als Sammler, `ResearchSystem` ohne Forschung, `BuildingSystem` ohne Fabrik; `ConveyorSystem`, `Conveyor`, `Extractor`, `Machine`, `SellTerminal`, `Chest`, `RecipeDef` entfernt
+- Tests neu: Schiff (12), Bots (11), Drohnen (9), Aufgaben (5), Skills (6), Spielstand (6), Gebäude (4); `tests/worlds.gd` als gemeinsame Test-Welt; `tools/compile_all.gd` prüft, dass jedes Skript kompiliert
+- 155 Unit-Tests, 29 Gamepad-Prüfungen (jetzt mit Abliefern per A, Schiff-Menü per X, Kauf von Reparatur, Upgrade, Bot und Drohne) und 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Start: Der Titel sagt, dass der alte Spielstand gesichert wurde. Neues Spiel startet
+2. Schrott saugen, bis die 4 Plätze voll sind (40 Teile), zum Schiff fahren, A: Taschen leer, Bolts steigen
+3. X am Schiff: Schiff-Menü. Laderaum kaufen (25 Bolts), danach hat die Hotbar 5 Plätze. Jeder Kauf darf nur einmal abbuchen
+4. Nach 500 Bolts: „Schiff reparieren“, dann „Sammel-Bot bauen“. Der Bot sammelt neben dir und bringt alles zum Schiff
+5. Tempo-Gefühl: Wie lange bis zum ersten Upgrade, bis Schiffsstufe 2? Bitte grob die Minuten notieren
+
 ## [1.8.0] – 2026-10-26 – MS19 Weiterspielen absichern (Kurswechsel Block 1)
 
 ### Behoben

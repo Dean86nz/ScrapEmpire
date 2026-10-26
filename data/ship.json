@@ -1,14 +1,180 @@
 {
-  "_comment": "Rustys abgestürztes Raumschiff: Basis für Abgabe, Verkauf und Ausbau. Verkauft automatisch alles, was über der Reserve je Item liegt. Lager zählt bei Bau- und Forschungskosten mit.",
-  "reserve": {
-    "scrap": 0, "copper": 20, "plastic": 20, "stone": 40, "wood": 40, "chrome": 50,
-    "iron_bar": 50, "copper_bar": 50, "plastic_sheet": 50, "gear": 30, "circuit": 30, "titanium": 50, "stardust": 50
-  },
+  "_comment": "Rustys Schiff: Abgabe zahlt sofort Bolts (Wert × Ertrag). Upgrades kosten Bolts. Stufen reparieren das Schiff und schalten Blaupausen frei; Stufe 5 = Abflug (Spielende).",
+  "upgrades": [
+    {
+      "id": "cargo",
+      "name_key": "UPG_CARGO",
+      "desc_key": "UPG_CARGO_DESC",
+      "icon": "res://assets/sprites/ui/upg_cargo.svg",
+      "max_level": 8,
+      "cost_bolts": [
+        25,
+        40,
+        65,
+        100,
+        165,
+        260,
+        420,
+        670
+      ],
+      "effects": [
+        {
+          "key": "slots_add",
+          "op": "add",
+          "per_level": 1
+        }
+      ]
+    },
+    {
+      "id": "yield",
+      "name_key": "UPG_YIELD",
+      "desc_key": "UPG_YIELD_DESC",
+      "icon": "res://assets/sprites/ui/upg_yield.svg",
+      "max_level": 10,
+      "cost_bolts": [
+        60,
+        100,
+        175,
+        295,
+        500,
+        850,
+        1450,
+        2460,
+        4185,
+        7115
+      ],
+      "effects": [
+        {
+          "key": "sell_mult",
+          "op": "add",
+          "per_level": 0.1
+        }
+      ]
+    },
+    {
+      "id": "speed",
+      "name_key": "UPG_SPEED",
+      "desc_key": "UPG_SPEED_DESC",
+      "icon": "res://assets/sprites/ui/upg_speed.svg",
+      "max_level": 8,
+      "cost_bolts": [
+        40,
+        65,
+        100,
+        165,
+        260,
+        420,
+        670,
+        1075
+      ],
+      "effects": [
+        {
+          "key": "speed_mult",
+          "op": "add",
+          "per_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "suction",
+      "name_key": "UPG_SUCTION",
+      "desc_key": "UPG_SUCTION_DESC",
+      "icon": "res://assets/sprites/ui/upg_suction.svg",
+      "max_level": 8,
+      "cost_bolts": [
+        50,
+        80,
+        130,
+        205,
+        330,
+        525,
+        840,
+        1340
+      ],
+      "effects": [
+        {
+          "key": "suck_speed_mult",
+          "op": "add",
+          "per_level": 0.12
+        },
+        {
+          "key": "range_add",
+          "op": "add",
+          "per_level": 0.1
+        }
+      ]
+    },
+    {
+      "id": "tool",
+      "name_key": "UPG_TOOL",
+      "desc_key": "UPG_TOOL_DESC",
+      "icon": "res://assets/sprites/ui/upg_tool.svg",
+      "max_level": 4,
+      "cost_bolts": [
+        300,
+        1500,
+        6000,
+        20000
+      ],
+      "effects": [
+        {
+          "key": "hammer_tier",
+          "op": "add",
+          "per_level": 1
+        },
+        {
+          "key": "suction_tier",
+          "op": "add",
+          "per_level": 1
+        }
+      ]
+    }
+  ],
   "stages": [
-    { "stage": 1, "name_key": "SHIP_STAGE_1", "storage_slots": 20, "stack": 50, "sell_interval": 10, "sprite": "res://assets/sprites/buildings/ship_1.svg",
-      "upgrade": { "bolts": 300, "items": { "iron_bar": 20, "copper_bar": 5 } } },
-    { "stage": 2, "name_key": "SHIP_STAGE_2", "storage_slots": 30, "stack": 50, "sell_interval": 6, "sprite": "res://assets/sprites/buildings/ship_2.svg",
-      "upgrade": { "bolts": 2000, "items": { "gear": 20, "circuit": 10, "chrome": 20 } } },
-    { "stage": 3, "name_key": "SHIP_STAGE_3", "storage_slots": 40, "stack": 50, "sell_interval": 4, "sprite": "res://assets/sprites/buildings/ship_3.svg" }
+    {
+      "stage": 1,
+      "name_key": "SHIP_STAGE_1",
+      "sprite": "res://assets/sprites/buildings/ship_1.svg",
+      "unlocks": []
+    },
+    {
+      "stage": 2,
+      "name_key": "SHIP_STAGE_2",
+      "sprite": "res://assets/sprites/buildings/ship_2.svg",
+      "cost_bolts": 500,
+      "unlocks": [
+        "helpers"
+      ]
+    },
+    {
+      "stage": 3,
+      "name_key": "SHIP_STAGE_3",
+      "sprite": "res://assets/sprites/buildings/ship_2.svg",
+      "cost_bolts": 3000,
+      "unlocks": [
+        "drones",
+        "decor"
+      ]
+    },
+    {
+      "stage": 4,
+      "name_key": "SHIP_STAGE_4",
+      "sprite": "res://assets/sprites/buildings/ship_3.svg",
+      "cost_bolts": 12000,
+      "unlocks": [
+        "helper_tools",
+        "museum"
+      ]
+    },
+    {
+      "stage": 5,
+      "name_key": "SHIP_STAGE_5",
+      "sprite": "res://assets/sprites/buildings/ship_3.svg",
+      "cost_bolts": 40000,
+      "requires_planet": 0.8,
+      "unlocks": [
+        "launch"
+      ]
+    }
   ]
 }

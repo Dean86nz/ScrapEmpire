@@ -27,10 +27,6 @@ var _chapter_timer := 0.0
 var _build_press_time := -1.0
 var _tech_press_time := -1.0
 var _pending_task_type := -1
-var _helper_flow := 0  # 0 aus, 1 Zone wählen, 2 Lager wählen
-var _drone_flow := 0   # 0 aus, 1 Quelle wählen, 2 Ziel wählen
-var _drone_source := Vector2i.ZERO
-var _helper_zone := Vector2i.ZERO
 var _first_collected: Dictionary = {}
 var _autosave_timer := AUTOSAVE_SECONDS
 var _loaded_from_save := false
@@ -40,7 +36,6 @@ func _ready() -> void:
 	_world = SimWorld.new()
 	_world.defs = DataRegistry.building_defs
 	_world.item_values = DataRegistry.item_values()
-	_world.recipes = DataRegistry.recipes
 	_world.progression = DataRegistry.new_progression()
 	_world.rare_items = DataRegistry.rare_items()
 	_world.helper_cfg = DataRegistry.helper_config()
@@ -98,8 +93,6 @@ func _ready() -> void:
 		_player.selected_slot = int(save_data.get("player", {}).get("selected_slot", 0))
 		_hud.set_selected_slot(_player.selected_slot)
 		_first_collected = {"scrap": true, "copper": true, "plastic": true, "chrome": true}
-	_progress_menu.helper_purchase_requested.connect(_start_helper_flow)
-	_progress_menu.drone_purchase_requested.connect(_start_drone_flow)
 	_world.drone_failed.connect(func(reason: String) -> void: Quips.say("drone_fail_" + reason, true))
 	_world.drone_added.connect(func(_d: Drone) -> void:
 		_player.celebrate()
@@ -122,6 +115,10 @@ func _ready() -> void:
 	_world.quest_completed.connect(_on_quest_completed)
 	_world.ship_upgraded.connect(_on_ship_upgraded)
 	_world.ship_failed.connect(func(reason: String) -> void: Quips.say("ship_fail_" + reason, true))
+	_world.ship_upgrade_bought.connect(func(_id: String, _lvl: int) -> void:
+		_player.celebrate()
+		Quips.say("upgrade_bought", true))
+	_world.ship_delivered.connect(_on_ship_delivered)
 	_world.zone_unlocked.connect(_on_zone_unlocked)
 	_world.collectible_found.connect(_on_collectible_found)
 	_setup_nature()
@@ -132,9 +129,6 @@ func _ready() -> void:
 	_pause_menu.new_game_requested.connect(_on_new_game)
 	_pause_menu.language_changed.connect(_on_language_changed)
 	get_tree().auto_accept_quit = false
-	_world.tech_unlocked.connect(func(_id: String) -> void: Quips.say("tech_done", true))
-	_world.tech_unlocked.connect(_check_mvp_done)
-	_world.research_failed.connect(func(reason: String) -> void: Quips.say("research_fail_" + reason, true))
 	_world.skill_bought.connect(func(_id: String, _lvl: int) -> void: Quips.say("skill_bought"))
 
 	_build_menu.build_selected.connect(_on_build_selected)
@@ -235,7 +229,8 @@ func _on_language_changed(locale: String) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("tool_swap") and _player.nearby_building() is Ship:
-		_world.queue_command({"type": "upgrade_ship"})
+		# X am Schiff: Schiff-Menü (Upgrades, Reparatur, Bots, Drohnen)
+		_progress_menu.open(_progress_menu.Tab.SHIP)
 		get_viewport().set_input_as_handled()
 	elif InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("build_menu"):
 		# Y kurz: Baumenü (beim Loslassen, per Abfrage in _process); Y lang: Aufgaben-Editor.
@@ -255,78 +250,41 @@ func _unhandled_input(event: InputEvent) -> void:
 		save_game()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("debug_perf"):
-		debug_scenario("perf")
+		debug_scenario("helpers")
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("debug_chain"):
-		debug_scenario("chain")
+		debug_scenario("drones")
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("debug_cheat"):
 		# Dev-Cheat: Bolts, Material, XP und Chrom zum Testen der Menüs.
 		_world.bolts += 500
 		_world.bolts_changed.emit(_world.bolts)
-		_world.player.inventory.add("scrap", 20)
+		_world.player.inventory.add("scrap", 10)
 		_world.player.inventory.add("copper", 10)
-		_world.player.inventory.add("chrome", 5)
 		_world.progression.add_xp(100)
 		EventBus.quip.emit("DEBUG_CHEAT")
 		get_viewport().set_input_as_handled()
 
 
-## Dev-Szenarien (kostenlos platziert): "chain" = Haufen → Saugstation → Band → Ofen → Band → Terminal
-## unterhalb des Starts; "perf" = ~480 Bänder in Schleifen mit ~1.900 Items für den FPS-Test.
+## Dev-Szenarien (nur Debug/Tests): "helpers" = zwei Bots, "drones" = zwei Drohnen mit losem Schrott,
+## "cozy" = Deko und Museum, "endgame" = viele Bolts für die Schiffsstufen.
 func debug_scenario(name: String) -> void:
 	match name:
-		"chain":
-			# Kette 2 Kacheln unter Rusty: Haufen, Saugstation, 2 Bänder, Ofen, 2 Bänder, Terminal (10 Kacheln breit).
-			var o := Vector2i.ZERO
-			var free := false
-			for dy in [3, 4, 5, 2, 6, 7]:
-				o = _world.player_tile() + Vector2i(-4, dy)
-				o.x = clampi(o.x, 0, _world.width_tiles - 11)
-				o.y = clampi(o.y, 0, _world.height_tiles - 2)
-				var needed: Array = [[o, Vector2i(1, 1)], [o + Vector2i(1, 0), Vector2i(3, 1)], [o + Vector2i(4, 0), Vector2i(2, 2)], [o + Vector2i(6, 0), Vector2i(2, 1)], [o + Vector2i(8, 0), Vector2i(2, 2)]]
-				free = true
-				for entry in needed:
-					if not _world.grid.can_place(entry[0], entry[1], _world._tile_blocked):
-						free = false
-				if free:
-					break
-			if not free:
-				EventBus.quip.emit("DEBUG_CHAIN_FAIL")
-				return
-			_world.add_object("scrap_pile", o, 10)
-			_world.place_free("extractor", o + Vector2i(1, 0), 0)
-			_world.place_free("conveyor", o + Vector2i(2, 0), 0)
-			_world.place_free("conveyor", o + Vector2i(3, 0), 0)
-			_world.place_free("furnace", o + Vector2i(4, 0), 0)
-			_world.place_free("conveyor", o + Vector2i(6, 0), 0)
-			_world.place_free("conveyor", o + Vector2i(7, 0), 0)
-			_world.place_free("sell_terminal", o + Vector2i(8, 0), 0)
-			EventBus.quip.emit("DEBUG_CHAIN")
 		"endgame":
 			_world.bolts += 100000
 			_world.bolts_changed.emit(_world.bolts)
-			_world.player.inventory.add("chrome", 50)
-			for d: Dictionary in _world.tech.defs:
-				_world.tech.unlocked[str(d["id"])] = true
-				_world._apply_tech_effects(str(d["id"]))
-			_world.recompute_modifiers()
-			_check_mvp_done("")
 		"helpers":
 			_world.unlocked_features["helpers"] = true
 			_world.unlocked_features["helper_tools"] = true
 			_world.bolts += 3000
-			_world.player.inventory.add("chrome", 20)
-			var depot := _world.player_tile() + Vector2i(2, 2)
-			_world.place_free("chest", depot, 0)
-			_world.queue_command({"type": "buy_helper", "zone": _world.player_tile() + Vector2i(-4, -3), "depot": depot})
-			_world.queue_command({"type": "buy_helper", "zone": _world.player_tile() + Vector2i(5, 3), "depot": depot})
+			_world.bolts_changed.emit(_world.bolts)
+			_world.queue_command({"type": "buy_helper", "zone": _world.player_tile() + Vector2i(-4, -3)})
+			_world.queue_command({"type": "buy_helper", "zone": _world.player_tile() + Vector2i(5, 3)})
 		"cozy":
-			# Deko-Demo: Feature frei, Material, ein paar Deko-Objekte und ein Museum neben Rusty
 			_world.unlocked_features["decor"] = true
-			_world.unlocked_buildings["museum"] = true
-			_world.player.inventory.add("wood", 60)
-			_world.player.inventory.add("stone", 60)
+			_world.unlocked_features["museum"] = true
+			_world.player.inventory.add("wood", 30)
+			_world.player.inventory.add("stone", 30)
 			var c0 := _world.player_tile() + Vector2i(-5, 2)
 			_world.place_free("museum", c0, 0)
 			_world.place_free("lantern", c0 + Vector2i(3, 0), 0)
@@ -336,76 +294,22 @@ func debug_scenario(name: String) -> void:
 			_world.place_free("sculpture", c0 + Vector2i(8, 2), 0)
 			_world.place_free("stone_ring", c0 + Vector2i(6, 3), 0)
 		"drones":
-			# Drohnen-Demo: Kiste mit Schrott → Ofen → Terminal, zwei Drohnen
 			_world.unlocked_features["drones"] = true
-			_world.unlocked_tech["furnace"] = true
-			_world.refresh_recipes()
 			_world.bolts += 3000
-			_world.player.inventory.add("circuit", 10)
-			var p0 := Vector2i.ZERO
-			var ok := false
-			for dy in [3, 4, 5, 2, 6, 7, 8]:
-				p0 = _world.player_tile() + Vector2i(-6, dy)
-				p0.x = clampi(p0.x, 0, _world.width_tiles - 15)
-				p0.y = clampi(p0.y, 0, _world.height_tiles - 2)
-				ok = _world.grid.can_place(p0, Vector2i(1, 1), _world._tile_blocked) 					and _world.grid.can_place(p0 + Vector2i(6, 0), Vector2i(2, 2), _world._tile_blocked) 					and _world.grid.can_place(p0 + Vector2i(12, 0), Vector2i(2, 2), _world._tile_blocked)
-				if ok:
-					break
-			if not ok:
-				EventBus.quip.emit("DEBUG_CHAIN_FAIL")
-				return
-			var chest := _world.place_free("chest", p0, 0) as Chest
-			var furnace := _world.place_free("furnace", p0 + Vector2i(6, 0), 0)
-			var term := _world.place_free("sell_terminal", p0 + Vector2i(12, 0), 0)
-			if chest != null and furnace != null and term != null:
-				chest.inventory.add("scrap", 200)
-				_world.queue_command({"type": "buy_drone", "source": chest.tile, "target": furnace.tile})
-				_world.queue_command({"type": "buy_drone", "source": furnace.tile, "target": term.tile})
-		"auto":
-			# Autopilot-Demo: Autopilot freischalten, Haufen bei (16,42) sammeln, zur Kiste bringen.
-			_world.unlocked_features["autopilot"] = true
-			var chest_tile := _world.player_tile() + Vector2i(2, 2)
-			_world.place_free("chest", chest_tile, 0)
-			_world.tasks.clear()
-			_world.tasks.add_step(TaskList.Type.COLLECT, Vector2i(16, 42))
-			_world.tasks.add_step(TaskList.Type.DEPOSIT, chest_tile)
-			_world.tasks.start(_world.player)
-			EventBus.quip.emit("QUIP_AUTOPILOT_START_1")
-		"perf":
-			var kinds := ["scrap", "copper", "plastic"]
-			var n := 0
-			for k in 6:
-				var x0 := 2 + 2 * k
-				var y0 := 2 + 2 * k
-				var x1 := 37 - 2 * k
-				var y1 := 27 - 2 * k
-				var ring: Array = []
-				for x in range(x0, x1):
-					ring.append([Vector2i(x, y0), 0])
-				for y in range(y0, y1):
-					ring.append([Vector2i(x1, y), 1])
-				for x in range(x1, x0, -1):
-					ring.append([Vector2i(x, y1), 2])
-				for y in range(y1, y0, -1):
-					ring.append([Vector2i(x0, y), 3])
-				for entry in ring:
-					var c := _world.place_free("conveyor", entry[0], entry[1])
-					if c == null:
-						continue
-					for i in 4:
-						(c as Conveyor).try_insert(kinds[(n + i) % 3], i * Conveyor.SPACING)
-						n += 1
-			EventBus.quip.emit("DEBUG_PERF")
+			_world.bolts_changed.emit(_world.bolts)
+			for i in 30:
+				_world.add_loose("scrap", _world.player.pos + Vector2i(_world.rng.randi_range(-300, 300), _world.rng.randi_range(150, 400)))
+			_world.queue_command({"type": "buy_drone"})
+			_world.queue_command({"type": "buy_drone"})
 
 
-## Alle Techknoten erforscht → MVP-Ende-Bildschirm (einmalig).
-func _check_mvp_done(_id: String) -> void:
-	if bool(_world.flags.get("mvp_done", false)):
-		return
-	if _world.tech.available().is_empty() and _world.tech.unlocked.size() >= _world.tech.defs.size():
-		_world.flags["mvp_done"] = true
-		save_game()
-		_end_screen.show_stats(_world)
+## Rusty liefert ab: kleiner Spruch beim ersten Mal und bei großen Lieferungen.
+func _on_ship_delivered(_items: Dictionary, bolts: int) -> void:
+	if not bool(_world.flags.get("first_delivery", false)):
+		_world.flags["first_delivery"] = true
+		Quips.say("first_delivery", true)
+	elif bolts >= 100:
+		Quips.say("big_delivery")
 
 
 func _on_zone_stage_changed(zone_id: String, stage: int) -> void:
@@ -429,50 +333,7 @@ func _on_task_target_requested(type: int) -> void:
 	_cursor.start_target()
 
 
-func _start_drone_flow() -> void:
-	_drone_flow = 1
-	EventBus.quip.emit("DRONE_PICK_SOURCE")
-	_cursor.start_target()
-
-
-func _start_helper_flow() -> void:
-	_helper_flow = 1
-	EventBus.quip.emit("HELPER_PICK_ZONE")
-	_cursor.start_target()
-
-
 func _on_target_chosen(tile: Vector2i, ok: bool) -> void:
-	if _drone_flow > 0:
-		if not ok:
-			_drone_flow = 0
-			return
-		if _drone_flow == 1:
-			var src := _world.grid.at(tile)
-			if src == null or not (src is Chest or src is Machine):
-				_drone_flow = 0
-				Quips.say("drone_fail_no_source", true)
-				return
-			_drone_source = tile
-			_drone_flow = 2
-			EventBus.quip.emit("DRONE_PICK_TARGET")
-			_cursor.call_deferred("start_target")
-			return
-		_drone_flow = 0
-		_world.queue_command({"type": "buy_drone", "source": _drone_source, "target": tile})
-		return
-	if _helper_flow > 0:
-		if not ok:
-			_helper_flow = 0
-			return
-		if _helper_flow == 1:
-			_helper_zone = tile
-			_helper_flow = 2
-			EventBus.quip.emit("HELPER_PICK_DEPOT")
-			_cursor.call_deferred("start_target")
-			return
-		_helper_flow = 0
-		_world.queue_command({"type": "buy_helper", "zone": _helper_zone, "depot": tile})
-		return
 	if _pending_task_type < 0:
 		return
 	var t := _pending_task_type
@@ -547,29 +408,17 @@ func _on_ship_upgraded(s: Ship) -> void:
 	var sd := ShipSystem.stage_def(_world, s.stage)
 	_hud.set_tutorial(tr("HUD_SHIP_UP") % [s.stage, tr(str(sd.get("name_key", "")))])
 	_chapter_timer = 4.0
+	if s.stage >= ShipSystem.max_stage(_world):
+		# Das Schiff ist repariert und hebt ab: Ende (die Abflug-Szene kommt in MS22).
+		save_game()
+		_end_screen.show_stats(_world)
 
 
 func _ship_hint(s: Ship, kb: String) -> String:
 	var sd := ShipSystem.stage_def(_world, s.stage)
-	var up := ""
-	var reason := ShipSystem.can_upgrade(_world, s)
-	if reason == "max":
-		up = tr("SHIP_UPGRADE_MAX")
-	else:
-		var cost := ShipSystem.upgrade_cost(_world, s)
-		var parts: Array[String] = []
-		for item in cost.get("items", {}):
-			parts.append("%d %s" % [int(cost["items"][item]), DataRegistry.item_name(str(item))])
-		up = tr("SHIP_UPGRADE_COST") % [int(cost.get("bolts", 0)), ", ".join(parts)]
-		if reason != "":
-			var miss := ShipSystem.missing(_world, cost.get("items", {}))
-			var mparts: Array[String] = []
-			if _world.bolts < int(cost.get("bolts", 0)):
-				mparts.append("%d %s" % [int(cost.get("bolts", 0)) - _world.bolts, tr("HUD_BOLTS")])
-			for item in miss:
-				mparts.append("%d %s" % [int(miss[item]), DataRegistry.item_name(str(item))])
-			up += " " + tr("SHIP_UPGRADE_MISSING") % ", ".join(mparts)
-	return tr("SHIP_HINT" + kb) % [s.stage, tr(str(sd.get("name_key", ""))), s.storage.total(), s.storage.slot_count * s.storage.stack_size, up]
+	var load := _world.player.inventory.total()
+	var deliver := tr("SHIP_HINT_DELIVER" + kb) % load if load > 0 else tr("SHIP_HINT_EMPTY")
+	return "%s · %s %d (%s)   ·   %s   ·   %s" % [tr("BLD_SHIP"), tr("SHIP_STAGE"), s.stage, tr(str(sd.get("name_key", ""))), deliver, tr("SHIP_HINT_MENU" + kb)]
 
 
 func _on_zone_unlocked(zone_id: String) -> void:
@@ -679,17 +528,6 @@ func _current_hint() -> String:
 	var b := _player.nearby_building()
 	if b != null and b is Ship:
 		return _ship_hint(b as Ship, kb)
-	if b != null and b is Machine:
-		# Rezepte direkt an der Maschine zeigen
-		var parts: Array[String] = []
-		for r in (b as Machine).recipes:
-			var ins: Array[String] = []
-			for item in r.inputs:
-				ins.append("%d %s" % [int(r.inputs[item]), DataRegistry.item_name(str(item))])
-			parts.append("%s → %s" % [" + ".join(ins), DataRegistry.item_name(r.output_item)])
-		var slot_m: Dictionary = _world.player.inventory.slots[_player.selected_slot]
-		var action := (tr("HINT_DEPOSIT_SHORT" + kb) % [slot_m["count"], DataRegistry.item_name(slot_m["item"])]) if slot_m["item"] != "" else tr("HINT_WITHDRAW_SHORT" + kb)
-		return "%s: %s   ·   %s" % [tr(b.def.name_key), "  |  ".join(parts), action]
 	if b != null:
 		var slot: Dictionary = _world.player.inventory.slots[_player.selected_slot]
 		if slot["item"] != "":
@@ -699,13 +537,8 @@ func _current_hint() -> String:
 	return tr("HUD_HINT_GAME" + kb)
 
 
-var _first_machine := false
-
-
-func _on_building_placed(b: Building) -> void:
-	if b is Machine and not _first_machine:
-		_first_machine = true
-		Quips.say("first_machine", true)
+func _on_building_placed(_b: Building) -> void:
+	pass
 
 
 func _on_item_collected(item_id: String, _from: Vector2i) -> void:

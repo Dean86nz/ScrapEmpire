@@ -57,16 +57,6 @@ func test_zone_unlocks_when_previous_half_clean() -> void:
 	assert_false(w.zones.is_unlocked("c"), "C erst nach B")
 
 
-func test_helper_cannot_be_placed_in_locked_zone() -> void:
-	var w := _world()
-	w.unlocked_features["helpers"] = true
-	w.bolts = 1000
-	w.player.inventory.add("chrome", 5)
-	w.place_free("chest", Vector2i(3, 10), 0)
-	assert_eq(w.can_buy_helper(Vector2i(3, 10), Vector2i(25, 10)), "zone_locked")
-	assert_eq(w.can_buy_helper(Vector2i(3, 10), Vector2i(5, 10)), "")
-
-
 func test_fill_missing_zones_after_load() -> void:
 	ResourceNode.load_defs("res://data/scrap_objects.json")
 	var w := SimWorld.new()
@@ -100,13 +90,12 @@ func test_migration_v3_to_v4() -> void:
 	assert_eq(m["unlocked_zones"], ["z01"])
 
 
-func test_tech_costs_products() -> void:
-	var defs := TechState.load_defs("res://data/tech.json")
-	var by: Dictionary = {}
-	for d in defs:
-		by[d["id"]] = d
-	assert_eq(int(by["conveyor"]["cost_items"]["iron_bar"]), 5)
-	assert_eq(int(by["autopilot"]["cost_items"]["circuit"]), 5)
-	assert_eq(int(by["autopilot"]["cost_items"]["chrome"]), 10)
-	var b := BuildingDef.load_all("res://data/buildings.json")
-	assert_eq(b["press"].cost, {"iron_bar": 5, "plastic": 20})
+func test_factory_data_is_gone() -> void:
+	var tech := TechState.load_defs("res://data/tech.json")
+	assert_eq(tech.size(), 0, "Forschungsbaum entfällt, Freischaltungen über Schiffsstufen")
+	assert_false(FileAccess.file_exists("res://data/recipes.json"))
+	var items := Economy.load_item_values("res://data/items.json")
+	for gone in ["iron_bar", "copper_bar", "plastic_sheet", "gear", "circuit"]:
+		assert_false(items.has(gone), "Produkt entfernt: " + gone)
+	assert_eq(int(items["scrap"]), 1)
+	assert_eq(int(items["chrome"]), 8)

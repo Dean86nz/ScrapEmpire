@@ -1,33 +1,49 @@
 {
-  "_comment": "Logistik-Drohnen (Phase 2, MS14). Kosten: base × growth^n Bolts + Schaltkreise. Fliegen über alles, tragen ein Item-Stapel.",
-  "max_drones": 4,
-  "cost_base_bolts": 600,
-  "cost_growth": 1.4,
-  "cost_circuit": 3,
-  "base_speed_px_per_s": 160,
-  "base_capacity": 10,
-  "limits": [0, 10, 25, 50, 100],
-  "quips_bought": ["DRONE_BOUGHT_1", "DRONE_BOUGHT_2"],
+  "_comment": "Drohnen fliegen vom Schiff aus, sammeln lose Teile und Haufen (Stufe 1) in freigeschalteten Zonen und liefern am Schiff ab. Schneller als Bots, tragen weniger.",
+  "max_drones": 6,
+  "cost_base_bolts": 400,
+  "cost_growth": 1.5,
+  "base_speed_px_per_s": 260,
+  "base_capacity": 6,
+  "collect_interval_ticks": 4,
+  "search_radius_tiles": 30,
   "upgrades": [
     {
       "id": "drone_speed",
       "name_key": "DRONE_UPG_SPEED",
       "desc_key": "DRONE_UPG_SPEED_DESC",
       "max_level": 3,
-      "cost_bolts": [400, 800, 1600],
-      "cost_circuit": [2, 4, 8],
+      "cost_bolts": [
+        400,
+        800,
+        1600
+      ],
       "requires_feature": "drones",
-      "effects": [{ "key": "drone_speed_mult", "op": "add", "per_level": 0.25 }]
+      "effects": [
+        {
+          "key": "drone_speed_mult",
+          "op": "add",
+          "per_level": 0.25
+        }
+      ]
     },
     {
       "id": "drone_capacity",
       "name_key": "DRONE_UPG_CAPACITY",
       "desc_key": "DRONE_UPG_CAPACITY_DESC",
       "max_level": 2,
-      "cost_bolts": [600, 1200],
-      "cost_circuit": [3, 6],
+      "cost_bolts": [
+        600,
+        1200
+      ],
       "requires_feature": "drones",
-      "effects": [{ "key": "drone_capacity_add", "op": "add", "per_level": 10 }]
+      "effects": [
+        {
+          "key": "drone_capacity_add",
+          "op": "add",
+          "per_level": 4
+        }
+      ]
     }
   ]
 }

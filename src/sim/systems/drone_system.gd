@@ -1,77 +1,55 @@
 class_name DroneSystem
 extends RefCounted
-## Logistik-Drohnen: Kauf, Filter, Limit, Upgrades, Tick.
-## Teilsystem von SimWorld: statische Funktionen, `w` ist die Welt (Daten und Signale bleiben dort).
+## Sammel-Drohnen: Bau am Schiff (Blaupause ab Schiffsstufe 3), Upgrades, Tick.
+## Teilsystem von SimWorld: statische Funktionen, `w` ist die Welt. Zahlen aus data/drones.json.
 
 
 static func next_drone_cost(w: SimWorld) -> Dictionary:
 	var n := w.drones.size()
-	var base := float(w.drone_cfg.get("cost_base_bolts", 600))
-	var growth := float(w.drone_cfg.get("cost_growth", 1.4))
-	return {"bolts": int(round(base * pow(growth, n) / 10.0)) * 10, "circuit": int(w.drone_cfg.get("cost_circuit", 3))}
+	var base := float(w.drone_cfg.get("cost_base_bolts", 400))
+	var growth := float(w.drone_cfg.get("cost_growth", 1.5))
+	return {"bolts": int(round(base * pow(growth, n) / 10.0)) * 10}
 
 
-static func _is_drone_source(b: Building) -> bool:
-	return b is Chest or b is Machine or b is Ship
-
-
-static func _is_drone_target(b: Building) -> bool:
-	return b is Chest or b is Machine or b is SellTerminal or b is Ship
-
-
-## "" wenn kaufbar, sonst: locked, max, bolts, circuit, no_source, no_target, same
-static func can_buy_drone(w: SimWorld, source_tile: Vector2i, target_tile: Vector2i) -> String:
+## "" wenn baubar, sonst: locked, max, bolts, no_ship
+static func can_buy_drone(w: SimWorld) -> String:
 	if not w.unlocked_features.has("drones"):
 		return "locked"
-	if w.drones.size() >= int(w.drone_cfg.get("max_drones", 4)):
+	if w.drones.size() >= int(w.drone_cfg.get("max_drones", 6)):
 		return "max"
-	var cost := next_drone_cost(w)
-	if w.bolts < int(cost["bolts"]):
+	if w.bolts < int(next_drone_cost(w)["bolts"]):
 		return "bolts"
-	if ShipSystem.count_available(w, "circuit") < int(cost["circuit"]):
-		return "circuit"
-	if source_tile.x < 0:
-		return ""
-	var src := w.grid.at(source_tile)
-	if src == null or not _is_drone_source(src):
-		return "no_source"
-	var dst := w.grid.at(target_tile)
-	if dst == null or not _is_drone_target(dst):
-		return "no_target"
-	if src.id == dst.id:
-		return "same"
+	if ShipSystem.ship(w) == null:
+		return "no_ship"
 	return ""
 
 
 static func _apply_drone_mods(w: SimWorld, d: Drone) -> void:
-	d.apply_modifiers(w.mods, int(w.drone_cfg.get("base_speed_px_per_s", 160)), int(w.drone_cfg.get("base_capacity", 10)))
+	d.apply_modifiers(w.mods, int(w.drone_cfg.get("base_speed_px_per_s", 260)), int(w.drone_cfg.get("base_capacity", 6)))
+	d.collect_interval = int(w.drone_cfg.get("collect_interval_ticks", 4))
+	d.search_radius_px = int(w.drone_cfg.get("search_radius_tiles", 30)) * SimWorld.TILE
 
 
-static func add_drone(w: SimWorld, source_id: int, target_id: int) -> Drone:
+static func add_drone(w: SimWorld) -> Drone:
 	var d := Drone.new()
 	d.id = w.next_id()
-	d.source_id = source_id
-	d.target_id = target_id
-	var src: Building = w.buildings.get(source_id)
-	d.pos = src.center_px() if src != null else w.player.pos
+	var s := ShipSystem.ship(w)
+	d.home = s.center_px() if s != null else w.player.pos
+	d.pos = d.home
 	_apply_drone_mods(w, d)
 	w.drones[d.id] = d
 	w.drone_added.emit(d)
 	return d
 
 
-static func _cmd_buy_drone(w: SimWorld, cmd: Dictionary) -> void:
-	var source_tile: Vector2i = cmd.get("source", Vector2i(-1, -1))
-	var target_tile: Vector2i = cmd.get("target", Vector2i(-1, -1))
-	var reason := can_buy_drone(w, source_tile, target_tile)
+static func _cmd_buy_drone(w: SimWorld, _cmd: Dictionary) -> void:
+	var reason := can_buy_drone(w)
 	if reason != "":
 		w.drone_failed.emit(reason)
 		return
-	var cost := next_drone_cost(w)
-	w.bolts -= int(cost["bolts"])
-	ShipSystem.pay(w, {"circuit": int(cost["circuit"])})
+	w.bolts -= int(next_drone_cost(w)["bolts"])
 	w.bolts_changed.emit(w.bolts)
-	add_drone(w, w.grid.at(source_tile).id, w.grid.at(target_tile).id)
+	add_drone(w)
 
 
 static func _cmd_remove_drone(w: SimWorld, cmd: Dictionary) -> void:
@@ -79,26 +57,11 @@ static func _cmd_remove_drone(w: SimWorld, cmd: Dictionary) -> void:
 	if not w.drones.has(id):
 		return
 	var d: Drone = w.drones[id]
-	for i in mini(d.carry_count, 20):
-		w.add_loose(d.carry_item, d.pos + w._scatter())
+	for item in d.carry:
+		for i in mini(int(d.carry[item]), 20):
+			w.add_loose(str(item), d.pos + w._scatter())
 	w.drones.erase(id)
 	w.drone_removed.emit(id)
-
-
-static func _cmd_set_drone_filter(w: SimWorld, cmd: Dictionary) -> void:
-	var d: Drone = w.drones.get(int(cmd.get("id", -1)))
-	if d == null:
-		return
-	d.item_filter = str(cmd.get("item", ""))
-	w.drone_changed.emit(d)
-
-
-static func _cmd_set_drone_limit(w: SimWorld, cmd: Dictionary) -> void:
-	var d: Drone = w.drones.get(int(cmd.get("id", -1)))
-	if d == null:
-		return
-	d.limit = maxi(int(cmd.get("limit", 0)), 0)
-	w.drone_changed.emit(d)
 
 
 static func drone_upgrade_def(w: SimWorld, id: String) -> Dictionary:
@@ -108,6 +71,7 @@ static func drone_upgrade_def(w: SimWorld, id: String) -> Dictionary:
 	return {}
 
 
+## "" wenn kaufbar, sonst: unknown, max, locked, bolts
 static func can_buy_drone_upgrade(w: SimWorld, id: String) -> String:
 	var u := drone_upgrade_def(w, id)
 	if u.is_empty():
@@ -119,8 +83,6 @@ static func can_buy_drone_upgrade(w: SimWorld, id: String) -> String:
 		return "locked"
 	if w.bolts < int(u["cost_bolts"][level]):
 		return "bolts"
-	if ShipSystem.count_available(w, "circuit") < int(u["cost_circuit"][level]):
-		return "circuit"
 	return ""
 
 
@@ -133,7 +95,6 @@ static func _cmd_buy_drone_upgrade(w: SimWorld, cmd: Dictionary) -> void:
 	var u := drone_upgrade_def(w, id)
 	var level := int(w.drone_upgrades.get(id, 0))
 	w.bolts -= int(u["cost_bolts"][level])
-	ShipSystem.pay(w, {"circuit": int(u["cost_circuit"][level])})
 	w.bolts_changed.emit(w.bolts)
 	w.drone_upgrades[id] = level + 1
 	w.recompute_modifiers()
@@ -143,7 +104,7 @@ static func _cmd_buy_drone_upgrade(w: SimWorld, cmd: Dictionary) -> void:
 static func _tick_drones(w: SimWorld) -> void:
 	for d: Drone in w.drones.values():
 		var before := d.state
-		var before_carry := d.carry_count
+		var before_carry := d.carry_total()
 		d.tick(w)
-		if d.state != before or d.carry_count != before_carry:
+		if d.state != before or d.carry_total() != before_carry:
 			w.drone_changed.emit(d)
