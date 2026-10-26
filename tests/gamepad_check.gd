@@ -102,6 +102,18 @@ func _build_steps() -> void:
 
 	var player: Node2D = _node("Player")
 
+	_step("Select am Anfang: nur drei Tabs (Schiff, Ziele, Karte)", func() -> void: _tap(JOY_BUTTON_BACK),
+		func() -> bool:
+			var n := 0
+			for t in progress.TAB_COUNT:
+				if progress._tab_enabled(t):
+					n += 1
+			return progress.visible and n == 3)
+	_step("RB x3 läuft einmal rundherum zurück zu Schiff", func() -> void:
+			for n in 3:
+				_tap(JOY_BUTTON_RIGHT_SHOULDER),
+		func() -> bool: return progress._tab == progress.Tab.SHIP, 6)
+	_step("B schließt (Start)", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return not progress.visible)
 	_step("Vorbereitung: Material, Bolts, Features",
 		func() -> void:
 			_world.player.inventory.add("wood", 20)
@@ -148,6 +160,16 @@ func _build_steps() -> void:
 		func() -> bool: return progress._tab == progress.Tab.HELPERS, 6)
 	_step("A auf „Sammel-Bot bauen“ baut einen Bot", func() -> void: _tap(JOY_BUTTON_A),
 		func() -> bool: return _world.helpers.size() == 1, 8, 200)
+	_step("Bot-Karte erscheint in der Liste", func() -> void: pass,
+		func() -> bool: return progress._helper_cards.size() == 1, 8, 700)
+	_step("D-Pad runter auf den Bot, A baut ihn nicht ab", func() -> void:
+			_tap(JOY_BUTTON_DPAD_DOWN)
+			_tap(JOY_BUTTON_A),
+		func() -> bool: return _world.helpers.size() == 1 and progress._helper_cards.has(progress.get_viewport().gui_get_focus_owner()), 8, 200)
+	_step("LT auf dem Bot baut ihn ab", func() -> void:
+			_axis(JOY_AXIS_TRIGGER_LEFT, 1.0)
+			_axis(JOY_AXIS_TRIGGER_LEFT, 0.0),
+		func() -> bool: return _world.helpers.is_empty(), 8, 200)
 	_step("B schließt", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return not progress.visible)
 
 	# Drohnen-Tab

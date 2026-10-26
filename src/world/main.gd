@@ -638,6 +638,8 @@ func _current_hint() -> String:
 			return tr("HINT_DEPOSIT" + kb) % [slot["count"], DataRegistry.item_name(slot["item"]), tr(b.def.name_key)]
 		if not b.contents().is_empty():
 			return tr("HINT_WITHDRAW" + kb) % tr(b.def.name_key)
+	if _progress_menu.has_new_tab():
+		return tr("HUD_HINT_NEW_TAB" + kb)
 	return tr("HUD_HINT_GAME" + kb)
 
 

@@ -100,7 +100,7 @@ func set_bolts(value: int) -> void:
 
 func _show_bolts(value: int) -> void:
 	_bolts_shown = value
-	_bolts_label.text = "%d %s" % [value, tr("HUD_BOLTS")]
+	_bolts_label.text = "%s %s" % [Fmt.int_str(value), tr("HUD_BOLTS")]
 
 
 func set_hint(text: String) -> void:

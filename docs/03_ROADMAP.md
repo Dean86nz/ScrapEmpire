@@ -32,6 +32,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **21** | Kurswechsel Block 3: Sichtbar sauber (Schmutz je Kachel, Gras wächst nach, Sauberkeit aus Fläche) | v1.10.0 |
 | **22** | Kurswechsel Block 4: Schiff als Herz (fünf Schiffsbilder, Putzwelle, Jubel, Stufenleiste, Abflug-Szene) | v1.11.0 |
 | **23** | Kurswechsel Block 5: Erfolgserlebnisse (Meilensteine, kurze Aufgaben, Abliefer-Effekt, erste Sounds) | v1.12.0 |
+| **24** | Kurswechsel Block 6: Menüs entschlacken (3 Tabs am Anfang, Icons, Kostenfarbe, Bot abbauen mit LT) | v1.13.0 |
 
 ## Kurswechsel nach dem zweiten Ally-Test (Go 2026-10-26)
 
