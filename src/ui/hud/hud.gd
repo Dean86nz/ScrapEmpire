@@ -4,7 +4,8 @@ extends CanvasLayer
 const ITEM_SLOT := preload("res://src/ui/widgets/item_slot.tscn")
 
 @onready var _bolts_label: Label = $BoltsPanel/HBox/BoltsLabel
-@onready var _hotbar: HBoxContainer = $Hotbar
+@onready var _hotbar: VBoxContainer = $Hotbar   # Zeilen zu je höchstens HOTBAR_ROW Plätzen
+const HOTBAR_ROW := 6
 @onready var _hint: Label = $HintLabel
 @onready var _xp_bar: HBoxContainer = $XpBar
 @onready var _research: HBoxContainer = $Research
@@ -49,11 +50,18 @@ func _process(delta: float) -> void:
 ## Hotbar neu aufbauen (z. B. nach Rucksack / Taschen).
 func rebuild_hotbar() -> void:
 	for child in _hotbar.get_children():
+		_hotbar.remove_child(child)
 		child.queue_free()
 	_slots.clear()
+	var row: HBoxContainer = null
 	for i in _inventory.slot_count:
+		if i % HOTBAR_ROW == 0:
+			row = HBoxContainer.new()
+			row.alignment = BoxContainer.ALIGNMENT_END
+			row.add_theme_constant_override("separation", 8)
+			_hotbar.add_child(row)
 		var slot := ITEM_SLOT.instantiate()
-		_hotbar.add_child(slot)
+		row.add_child(slot)
 		_slots.append(slot)
 	_refresh()
 	set_selected_slot(_selected)

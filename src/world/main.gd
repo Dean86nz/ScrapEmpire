@@ -97,6 +97,7 @@ func _ready() -> void:
 
 	SaveManager.log_step("Weltansicht aufbauen")
 	_world_view.bind(_world, _player)
+	_player.setup_look(_world)
 	SaveManager.log_step("HUD und Menüs")
 	_hud.bind(_world)
 	_hud.minimap.dirt_texture = _world_view.dirt_view.map_texture

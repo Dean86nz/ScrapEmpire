@@ -92,7 +92,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "0 %"
 
-[node name="Hotbar" type="HBoxContainer" parent="."]
+[node name="Hotbar" type="VBoxContainer" parent="."]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -102,7 +102,6 @@ offset_right = -32.0
 offset_bottom = 96.0
 grow_horizontal = 0
 theme_override_constants/separation = 8
-alignment = 2
 
 [node name="Research" type="HBoxContainer" parent="."]
 anchors_preset = 5
