@@ -84,6 +84,15 @@ func _build() -> void:
 	for i in cheer.size():
 		_mix_tone(buf, i * 0.09, 0.55 if i == 2 else 0.3, cheer[i], "sine", 0.22, 4.0 if i == 2 else 8.0)
 	_streams["cheer"] = _to_stream(buf)
+	# Hupe der Touristen: zwei tiefe, weiche Töne
+	buf = _silence(0.6)
+	_mix_tone(buf, 0.0, 0.22, 233.0, "tri", 0.3, 3.0)
+	_mix_tone(buf, 0.26, 0.3, 294.0, "tri", 0.3, 3.0)
+	_streams["honk"] = _to_stream(buf)
+	# Aufprall: tiefer Schlag
+	buf = _silence(0.3)
+	_mix_sweep(buf, 0.0, 0.25, 140.0, 50.0, 0.55)
+	_streams["thud"] = _to_stream(buf)
 	# Einsaug-Plopp: sehr kurz, tief, leise
 	buf = _silence(0.09)
 	_mix_sweep(buf, 0.0, 0.07, 520.0, 240.0, 0.28)

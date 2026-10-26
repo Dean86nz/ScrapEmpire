@@ -50,6 +50,7 @@ func _ready() -> void:
 	_world.dirt_cfg = DirtMap.load_config()
 	_world.quests.setup(DataRegistry.quest_defs())
 	_world.milestones.setup(MilestoneState.load_defs())
+	_world.events_cfg = EventSystem.load_config()
 	_world.setup_progression_data(DataRegistry.tech_defs(), DataRegistry.skill_data())
 	var start_px: Vector2
 	SaveManager.log_step("Spielszene startet (Version %s)" % str(ProjectSettings.get_setting("application/config/version", "?")))
@@ -98,6 +99,10 @@ func _ready() -> void:
 	SaveManager.log_step("Weltansicht aufbauen")
 	_world_view.bind(_world, _player)
 	_player.setup_look(_world)
+	var events := EventView.new()
+	events.name = "Events"
+	add_child(events)
+	events.bind(_world, _hud)
 	SaveManager.log_step("HUD und Menüs")
 	_hud.bind(_world)
 	_hud.minimap.dirt_texture = _world_view.dirt_view.map_texture

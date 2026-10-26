@@ -126,7 +126,7 @@ func _collect(world: SimWorld) -> void:
 	else:
 		var n: ResourceNode = world.nodes[target_node]
 		item_id = n.take_one()
-		world.node_changed.emit(n)
+		NodeSystem.after_take(world, n)
 	if item_id != "":
 		carry[item_id] = int(carry.get(item_id, 0)) + 1
 	if carry_total() >= capacity:

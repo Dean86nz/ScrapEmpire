@@ -75,6 +75,9 @@ func _process(_delta: float) -> bool:
 				"zoom":  # zoom=3 vergrößert die Kamera
 					var pz: Node2D = get_nodes_in_group("player")[0]
 					(pz.get_node("Camera2D") as Camera2D).zoom = Vector2.ONE * float(kv[1])
+				"event":  # event=tourists | meteors löst das Ereignis sofort aus
+					EventSystem.ensure_state(clock.world)
+					clock.world.events_state["next"][kv[1]] = clock.world.tick_count
 				"counter":  # counter=wrecks;5 setzt einen Zähler (Meilensteine, Aufgaben)
 					var cv := kv[1].split(";")
 					clock.world.quests.counters[cv[0]] = int(cv[1])

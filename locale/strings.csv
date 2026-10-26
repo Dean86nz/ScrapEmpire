@@ -553,3 +553,15 @@ SKILL_COST_ONE,1 Punkt,1 point
 HUD_GOAL_LEFT,Noch %s Bolts bis %s,%s more bolts to %s
 HUD_GOAL_READY,%s: jetzt leistbar!,%s: affordable now!
 HUD_GOAL_SKILL,Skillpunkt frei! Select → Skills,Skill point ready! Select → Skills
+EVT_TOURIST_TITLE,Hup hup!,Honk honk!
+EVT_TOURIST_SUB,Weltraum-Touristen im Anflug …,Space tourists incoming …
+EVT_METEOR_TITLE,Meteoritenschauer!,Meteor shower!
+EVT_METEOR_SUB,In %d Sekunden regnet es Glitzerbrocken,Sparkly rocks fall in %d seconds
+QUIP_TOURIST_WARN,Was hupt denn da?,What is honking up there?
+QUIP_TOURIST_1,Hey! Das ist kein Mülleimer!,Hey! This is not a trash can!
+QUIP_TOURIST_2,Urlaub machen und Müll dalassen. Typisch.,"Go on vacation, leave the trash. Typical."
+QUIP_TOURIST_3,Ich hab da gerade erst geputzt!,I literally just cleaned there!
+QUIP_METEOR_WARN,Der Himmel wird orange. Das ist nie gut.,The sky turns orange. That is never good.
+QUIP_METEOR_DONE,Frisch vom Himmel. Und es glitzert!,Fresh from the sky. And it sparkles!
+OBJ_TRASH_BAG,Touristen-Müllsack,Tourist trash bag
+OBJ_METEOR,Meteorbrocken,Meteor chunk

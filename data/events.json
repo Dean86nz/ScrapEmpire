@@ -1,0 +1,70 @@
+{
+  "_comment": "Nachschub-Ereignisse (MS30). Zeiten in Sekunden. items × value_mult = Beute je Objekt (Bonus-Müll ist ergiebiger als normaler). near_player: Anteil der Ziele nahe bei Rusty (radius in Kacheln). max_bonus_objects: Obergrenze für Bonus-Müll auf der Karte.",
+  "max_bonus_objects": 40,
+  "events": {
+    "tourists": {
+      "kind": "trash_bag",
+      "first_s": 240,
+      "gap_s": [
+        240,
+        360
+      ],
+      "warn_s": 5,
+      "count": [
+        4,
+        6
+      ],
+      "items": [
+        10,
+        15
+      ],
+      "value_mult": 1.5,
+      "near_player": 1.0,
+      "radius": [
+        3,
+        8
+      ],
+      "first_drop_s": 1.6,
+      "drop_step_s": 0.35,
+      "loot": {
+        "scrap": 5,
+        "plastic": 3,
+        "copper": 2,
+        "wood": 1,
+        "stone": 1
+      }
+    },
+    "meteors": {
+      "kind": "meteor",
+      "min_ship_stage": 2,
+      "first_s": 420,
+      "gap_s": [
+        420,
+        600
+      ],
+      "warn_s": 20,
+      "count": [
+        5,
+        8
+      ],
+      "items": [
+        8,
+        12
+      ],
+      "value_mult": 2.0,
+      "near_player": 0.5,
+      "radius": [
+        4,
+        11
+      ],
+      "first_drop_s": 1.2,
+      "drop_step_s": 0.45,
+      "loot": {
+        "chrome": 3,
+        "titanium": 2,
+        "stardust": 1,
+        "scrap": 2
+      }
+    }
+  }
+}

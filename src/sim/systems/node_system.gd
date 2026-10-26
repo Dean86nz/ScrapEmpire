@@ -57,11 +57,21 @@ static func _tick_respawns(w: SimWorld) -> void:
 		i -= 1
 
 
+## Nach dem Entnehmen: leeres Objekt entfernen (Wracks melden „zerlegt“), sonst als geändert melden.
+static func after_take(w: SimWorld, n: ResourceNode) -> void:
+	if n.is_used_up():
+		_remove_node(w, n)
+		if n.is_wreck():
+			w.wreck_destroyed.emit(n.id)
+	else:
+		w.node_changed.emit(n)
+
+
 static func _remove_node(w: SimWorld, n: ResourceNode) -> void:
 	w.nodes.erase(n.id)
 	w._node_tiles.erase(n.tile)
 	w.node_removed.emit(n.id)
-	if w.dirt.is_active() and n.is_wreck() and not n.is_resource():
+	if w.dirt.is_active() and not n.is_resource() and not n.bonus:
 		var r := int(w.dirt_cfg.get("removed_trash_clean_radius", 1))
 		for dy in range(-r, r + 1):
 			for dx in range(-r, r + 1):

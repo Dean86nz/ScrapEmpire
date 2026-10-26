@@ -159,12 +159,16 @@ func test_wreck_destroyed_when_empty() -> void:
 	assert_eq(w.loose.size(), 1)
 
 
-func test_piles_regenerate_inside_world_tick() -> void:
+func test_empty_pile_vanishes_without_counting_as_wreck() -> void:
 	var w := _world()
-	var pile := w.add_pile("scrap_pile", Vector2i(20, 20), 0)
-	var changes := [0]
-	w.node_changed.connect(func(_n: ResourceNode) -> void: changes[0] += 1)
-	for i in 600:
+	var pile := w.add_pile("scrap_pile", Vector2i(6, 5), 2)
+	var removed := []
+	var wrecks := []
+	w.node_removed.connect(func(id: int) -> void: removed.append(id))
+	w.wreck_destroyed.connect(func(id: int) -> void: wrecks.append(id))
+	w.player.suck_held = true
+	for i in 40:
 		w.tick()
-	assert_eq(pile.amount, 1)
-	assert_eq(changes[0], 1)
+	assert_eq(removed, [pile.id], "leerer Haufen verschwindet")
+	assert_eq(wrecks, [], "zählt nicht als zerlegtes Müllteil")
+	assert_false(w.nodes.has(pile.id))

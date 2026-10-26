@@ -363,6 +363,8 @@ Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten 
 
 **Seit MS26 (v1.15.0): Kauf-Jubel.** Jeder Kauf schließt das Menü; Rusty hüpft, dreht sich, Sterne und Jingle, 0,9 s ohne Steuerung, dann sofort weiter.
 
+**Seit MS30 (v1.19.0): Müll ist endlich.** Nichts wächst nach, leere Haufen verschwinden. Nachschub über Ereignisse (`data/events.json`): Touristen (Müllsäcke, ab 4 min, alle 4–6 min) und Meteoritenschauer (ab Schiffsstufe 2, alle 7–10 min, 20 s Vorwarnung). Bonus-Müll verschmutzt nicht, enthält 1,5× bzw. 2× so viele Teile, höchstens 40 gleichzeitig. Ersetzt den Grundsatz „nie keine Ressourcen“ vom 2026-10-25.
+
 ### 23a. Kapitel und Tore (MS12, umgesetzt)
 
 - Die Zonen einer Karte haben eine feste Reihenfolge (`zone_order` in der Karten-JSON); jede Zone ist ein **Kapitel**. Nur die erste Zone ist zu Beginn freigeschaltet.

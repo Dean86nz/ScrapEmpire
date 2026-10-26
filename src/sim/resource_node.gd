@@ -31,6 +31,7 @@ var tier: int = 1
 var tool: String = "suction"
 var respawn_ticks: int = 0
 var resource: bool = false  # unendliche Rohstoffquelle, zählt nicht als Müll
+var bonus: bool = false     # aus einem Ereignis (Touristen, Meteoriten), liegt auf sauberem Boden
 var _pile_item: String = ""
 var regen_counter: int = 0
 
@@ -65,7 +66,7 @@ static func from_kind(p_id: int, p_kind: String, p_tile: Vector2i, amount_overri
 	n.tile = p_tile
 	n.tier = int(d.get("tier", 1))
 	n.tool = str(d.get("tool", "suction"))
-	n.resource = bool(d.get("resource", false)) or str(d.get("type", "pile")) == "pile"
+	n.resource = bool(d.get("resource", false))
 	if str(d.get("type", "pile")) == "pile":
 		n._pile_item = str(d.get("item", "scrap"))
 		n.max_amount = int(d.get("max", PILE_MAX))
@@ -127,6 +128,11 @@ func center_px() -> Vector2i:
 
 func is_depleted() -> bool:
 	return amount <= 0
+
+
+## Leer und wächst nicht nach: verschwindet (seit MS30 gilt das auch für Haufen).
+func is_used_up() -> bool:
+	return amount <= 0 and regen_ticks <= 0
 
 
 ## Liefert true, wenn sich amount geändert hat.

@@ -74,6 +74,8 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		"collectibles_found": world.collectibles_found.keys(),
 		"quests": world.quests.to_dict(),
 		"milestones": world.milestones.to_dict(),
+		"events": world.events_state.duplicate(true),
+		"bonus_nodes": _bonus_ids(world),
 		"dirt": world.dirt.to_dict(),
 		"flags": world.flags.duplicate(),
 		"unlocked_zones": world.zones.unlocked.keys(),
@@ -93,6 +95,36 @@ static func _helpers(world: SimWorld) -> Array:
 	for h: Helper in world.helpers.values():
 		arr.append(h.to_dict())
 	return arr
+
+
+static func _bonus_ids(world: SimWorld) -> Array:
+	var out: Array = []
+	for n: ResourceNode in world.nodes.values():
+		if n.bonus:
+			out.append(v2(n.tile))
+	return out
+
+
+## JSON macht aus Zahlen Floats: Ereignis-Zustand wieder mit Ganzzahlen.
+static func _events_from(d: Dictionary) -> Dictionary:
+	var out := {"next": {}, "warn": [], "drops": []}
+	for k in d.get("next", {}):
+		out["next"][str(k)] = int(d["next"][k])
+	for wv: Dictionary in d.get("warn", []):
+		out["warn"].append({"type": str(wv["type"]), "ticks_left": int(wv["ticks_left"]), "tiles": _int_tiles(wv.get("tiles", []))})
+	for dv: Dictionary in d.get("drops", []):
+		var loot := {}
+		for k in dv.get("loot", {}):
+			loot[str(k)] = int(dv["loot"][k])
+		out["drops"].append({"type": str(dv["type"]), "ticks_left": int(dv["ticks_left"]), "tile": _int_tiles([dv.get("tile", [0, 0])])[0], "loot": loot})
+	return out
+
+
+static func _int_tiles(a: Array) -> Array:
+	var out: Array = []
+	for t in a:
+		out.append([int(t[0]), int(t[1])])
+	return out
 
 
 static func _building_state(b: Building) -> Dictionary:
@@ -170,6 +202,12 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 	world.quests.from_dict(data.get("quests", {}))
 	if data.has("milestones"):
 		world.milestones.from_dict(data["milestones"])
+	if data.has("events"):
+		world.events_state = _events_from(data["events"])
+	for t in data.get("bonus_nodes", []):
+		var tile := to_v2(t)
+		if world._node_tiles.has(tile):
+			(world.nodes[world._node_tiles[tile]] as ResourceNode).bonus = true
 	if data.has("dirt") and not (data["dirt"] as Dictionary).is_empty():
 		_log("Schmutzkarte")
 		if world.dirt_cfg.is_empty():
