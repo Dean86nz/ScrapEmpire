@@ -2,6 +2,31 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.10.0] – 2026-10-26 – MS21 Sichtbar sauber (Kurswechsel Block 3)
+
+Der Planet sieht jetzt so dreckig aus, wie er ist, und man sieht jede geputzte Stelle.
+
+### Neu
+- **Schmutz je Kachel:** Der Boden ist fleckig verdreckt (graubraun, Ölpfützen, Kleinmüll), unter und um jeden Müll voll verschmutzt. Rund ums Schiff ist es zu Beginn sauber, damit man sieht, wo das Aufräumen anfängt
+- **Saugen putzt den Boden:** Der Saugkegel nimmt Schmutz von den Kacheln vor Rusty mit. Etwa jede 5. sauber geputzte Kachel bringt ein Stück Kleinschrott. Sammel-Bots putzen in ihrer Nähe mit
+- **Zerlegter Müll** hinterlässt sauberen Boden (die Kachel und ihre Nachbarn). Kommt Müll zurück, wird die Stelle wieder dreckig
+- **Gras wächst nach:** Wo es sauber ist, sprießen nach 1 bis 5 Sekunden Gras und Blumen, Kachel für Kachel. Büsche und Teiche kommen weiter mit den Zonen-Stufen
+- **Sauberkeit = geputzte Fläche:** Der Prozentwert einer Zone, der Planet-Balken und die Tore richten sich jetzt nach dem Anteil sauberer Kacheln
+- Minimap und Karte zeigen den Schmutz; Zonennamen auf der Karte stehen auf einem hellen Schild
+
+### Technik
+- `DirtMap` (Sim, deterministisch aus Karten-Seed und Müll-Positionen), Einstellungen in `data/dirt.json`; `DirtView` zeichnet eine weiche Maske mit Shader, höchstens 15 Aktualisierungen pro Sekunde
+- Spielstand speichert den Schmutz komprimiert (Version bleibt 8; Stände ohne Schmutz bekommen ihn beim Laden neu erzeugt)
+- 165 Unit-Tests (10 neue für Schmutz), 29 Gamepad-Prüfungen und 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Neues Spiel: Boden ist dreckig, ums Schiff herum sauber
+2. RT halten und herumfahren: Hinter Rusty bleibt eine saubere Spur, kurz danach wächst Gras. Ab und zu fliegt ein Schrottteil in die Taschen
+3. Einen Toaster zerhämmern: Die Stelle darunter wird sauber
+4. Planet-Balken und Zonen-Prozent steigen beim Putzen
+5. Läuft es flüssig (60 FPS) auch beim langen Saugen über große Flächen?
+6. Speichern und Beenden, Weiterspielen: Die geputzten Stellen sind noch sauber
+
 ## [1.9.0] – 2026-10-26 – MS20 Neuer Kern-Ablauf: sammeln, abliefern, aufrüsten (Kurswechsel Block 2)
 
 Weniger Fabrik, mehr Incremental. Alte Spielstände passen nicht mehr: Beim Start werden sie gesichert (`save_a.json.bak_…`) und ein neues Spiel beginnt.

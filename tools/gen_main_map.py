@@ -94,6 +94,7 @@ data = {
     "seed": 4711,
     "player_start": {"x": 20, "y": 45},
     "ship": {"x": 16, "y": 43},
+    "dirt": True,
     "tutorial_zone": {"x": 0, "y": 30, "w": 40, "h": 30},
     "gate": {"x": 40, "y": 42, "w": 1, "h": 6},
     "zone_order": ["z01", "z11", "z10", "z00", "z20", "z21", "z22", "z12", "z02"],

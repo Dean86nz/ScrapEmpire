@@ -47,6 +47,8 @@ static func _tick_respawns(w: SimWorld) -> void:
 				continue  # Zone inzwischen sauber genug: kein Müll mehr
 			if not w._node_tiles.has(r["tile"]) and w.grid.at(r["tile"]) == null:
 				var n := add_object(w, kind, r["tile"])
+				if w.dirt.is_active() and not is_res:
+					w.dirt.soil(r["tile"], int(w.dirt_cfg.get("trash_dirt", 255)))
 				w.node_respawned.emit(n)
 				w.zones.refresh(w.nodes)
 			else:
@@ -59,6 +61,11 @@ static func _remove_node(w: SimWorld, n: ResourceNode) -> void:
 	w.nodes.erase(n.id)
 	w._node_tiles.erase(n.tile)
 	w.node_removed.emit(n.id)
+	if w.dirt.is_active() and n.is_wreck() and not n.is_resource():
+		var r := int(w.dirt_cfg.get("removed_trash_clean_radius", 1))
+		for dy in range(-r, r + 1):
+			for dx in range(-r, r + 1):
+				w.dirt.clean(n.tile + Vector2i(dx, dy), 255)
 	# Rohstoffquellen respawnen immer; Müll nur, solange die Zone unter 50 % sauber ist.
 	if n.respawn_ticks > 0 and (n.is_resource() or w.zones.allows_trash_respawn(n.tile, w.nodes)):
 		w.respawns.append({"kind": n.kind, "tile": n.tile, "ticks_left": n.respawn_ticks})

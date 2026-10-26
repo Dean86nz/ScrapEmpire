@@ -7,6 +7,7 @@ extends RefCounted
 ## Saugen/Hämmern für einen Helfer (gleiche Regeln wie Rusty, aber ohne Kegel: Reichweite reicht).
 static func helper_work(w: SimWorld, h: Helper) -> void:
 	if h.suck_held:
+		clean_around(w, h.pos, h.suck_range_px, int(w.dirt_cfg.get("helper_clean_rate_per_tick", 10)))
 		if h.suck_cooldown > 0:
 			h.suck_cooldown -= 1
 		else:
@@ -127,6 +128,56 @@ static func _tick_suction(w: SimWorld) -> void:
 	w.player.suck_cooldown = w.player.suck_interval
 	w.progression.on_collect(tier)
 	w.item_collected.emit(item_id, from_pos)
+
+
+## Sauger putzt den Boden im Saugkegel (auch ohne Ziel). Unter liegendem Müll geht das nicht.
+static func _tick_clean(w: SimWorld) -> void:
+	if not w.player.suck_held or not w.dirt.is_active():
+		return
+	var rate := int(w.dirt_cfg.get("clean_rate_per_tick", 22))
+	var r := int(ceil(w.player.suck_range_px / float(SimWorld.TILE)))
+	var center := w.player_tile()
+	var cleaned := 0
+	for dy in range(-r, r + 1):
+		for dx in range(-r, r + 1):
+			var t := center + Vector2i(dx, dy)
+			if w.dirt.value(t) == 0 or w._node_tiles.has(t):
+				continue
+			var c := t * SimWorld.TILE + Vector2i(SimWorld.TILE / 2, SimWorld.TILE / 2)
+			if dx == 0 and dy == 0 or _cone_distance(w, c) < INF:
+				if w.dirt.clean(t, rate):
+					cleaned += 1
+	if cleaned > 0:
+		_reward_cleaning(w, cleaned)
+
+
+## Putzen im Umkreis (Bots). Kein Kleinschrott, damit Bots die Taschen von Rusty nicht füllen.
+static func clean_around(w: SimWorld, pos: Vector2i, radius_px: int, rate: int) -> int:
+	if not w.dirt.is_active():
+		return 0
+	var r := int(ceil(radius_px / float(SimWorld.TILE)))
+	var center := Vector2i(pos.x / SimWorld.TILE, pos.y / SimWorld.TILE)
+	var cleaned := 0
+	for dy in range(-r, r + 1):
+		for dx in range(-r, r + 1):
+			var t := center + Vector2i(dx, dy)
+			if w.dirt.value(t) == 0 or w._node_tiles.has(t):
+				continue
+			if Vector2(dx, dy).length() * SimWorld.TILE <= radius_px and w.dirt.clean(t, rate):
+				cleaned += 1
+	return cleaned
+
+
+## Alle paar geputzten Kacheln fällt ein Stück Kleinschrott in Rustys Taschen.
+static func _reward_cleaning(w: SimWorld, n: int) -> void:
+	w._dirt_reward += n
+	var every := int(w.dirt_cfg.get("scrap_every_tiles", 5))
+	while every > 0 and w._dirt_reward >= every:
+		w._dirt_reward -= every
+		if w.player.inventory.can_add("scrap"):
+			w.player.inventory.add("scrap", 1)
+			w.progression.on_collect(1)
+			w.item_collected.emit("scrap", w.player.pos + Vector2i(w.player.aim * 80.0))
 
 
 ## Welches Item ein Saug-Objekt als Naechstes liefert (ohne es zu entnehmen).

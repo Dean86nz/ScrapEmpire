@@ -10,6 +10,7 @@ var _world: SimWorld
 var _player: Node2D
 var _timer := 0.0
 var _summary: Array[Dictionary] = []
+var dirt_texture: Texture2D           # Schmutz je Kachel (von DirtView)
 
 
 func bind(world: SimWorld, player: Node2D) -> void:
@@ -51,6 +52,11 @@ func _draw() -> void:
 		var col: Color = STAGE_COLORS[int(z["stage"])]
 		draw_rect(rect, col)
 		draw_rect(rect, Color(0.165, 0.165, 0.2), false, 1.0)
+	if dirt_texture != null:
+		for z in _summary:
+			if _world.zones.is_unlocked(str(z["id"])):
+				var r: Rect2i = z["rect"]
+				draw_texture_rect_region(dirt_texture, Rect2(Vector2(r.position) * s, Vector2(r.size) * s), Rect2(r.position, r.size))
 	# Müll-Objekte (nur in entdeckten Zonen)
 	for n: ResourceNode in _world.nodes.values():
 		if n.is_wreck() and not n.is_resource() and _world.zones.is_unlocked(_world.zones.zone_id_at(n.tile)):

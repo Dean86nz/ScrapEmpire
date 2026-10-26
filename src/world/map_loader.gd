@@ -37,8 +37,27 @@ static func apply(world: SimWorld, data: Dictionary, with_nodes: bool = true) ->
 				push_warning("Karte: unbekannter Knotentyp '%s' übersprungen" % kind)
 	if with_nodes and data.has("ship"):
 		ensure_ship(world, data)
+	if with_nodes:
+		ensure_dirt(world, data)
 	var start: Dictionary = data.get("player_start", {"x": world.width_tiles / 2, "y": world.height_tiles / 2})
 	return _start_px(world, start)
+
+
+## Erzeugt den Schmutz, wenn die Karte ihn vorsieht ("dirt": true) und er noch fehlt
+## (neues Spiel oder Spielstand von vor MS21). Müll-Umfeld aus den aktuellen Objekten.
+static func ensure_dirt(world: SimWorld, data: Dictionary) -> void:
+	if not bool(data.get("dirt", false)) or world.dirt.is_active():
+		return
+	if world.dirt_cfg.is_empty():
+		world.dirt_cfg = DirtMap.load_config()
+	var trash: Array = []
+	for n: ResourceNode in world.nodes.values():
+		if n.is_wreck() and not n.is_resource():
+			trash.append(n.tile)
+	var s := ShipSystem.ship(world)
+	var ship_center := s.tile + Vector2i(1, 1) if s != null else Vector2i(-1, -1)
+	world.dirt.generate(world.width_tiles, world.height_tiles, world.zones, trash, ship_center, int(data.get("seed", 0)), world.dirt_cfg)
+	world.zones.refresh(world.nodes)
 
 
 ## Stellt sicher, dass genau ein Raumschiff existiert: an der Kartenposition, sonst in der Nähe

@@ -101,6 +101,10 @@ func bind_player(player: Node2D) -> void:
 	_map_view.bind(_world, player)
 
 
+func set_dirt_texture(tex: Texture2D) -> void:
+	_map_view.dirt_texture = tex
+
+
 func _on_zone_selected(info: Dictionary) -> void:
 	if not _world.zones.is_unlocked(str(info["id"])):
 		_map_info.text = "%s %d\n\n%s\n\n%s" % [tr("CH_CHAPTER"), _world.zones.chapter_index(str(info["id"])) + 1, tr("ZONE_UNKNOWN"), tr("ZONE_HELP")]

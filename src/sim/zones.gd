@@ -16,6 +16,7 @@ var order: Array[String] = []         # Kapitel-Reihenfolge
 var unlock_cleanliness := 0.5
 var unlocked: Dictionary = {}         # zone_id → true (entdeckt/freigeschaltet)
 var _stages: Dictionary = {}          # zone_id → int
+var dirt: DirtMap                     # gesetzt von SimWorld; aktiv: Sauberkeit = geputzte Fläche
 
 
 func setup(zone_defs: Array, map_nodes: Array, zone_order: Array = [], p_unlock: float = 0.5) -> void:
@@ -129,6 +130,8 @@ func current_trash(nodes: Dictionary) -> Dictionary:
 
 ## Heilung des ganzen Planeten: Anteil des weggeräumten Mülls über alle Zonen (0..1).
 func planet_health(nodes: Dictionary) -> float:
+	if dirt != null and dirt.is_active():
+		return dirt.planet_cleanliness()
 	var start := 0
 	for z in zones:
 		start += int(start_trash.get(z["id"], 0))
@@ -141,6 +144,10 @@ func planet_health(nodes: Dictionary) -> float:
 
 
 func cleanliness(zone_id: String, nodes: Dictionary) -> float:
+	if dirt != null and dirt.is_active():
+		var area := dirt.zone_cleanliness(zone_id)
+		if area >= 0.0:
+			return area
 	var start := int(start_trash.get(zone_id, 0))
 	if start <= 0:
 		return 1.0

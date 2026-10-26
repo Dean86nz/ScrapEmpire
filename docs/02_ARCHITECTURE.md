@@ -300,6 +300,13 @@ Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers �
 - Alle Kosten laufen über `ShipSystem.can_afford / pay / missing`: Inventar zuerst, dann Schiffslager. `TechState.can_start` nimmt zusätzliche Inventare entgegen.
 - `QuestState` wird alle 10 Ticks geprüft (`check`); Zähler kommen über Welt-Signale (`item_collected`, `item_sold`, `wreck_destroyed`, `ship_received`), Zustandsprüfungen lesen die Welt. Abschluss → `quest_completed`. Alte Stände: `fast_forward`.
 
+## 10c. Schmutz je Kachel (seit v1.10.0, MS21)
+
+- `DirtMap` (`src/sim/dirt_map.gd`): `dirt` (0..255) und `start` (war anfangs schmutzig) als `PackedByteArray`, erzeugt aus Seed (FastNoiseLite) plus Müll-Kacheln. Zählt je Zone anfangs und jetzt schmutzige Kacheln; `ZoneTracker.cleanliness` nutzt das, wenn Schmutz aktiv ist.
+- Putzen: `ToolSystem._tick_clean` (Saugkegel), `ToolSystem.clean_around` (Bots), `NodeSystem` beim Entfernen und Respawn von Müll. Geänderte Kacheln sammeln sich in `changed`.
+- Darstellung: `DirtView` liest `take_changed()`, aktualisiert eine R8-Maske (Shader) und eine Farbtextur für Minimap/Karte und meldet `tiles_changed` an `NatureView` (Gras je Kachel).
+- Spielstand: Schlüssel `dirt` mit Deflate+Base64; fehlt er, erzeugt `MapLoader.ensure_dirt` den Startschmutz.
+
 ## 11. Neue Darstellung und UI
 
 - HUD: XP-Leiste (`src/ui/hud/xp_bar.tscn`), Level-Up-Konfetti (`CPUParticles2D` über Rusty), Funken-Partikel bei „Zu hart“.

@@ -42,6 +42,7 @@ func _ready() -> void:
 	_world.drone_cfg = DataRegistry.drone_config()
 	_world.collectible_cfg = DataRegistry.collectible_config()
 	_world.ship_cfg = DataRegistry.ship_config()
+	_world.dirt_cfg = DirtMap.load_config()
 	_world.quests.setup(DataRegistry.quest_defs())
 	_world.setup_progression_data(DataRegistry.tech_defs(), DataRegistry.skill_data())
 	var start_px: Vector2
@@ -58,6 +59,8 @@ func _ready() -> void:
 		MapLoader.fill_missing_zones(_world, _map_data)
 		SaveManager.log_step("Schiff prüfen")
 		MapLoader.ensure_ship(_world, _map_data)
+		SaveManager.log_step("Schmutzkarte prüfen")
+		MapLoader.ensure_dirt(_world, _map_data)
 		SaveManager.log_step("Aufgaben abgleichen")
 		_world.quests.fast_forward(_world, bool(_world.flags.get("tutorial_done", false)))
 		_loaded_from_save = true
@@ -87,6 +90,7 @@ func _ready() -> void:
 	_world_view.bind(_world, _player)
 	SaveManager.log_step("HUD und Menüs")
 	_hud.bind(_world)
+	_hud.minimap.dirt_texture = _world_view.dirt_view.map_texture
 	_progress_menu.bind(_world)
 	_player.hotbar_selected.connect(_hud.set_selected_slot)
 	if _loaded_from_save:
@@ -109,6 +113,7 @@ func _ready() -> void:
 	_hud.refresh_tasks(_world.tasks)
 	_hud.bind_minimap(_player)
 	_progress_menu.bind_player(_player)
+	_progress_menu.set_dirt_texture(_world_view.dirt_view.map_texture)
 	_world.zones.stage_changed.connect(_on_zone_stage_changed)
 	SaveManager.log_step("Zonen und Natur")
 	_world.zones.refresh(_world.nodes)
@@ -355,6 +360,7 @@ func _setup_nature() -> void:
 	_nature.name = "Nature"
 	add_child(_nature)
 	_nature.bind(_world, _player, cfg)
+	_world_view.dirt_view.tiles_changed.connect(_nature.on_tiles_changed)
 	_nature.critters_appeared.connect(func(_id: String) -> void: Quips.say("critter", true))
 	_sky = DayLight.new()
 	_sky.name = "Sky"
