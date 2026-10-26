@@ -2,6 +2,22 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.15.0] – 2026-10-26 – MS26 Jubel nach dem Kauf (Spielgefühl, Punkt 3)
+
+### Neu
+- **Nach jedem Kauf jubelt Rusty:** Upgrade, Skill, Schiffsstufe, Bot, Drohne, Bot- und Drohnen-Upgrades. Das Menü schließt sich, Rusty hüpft zweimal, dreht sich einmal um sich selbst, Sterne sprühen, dazu ein kurzer, weicher Dreiklang. Dauer 0,9 s, währenddessen ruht die Steuerung, danach geht es sofort weiter
+- Bei einer Schiffsreparatur schaut die Kamera nur noch gut 1 s zum Schiff (vorher 3 s); Schild, Konfetti und Putzwelle bleiben
+- Während des Jubels ist die Hinweiszeile leer
+
+### Technik
+- `Player.cheer()` / `is_cheering()`, `Main._celebrate_purchase()`; Sound `cheer` (vorläufig selbst erzeugt, echte Sounds in MS32)
+- 177 Unit-Tests, 41 Gamepad-Prüfungen (neu: Menü schließt nach Kauf, Steuerung nach höchstens 1 s zurück, auch nach Bot und Drohne) und 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Skill lernen, Ertrag kaufen, Bot bauen: Menü geht zu, Rusty dreht sich mit Sternen, nach etwa 1 s fährt er wieder
+2. Mehrere Käufe hintereinander: Ist das Wieder-Öffnen (X oder Select) okay, oder stört das Schließen?
+3. Ist der Jubel-Ton angenehm oder zu hoch?
+
 ## [1.14.0] – 2026-10-26 – MS25 Skill und Schiff getrennt (Runde „Spielgefühl“, Punkt 1)
 
 Neue Regel: **XP verbessert Rusty, Bolts verbessern das Schiff.** Nichts gibt es mehr doppelt.

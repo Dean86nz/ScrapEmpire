@@ -361,6 +361,8 @@ Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten 
 
 **Seit MS25 (v1.14.0): XP verbessert Rusty, Bolts das Schiff.** Skills (XP, 2 Punkte je Level bis 25): Fahrtempo, Boost, Saugtempo, Reichweite, Magnet, Taschen, Werkzeug (3 Punkte je Stufe). Schiff (Bolts): Reparatur, Ertrag (inkl. Bonus seltene Teile), Bots, Drohnen. Kein Wert darf an beiden Stellen vorkommen (Test).
 
+**Seit MS26 (v1.15.0): Kauf-Jubel.** Jeder Kauf schließt das Menü; Rusty hüpft, dreht sich, Sterne und Jingle, 0,9 s ohne Steuerung, dann sofort weiter.
+
 ### 23a. Kapitel und Tore (MS12, umgesetzt)
 
 - Die Zonen einer Karte haben eine feste Reihenfolge (`zone_order` in der Karten-JSON); jede Zone ist ein **Kapitel**. Nur die erste Zone ist zu Beginn freigeschaltet.

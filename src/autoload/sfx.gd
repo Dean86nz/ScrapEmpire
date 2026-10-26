@@ -68,6 +68,12 @@ func _build() -> void:
 	for f in [523.25, 659.25, 783.99, 1046.5]:
 		_mix_tone(buf, 0.26, 1.1, f, "tri", 0.2, 2.6)
 	_streams["repair"] = _to_stream(buf)
+	# Jubel: weiches, tiefes Dreiklang-Arpeggio (G-C-E), leise
+	buf = _silence(0.8)
+	var cheer := [392.0, 523.25, 659.25]
+	for i in cheer.size():
+		_mix_tone(buf, i * 0.09, 0.55 if i == 2 else 0.3, cheer[i], "sine", 0.22, 4.0 if i == 2 else 8.0)
+	_streams["cheer"] = _to_stream(buf)
 	# Plopp: kurzer fallender Ton
 	buf = _silence(0.12)
 	_mix_sweep(buf, 0.0, 0.09, 950.0, 380.0, 0.5)
