@@ -1,0 +1,5 @@
+{
+  "_comment": "Musik (MS32): Pfad zu einer OGG-Datei unter assets/audio/music/. Leer bis der Auftraggeber ein Stück ausgewählt hat. music_db: Grundlautstärke.",
+  "music": "",
+  "music_db": -8.0
+}

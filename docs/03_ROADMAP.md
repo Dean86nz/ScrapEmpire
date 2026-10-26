@@ -40,6 +40,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **29** | Spielgefühl 5: geputzter Boden wird Wiese, Schiff und saubere Zonen begrünen | v1.18.0 |
 | **30** | Spielgefühl 6: Müll endlich, Haufen als Müll gezeichnet, Touristen und Meteoriten als Nachschub | v1.19.0 |
 | **31** | Spielgefühl 7: Ziele-Tab mit Hauptaufgabe, Schiff-Tab 2×2, eine Hinweiszeile, runder und animiert | v1.20.0 |
+| **32** | Spielgefühl 8: echte CC0-Sounds, Saug-Rauschen, Lautstärke-Regler, Musik vorbereitet | v1.21.0 |
 
 ## Runde „Spielgefühl“ nach dem dritten Praxistest (Go 2026-10-26)
 

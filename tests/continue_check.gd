@@ -144,9 +144,8 @@ func _build_play() -> void:
 			f.store_string(JSON.stringify(_snapshot()))
 			f.close()
 			return ok)
-	_step("D-Pad 3× runter zu „Speichern und Beenden“", func() -> void:
-			for n in 3:
-				_tap(JOY_BUTTON_DPAD_DOWN),
+	_step("D-Pad 1× hoch (im Kreis) zu „Speichern und Beenden“", func() -> void:
+			_tap(JOY_BUTTON_DPAD_UP),
 		func() -> bool: return _focused_text() == TranslationServer.translate("MENU_SAVE_QUIT"), 6)
 	# A beendet das Programm; der Runner wertet den Exit-Code und die Spielstand-Datei aus.
 	_step("A: Speichern und Beenden", func() -> void: _tap(JOY_BUTTON_A), func() -> bool: return false, 30, 2000)

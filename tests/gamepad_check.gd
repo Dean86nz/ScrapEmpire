@@ -9,6 +9,7 @@ var _steps: Array[Dictionary] = []
 var _i := -1
 var _wait_frames := 0
 var _wait_until_ms := 0
+var _vol_before := 0.0
 var _fails: Array[String] = []
 var _main: Node
 var _world: SimWorld
@@ -203,7 +204,18 @@ func _build_steps() -> void:
 
 	# Pause
 	_step("Start öffnet Pause", func() -> void: _tap(JOY_BUTTON_START), func() -> bool: return pause.visible)
-	_step("A auf „Fortsetzen“ schließt Pause", func() -> void: _tap(JOY_BUTTON_A), func() -> bool: return not pause.visible and not paused)
+	_step("D-Pad runter: Musik-Regler hat den Fokus", func() -> void: _tap(JOY_BUTTON_DPAD_DOWN),
+		func() -> bool: return pause.get_viewport().gui_get_focus_owner() == pause._music_btn)
+	_step("D-Pad links: Musik 10 % leiser, rechts wieder lauter", func() -> void:
+			_vol_before = float(root.get_node("/root/Sfx").volume["music"])
+			_tap(JOY_BUTTON_DPAD_LEFT),
+		func() -> bool: return absf(float(root.get_node("/root/Sfx").volume["music"]) - (_vol_before - 0.1)) < 0.01 and pause.get_viewport().gui_get_focus_owner() == pause._music_btn)
+	_step("D-Pad rechts: zurück", func() -> void: _tap(JOY_BUTTON_DPAD_RIGHT),
+		func() -> bool: return absf(float(root.get_node("/root/Sfx").volume["music"]) - _vol_before) < 0.01)
+	_step("D-Pad hoch, A auf „Fortsetzen“ schließt Pause", func() -> void:
+			_tap(JOY_BUTTON_DPAD_UP)
+			_tap(JOY_BUTTON_A),
+		func() -> bool: return not pause.visible and not paused)
 
 	# Sauger: Trigger-Schwelle
 	_step("RT 0,3 saugt nicht (Schwelle 0,5)", func() -> void: _axis(JOY_AXIS_TRIGGER_RIGHT, 0.3),
