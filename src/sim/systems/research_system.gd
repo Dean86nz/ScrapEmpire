@@ -48,7 +48,7 @@ static func _cmd_buy_skill(w: SimWorld, cmd: Dictionary) -> void:
 	if reason != "":
 		w.skill_failed.emit(reason)
 		return
-	w.progression.skill_points -= 1
+	w.progression.skill_points -= w.skills.cost(id)
 	w.skills.buy(id)
 	recompute_modifiers(w)
 	w.skill_bought.emit(id, w.skills.level_of(id))

@@ -25,9 +25,10 @@
       "bolts": 10
     },
     {
-      "id": "q_upgrade",
-      "text_key": "QUEST_UPGRADE",
-      "type": "upgrades_bought",
+      "id": "q_yield1",
+      "text_key": "QUEST_YIELD1",
+      "type": "upgrade_level",
+      "upgrade": "yield",
       "amount": 1,
       "xp": 15
     },
@@ -54,18 +55,25 @@
       "bolts": 15
     },
     {
-      "id": "q_cargo",
-      "text_key": "QUEST_CARGO",
-      "type": "upgrade_level",
-      "upgrade": "cargo",
+      "id": "q_skill",
+      "text_key": "QUEST_SKILL",
+      "type": "skills_bought",
+      "amount": 1,
+      "xp": 20
+    },
+    {
+      "id": "q_bags2",
+      "text_key": "QUEST_BAGS2",
+      "type": "skill_level",
+      "skill": "bags",
       "amount": 2,
       "xp": 20
     },
     {
-      "id": "q_speed",
-      "text_key": "QUEST_SPEED",
-      "type": "upgrade_level",
-      "upgrade": "speed",
+      "id": "q_drive1",
+      "text_key": "QUEST_DRIVE1",
+      "type": "skill_level",
+      "skill": "drive",
       "amount": 1,
       "xp": 20
     },
@@ -79,8 +87,8 @@
     {
       "id": "q_tool",
       "text_key": "QUEST_TOOL",
-      "type": "upgrade_level",
-      "upgrade": "tool",
+      "type": "skill_level",
+      "skill": "tool",
       "amount": 1,
       "xp": 30
     },
@@ -113,10 +121,10 @@
       "xp": 40
     },
     {
-      "id": "q_suction",
-      "text_key": "QUEST_SUCTION",
-      "type": "upgrade_level",
-      "upgrade": "suction",
+      "id": "q_suck2",
+      "text_key": "QUEST_SUCK2",
+      "type": "skill_level",
+      "skill": "suck",
       "amount": 2,
       "xp": 30
     },

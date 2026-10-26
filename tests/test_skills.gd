@@ -1,5 +1,5 @@
 extends TestCase
-## Skilltree nach dem Kurswechsel: nur noch Perks, die sich nicht mit den Schiff-Upgrades doppeln.
+## Skilltree seit MS25: XP verbessert Rusty (Fahren, Saugen, Taschen, Werkzeug), Bolts nur das Schiff.
 
 
 func _world() -> SimWorld:
@@ -14,35 +14,50 @@ func _buy(w: SimWorld, id: String) -> void:
 	w.tick()
 
 
-func test_defs_without_ship_overlaps() -> void:
+func test_skills_and_ship_do_not_overlap() -> void:
 	var w := _world()
+	var skill_keys := {}
+	for d: Dictionary in w.skills.defs:
+		for e: Dictionary in d["effects"]:
+			skill_keys[str(e["key"])] = true
 	var ids := []
-	for d in w.skills.defs:
-		ids.append(str(d["id"]))
-	assert_eq(ids.size(), 7)
-	for gone in ["fast_wheels", "pockets", "haggle", "smash", "suction_power", "wholesale"]:
-		assert_false(ids.has(gone), "ins Schiff umgezogen oder entfallen: " + gone)
+	for u: Dictionary in ShipSystem.upgrade_defs(w):
+		ids.append(u["id"])
+		for e: Dictionary in u["effects"]:
+			assert_false(skill_keys.has(str(e["key"])), "doppelt in Skill und Schiff: " + str(e["key"]))
+	assert_eq(ids, ["yield"], "am Schiff nur noch Ertrag")
 
 
 func test_buy_needs_points_and_requirements() -> void:
 	var w := _world()
 	var fails := []
 	w.skill_failed.connect(func(r: String) -> void: fails.append(r))
-	_buy(w, "boost")
+	_buy(w, "drive")
 	assert_eq(fails, ["points"])
 	w.progression.skill_points = 3
-	_buy(w, "agility")
-	assert_eq(fails, ["points", "requires"], "Wendigkeit braucht Turbo")
+	_buy(w, "boost")
+	assert_eq(fails, ["points", "requires"], "Boost braucht Fahrtempo")
+	_buy(w, "drive")
 	_buy(w, "boost")
 	_buy(w, "boost")
-	_buy(w, "agility")
 	assert_eq(w.progression.skill_points, 0)
 	assert_eq(float(w.mods["boost_cooldown"]), 6.0)
+	assert_true(absf(float(w.mods["speed_mult"]) - 1.08) < 0.001)
+
+
+func test_tool_costs_three_points() -> void:
+	var w := _world()
+	assert_eq(w.skills.can_buy("tool", 2), "points")
+	w.progression.skill_points = 3
+	_buy(w, "tool")
+	assert_eq(w.progression.skill_points, 0)
+	assert_eq(w.player.hammer_tier, 2)
+	assert_eq(w.player.suction_tier, 2)
 
 
 func test_no_dead_ends_all_skills_reachable() -> void:
 	var w := _world()
-	w.progression.skill_points = 100
+	w.progression.skill_points = 200
 	var progress := true
 	while progress:
 		progress = false
@@ -51,18 +66,22 @@ func test_no_dead_ends_all_skills_reachable() -> void:
 			if w.skills.can_buy(id, w.progression.skill_points) == "":
 				_buy(w, id)
 				progress = true
+	var spent := 200 - w.progression.skill_points
 	for d: Dictionary in w.skills.defs:
 		assert_eq(w.skills.level_of(str(d["id"])), int(d["max_level"]), "Skill nicht voll: " + str(d["id"]))
+	assert_eq(spent, 43, "alle Skills voll kosten 43 Punkte")
 
 
-func test_stacker_and_magnet() -> void:
+func test_bags_and_magnet() -> void:
 	var w := _world()
 	w.progression.skill_points = 10
 	w.player.inventory.add("scrap", 10)
-	_buy(w, "stacker")
-	assert_eq(w.player.inventory.stack_size, 15)
+	_buy(w, "bags")
+	assert_eq(w.player.inventory.slot_count, 5)
+	assert_eq(w.player.inventory.stack_size, 12)
 	assert_eq(w.player.inventory.count_of("scrap"), 10, "Inhalt bleibt")
-	_buy(w, "stacker")
+	_buy(w, "suck")
+	_buy(w, "suck")
 	_buy(w, "magnet")
 	assert_eq(w.player.magnet_radius_px, 64)
 	w.add_loose("copper", w.player.pos + Vector2i(-40, 0))
@@ -71,26 +90,40 @@ func test_stacker_and_magnet() -> void:
 	assert_eq(w.player.inventory.count_of("copper"), 1)
 
 
-func test_connoisseur_raises_rare_delivery() -> void:
+func test_suck_and_reach() -> void:
+	var w := _world()
+	w.progression.skill_points = 10
+	_buy(w, "suck")
+	_buy(w, "suck")
+	assert_eq(w.player.suck_interval, 4, "5 / 1,24 = 4,0 → 4")
+	assert_eq(w.player.hammer_interval, 8, "10 / 1,24 = 8,1 → 8")
+	_buy(w, "reach")
+	_buy(w, "reach")
+	assert_eq(w.player.suck_range_px, 224, "160 + 1 Kachel")
+
+
+func test_yield_includes_rare_bonus() -> void:
 	var w := _world()
 	TestWorlds.with_ship(w)
-	w.progression.skill_points = 3
-	_buy(w, "connoisseur")
-	_buy(w, "connoisseur")
+	w.ship_upgrades["yield"] = 2
+	w.recompute_modifiers()
 	w.player.inventory.add("copper", 10)
 	w.player.inventory.add("scrap", 10)
 	w.queue_command({"type": "deliver_all"})
 	w.tick()
-	assert_eq(w.bolts, 36 + 10, "Kupfer 30 × 1,2 = 36, Schrott unverändert")
+	assert_eq(w.bolts, 38 + 12, "Kupfer 30 × 1,2 × 1,06 = 38, Schrott 10 × 1,2 = 12")
 
 
-func test_tempo_and_reach() -> void:
+func test_old_save_keeps_every_bought_level() -> void:
+	var data := {"version": 8, "skills": {"boost": 2, "agility": 3, "stacker": 2, "magnet": 1, "connoisseur": 2, "tempo": 4, "reach": 1},
+		"ship_upgrades": {"cargo": 3, "yield": 4, "speed": 2, "suction": 5, "tool": 1}, "progression": {"level": 6, "skill_points": 0}}
+	var m := SaveMigrations.v8_to_v9(data)
+	assert_eq(m["version"], 9)
+	assert_eq(m["skills"], {"drive": 3, "boost": 2, "suck": 5, "reach": 1, "magnet": 1, "bags": 3, "tool": 1})
+	assert_eq(m["ship_upgrades"], {"yield": 4})
+	assert_eq(m["progression"]["skill_points"], 10, "alle Punkte nach neuer Regel zurück")
 	var w := _world()
-	w.progression.skill_points = 10
-	_buy(w, "tempo")
-	_buy(w, "tempo")
-	assert_eq(w.player.suck_interval, 4, "5 / 1,30 = 3,8 → 4")
-	assert_eq(w.player.hammer_interval, 8, "10 / 1,30 = 7,7 → 8")
-	_buy(w, "reach")
-	_buy(w, "reach")
-	assert_eq(w.player.suck_range_px, 224, "160 + 1 Kachel")
+	SaveCodec.decode(m, w)
+	assert_eq(w.player.inventory.slot_count, 7, "4 + 3 Taschen")
+	assert_eq(w.player.hammer_tier, 2)
+	assert_eq(w.skills.level_of("suck"), 5)

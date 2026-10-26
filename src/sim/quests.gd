@@ -95,6 +95,10 @@ func progress(w: SimWorld) -> Array:
 			return [mini(int(counters.get("wrecks", 0)), amount), amount]
 		"bolts_earned":
 			return [mini(int(counters.get("sold_value", 0)), amount), amount]
+		"skills_bought":
+			return [mini(w.skills.total_bought(), amount), amount]
+		"skill_level":
+			return [mini(w.skills.level_of(str(q.get("skill", ""))), amount), amount]
 		"upgrades_bought":
 			return [mini(ShipSystem.upgrades_total(w), amount), amount]
 		"upgrade_level":

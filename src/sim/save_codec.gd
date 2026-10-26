@@ -3,7 +3,7 @@ extends RefCounted
 ## Wandelt die SimWorld in ein JSON-taugliches Dictionary und zurück (Architektur 4.8, 12).
 ## Reine Logik ohne Datei-IO; SaveManager kümmert sich um Dateien, Rotation und Migration.
 
-const VERSION := 8
+const VERSION := 9
 ## Ältere Stände stammen aus der Fabrik-Version und werden nicht mehr geladen (Kurswechsel MS20).
 const MIN_VERSION := 8
 

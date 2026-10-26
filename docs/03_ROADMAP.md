@@ -33,6 +33,11 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **22** | Kurswechsel Block 4: Schiff als Herz (fünf Schiffsbilder, Putzwelle, Jubel, Stufenleiste, Abflug-Szene) | v1.11.0 |
 | **23** | Kurswechsel Block 5: Erfolgserlebnisse (Meilensteine, kurze Aufgaben, Abliefer-Effekt, erste Sounds) | v1.12.0 |
 | **24** | Kurswechsel Block 6: Menüs entschlacken (3 Tabs am Anfang, Icons, Kostenfarbe, Bot abbauen mit LT) | v1.13.0 |
+| **25** | Spielgefühl 1: Skill (XP, Rusty) und Schiff (Bolts) getrennt | v1.14.0 |
+
+## Runde „Spielgefühl“ nach dem dritten Praxistest (Go 2026-10-26)
+
+MS25 Skill/Schiff trennen → MS26 Jubel nach Kauf → MS27 Saugen fühlt sich toll an, nächstes Ziel im HUD → MS28 Upgrades an Rusty sichtbar → MS29 saubere Wiese → MS30 Müll endlich, Nachschub über Ereignisse (Touristen, Meteoriten) → MS31 Menüs schöner (Ziele-Tab, eine Hinweiszeile, verspielter) → MS32 echte CC0-Sounds, Musik (Auswahl durch den Auftraggeber), Lautstärke-Regler. Nach jedem Meilenstein EXE, Ally-Testliste, Push von main und Branch.
 
 ## Kurswechsel nach dem zweiten Ally-Test (Go 2026-10-26)
 

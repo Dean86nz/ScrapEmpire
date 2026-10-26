@@ -122,7 +122,7 @@ SKILL_BRANCH_TOOLS,Werkzeuge,Tools
 SKILL_FAST_WHEELS,Flinke Räder,Fast wheels
 SKILL_FAST_WHEELS_DESC,+8 % Tempo je Stufe,+8% speed per level
 SKILL_BOOST,Turbo-Boost,Turbo boost
-SKILL_BOOST_DESC,L3 / Shift: 2 s +40 % Tempo; Abklingzeit 8 / 6 / 4 s,L3 / Shift: 2 s +40% speed; cooldown 8 / 6 / 4 s
+SKILL_BOOST_DESC,L3: kurzer Turbo,L3: short turbo
 SKILL_AGILITY,Wendigkeit,Agility
 SKILL_AGILITY_DESC,+25 % Drehgeschwindigkeit je Stufe,+25% turn speed per level
 SKILL_POCKETS,Taschen,Pockets
@@ -130,7 +130,7 @@ SKILL_POCKETS_DESC,+1 Inventar-Slot je Stufe,+1 inventory slot per level
 SKILL_STACKER,Stapler,Stacker
 SKILL_STACKER_DESC,+5 Stapelgröße je Stufe,+5 stack size per level
 SKILL_MAGNET,Magnet,Magnet
-SKILL_MAGNET_DESC,Sammelt lose Items im Umkreis von 1 / 2 / 3 Kacheln automatisch,Collects loose items within 1 / 2 / 3 tiles automatically
+SKILL_MAGNET_DESC,Zieht lose Teile an,Pulls in loose items
 SKILL_HAGGLE,Feilschen,Haggling
 SKILL_HAGGLE_DESC,+5 % Bolts je Verkauf und Stufe,+5% bolts per sale and level
 SKILL_CONNOISSEUR,Kenner,Connoisseur
@@ -144,9 +144,9 @@ SKILL_SUCTION_POWER_DESC,Sauger-Stufe +1 je Stufe,Vacuum tier +1 per level
 SKILL_TEMPO,Tempo,Tempo
 SKILL_TEMPO_DESC,+15 % Abbau-Geschwindigkeit je Stufe,+15% mining speed per level
 SKILL_REACH,Reichweite,Reach
-SKILL_REACH_DESC,"+0,5 Kacheln Saug- und Hammerreichweite je Stufe",+0.5 tiles vacuum and hammer reach per level
+SKILL_REACH_DESC,"+0,5 Kacheln Reichweite",+0.5 tiles reach
 SKILL_MAXED,Voll ausgebaut,Maxed out
-SKILL_NEEDS,Braucht %s Stufe %d,Needs %s level %d
+SKILL_NEEDS,Erst %s %d,First %s %d
 SKILL_NO_POINTS,Kein Skillpunkt,No skill point
 SKILL_BUY,A: Kaufen (1 Punkt),A: Buy (1 point)
 GOAL_RESEARCHING,Läuft,Running
@@ -481,7 +481,7 @@ UPG_TOOL_DESC,Knackt härteren Müll,Cracks tougher trash
 QUEST_UPGRADE,Kauf dein erstes Upgrade am Schiff (X).,Buy your first upgrade at the ship (X).
 QUEST_CARGO,Bau den Laderaum auf Stufe 2 aus.,Upgrade the cargo hold to level 2.
 QUEST_EARN,Verdiene 300 Bolts.,Earn 300 bolts.
-QUEST_TOOL,Kauf Werkzeugstufe 2 für härteren Müll.,Buy tool tier 2 for tougher trash.
+QUEST_TOOL,Lerne den Skill Werkzeug: dann knackst du T2-Müll.,Learn the Tools skill: then you can crack T2 trash.
 QUEST_BOT,Bau deinen ersten Sammel-Bot.,Build your first collector bot.
 QUEST_EARN2,Verdiene insgesamt 2.000 Bolts.,"Earn 2,000 bolts in total."
 QUEST_BOTS3,Hab 3 Sammel-Bots im Einsatz.,Have 3 collector bots at work.
@@ -534,3 +534,19 @@ BOT_CARD,Sammel-Bot,Collector bot
 DRONE_CARD,Drohne,Drone
 HUD_HINT_NEW_TAB,"Neu im Menü!   ·   Select: ansehen","New in the menu!   ·   Select: have a look"
 HUD_HINT_NEW_TAB_KB,"Neu im Menü!   ·   T: ansehen","New in the menu!   ·   T: have a look"
+SKILL_BRANCH_SUCTION,Saugen,Suction
+SKILL_DRIVE,Fahrtempo,Driving
+SKILL_DRIVE_DESC,"+8 % Tempo, wendiger","+8% speed, nimbler"
+SKILL_SUCK,Saugtempo,Suction
+SKILL_SUCK_DESC,+12 % Arbeitstempo,+12% work speed
+SKILL_BAGS,Taschen,Bags
+SKILL_BAGS_DESC,"+1 Platz, +2 je Stapel","+1 slot, +2 per stack"
+SKILL_TOOL,Werkzeug,Tools
+SKILL_TOOL_DESC,Härterer Müll,Tougher trash
+SKILL_COST_POINTS,%d Punkte,%d points
+QUEST_YIELD1,Kauf am Schiff das erste Ertrag-Upgrade (X).,Buy the first yield upgrade at the ship (X).
+QUEST_SKILL,Lerne deinen ersten Skill (Select → Skills).,Learn your first skill (Select → Skills).
+QUEST_BAGS2,Bau den Skill Taschen auf Stufe 2 aus.,Raise the Bags skill to level 2.
+QUEST_DRIVE1,Lerne den Skill Fahrtempo.,Learn the Driving skill.
+QUEST_SUCK2,Bau den Skill Saugtempo auf Stufe 2 aus.,Raise the Suction speed skill to level 2.
+SKILL_COST_ONE,1 Punkt,1 point

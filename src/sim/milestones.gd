@@ -39,7 +39,7 @@ static func stat(w: SimWorld, name: String) -> int:
 		"deliveries":
 			return int(c.get("deliveries", 0))
 		"upgrades":
-			return ShipSystem.upgrades_total(w)
+			return ShipSystem.upgrades_total(w) + w.skills.total_bought()
 	return 0
 
 

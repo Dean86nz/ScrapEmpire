@@ -2,6 +2,30 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.14.0] – 2026-10-26 – MS25 Skill und Schiff getrennt (Runde „Spielgefühl“, Punkt 1)
+
+Neue Regel: **XP verbessert Rusty, Bolts verbessern das Schiff.** Nichts gibt es mehr doppelt.
+
+### Geändert
+- **Skills (XP):** Fahrtempo (8, +8 % Tempo und wendiger), Boost (3), Saugtempo (8, +12 % Saug- und Hammertempo), Reichweite (4), Magnet (3), Taschen (8, +1 Platz und +2 je Stapel), Werkzeug (3, kostet je 3 Punkte, knackt T2 bis T4). Jede Karte mit Icon, Stufen-Punkten und Punktkosten
+- **Schiff (Bolts):** Reparatur, Ertrag (enthält jetzt den Bonus für seltene Teile), Sammel-Bots, Drohnen. Laderaum, Tempo, Saugtempo und Werkzeugstufe sind vom Schiff in die Skills gewandert, „Wendigkeit“, „Stapler“, „Tempo“ und „Kenner“ sind darin aufgegangen
+- **2 Skillpunkte je Level, bis Level 25** (48 Punkte; alle Skills voll kosten 43)
+- Aufgabenkette angepasst: erstes Ertrag-Upgrade, erster Skill, Taschen 2, Fahrtempo 1, Werkzeug-Skill, Saugtempo 2. Der Ziele-Tab verweist beim härteren Müll auf den Skill „Werkzeug“
+- Skill-Texte stark gekürzt
+
+### Spielstände
+- Version 9. Alte Stände werden umgerechnet: Jede gekaufte Stufe bleibt (aus altem Skill und altem Schiff-Upgrade zählt die höhere), alle Skillpunkte kommen nach der neuen Regel zurück. Ausgegebene Bolts für ehemalige Schiff-Upgrades werden nicht erstattet, die Stufen bleiben aber geschenkt
+
+### Technik
+- `cost_points` je Skill, `SkillState.cost/total_bought`, neue Aufgabentypen `skills_bought` und `skill_level`, `SaveMigrations.v8_to_v9`
+- 177 Unit-Tests (neu: keine Überschneidung Skill/Schiff, Werkzeug kostet 3 Punkte, Migration behält alle Stufen), 37 Gamepad-Prüfungen, 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Alten Spielstand laden: Rusty hat dieselben Taschen, dasselbe Tempo und Werkzeug wie vorher; unter Skills sind Punkte frei
+2. Schiff-Tab: nur noch Reparatur, Ertrag, Sammel-Bot, Drohne
+3. Skills-Tab: vier Spalten, jede Karte mit Bild, Punkten und Kosten
+4. Fühlt sich der Weg zum ersten Skill (Level 2) zu lang an?
+
 ## [1.13.0] – 2026-10-26 – MS24 Menüs entschlacken (Kurswechsel Block 6)
 
 Weniger lesen, mehr sehen.

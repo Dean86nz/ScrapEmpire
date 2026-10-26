@@ -90,7 +90,7 @@ func _snapshot() -> Dictionary:
 	var w := _world()
 	var s := w.ship()
 	return {
-		"bolts": w.bolts, "ship_stage": s.stage if s != null else -1, "cargo": int(w.ship_upgrades.get("cargo", 0)),
+		"bolts": w.bolts, "ship_stage": s.stage if s != null else -1, "cargo": int(w.ship_upgrades.get("yield", 0)),
 		"slots": w.player.inventory.slot_count, "buildings": w.buildings.size(), "nodes": w.nodes.size(), "quest": w.quests.index,
 		"inventory": w.player.inventory.total(), "level": w.progression.level, "xp": w.progression.xp,
 		"tile": [w.player_tile().x, w.player_tile().y],
@@ -124,15 +124,15 @@ func _build() -> void:
 
 func _build_play() -> void:
 	_step("Neues Spiel läuft, Schiff steht", func() -> void: pass, func() -> bool: return _world() != null and _world().ship() != null)
-	_step("Spielen: abliefern und Laderaum-Upgrade kaufen", func() -> void:
+	_step("Spielen: abliefern und Ertrag-Upgrade kaufen", func() -> void:
 			var w := _world()
 			w.bolts = 123
 			w.player.inventory.add("copper", 15)
 			w.queue_command({"type": "deliver_all"})
-			w.queue_command({"type": "buy_upgrade", "id": "cargo"}),
+			w.queue_command({"type": "buy_upgrade", "id": "yield"}),
 		func() -> bool:
 			_world().player.inventory.add("scrap", 7)  # etwas in der Tasche, das gespeichert werden muss
-			return _world().bolts == 123 + 45 - 25 and int(_world().ship_upgrades.get("cargo", 0)) == 1, 6, 200)
+			return _world().bolts == 123 - 60 + 51 and int(_world().ship_upgrades.get("yield", 0)) == 1, 6, 200)
 	_step("Fahren mit dem Stick", func() -> void: _axis(JOY_AXIS_LEFT_X, 1.0),
 		func() -> bool: return true, 30, 600)
 	_step("Stick loslassen", func() -> void: _axis(JOY_AXIS_LEFT_X, 0.0), func() -> bool: return true, 4, 100)
