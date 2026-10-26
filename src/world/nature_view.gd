@@ -29,7 +29,7 @@ func bind(world: SimWorld, player: Node2D, cfg: Dictionary) -> void:
 		for y in world.dirt.height:
 			for x in world.dirt.width:
 				var t := Vector2i(x, y)
-				if world.dirt.was_dirty(t) and world.dirt.value(t) == 0 and world.zones.is_unlocked(world.zones.zone_id_at(t)):
+				if world.dirt.is_green(t) and world.zones.is_unlocked(world.zones.zone_id_at(t)):
 					_grow(t, false)
 
 
@@ -37,11 +37,11 @@ func bind(world: SimWorld, player: Node2D, cfg: Dictionary) -> void:
 ## wieder verschmutzte verlieren sie.
 func on_tiles_changed(tiles: Array) -> void:
 	for t: Vector2i in tiles:
-		var v := _world.dirt.value(t)
-		if v == 0 and _world.dirt.was_dirty(t):
+		var g := _world.dirt.is_green(t)
+		if g:
 			if not _plants.has(t):
 				_grow(t, true)
-		elif v > 0 and _plants.has(t):
+		elif _plants.has(t):
 			var s: Sprite2D = _plants[t]
 			_plants.erase(t)
 			if s != null:
@@ -55,7 +55,7 @@ func _grow(t: Vector2i, animate: bool) -> void:
 	var roll := float(h % 10000) / 10000.0
 	var kind := ""
 	var acc := 0.0
-	for k in ["grass", "flower_yellow", "flower_pink"]:
+	for k in ["grass", "grass_tall", "flower_yellow", "flower_pink", "flower_blue"]:
 		acc += float(pt.get(k, 0.0))
 		if roll < acc:
 			kind = k

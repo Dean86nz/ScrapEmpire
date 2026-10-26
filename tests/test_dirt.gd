@@ -177,3 +177,40 @@ func test_ship_wave_radius_is_saved() -> void:
 	SaveCodec.decode(JSON.parse_string(JSON.stringify(data)), w2)
 	assert_eq(w2.ship().clean_radius, r)
 	assert_eq(w2.ship().stage, 2)
+
+
+func test_meadow_where_cleaned_and_at_ship() -> void:
+	var w := _world()
+	var c := w.ship().tile + Vector2i(1, 1)
+	assert_true(w.dirt.is_green(c), "ums Schiff beginnt die Wiese")
+	var t := Vector2i(13, 11)
+	assert_false(w.dirt.is_green(t))
+	w.dirt.clean(t, 255)
+	assert_true(w.dirt.is_green(t), "geputzt = Wiese")
+	w.dirt.soil(t, 100)
+	assert_false(w.dirt.is_green(t), "wieder dreckig = keine Wiese")
+
+
+func test_clean_zone_turns_fully_green() -> void:
+	var w := _world()
+	var sand := Vector2i(-1, -1)
+	for y in 30:
+		for x in 20:
+			if w.dirt.value(Vector2i(x, y)) == 0 and not w.dirt.is_green(Vector2i(x, y)):
+				sand = Vector2i(x, y)
+	assert_true(sand.x >= 0, "es gibt anfangs sauberen Sand")
+	w._on_zone_stage_changed("a", 3)
+	assert_true(w.dirt.is_green(sand), "saubere Zone: auch der Sand wird Wiese")
+
+
+func test_meadow_is_saved_and_derived_for_old_saves() -> void:
+	var w := _world()
+	w.dirt.clean(Vector2i(13, 11), 255)
+	var d := w.dirt.to_dict()
+	var w2 := _world()
+	w2.dirt.from_dict(d, w2.zones, w2.dirt_cfg)
+	assert_eq(w2.dirt.green, w.dirt.green)
+	d.erase("green")
+	var w3 := _world()
+	w3.dirt.from_dict(d, w3.zones, w3.dirt_cfg)
+	assert_true(w3.dirt.is_green(Vector2i(13, 11)), "alter Stand: geputzte Kachel wird Wiese")

@@ -213,6 +213,7 @@ static func _tick_clean_wave(w: SimWorld) -> void:
 			var t := c + Vector2i(dx, dy)
 			if not w._node_tiles.has(t):
 				w.dirt.clean(t, 255)
+				w.dirt.heal(t)
 
 
 # --- Kosten für Deko (Material aus Rustys Inventar) ---------------------------------

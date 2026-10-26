@@ -8,6 +8,7 @@ var width := 0
 var height := 0
 var dirt := PackedByteArray()     # aktueller Schmutz je Kachel
 var start := PackedByteArray()    # 1 = war beim Start schmutzig (dort wächst später Gras)
+var green := PackedByteArray()    # 1 = Wiese (geputzt, von der Schiffswelle geheilt, Zone sauber)
 var cfg: Dictionary = {}
 var zone_start: Dictionary = {}   # zone_id → anfangs schmutzige Kacheln
 var zone_now: Dictionary = {}     # zone_id → noch schmutzige Kacheln
@@ -38,6 +39,32 @@ func value(t: Vector2i) -> int:
 	return dirt[_idx(t)] if in_bounds(t) else 0
 
 
+func is_green(t: Vector2i) -> bool:
+	return in_bounds(t) and green[_idx(t)] == 1
+
+
+## Macht eine saubere Kachel zur Wiese. true, wenn sich etwas geändert hat.
+func heal(t: Vector2i) -> bool:
+	if not in_bounds(t):
+		return false
+	var i := _idx(t)
+	if dirt[i] != 0 or green[i] == 1:
+		return false
+	green[i] = 1
+	changed.append(t)
+	return true
+
+
+## Alle sauberen Kacheln eines Rechtecks werden Wiese (Zone ist sauber).
+func heal_rect(r: Rect2i) -> int:
+	var n := 0
+	for y in range(maxi(r.position.y, 0), mini(r.end.y, height)):
+		for x in range(maxi(r.position.x, 0), mini(r.end.x, width)):
+			if heal(Vector2i(x, y)):
+				n += 1
+	return n
+
+
 func was_dirty(t: Vector2i) -> bool:
 	return in_bounds(t) and start[_idx(t)] == 1
 
@@ -53,6 +80,8 @@ func generate(w: int, h: int, zones: ZoneTracker, trash_tiles: Array, ship_cente
 	dirt.resize(w * h)
 	start = PackedByteArray()
 	start.resize(w * h)
+	green = PackedByteArray()
+	green.resize(w * h)
 	var coverage := float(cfg.get("coverage", 0.55))
 	var scale := float(cfg.get("noise_scale", 5.0))
 	var dmin := int(cfg.get("dirt_min", 120))
@@ -98,6 +127,7 @@ func generate(w: int, h: int, zones: ZoneTracker, trash_tiles: Array, ship_cente
 				var t := ship_center + Vector2i(dx, dy)
 				if in_bounds(t) and Vector2(dx, dy).length() <= sr + 0.5:
 					dirt[_idx(t)] = 0
+					green[_idx(t)] = 1
 	for i in dirt.size():
 		start[i] = 1 if dirt[i] > 0 else 0
 	_recount()
@@ -136,6 +166,7 @@ func clean(t: Vector2i, amount: int) -> bool:
 	dirt[i] = nv
 	changed.append(t)
 	if nv == 0:
+		green[i] = 1
 		var zid := _zones.zone_id_at(t)
 		if zone_now.has(zid):
 			zone_now[zid] = maxi(int(zone_now[zid]) - 1, 0)
@@ -158,6 +189,8 @@ func soil(t: Vector2i, amount: int) -> void:
 			if zone_start.has(zid):
 				zone_start[zid] = int(zone_start[zid]) + 1
 	dirt[i] = maxi(dirt[i], amount)
+	if amount > 0:
+		green[i] = 0
 	changed.append(t)
 
 
@@ -188,7 +221,8 @@ func to_dict() -> Dictionary:
 	if not is_active():
 		return {}
 	return {"w": width, "h": height, "dirt": Marshalls.raw_to_base64(dirt.compress(FileAccess.COMPRESSION_DEFLATE)),
-		"start": Marshalls.raw_to_base64(start.compress(FileAccess.COMPRESSION_DEFLATE)), "cleaned": cleaned_total}
+		"start": Marshalls.raw_to_base64(start.compress(FileAccess.COMPRESSION_DEFLATE)), "cleaned": cleaned_total,
+		"green": Marshalls.raw_to_base64(green.compress(FileAccess.COMPRESSION_DEFLATE))}
 
 
 func from_dict(d: Dictionary, zones: ZoneTracker, p_cfg: Dictionary) -> bool:
@@ -204,6 +238,14 @@ func from_dict(d: Dictionary, zones: ZoneTracker, p_cfg: Dictionary) -> bool:
 	height = h
 	dirt = a
 	start = b
+	var g := Marshalls.base64_to_raw(str(d.get("green", ""))).decompress(w * h, FileAccess.COMPRESSION_DEFLATE) if d.has("green") else PackedByteArray()
+	if g.size() != w * h:
+		# Ältere Stände: geputzte, anfangs schmutzige Kacheln sind Wiese
+		g = PackedByteArray()
+		g.resize(w * h)
+		for i in w * h:
+			g[i] = 1 if start[i] == 1 and dirt[i] == 0 else 0
+	green = g
 	cfg = p_cfg
 	_zones = zones
 	cleaned_total = int(d.get("cleaned", 0))

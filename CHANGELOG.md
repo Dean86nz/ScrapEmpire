@@ -2,6 +2,25 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.18.0] – 2026-10-26 – MS29 Sauber wird Wiese (Spielgefühl, Punkt 6)
+
+### Neu
+- **Geputzter Boden wird saftige Wiese** statt gelbem Sand: kräftiges Grün mit Grashalmen und Blütenpunkten, Kachel für Kachel weich eingeblendet (ca. 2,5 s, leicht versetzt). Der Unterschied dreckig/sauber ist jetzt riesig
+- **Ums Schiff beginnt die Wiese schon beim Start**, und die Putzwelle des Schiffs macht alles, was sie berührt, grün
+- **Saubere Zone (ab 90 %):** Der ganze saubere Boden der Zone wird Wiese, auch anfangs sandige Stellen
+- **Mehr Pflanzen:** hohes Gras und blaue Blumen dazu, dichter und schneller (0,6 bis 2,4 s)
+- Minimap und Karte zeigen Wiese grün
+- Kommt Müll zurück, wird die Stelle wieder dreckig und die Wiese verschwindet dort
+
+### Technik
+- `DirtMap.green` (gespeichert; ältere Stände leiten es aus „geputzt“ ab), `heal`, `heal_rect`; `MeadowView` (Shader-Maske wie beim Schmutz)
+- 183 Unit-Tests (3 neue zur Wiese), 41 Gamepad-Prüfungen, 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Neues Spiel: Ums Schiff liegt eine grüne Wiese mitten im Dreck
+2. RT über Dreck ziehen: Die Spur wird in 2 bis 3 s grün, Blumen poppen auf
+3. Nach längerem Spielen mit viel Wiese: Bleibt es flüssig (60 FPS)?
+
 ## [1.17.0] – 2026-10-26 – MS28 Man sieht Rusty seine Skills an (Spielgefühl, Punkt 4)
 
 ### Neu

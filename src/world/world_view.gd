@@ -11,6 +11,7 @@ var _drone_views: Dictionary = {}     # drone id → DroneView
 var _collectible_views: Dictionary = {}  # collectible id → CollectibleView
 var _zone_tints: Dictionary = {}      # zone id → Polygon2D
 var dirt_view := DirtView.new()
+var meadow_view := MeadowView.new()
 ## Der Schmutz selbst kommt aus DirtView; die Tönung macht saubere Zonen nur sanft grüner.
 const ZONE_TINTS := [Color(0, 0, 0, 0), Color(0.5, 0.85, 0.3, 0.06), Color(0.5, 0.85, 0.3, 0.14), Color(0.3, 0.8, 0.35, 0.22)]
 const LOCKED_TINT := Color(0.15, 0.15, 0.22, 0.5)
@@ -42,9 +43,13 @@ func bind(world: SimWorld, player: Node2D) -> void:
 	for h: Helper in world.helpers.values():
 		_on_helper_added(h)
 	_build_zone_tints()
+	meadow_view.name = "Meadow"
+	add_child(meadow_view)
+	meadow_view.bind(world)
 	dirt_view.name = "Dirt"
 	add_child(dirt_view)
 	dirt_view.bind(world)
+	dirt_view.tiles_changed.connect(meadow_view.on_tiles_changed)
 	world.zones.stage_changed.connect(func(_id: String, _st: int) -> void: _refresh_zone_tints())
 	world.zone_unlocked.connect(func(_id: String) -> void: _refresh_zone_tints())
 	world.helper_added.connect(_on_helper_added)
