@@ -565,3 +565,8 @@ QUIP_METEOR_WARN,Der Himmel wird orange. Das ist nie gut.,The sky turns orange. 
 QUIP_METEOR_DONE,Frisch vom Himmel. Und es glitzert!,Fresh from the sky. And it sparkles!
 OBJ_TRASH_BAG,Touristen-Müllsack,Tourist trash bag
 OBJ_METEOR,Meteorbrocken,Meteor chunk
+GOAL_NOW,Jetzt dran,Up now
+GOAL_NEXT,Danach,Next
+GOAL_DONE_N,%d Aufgaben erledigt,%d tasks done
+GOAL_DONE_SHOW,A: anzeigen,A: show
+GOAL_DONE_HIDE,A: einklappen,A: hide

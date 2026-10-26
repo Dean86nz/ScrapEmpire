@@ -657,7 +657,8 @@ func _current_hint() -> String:
 				return tr("HINT_TARGET" + kb)
 			return tr(("HINT_DEMOLISH" if _cursor.mode == BuildCursor.Mode.DEMOLISH else "HINT_PLACE") + kb)
 		InputRouter.Context.MENU:
-			return tr("HINT_MENU" + kb)
+			# Das Fortschritts-Menü hat eine eigene Fußzeile: unten keine zweite
+			return "" if _progress_menu.visible else tr("HINT_MENU" + kb)
 	var b := _player.nearby_building()
 	if b != null and b is Ship:
 		return _ship_hint(b as Ship, kb)
