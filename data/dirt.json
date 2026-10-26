@@ -1,0 +1,14 @@
+{
+  "_comment": "Schmutz je Kachel (MS21). Müll verschmutzt sein Umfeld, dazu fleckiger Grundschmutz. Der Sauger putzt im Saugkegel, zerlegter Müll hinterlässt sauberen Boden. Sauberkeit einer Zone = Anteil der geputzten, anfangs schmutzigen Kacheln.",
+  "coverage": 0.55,
+  "noise_scale": 5.0,
+  "trash_radius": 2,
+  "dirt_min": 120,
+  "dirt_max": 230,
+  "trash_dirt": 255,
+  "clean_rate_per_tick": 22,
+  "helper_clean_rate_per_tick": 10,
+  "removed_trash_clean_radius": 1,
+  "ship_clean_radius": 4,
+  "scrap_every_tiles": 5
+}

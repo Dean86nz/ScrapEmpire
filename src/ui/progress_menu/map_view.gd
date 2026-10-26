@@ -15,6 +15,7 @@ var _selected := 0
 var _initial_done := false
 var _zoom_index := 0
 var _offset := Vector2.ZERO
+var dirt_texture: Texture2D           # Schmutz je Kachel (von DirtView)
 var _timer := 0.0
 
 
@@ -124,10 +125,24 @@ func _draw() -> void:
 		var known := _world.zones.is_unlocked(str(z["id"]))
 		draw_rect(rect, STAGE_COLORS[int(z["stage"])] if known else Color(0.25, 0.25, 0.3))
 		draw_rect(rect, Color(0.95, 0.55, 0.16) if i == _selected else Color(0.165, 0.165, 0.2), false, 6.0 if i == _selected else 2.0)
-		var label := ("%s  %d %%" % [z["name"], int(round(float(z["cleanliness"]) * 100.0))]) if known else ("%s %d" % [tr("CH_CHAPTER"), _world.zones.chapter_index(str(z["id"])) + 1])
-		draw_string(font, rect.position + Vector2(10, 30), label, HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 20, 22, Color(0.165, 0.165, 0.2) if known else Color(0.75, 0.75, 0.8))
 		if not known:
 			draw_string(font, rect.position + rect.size * 0.5 + Vector2(-14, 16), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 48, Color(0.7, 0.7, 0.75))
+	if dirt_texture != null:
+		for z in _summary:
+			if _world.zones.is_unlocked(str(z["id"])):
+				var lr: Rect2i = z["rect"]
+				draw_texture_rect_region(dirt_texture, Rect2(_offset + Vector2(lr.position) * s, Vector2(lr.size) * s), Rect2(lr.position, lr.size))
+	# Beschriftung zuletzt, auf hellem Schild, damit sie über dem Schmutz lesbar bleibt
+	for i in _summary.size():
+		var z := _summary[i]
+		var r: Rect2i = z["rect"]
+		var rect := Rect2(_offset + Vector2(r.position) * s, Vector2(r.size) * s)
+		var known := _world.zones.is_unlocked(str(z["id"]))
+		var label := ("%s  %d %%" % [z["name"], int(round(float(z["cleanliness"]) * 100.0))]) if known else ("%s %d" % [tr("CH_CHAPTER"), _world.zones.chapter_index(str(z["id"])) + 1])
+		if known:
+			var tw := minf(font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 22).x, rect.size.x - 20)
+			draw_rect(Rect2(rect.position + Vector2(4, 6), Vector2(tw + 12, 32)), Color(1.0, 0.96, 0.8, 0.9))
+		draw_string(font, rect.position + Vector2(10, 30), label, HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 20, 22, Color(0.165, 0.165, 0.2) if known else Color(0.75, 0.75, 0.8))
 	for n: ResourceNode in _world.nodes.values():
 		if n.is_wreck() and not n.is_resource() and _world.zones.is_unlocked(_world.zones.zone_id_at(n.tile)):
 			draw_circle(_offset + (Vector2(n.tile) + Vector2(0.5, 0.5)) * s, maxf(s * 0.5, 2.0), Color(0.3, 0.25, 0.2))

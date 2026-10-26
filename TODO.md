@@ -3,7 +3,9 @@
 ## Jetzt
 
 - [x] MS20 Kern-Ablauf sammeln/abliefern/aufrüsten (v1.9.0): Schiff-Menü, 5 Upgrades, Reparatur mit Blaupausen, Bots und Drohnen am Schiff, Fabrik entfernt, Doppelkauf behoben
-- [ ] MS21 Sichtbar sauber: Schmutz je Kachel, Gras wächst nach, Sauberkeit aus gereinigter Fläche
+- [x] MS21 Sichtbar sauber (v1.10.0): Schmutz je Kachel, Saugen putzt, Gras wächst nach, Sauberkeit aus geputzter Fläche
+- [ ] MS22 Schiff als Herz: Schiffsmenü, sichtbare Stufen mit Feier, Abflug als Endszene
+- [ ] MS26: Prüfen, ob 50 % geputzte Fläche fürs Tor zu lang dauert
 - [ ] Ally-Rückmeldung: Minuten bis erstes Upgrade und Schiffsstufe 2 (für MS26)
 - [x] MS19 Weiterspielen absichern (v1.8.0): Lade-Protokoll, Ladeschutz mit Rettung, F-Tasten nur Debug, Weiterspielen-Test über drei Programmstarts
 - [ ] Ally-Spielstand und godot.log nach einem Absturz einsammeln, Ursache beheben

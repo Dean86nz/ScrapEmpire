@@ -351,6 +351,8 @@ Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten 
 
 **Definition:** Jede Karte hat Zonen (Rechtecke mit Namen in der Karten-JSON). `reinigungsgrad = 1 − müll_jetzt / müll_start` (Items in Müll-Objekten, nicht Objekte). Stufen: vermüllt (< 25 %), unordentlich (< 50 %), aufgeräumt (< 90 %), sauber (≥ 90 %). Die Stufe steht auf Minimap und Karte und ist der sichtbare Fortschrittsbalken des Planeten. Visuelle Heilung des Bodens folgt in Phase 2 (Kap. 25).
 
+**Seit MS21 (v1.10.0): Sauberkeit aus Fläche.** Karten mit `"dirt": true` haben Schmutz je Kachel (`data/dirt.json`). `reinigungsgrad = 1 − schmutzige_kacheln_jetzt / schmutzige_kacheln_start`. Saugen putzt die Kacheln im Saugkegel (Müll-Kacheln erst, wenn der Müll weg ist), Sammel-Bots putzen mit, zerlegter Müll säubert seine Kachel samt Nachbarn. Jede 5. geputzte Kachel bringt 1 Schrott. Auf sauberen Kacheln wachsen Gras und Blumen.
+
 ### 23a. Kapitel und Tore (MS12, umgesetzt)
 
 - Die Zonen einer Karte haben eine feste Reihenfolge (`zone_order` in der Karten-JSON); jede Zone ist ein **Kapitel**. Nur die erste Zone ist zu Beginn freigeschaltet.

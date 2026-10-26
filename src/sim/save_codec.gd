@@ -73,6 +73,7 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		"ship_upgrades": world.ship_upgrades.duplicate(),
 		"collectibles_found": world.collectibles_found.keys(),
 		"quests": world.quests.to_dict(),
+		"dirt": world.dirt.to_dict(),
 		"flags": world.flags.duplicate(),
 		"unlocked_zones": world.zones.unlocked.keys(),
 		"tutorial": {"step": int(world.flags.get("tutorial_step", 0)), "done": bool(world.flags.get("tutorial_done", false))},
@@ -166,6 +167,11 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 	for cid in data.get("collectibles_found", []):
 		world.collectibles_found[str(cid)] = true
 	world.quests.from_dict(data.get("quests", {}))
+	if data.has("dirt") and not (data["dirt"] as Dictionary).is_empty():
+		_log("Schmutzkarte")
+		if world.dirt_cfg.is_empty():
+			world.dirt_cfg = DirtMap.load_config()
+		world.dirt.from_dict(data["dirt"], world.zones, world.dirt_cfg)
 	for k in data.get("flags", {}):
 		world.flags[str(k)] = data["flags"][k]
 	for z in data.get("unlocked_zones", []):

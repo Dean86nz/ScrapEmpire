@@ -97,12 +97,16 @@ var collectibles_found: Dictionary = {}    # def_id → true
 var ship_cfg: Dictionary = {}              # data/ship.json
 var ship_upgrades: Dictionary = {}         # upgrade id → Stufe (Laderaum, Ertrag, Tempo, Saugen, Werkzeug)
 var quests := QuestState.new()             # geführte Aufgabenkette
+var dirt := DirtMap.new()                  # Schmutz je Kachel (MS21)
+var dirt_cfg: Dictionary = {}              # data/dirt.json
+var _dirt_reward := 0                      # geputzte Kacheln seit dem letzten Kleinschrott
 
 
 func _init() -> void:
 	# Methoden-Callable statt Lambda: ein Lambda hielte self fest und erzeugte einen Zyklus.
 	player.inventory.changed.connect(_on_inventory_changed)
 	zones.zone_unlocked.connect(_on_zone_unlocked)
+	zones.dirt = dirt
 	item_collected.connect(_quest_collected)
 	item_sold.connect(_quest_sold)
 	wreck_destroyed.connect(_quest_wreck)
@@ -202,11 +206,14 @@ func tick() -> void:
 	if tick_count % 10 == 0:
 		quests.check(self)
 	ToolSystem._tick_suction(self)
+	ToolSystem._tick_clean(self)
 	ToolSystem._tick_magnet(self)
 	_tick_hammer()
 	NodeSystem._tick_respawns(self)
 	if tick_count % 20 == 0:
 		zones.check_unlocks(nodes)
+		if dirt.is_active():
+			zones.refresh(nodes)
 	var done := tech.tick()
 	if done != "":
 		_apply_tech_effects(done)
