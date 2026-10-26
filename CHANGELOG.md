@@ -2,6 +2,34 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.13.0] – 2026-10-26 – MS24 Menüs entschlacken (Kurswechsel Block 6)
+
+Weniger lesen, mehr sehen.
+
+### Neu
+- **Am Anfang nur drei Tabs:** Schiff, Ziele, Karte. Skills erscheinen ab Level 2, Journal mit dem ersten Fundstück, Bots ab Schiffsstufe 2, Drohnen ab Stufe 3. Ein neuer Tab trägt einen orangen Punkt, bis man ihn besucht hat, und die Hinweiszeile unten sagt „Neu im Menü! · Select: ansehen“
+- **Tabs mit Icons** (Schiff, Fahne, Stern, Karte, Bot, Drohne, Buch). „Kapitel“ heißt jetzt „Ziele“
+- **Karten mit großen Icons:** Jedes Schiff-Upgrade hat ein eigenes Bild (Kiste, Bolt-Mutter, Rad, Saugdüse, Hammer). Stufen als Punkte (●●○○○), Kosten mit Bolt-Symbol: grün = leistbar, rot = fehlt noch. Kein „Fehlen noch X Bolts“-Text mehr. Die Reparatur-Karte zeigt das Schiff der nächsten Stufe und was es bringt
+- **Bots- und Drohnen-Tab** im selben Stil; Texte gekürzt („+20 % Tempo“, „+10 Teile je Platz“, „Knackt härteren Müll“), aus „Helfer“ wird überall „Bot“
+- Große Zahlen mit Tausenderpunkt (HUD, Kosten, Stufenleiste)
+
+### Geändert
+- **Bot abbauen jetzt mit LT** statt mit A (wie bei Drohnen). Vorher reichte ein versehentliches A auf der Bot-Karte, und der Bot war weg
+
+### Behoben
+- Bots-Tab: Der Fokus sprang alle halbe Sekunde zurück, weil die Liste neu gebaut wurde. Jetzt bleibt er auf dem gewählten Bot
+
+### Technik
+- `_make_card(title, icon)` mit Icon, Stufen-Punkten und Kostenzeile; `_set_cost`, `_set_pips`, `_refresh_upgrade_card`. Besuchte Tabs stehen in `flags.tab_seen_<n>`
+- 175 Unit-Tests, 37 Gamepad-Prüfungen (neu: drei Tabs am Anfang, RB läuft rundherum, A baut keinen Bot ab, LT schon) und 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Neues Spiel, Select: nur Schiff, Ziele, Karte. LB/RB wechselt im Kreis
+2. Schiff-Tab: Sind die Icons auf 7" gut erkennbar? Ist grün/rot bei den Kosten klar?
+3. Nach dem ersten Level-Aufstieg: unten „Neu im Menü!“, im Menü „Skills“ mit orangem Punkt
+4. Bots-Tab: D-Pad auf einen Bot, A tut nichts, LT baut ihn ab
+5. Fehlt irgendwo noch eine Information, die vorher im Text stand?
+
 ## [1.12.0] – 2026-10-26 – MS23 Erfolgserlebnisse (Kurswechsel Block 5)
 
 Öfter ein kleines „Yes!“: mehr kurze Ziele, Meilensteine, sichtbares und hörbares Abliefern.

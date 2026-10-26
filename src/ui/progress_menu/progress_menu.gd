@@ -6,6 +6,12 @@ enum Tab { SHIP, GOALS, SKILLS, MAP, HELPERS, DRONES, JOURNAL }
 const TAB_COUNT := 7
 
 const CARD_SCENE_MIN := Vector2(440, 150)
+const SHIP_CARD_MIN := Vector2(440, 160)
+const COST_OK := Color(0.18, 0.55, 0.24)
+const COST_NO := Color(0.75, 0.25, 0.2)
+const UPG_ICONS := {"speed": "res://assets/sprites/ui/upg_speed.svg", "capacity": "res://assets/sprites/ui/upg_cargo.svg", "tool": "res://assets/sprites/ui/upg_tool.svg"}
+const TAB_ICONS := ["res://assets/sprites/buildings/ship_2.svg", "res://assets/sprites/ui/tab_goals.svg", "res://assets/sprites/ui/tab_skills.svg",
+	"res://assets/sprites/ui/tab_map.svg", "res://assets/sprites/robot/rusty.svg", "res://assets/sprites/robot/drone.svg", "res://assets/sprites/ui/tab_journal.svg"]
 const REFRESH_SECONDS := 0.5
 
 @onready var _tab_labels: Array[Label] = [$Center/Panel/VBox/Tabs/TabTech, $Center/Panel/VBox/Tabs/TabGoals, $Center/Panel/VBox/Tabs/TabSkills, $Center/Panel/VBox/Tabs/TabMap, $Center/Panel/VBox/Tabs/TabHelpers, $Center/Panel/VBox/Tabs/TabDrones, $Center/Panel/VBox/Tabs/TabJournal]
@@ -69,8 +75,8 @@ func bind(world: SimWorld) -> void:
 	_upgrade_title.text = tr("HELPER_UPGRADES")
 	for u: Dictionary in _world.helper_cfg.get("upgrades", []):
 		var id := str(u["id"])
-		var btn := _make_card(tr(str(u["name_key"])))
-		btn.custom_minimum_size = Vector2(560, 120)
+		var btn := _make_card(tr(str(u["name_key"])), _upg_icon(id))
+		btn.custom_minimum_size = Vector2(560, 162)
 		btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_helper_upgrade", "id": id}))
 		_upgrade_list.add_child(btn)
 		_upgrade_cards[id] = btn
@@ -78,26 +84,79 @@ func bind(world: SimWorld) -> void:
 	_drone_upgrade_title.text = tr("DRONE_UPGRADES")
 	for u: Dictionary in _world.drone_cfg.get("upgrades", []):
 		var uid := str(u["id"])
-		var ubtn := _make_card(tr(str(u["name_key"])))
-		ubtn.custom_minimum_size = Vector2(560, 120)
+		var ubtn := _make_card(tr(str(u["name_key"])), _upg_icon(uid))
+		ubtn.custom_minimum_size = Vector2(560, 162)
 		ubtn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_drone_upgrade", "id": uid}))
 		_drone_upgrade_list.add_child(ubtn)
 		_drone_upgrade_cards[uid] = ubtn
+	_build_tab_icons()
 	_tab_labels[Tab.SHIP].text = tr("MENU_TAB_SHIP")
 	_tab_labels[Tab.DRONES].text = tr("MENU_TAB_DRONES")
 	_tab_labels[Tab.JOURNAL].text = tr("MENU_TAB_JOURNAL")
 	_tab_labels[Tab.HELPERS].text = tr("MENU_TAB_BOTS")
-	_tab_labels[Tab.GOALS].text = tr("MENU_TAB_CHAPTER")
+	_tab_labels[Tab.GOALS].text = tr("MENU_TAB_GOALS")
 	_tab_labels[Tab.SKILLS].text = tr("MENU_TAB_SKILLS")
 	_tab_labels[Tab.MAP].text = tr("MENU_TAB_MAP")
 
 
+## Am Anfang nur Schiff, Ziele, Karte. Die anderen Tabs kommen, sobald sie etwas zu bieten haben.
 func _tab_enabled(t: int) -> bool:
-	if t == Tab.HELPERS:
-		return _world.unlocked_features.has("helpers")
-	if t == Tab.DRONES:
-		return _world.unlocked_features.has("drones")
+	match t:
+		Tab.HELPERS:
+			return _world.unlocked_features.has("helpers")
+		Tab.DRONES:
+			return _world.unlocked_features.has("drones")
+		Tab.SKILLS:
+			return _world.progression.level >= 2 or _world.progression.skill_points > 0
+		Tab.JOURNAL:
+			return not _world.collectibles_found.is_empty() or _world.building_count("museum") > 0
 	return true
+
+
+## Jeder Tab bekommt ein Icon links und einen orangen Punkt, solange er neu und noch nicht besucht ist.
+func _build_tab_icons() -> void:
+	for i in _tab_labels.size():
+		var label := _tab_labels[i]
+		var parent := label.get_parent()
+		var idx := label.get_index()
+		var box := HBoxContainer.new()
+		box.name = "TabBox%d" % i
+		box.add_theme_constant_override("separation", 8)
+		parent.add_child(box)
+		parent.move_child(box, idx)
+		parent.remove_child(label)
+		var icon := TextureRect.new()
+		icon.texture = load(TAB_ICONS[i])
+		icon.custom_minimum_size = Vector2(44, 44)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		box.add_child(icon)
+		box.add_child(label)
+		var dot := Label.new()
+		dot.name = "NewDot"
+		dot.text = "●"
+		dot.add_theme_font_size_override("font_size", 22)
+		dot.add_theme_color_override("font_color", Color(0.95, 0.4, 0.15))
+		dot.visible = false
+		box.add_child(dot)
+
+
+func _upg_icon(id: String) -> String:
+	for k: String in UPG_ICONS:
+		if id.ends_with(k):
+			return UPG_ICONS[k]
+	return ""
+
+
+func _tab_seen(t: int) -> bool:
+	return bool(_world.flags.get("tab_seen_%d" % t, t == Tab.SHIP or t == Tab.GOALS or t == Tab.MAP))
+
+
+func has_new_tab() -> bool:
+	for t in TAB_COUNT:
+		if _tab_enabled(t) and not _tab_seen(t):
+			return true
+	return false
 
 
 func _next_tab(dir: int) -> void:
@@ -181,23 +240,47 @@ func _unhandled_input(event: InputEvent) -> void:
 		if f != null and _drone_cards.has(f):
 			SimClock.world.queue_command({"type": "remove_drone", "id": _drone_cards[f]})
 			get_viewport().set_input_as_handled()
+	elif _tab == Tab.HELPERS and event.is_action_pressed("tool_secondary"):
+		# LT auf einer Bot-Karte: Bot abbauen (A baut nichts ab, damit nichts aus Versehen verschwindet)
+		var fh := get_viewport().gui_get_focus_owner()
+		if fh != null and _helper_cards.has(fh):
+			SimClock.world.queue_command({"type": "remove_helper", "id": int(fh.get_meta("helper_id", -1))})
+			get_viewport().set_input_as_handled()
 
 
 # --- Aufbau ---------------------------------------------------------------
 
-func _make_card(title: String) -> Button:
+## Karte: optional großes Icon links, rechts Titel, Stufen-Punkte, Text und Kostenzeile (Bolt-Symbol).
+func _make_card(title: String, icon_path: String = "") -> Button:
 	var btn := Button.new()
 	btn.custom_minimum_size = CARD_SCENE_MIN
 	btn.text = ""
 	btn.clip_contents = true
+	var row := HBoxContainer.new()
+	row.name = "Row"
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	row.offset_left = 16 if icon_path != "" else 20
+	row.offset_top = 10
+	row.offset_right = -16
+	row.offset_bottom = -10
+	row.add_theme_constant_override("separation", 14)
+	btn.add_child(row)
+	if icon_path != "":
+		var icon := TextureRect.new()
+		icon.name = "Icon"
+		icon.texture = load(icon_path)
+		icon.custom_minimum_size = Vector2(84, 84)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(icon)
 	var box := VBoxContainer.new()
 	box.name = "Box"
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	box.offset_left = 20
-	box.offset_top = 10
-	box.offset_right = -20
-	box.offset_bottom = -10
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.add_theme_constant_override("separation", 2)
 	var name_label := Label.new()
 	name_label.name = "Title"
 	name_label.text = title
@@ -208,19 +291,68 @@ func _make_card(title: String) -> Button:
 	detail.add_theme_font_size_override("font_size", 22)
 	detail.add_theme_color_override("font_color", Color(0.3, 0.3, 0.36))
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var pips := Label.new()
+	pips.name = "Pips"
+	pips.add_theme_font_size_override("font_size", 22)
+	pips.add_theme_color_override("font_color", Color(0.95, 0.55, 0.16))
+	pips.visible = false
+	var cost := HBoxContainer.new()
+	cost.name = "Cost"
+	cost.visible = false
+	cost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var bolt := TextureRect.new()
+	bolt.name = "Bolt"
+	bolt.texture = load("res://assets/sprites/ui/bolt.svg")
+	bolt.custom_minimum_size = Vector2(30, 30)
+	bolt.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	bolt.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	bolt.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var value := Label.new()
+	value.name = "Value"
+	value.add_theme_font_size_override("font_size", 26)
+	cost.add_child(bolt)
+	cost.add_child(value)
 	box.add_child(name_label)
+	box.add_child(pips)
 	box.add_child(detail)
-	btn.add_child(box)
+	box.add_child(cost)
+	row.add_child(box)
 	return btn
 
 
+func _part(btn: Button, part: String) -> Control:
+	return btn.find_child(part, true, false) as Control
+
+
 func _set_card(btn: Button, detail: String, tint: Color) -> void:
-	(btn.get_node("Box/Detail") as Label).text = detail
+	(_part(btn, "Detail") as Label).text = detail
 	btn.self_modulate = tint
 
 
 func _set_title(btn: Button, title: String) -> void:
-	(btn.get_node("Box/Title") as Label).text = title
+	(_part(btn, "Title") as Label).text = title
+
+
+func _set_icon(btn: Button, path: String) -> void:
+	var icon := _part(btn, "Icon") as TextureRect
+	if icon != null and (icon.texture == null or icon.texture.resource_path != path):
+		icon.texture = load(path)
+
+
+func _set_pips(btn: Button, level: int, max_level: int) -> void:
+	var p := _part(btn, "Pips") as Label
+	p.visible = max_level > 1
+	p.text = "●".repeat(level) + "○".repeat(maxi(max_level - level, 0))
+
+
+## Kostenzeile: Bolt-Symbol mit Betrag (grün = leistbar, rot = fehlt) oder ein kurzer Text ohne Symbol.
+func _set_cost(btn: Button, text: String, color: Color, with_bolt: bool) -> void:
+	var c := _part(btn, "Cost")
+	c.visible = text != ""
+	(_part(btn, "Bolt") as TextureRect).visible = with_bolt
+	var v := _part(btn, "Value") as Label
+	v.text = text
+	v.add_theme_color_override("font_color", color)
 
 
 ## Schiff-Tab: Reparatur, fünf Upgrades, Bot und Drohne bauen.
@@ -228,21 +360,26 @@ func _build_ship_cards() -> void:
 	for c in _ship_grid.get_children():
 		c.queue_free()
 	_ship_cards.clear()
-	var repair := _make_card(tr("SHIP_REPAIR"))
+	var repair := _make_card(tr("SHIP_REPAIR"), "res://assets/sprites/buildings/ship_2.svg")
+	repair.custom_minimum_size = SHIP_CARD_MIN
 	repair.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "upgrade_ship"}))
 	_ship_grid.add_child(repair)
 	_ship_cards["repair"] = repair
 	for u: Dictionary in ShipSystem.upgrade_defs(_world):
 		var id := str(u["id"])
-		var btn := _make_card(tr(str(u["name_key"])))
+		var btn := _make_card(tr(str(u["name_key"])), str(u.get("icon", "")))
+		btn.custom_minimum_size = SHIP_CARD_MIN
 		btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_upgrade", "id": id}))
 		_ship_grid.add_child(btn)
 		_ship_cards["upg:" + id] = btn
-	var bot := _make_card(tr("BOT_BUILD"))
+	var bot := _make_card(tr("BOT_BUILD"), "res://assets/sprites/robot/rusty.svg")
+	bot.custom_minimum_size = SHIP_CARD_MIN
+	(_part(bot, "Icon") as TextureRect).modulate = Color(0.75, 0.9, 1.0)
 	bot.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_helper"}))
 	_ship_grid.add_child(bot)
 	_ship_cards["bot"] = bot
-	var drone := _make_card(tr("DRONE_BUILD"))
+	var drone := _make_card(tr("DRONE_BUILD"), "res://assets/sprites/robot/drone.svg")
+	drone.custom_minimum_size = SHIP_CARD_MIN
 	drone.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_drone"}))
 	_ship_grid.add_child(drone)
 	_ship_cards["drone"] = drone
@@ -295,51 +432,58 @@ func _refresh_ship() -> void:
 	var w := _world
 	var s := w.ship()
 	_stage_track.refresh()
-	# Reparatur
+	# Reparatur: Bild der nächsten Stufe, Geschenke, Kosten
 	var repair: Button = _ship_cards["repair"]
 	if s == null:
 		_set_card(repair, "", TINT_NO)
 	else:
 		var reason := ShipSystem.can_upgrade(w, s)
-		_set_title(repair, tr("SHIP_REPAIR_TITLE") % [s.stage, ShipSystem.max_stage(w)])
 		if reason == "max":
-			_set_card(repair, tr("SHIP_REPAIRED"), TINT_DONE)
+			_set_title(repair, tr("SHIP_REPAIRED"))
+			_set_card(repair, "", TINT_DONE)
+			_set_cost(repair, "✓", COST_OK, false)
 		else:
-			var cost := ShipSystem.next_stage_cost(w, s)
+			_set_title(repair, tr("SHIP_REPAIR_TO") % (s.stage + 1))
+			_set_icon(repair, str(ShipSystem.stage_def(w, s.stage + 1).get("sprite", "")))
 			var gifts: Array[String] = []
 			for f in ShipSystem.next_stage_unlocks(w, s):
-				gifts.append(tr("UNLOCK_" + str(f).to_upper()))
-			var status := tr("SHIP_BUY")
-			match reason:
-				"bolts":
-					status = _missing_text(cost)
-				"planet":
-					status = tr("SHIP_NEEDS_PLANET") % int(round(float(ShipSystem.stage_def(w, s.stage + 1).get("requires_planet", 0.0)) * 100.0))
-			_set_card(repair, "%s\n%s: %s\n%s" % [_bolts_text(cost), tr("SHIP_UNLOCKS"), ", ".join(gifts), status], TINT_OK if reason == "" else TINT_NO)
-	# Upgrades
+				gifts.append("+ " + tr("GIFT_" + str(f).to_upper()))
+			_set_card(repair, "  ".join(gifts), TINT_OK if reason == "" else TINT_NO)
+			if reason == "planet":
+				_set_cost(repair, tr("SHIP_NEEDS_PLANET") % int(round(float(ShipSystem.stage_def(w, s.stage + 1).get("requires_planet", 0.0)) * 100.0)), COST_NO, false)
+			else:
+				_set_cost(repair, Fmt.int_str(ShipSystem.next_stage_cost(w, s)), COST_OK if reason == "" else COST_NO, true)
+	# Upgrades: Stufen-Punkte, kurzer Text, Kosten
 	for u: Dictionary in ShipSystem.upgrade_defs(w):
 		var id := str(u["id"])
 		var btn: Button = _ship_cards["upg:" + id]
 		var level := ShipSystem.upgrade_level(w, id)
-		var maxl := int(u["max_level"])
-		_set_title(btn, "%s   %d / %d" % [tr(str(u["name_key"])), level, maxl])
-		var cost := ShipSystem.upgrade_cost(w, id)
+		_set_pips(btn, level, int(u["max_level"]))
 		var reason := ShipSystem.can_buy_upgrade(w, id)
+		_set_card(btn, tr(str(u["desc_key"])), TINT_DONE if reason == "max" else (TINT_OK if reason == "" else TINT_NO))
 		if reason == "max":
-			_set_card(btn, "%s\n%s" % [tr(str(u["desc_key"])), tr("SKILL_MAXED")], TINT_DONE)
+			_set_cost(btn, "✓ " + tr("SKILL_MAXED"), COST_OK, false)
 		else:
-			_set_card(btn, "%s\n%s · %s" % [tr(str(u["desc_key"])), _bolts_text(cost), tr("SHIP_BUY") if reason == "" else _missing_text(cost)], TINT_OK if reason == "" else TINT_NO)
+			_set_cost(btn, Fmt.int_str(ShipSystem.upgrade_cost(w, id)), COST_OK if reason == "" else COST_NO, true)
 	# Bot und Drohne
-	var bot: Button = _ship_cards["bot"]
-	var bot_reason := w.can_buy_helper()
-	var bot_cost := int(w.next_helper_cost()["bolts"])
-	_set_title(bot, "%s   %d / %d" % [tr("BOT_BUILD"), w.helpers.size(), int(w.helper_cfg.get("max_helpers", 10))])
-	_set_card(bot, _build_status(bot_reason, bot_cost, "BOT_LOCKED"), TINT_OK if bot_reason == "" else TINT_NO)
-	var drone: Button = _ship_cards["drone"]
-	var drone_reason := w.can_buy_drone()
-	var drone_cost := int(w.next_drone_cost()["bolts"])
-	_set_title(drone, "%s   %d / %d" % [tr("DRONE_BUILD"), w.drones.size(), int(w.drone_cfg.get("max_drones", 6))])
-	_set_card(drone, _build_status(drone_reason, drone_cost, "DRONE_LOCKED"), TINT_OK if drone_reason == "" else TINT_NO)
+	_refresh_build_card(_ship_cards["bot"], "BOT_CARD", "BOT_DESC", "BOT_LOCKED", w.can_buy_helper(), int(w.next_helper_cost()["bolts"]),
+		w.helpers.size(), int(w.helper_cfg.get("max_helpers", 10)))
+	_refresh_build_card(_ship_cards["drone"], "DRONE_CARD", "DRONE_DESC", "DRONE_LOCKED", w.can_buy_drone(), int(w.next_drone_cost()["bolts"]),
+		w.drones.size(), int(w.drone_cfg.get("max_drones", 6)))
+
+
+func _refresh_build_card(btn: Button, title_key: String, desc_key: String, locked_key: String, reason: String, cost: int, have: int, max_n: int) -> void:
+	_set_title(btn, "%s   %d/%d" % [tr(title_key), have, max_n])
+	match reason:
+		"locked":
+			_set_card(btn, tr(locked_key), TINT_NO)
+			_set_cost(btn, "", COST_NO, false)
+		"max":
+			_set_card(btn, tr(desc_key), TINT_DONE)
+			_set_cost(btn, "✓ " + tr("SKILL_MAXED"), COST_OK, false)
+		_:
+			_set_card(btn, tr(desc_key), TINT_OK if reason == "" else TINT_NO)
+			_set_cost(btn, Fmt.int_str(cost), COST_OK if reason == "" else COST_NO, true)
 
 
 func _build_status(reason: String, cost: int, locked_key: String) -> String:
@@ -375,26 +519,44 @@ func _refresh_helpers() -> void:
 	var cost := int(w.next_helper_cost()["bolts"])
 	_buy_btn.text = "%s  –  %s" % [tr("BOT_BUILD"), _build_status(reason, cost, "BOT_LOCKED")]
 	_buy_btn.disabled = reason != ""
+	var focused_bot := -1
+	var fb := get_viewport().gui_get_focus_owner()
+	if fb != null and _helper_cards.has(fb):
+		focused_bot = int(fb.get_meta("helper_id", -1))
 	for c in _helper_list.get_children():
+		_helper_list.remove_child(c)
 		c.queue_free()
 	_helper_cards.clear()
 	var names: Array = w.helper_cfg.get("names", [])
 	for h: Helper in w.helpers.values():
-		var card := _make_card(h.display_name(names))
+		var card := _make_card(h.display_name(names), "res://assets/sprites/robot/rusty.svg")
+		(_part(card, "Icon") as TextureRect).modulate = Color(0.75, 0.9, 1.0)
+		(_part(card, "Icon") as TextureRect).custom_minimum_size = Vector2(60, 60)
 		card.custom_minimum_size = Vector2(740, 96)
+		card.set_meta("helper_id", h.id)
 		var state := tr("HELPER_STATE_WAIT") if h.tasks.wait_ticks > 0 else (tr("HELPER_STATE_WORK") if h.tasks.active else tr("HELPER_STATE_IDLE"))
 		var zone_name: String = str(w.zones.zone_by_id(w.zones.zone_id_at(h.zone_tile)).get("name", "?"))
 		_set_card(card, "%s · %s · %s %d/%d" % [state, zone_name, tr("HELPER_LOAD"), h.inventory.total(), h.inventory.slot_count * h.inventory.stack_size], Color.WHITE)
-		var hid := h.id
-		card.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "remove_helper", "id": hid}))
 		_helper_list.add_child(card)
 		_helper_cards.append(card)
+		if h.id == focused_bot:
+			card.grab_focus()
 	for u: Dictionary in w.helper_cfg.get("upgrades", []):
 		var id := str(u["id"])
-		var level := int(w.helper_upgrades.get(id, 0))
-		var r := w.can_buy_helper_upgrade(id)
-		_set_card(_upgrade_cards[id], _upgrade_status(u, level, r),
-			TINT_DONE if r == "max" else (TINT_OK if r == "" else TINT_NO))
+		_refresh_upgrade_card(_upgrade_cards[id], u, int(w.helper_upgrades.get(id, 0)), w.can_buy_helper_upgrade(id))
+
+
+## Upgrade-Karte für Bots und Drohnen: Stufen-Punkte, kurzer Text, Kosten (oder Sperre).
+func _refresh_upgrade_card(btn: Button, u: Dictionary, level: int, reason: String) -> void:
+	_set_pips(btn, level, int(u["max_level"]))
+	_set_card(btn, tr(str(u["desc_key"])), TINT_DONE if reason == "max" else (TINT_OK if reason == "" else TINT_NO))
+	match reason:
+		"max":
+			_set_cost(btn, "✓ " + tr("SKILL_MAXED"), COST_OK, false)
+		"locked":
+			_set_cost(btn, tr("HELPER_UPG_LOCKED"), COST_NO, false)
+		_:
+			_set_cost(btn, Fmt.int_str(int(u["cost_bolts"][level])), COST_OK if reason == "" else COST_NO, true)
 
 
 func _refresh_drones() -> void:
@@ -408,12 +570,14 @@ func _refresh_drones() -> void:
 	if f != null and _drone_cards.has(f):
 		focused_id = _drone_cards[f]
 	for c in _drone_list.get_children():
+		_drone_list.remove_child(c)
 		c.queue_free()
 	_drone_cards.clear()
 	var i := 0
 	for d: Drone in w.drones.values():
 		i += 1
-		var card := _make_card("%s %d" % [tr("DRONE_NAME"), i])
+		var card := _make_card("%s %d" % [tr("DRONE_NAME"), i], "res://assets/sprites/robot/drone.svg")
+		(_part(card, "Icon") as TextureRect).custom_minimum_size = Vector2(60, 60)
 		card.custom_minimum_size = Vector2(740, 96)
 		var state := tr("DRONE_STATE_FETCH")
 		match d.state:
@@ -425,13 +589,10 @@ func _refresh_drones() -> void:
 		_drone_list.add_child(card)
 		_drone_cards[card] = d.id
 		if d.id == focused_id:
-			card.call_deferred("grab_focus")
+			card.grab_focus()
 	for u: Dictionary in w.drone_cfg.get("upgrades", []):
 		var id := str(u["id"])
-		var level := int(w.drone_upgrades.get(id, 0))
-		var r := w.can_buy_drone_upgrade(id)
-		_set_card(_drone_upgrade_cards[id], _upgrade_status(u, level, r),
-			TINT_DONE if r == "max" else (TINT_OK if r == "" else TINT_NO))
+		_refresh_upgrade_card(_drone_upgrade_cards[id], u, int(w.drone_upgrades.get(id, 0)), w.can_buy_drone_upgrade(id))
 
 
 func _refresh_all() -> void:
@@ -550,9 +711,9 @@ func _refresh_goals() -> void:
 			continue
 		var card := _make_card(text)
 		card.custom_minimum_size = Vector2(1360, 110 if text.length() > 80 else 72)
-		var title := card.get_node("Box/Title") as Label
+		var title := _part(card, "Title") as Label
 		title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		(card.get_node("Box/Detail") as Label).visible = false
+		_part(card, "Detail").visible = false
 		_goals_list.add_child(card)
 	_restore_focus(_goals_list, focus_idx)
 
@@ -592,7 +753,7 @@ func _refresh_journal() -> void:
 	var has_museum := _world.building_count("museum") > 0
 	var head := _make_card("🏛 %s: %d / %d   ·   %s" % [tr("JOURNAL_HEADER"), found, total, tr("JOURNAL_MUSEUM_YES") if has_museum else tr("JOURNAL_MUSEUM_NO")])
 	head.custom_minimum_size = Vector2(1360, 72)
-	(head.get_node("Box/Detail") as Label).visible = false
+	_part(head, "Detail").visible = false
 	_journal_list.add_child(head)
 	for def: Dictionary in _world.collectible_cfg.get("collectibles", []):
 		var def_id := str(def.get("id", ""))
@@ -634,8 +795,11 @@ func _show_tab() -> void:
 	_helpers_tab.visible = _tab == Tab.HELPERS
 	_drones_tab.visible = _tab == Tab.DRONES
 	_journal_tab.visible = _tab == Tab.JOURNAL
+	_world.flags["tab_seen_%d" % int(_tab)] = true
 	for i in _tab_labels.size():
-		_tab_labels[i].visible = _tab_enabled(i)
+		var box := _tab_labels[i].get_parent() as Control
+		box.visible = _tab_enabled(i)
+		box.get_node("NewDot").visible = _tab_enabled(i) and not _tab_seen(i)
 		_tab_labels[i].add_theme_color_override("font_color", Color(0.95, 0.55, 0.16) if i == _tab else Color(0.165, 0.165, 0.2))
 	if _tab == Tab.MAP:
 		_map_view.refresh()

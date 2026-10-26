@@ -235,7 +235,7 @@ ZONE_Q_3,Zone sauber! Fast schon gemütlich.,Zone clean! Almost cozy.
 MENU_PROGRESS_FOOTER_MAP,D-Pad: Zone · RT/LT: Zoom · LB/RB: Tab · B: schließen,D-pad: zone · RT/LT: zoom · LB/RB: tab · B: close
 HUD_MINIMAP_HINT,M / Select lang: Minimap,M / hold Select: minimap
 MENU_TAB_HELPERS,Helfer,Helpers
-MENU_PROGRESS_FOOTER_HELPERS,D-Pad: wählen · A: Bot bauen / Upgrade kaufen · A auf Bot: abbauen · B: schließen,D-pad: select · A: build bot / buy upgrade · A on bot: dismantle · B: close
+MENU_PROGRESS_FOOTER_HELPERS,D-Pad: wählen · A: bauen / kaufen · LT auf Bot: abbauen · B: schließen,D-pad: select · A: build / buy · LT on bot: dismantle · B: close
 HELPER_UPGRADES,Bot-Upgrades (für alle Bots),Bot upgrades (all bots)
 HELPER_BUY,Helfer kaufen,Buy helper
 HELPER_BUY_HINT,A: Zone und Lager wählen,A: pick zone and depot
@@ -248,13 +248,13 @@ HELPER_STATE_WAIT,wartet,waiting
 HELPER_STATE_IDLE,nichts zu tun,nothing to do
 HELPER_PICK_ZONE,Wo soll der Helfer arbeiten? Mitte wählen (6 Kacheln Radius).,Where should the helper work? Pick the center (6 tiles radius).
 HELPER_PICK_DEPOT,Und wohin bringt er alles? Kiste oder Terminal wählen.,And where does it all go? Pick a chest or terminal.
-HELPER_UPG_SPEED,Helfer-Tempo,Helper speed
-HELPER_UPG_SPEED_DESC,+20 % Laufgeschwindigkeit je Stufe,+20% movement speed per level
-HELPER_UPG_CAPACITY,Helfer-Tragkraft,Helper capacity
-HELPER_UPG_CAPACITY_DESC,+10 Items je Slot und Stufe,+10 items per slot and level
-HELPER_UPG_TOOL,Helfer-Werkzeug,Helper tools
-HELPER_UPG_TOOL_DESC,Helfer bauen eine Stufe härter ab (T2 dann T3),Helpers mine one tier harder (T2 then T3)
-HELPER_UPG_LOCKED,Tech fehlt,Tech missing
+HELPER_UPG_SPEED,Bot-Tempo,Bot speed
+HELPER_UPG_SPEED_DESC,+20 % Tempo,+20% speed
+HELPER_UPG_CAPACITY,Bot-Tragkraft,Bot capacity
+HELPER_UPG_CAPACITY_DESC,+10 Teile je Platz,+10 items per slot
+HELPER_UPG_TOOL,Bot-Werkzeug,Bot tools
+HELPER_UPG_TOOL_DESC,Knackt härteren Müll,Cracks tougher trash
+HELPER_UPG_LOCKED,Ab Schiffsstufe 4,From ship stage 4
 HELPER_UPG_BUY,A: Kaufen,A: Buy
 HELPER_HIRED_1,Hallo! Ich bin neu. Wo ist der Schrott?,Hello! I am new. Where is the scrap?
 HELPER_HIRED_2,Angestellt! Mein erster Tag. Nicht lachen.,Hired! My first day. Do not laugh.
@@ -314,7 +314,7 @@ MENU_TAB_DRONES,Drohnen,Drones
 MENU_PROGRESS_FOOTER_DRONES,D-Pad: wählen · A: Drohne bauen / Upgrade kaufen · LT auf Drohne: abbauen · B: schließen,D-pad: select · A: build drone / buy upgrade · LT on drone: dismantle · B: close
 TECH_DRONE_HANGAR,Drohnen-Hangar,Drone hangar
 TECH_DRONE_HANGAR_DESC,Fliegende Logistik-Drohnen tragen Items zwischen Kisten und Maschinen und zum Terminal.,Flying logistics drones carry items between chests and machines and to the terminal.
-DRONE_UPGRADES,Drohnen-Upgrades (gelten für alle Drohnen),Drone upgrades (apply to all drones)
+DRONE_UPGRADES,Drohnen-Upgrades (alle Drohnen),Drone upgrades (all drones)
 DRONE_BUY,Drohne kaufen,Buy drone
 DRONE_BUY_HINT,A: Quelle und Ziel wählen,A: pick source and target
 DRONE_LOCKED,Blaupause ab Schiffsstufe 3,Blueprint from ship stage 3
@@ -335,9 +335,9 @@ DRONE_WAIT_MISSING,wartet: Gebäude fehlt,waiting: building missing
 DRONE_PICK_SOURCE,Woher soll die Drohne holen? Kiste oder Maschine wählen.,Where should the drone fetch from? Pick a chest or machine.
 DRONE_PICK_TARGET,"Und wohin? Kiste, Maschine oder Terminal wählen.","And where to? Pick a chest, machine or terminal."
 DRONE_UPG_SPEED,Drohnen-Tempo,Drone speed
-DRONE_UPG_SPEED_DESC,+25 % Fluggeschwindigkeit je Stufe,+25% flight speed per level
+DRONE_UPG_SPEED_DESC,+25 % Flugtempo,+25% flight speed
 DRONE_UPG_CAPACITY,Drohnen-Tragkraft,Drone capacity
-DRONE_UPG_CAPACITY_DESC,+10 Items je Flug und Stufe,+10 items per flight and level
+DRONE_UPG_CAPACITY_DESC,+10 Teile je Flug,+10 items per flight
 DRONE_BOUGHT_1,Eine Drohne! Sie fliegt. Ich bin ein bisschen neidisch.,A drone! It flies. I am a little jealous.
 DRONE_BOUGHT_2,Summ summ. Das ist jetzt meine Luftpost.,Buzz buzz. That is my air mail now.
 QUIP_DRONE_LOCKED,Dafür brauche ich erst den Drohnen-Hangar.,I need the drone hangar for that first.
@@ -475,9 +475,9 @@ UPG_YIELD_DESC,+10 % Bolts beim Abliefern,+10% bolts when delivering
 UPG_SPEED,Fahrtempo,Speed
 UPG_SPEED_DESC,+8 % schneller fahren,+8% faster driving
 UPG_SUCTION,Saugtempo,Suction speed
-UPG_SUCTION_DESC,"+12 % schneller saugen, etwas mehr Reichweite","+12% faster suction, a bit more reach"
+UPG_SUCTION_DESC,"+12 % Saugtempo, mehr Reichweite","+12% suction, more reach"
 UPG_TOOL,Werkzeugstufe,Tool tier
-UPG_TOOL_DESC,Hammer und Sauger knacken härteren Müll,Hammer and vacuum crack tougher trash
+UPG_TOOL_DESC,Knackt härteren Müll,Cracks tougher trash
 QUEST_UPGRADE,Kauf dein erstes Upgrade am Schiff (X).,Buy your first upgrade at the ship (X).
 QUEST_CARGO,Bau den Laderaum auf Stufe 2 aus.,Upgrade the cargo hold to level 2.
 QUEST_EARN,Verdiene 300 Bolts.,Earn 300 bolts.
@@ -505,7 +505,7 @@ GIFT_LAUNCH,Abflug!,Launch!
 STAGE_BANNER_TITLE,Schiff repariert!,Ship repaired!
 STAGE_BANNER_SUB,Stufe %d · %s,Stage %d · %s
 STAGE_BANNER_NEW,Neu: %s,New: %s
-STAGE_TRACK_NEXT,Nächste Reparatur: %d / %d Bolts,Next repair: %d / %d bolts
+STAGE_TRACK_NEXT,Nächste Reparatur: %s / %s Bolts,Next repair: %s / %s bolts
 STAGE_TRACK_PLANET,Planet erst zu %d %% geheilt (braucht %d %%),Planet only %d %% healed (needs %d %%)
 STAGE_TRACK_DONE,Das Schiff ist startklar!,The ship is ready for launch!
 LAUNCH_Q,"Festhalten! Zündung in drei, zwei … ach, einfach los!","Hold on! Ignition in three, two … oh, just go!"
@@ -526,3 +526,11 @@ QUEST_CLEAN2,Putze 300 Bodenkacheln.,Clean 300 ground tiles.
 QUEST_SUCTION,Bau das Saugtempo auf Stufe 2 aus.,Upgrade suction speed to level 2.
 QUEST_YIELD,Bau den Ertrag auf Stufe 3 aus.,Upgrade yield to level 3.
 QUEST_CLEAN3,Putze 2.000 Bodenkacheln.,"Clean 2,000 ground tiles."
+MENU_TAB_GOALS,Ziele,Goals
+SHIP_REPAIR_TO,Reparatur → Stufe %d,Repair → stage %d
+BOT_DESC,Sammelt und liefert ab,Collects and delivers
+DRONE_DESC,Fliegt allein sammeln,Flies off to collect
+BOT_CARD,Sammel-Bot,Collector bot
+DRONE_CARD,Drohne,Drone
+HUD_HINT_NEW_TAB,"Neu im Menü!   ·   Select: ansehen","New in the menu!   ·   Select: have a look"
+HUD_HINT_NEW_TAB_KB,"Neu im Menü!   ·   T: ansehen","New in the menu!   ·   T: have a look"

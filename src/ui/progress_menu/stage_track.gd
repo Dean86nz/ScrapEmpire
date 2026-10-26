@@ -78,7 +78,7 @@ func _draw() -> void:
 		text = tr("STAGE_TRACK_DONE")
 	else:
 		frac = clampf(float(_world.bolts) / float(maxi(cost, 1)), 0.0, 1.0)
-		text = tr("STAGE_TRACK_NEXT") % [mini(_world.bolts, cost), cost]
+		text = tr("STAGE_TRACK_NEXT") % [Fmt.int_str(mini(_world.bolts, cost)), Fmt.int_str(cost)]
 		if ShipSystem.can_upgrade(_world, s) == "planet":
 			var need := float(ShipSystem.stage_def(_world, s.stage + 1).get("requires_planet", 0.0))
 			text = tr("STAGE_TRACK_PLANET") % [int(round(_world.zones.planet_health(_world.nodes) * 100.0)), int(round(need * 100.0))]
