@@ -307,6 +307,11 @@ Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers �
 - Darstellung: `DirtView` liest `take_changed()`, aktualisiert eine R8-Maske (Shader) und eine Farbtextur für Minimap/Karte und meldet `tiles_changed` an `NatureView` (Gras je Kachel).
 - Spielstand: Schlüssel `dirt` mit Deflate+Base64; fehlt er, erzeugt `MapLoader.ensure_dirt` den Startschmutz.
 
+## 10d. Schiff als Herz (seit v1.11.0, MS22)
+
+- Sim: `ShipSystem._tick_clean_wave` lässt `Ship.clean_radius` alle `clean_wave_ticks` um eine Kachel wachsen, bis `clean_radius` der Stufe erreicht ist, und putzt den Ring (ohne Kleinschrott, Müll-Kacheln ausgenommen).
+- Darstellung: `ShipFx` hängt an der `BuildingView` des Schiffs (Rauch, Lichter, Düsen, `celebrate`, `launch` → `launch_finished`, `land`). `Main` steuert Kamera-Fokus (`Camera2D.offset`), Weißblende und Endbildschirm; `Hud.stage_banner` (`StageBanner`) zeigt das Jubel-Schild, `StageTrack` die Stufenleiste im Schiff-Tab.
+
 ## 11. Neue Darstellung und UI
 
 - HUD: XP-Leiste (`src/ui/hud/xp_bar.tscn`), Level-Up-Konfetti (`CPUParticles2D` über Rusty), Funken-Partikel bei „Zu hart“.

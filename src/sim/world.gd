@@ -207,6 +207,7 @@ func tick() -> void:
 		quests.check(self)
 	ToolSystem._tick_suction(self)
 	ToolSystem._tick_clean(self)
+	ShipSystem._tick_clean_wave(self)
 	ToolSystem._tick_magnet(self)
 	_tick_hammer()
 	NodeSystem._tick_respawns(self)

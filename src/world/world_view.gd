@@ -193,6 +193,12 @@ func _on_building_placed(b: Building) -> void:
 	_building_views[b.id] = view
 
 
+## Ansicht des Schiffs (für Feier und Abflug), null ohne Schiff.
+func ship_view() -> BuildingView:
+	var s := _world.ship()
+	return _building_views.get(s.id) if s != null else null
+
+
 func _on_building_changed(b: Building) -> void:
 	if _building_views.has(b.id):
 		_building_views[b.id].refresh(b)

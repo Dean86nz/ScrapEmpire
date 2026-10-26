@@ -96,7 +96,7 @@ static func _helpers(world: SimWorld) -> Array:
 
 static func _building_state(b: Building) -> Dictionary:
 	if b is Ship:
-		return {"stage": (b as Ship).stage}
+		return {"stage": (b as Ship).stage, "clean_radius": (b as Ship).clean_radius}
 	return {}
 
 
@@ -195,3 +195,4 @@ static func _restore_building(b: Building, st: Dictionary, world: SimWorld) -> v
 		var s := b as Ship
 		s.stage = maxi(int(st.get("stage", 1)), 1)
 		ShipSystem.apply_stage(world, s)
+		s.clean_radius = int(st.get("clean_radius", ShipSystem.clean_target(world, s)))

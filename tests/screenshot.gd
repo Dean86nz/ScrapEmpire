@@ -67,6 +67,18 @@ func _process(_delta: float) -> bool:
 					current_scene.debug_scenario(kv[1])
 				"feature":
 					clock.world.unlocked_features[kv[1]] = true
+				"launch":  # launch=1: letzte Reparatur samt Feier und Abflug-Szene
+					var ls: Ship = clock.world.ship()
+					ls.stage = ShipSystem.max_stage(clock.world)
+					ShipSystem.apply_stage(clock.world, ls)
+					clock.world.building_changed.emit(ls)
+					current_scene._on_ship_upgraded(ls)
+				"ship":  # ship=3 setzt die Schiffsstufe direkt (ohne Feier)
+					var sh: Ship = clock.world.ship()
+					sh.stage = int(kv[1])
+					ShipSystem.apply_stage(clock.world, sh)
+					sh.clean_radius = ShipSystem.clean_target(clock.world, sh) - 3
+					clock.world.building_changed.emit(sh)
 				"clean":  # clean=z01;0.95 entfernt Müll-Objekte der Zone bis zum Reinigungsgrad
 					var zc := kv[1].split(";")
 					var goal := float(zc[1])

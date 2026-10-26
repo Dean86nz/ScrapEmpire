@@ -1,15 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
   <ellipse cx="96" cy="176" rx="84" ry="10" fill="#000" opacity="0.15"/>
-  <rect x="8" y="96" width="40" height="28" rx="4" fill="#4FB6E8" stroke="#2A2A33" stroke-width="4"/>
-<rect x="144" y="96" width="40" height="28" rx="4" fill="#4FB6E8" stroke="#2A2A33" stroke-width="4"/>
-<path d="M16 110 H40 M24 100 V120 M32 100 V120 M152 110 H176 M160 100 V120 M168 100 V120" stroke="#2A2A33" stroke-width="2"/>
-<ellipse cx="96" cy="112" rx="72" ry="44" fill="#FFFFFF" stroke="#2A2A33" stroke-width="5"/>
-<ellipse cx="96" cy="112" rx="60" ry="34" fill="#E6EEF2"/>
-<ellipse cx="96" cy="92" rx="34" ry="24" fill="#8ED8F0" stroke="#2A2A33" stroke-width="5"/>
-<ellipse cx="88" cy="86" rx="12" ry="6" fill="#FFFFFF" opacity="0.8"/>
-<path d="M40 130 L26 158 L60 146 Z" fill="#C9CDD1" stroke="#2A2A33" stroke-width="4" stroke-linejoin="round"/>
-<path d="M152 130 L166 158 L132 146 Z" fill="#C9CDD1" stroke="#2A2A33" stroke-width="4" stroke-linejoin="round"/>
-<path d="M96 68 L96 30" stroke="#2A2A33" stroke-width="4"/><circle cx="96" cy="26" r="7" fill="#7CC243" stroke="#2A2A33" stroke-width="3"/>
-<circle cx="56" cy="136" r="6" fill="#7CC243"/><circle cx="76" cy="146" r="6" fill="#F7CF63"/><circle cx="96" cy="150" r="6" fill="#7CC243"/><circle cx="116" cy="146" r="6" fill="#F7CF63"/><circle cx="136" cy="136" r="6" fill="#7CC243"/>
-<rect x="84" y="118" width="24" height="16" rx="3" fill="#E07B39" stroke="#2A2A33" stroke-width="3"/>
+  <ellipse cx="96" cy="112" rx="72" ry="44" fill="#D5D9DC" stroke="#2A2A33" stroke-width="5"/>
+  <path d="M30 116 Q96 140 162 116" stroke="#E07B39" stroke-width="8" fill="none"/>
+  <rect x="120" y="98" width="20" height="14" rx="3" fill="#F7CF63" stroke="#2A2A33" stroke-width="3"/>
+  <ellipse cx="96" cy="92" rx="34" ry="24" fill="#8ED8F0" stroke="#2A2A33" stroke-width="5"/>
+  <ellipse cx="86" cy="86" rx="12" ry="6" fill="#FFFFFF" opacity="0.7"/>
+  <path d="M40 130 L26 158 L60 146 Z" fill="#B5BABF" stroke="#2A2A33" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M152 130 L166 158 L132 146 Z" fill="#B5BABF" stroke="#2A2A33" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M96 68 L96 32" stroke="#2A2A33" stroke-width="4"/><path d="M84 40 Q96 30 108 40" stroke="#2A2A33" stroke-width="3" fill="none"/>
+  <circle cx="96" cy="28" r="7" fill="#7CC243" stroke="#2A2A33" stroke-width="3"/>
 </svg>

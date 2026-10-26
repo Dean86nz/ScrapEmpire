@@ -17,6 +17,11 @@ const LONG_PRESS_SECONDS := 0.45
 @onready var _task_editor: CanvasLayer = $TaskEditor
 @onready var _end_screen: CanvasLayer = $EndScreen
 
+var _cam_focus: Node2D = null     # solange gesetzt, schaut die Kamera dorthin (Feier, Abflug)
+var _cam_focus_time := 0.0        # > 0: Fokus endet nach dieser Zeit von selbst
+var _fade: ColorRect
+var _launching := false
+
 var _world: SimWorld
 var _map_data: Dictionary = {}
 var _zone_gates: Dictionary = {}  # "a|b" → Array[Node]
@@ -161,6 +166,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_update_camera_focus(delta)
 	_hud.set_hint(_current_hint())
 	_chapter_timer -= delta
 	if _chapter_timer <= 0.0:
@@ -408,16 +414,84 @@ func _on_quest_completed(_id: String, def: Dictionary) -> void:
 	_chapter_timer = 2.5
 
 
+## Reparatur: Menü zu, Kamera zum Schiff, Konfetti, Putzring, Jubel-Schild. Auf der letzten Stufe
+## folgt der Abflug.
 func _on_ship_upgraded(s: Ship) -> void:
+	if _progress_menu.visible:
+		_progress_menu.close()
 	_player.celebrate()
 	Quips.say("ship_upgraded", true)
 	var sd := ShipSystem.stage_def(_world, s.stage)
 	_hud.set_tutorial(tr("HUD_SHIP_UP") % [s.stage, tr(str(sd.get("name_key", "")))])
 	_chapter_timer = 4.0
+	var gifts: Array[String] = []
+	for f in sd.get("unlocks", []):
+		gifts.append(tr("GIFT_" + str(f).to_upper()))
+	_hud.stage_banner.show_stage(s.stage, tr(str(sd.get("name_key", ""))), s.sprite_path, gifts)
+	var view := _world_view.ship_view()
+	if view != null and view.ship_fx != null:
+		view.ship_fx.celebrate(ShipSystem.clean_target(_world, s))
+		_focus_camera(view, 3.0)
 	if s.stage >= ShipSystem.max_stage(_world):
-		# Das Schiff ist repariert und hebt ab: Ende (die Abflug-Szene kommt in MS22).
 		save_game()
+		get_tree().create_timer(2.5).timeout.connect(_launch_sequence)
+
+
+## Abflug als Endszene: Rusty kann nicht fahren, die Kamera folgt dem Schiff nach oben, dann
+## Weißblende und Endbildschirm. Danach steht das Schiff wieder da und es geht weiter.
+func _launch_sequence() -> void:
+	var view := _world_view.ship_view()
+	if view == null or view.ship_fx == null:
 		_end_screen.show_stats(_world)
+		return
+	if _progress_menu.visible:
+		_progress_menu.close()
+	InputRouter.context = InputRouter.Context.MENU
+	_launching = true
+	EventBus.quip.emit("LAUNCH_Q")
+	var base := view.position
+	_focus_camera(view)
+	view.ship_fx.launch()
+	await view.ship_fx.launch_finished
+	await _fade_to(1.0, 0.9)
+	view.ship_fx.land(base)
+	_cam_focus = null
+	_launching = false
+	_end_screen.show_stats(_world)
+	_fade_to(0.0, 0.8)
+
+
+func _focus_camera(target: Node2D, seconds: float = 0.0) -> void:
+	_cam_focus = target
+	_cam_focus_time = seconds
+
+
+func _update_camera_focus(delta: float) -> void:
+	var cam: Camera2D = _player.get_node("Camera2D")
+	if _cam_focus_time > 0.0:
+		_cam_focus_time -= delta
+		if _cam_focus_time <= 0.0:
+			_cam_focus = null
+	var target := Vector2.ZERO
+	if _cam_focus != null and is_instance_valid(_cam_focus):
+		target = _cam_focus.global_position - _player.global_position
+	cam.offset = cam.offset.lerp(target, 1.0 - exp(-5.0 * delta))
+
+
+func _fade_to(alpha: float, seconds: float) -> void:
+	if _fade == null:
+		var layer := CanvasLayer.new()
+		layer.layer = 20
+		add_child(layer)
+		_fade = ColorRect.new()
+		_fade.color = Color(1, 1, 1, 0)
+		_fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_fade.set_anchors_preset(Control.PRESET_FULL_RECT)
+		layer.add_child(_fade)
+	var tw := create_tween()
+	tw.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	tw.tween_property(_fade, "color:a", alpha, seconds)
+	await tw.finished
 
 
 func _ship_hint(s: Ship, kb: String) -> String:
@@ -524,6 +598,8 @@ func _on_build_selected(def_id: String) -> void:
 ## Hinweiszeile je nach Kontext und Eingabegerät (Gamepad-Tasten oder Tastatur/Maus).
 func _current_hint() -> String:
 	var kb := "" if InputRouter.is_gamepad else "_KB"
+	if _launching:
+		return ""
 	match InputRouter.context:
 		InputRouter.Context.BUILD:
 			if _cursor.mode == BuildCursor.Mode.TARGET:

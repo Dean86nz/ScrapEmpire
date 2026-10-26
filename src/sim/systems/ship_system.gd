@@ -180,6 +180,36 @@ static func _cmd_upgrade_ship(w: SimWorld, _cmd: Dictionary) -> void:
 	w.ship_upgraded.emit(s)
 
 
+# --- Putzwelle -------------------------------------------------------------------
+
+## Ziel-Radius der Putzwelle für die aktuelle Stufe.
+static func clean_target(w: SimWorld, s: Ship) -> int:
+	return int(stage_def(w, s.stage).get("clean_radius", 0))
+
+
+## Die Putzwelle wächst alle `clean_wave_ticks` um eine Kachel, bis der Radius der Stufe erreicht ist.
+## Müll-Kacheln bleiben dreckig, bis der Müll weg ist. Kein Kleinschrott (das Schiff putzt, nicht Rusty).
+static func _tick_clean_wave(w: SimWorld) -> void:
+	if not w.dirt.is_active():
+		return
+	var s := ship(w)
+	if s == null or s.clean_radius >= clean_target(w, s):
+		return
+	if w.tick_count % maxi(int(w.ship_cfg.get("clean_wave_ticks", 3)), 1) != 0:
+		return
+	s.clean_radius += 1
+	var r := s.clean_radius
+	var c := s.tile + s.size() / 2
+	for dy in range(-r, r + 1):
+		for dx in range(-r, r + 1):
+			var dist := Vector2(dx, dy).length()
+			if dist > r + 0.5 or (r > 1 and dist <= r - 0.5):
+				continue
+			var t := c + Vector2i(dx, dy)
+			if not w._node_tiles.has(t):
+				w.dirt.clean(t, 255)
+
+
 # --- Kosten für Deko (Material aus Rustys Inventar) ---------------------------------
 
 static func count_available(w: SimWorld, item: String) -> int:

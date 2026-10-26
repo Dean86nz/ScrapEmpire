@@ -22,6 +22,7 @@ var _inventory: Inventory
 var _world: SimWorld
 var _slots: Array = []
 var _selected := 0
+var stage_banner := StageBanner.new()
 
 
 func _process(_delta: float) -> void:
@@ -49,6 +50,7 @@ func rebuild_hotbar() -> void:
 
 
 func _ready() -> void:
+	add_child(stage_banner)
 	set_hint(tr("HUD_HINT_GAME"))
 	set_bolts(0)
 
