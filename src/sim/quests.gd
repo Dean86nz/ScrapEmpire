@@ -58,6 +58,10 @@ func on_ship_received(n: int) -> void:
 	_add("ship_delivered", n)
 
 
+func on_delivery() -> void:
+	_add("deliveries", 1)
+
+
 func tick_move(pos: Vector2i) -> void:
 	if _last_pos.x >= 0:
 		var d := int(Vector2(pos - _last_pos).length())
@@ -81,6 +85,10 @@ func progress(w: SimWorld) -> Array:
 			return [mini(int(counters.get("collect:" + str(q.get("item", "")), 0)), amount), amount]
 		"ship_delivered":
 			return [mini(int(counters.get("ship_delivered", 0)), amount), amount]
+		"deliveries":
+			return [mini(int(counters.get("deliveries", 0)), amount), amount]
+		"cleaned":
+			return [mini(w.dirt.cleaned_total, amount), amount]
 		"sold_value":
 			return [mini(int(counters.get("sold_value", 0)), amount), amount]
 		"wrecks":
@@ -159,11 +167,18 @@ func fast_forward(w: SimWorld, tutorial_done: bool) -> int:
 
 
 func to_dict() -> Dictionary:
-	return {"index": index, "counters": counters.duplicate()}
+	return {"index": index, "current": str(current().get("id", "")), "counters": counters.duplicate()}
 
 
 func from_dict(d: Dictionary) -> void:
 	index = int(d.get("index", 0))
+	# Über die ID wiederfinden, damit neu eingefügte Aufgaben alte Stände nicht verschieben
+	var cur := str(d.get("current", ""))
+	if cur != "":
+		for i in defs.size():
+			if str(defs[i].get("id", "")) == cur:
+				index = i
+				break
 	counters = {}
 	for k in d.get("counters", {}):
 		counters[str(k)] = int(d["counters"][k])

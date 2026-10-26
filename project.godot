@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Scrap Empire"
-config/version="1.11.0"
+config/version="1.12.0"
 run/main_scene="res://src/ui/title/title.tscn"
 run/flush_stdout_on_print=true
 config/features=PackedStringArray("4.7", "Mobile")
@@ -43,6 +43,7 @@ SimClock="*res://src/autoload/sim_clock.gd"
 SaveManager="*res://src/autoload/save_manager.gd"
 InputRouter="*res://src/autoload/input_router.gd"
 Quips="*res://src/autoload/quips.gd"
+Sfx="*res://src/autoload/sfx.gd"
 
 [internationalization]
 

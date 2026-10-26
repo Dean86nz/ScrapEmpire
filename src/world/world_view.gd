@@ -36,7 +36,7 @@ func bind(world: SimWorld, player: Node2D) -> void:
 	world.building_placed.connect(_on_building_placed)
 	world.building_changed.connect(_on_building_changed)
 	world.building_removed.connect(_on_building_removed)
-	world.item_sold.connect(_on_item_sold)
+	world.ship_delivered.connect(_on_ship_delivered)
 	world.too_hard.connect(_on_too_hard)
 	world.node_respawned.connect(_on_node_respawned)
 	for h: Helper in world.helpers.values():
@@ -210,11 +210,43 @@ func _on_building_removed(id: int) -> void:
 		_building_views.erase(id)
 
 
-func _on_item_sold(_item_id: String, value: int, pos: Vector2i) -> void:
-	for view: BuildingView in _building_views.values():
-		if view.position == Vector2(pos):
-			view.show_sale(value)
-			return
+## Abgabe: ein Betrag über dem Schiff (groß, wenn Rusty abliefert), bei Rusty fliegen die Teile
+## im Bogen ins Schiff und das Schiff wippt.
+func _on_ship_delivered(items: Dictionary, bolts: int, by_player: bool) -> void:
+	var view := ship_view()
+	if view == null:
+		return
+	view.show_sale(bolts, by_player)
+	if not by_player:
+		return
+	var target := view.global_position
+	var start := _player.global_position
+	var shown := 0
+	for item: String in items:
+		for k in mini(int(items[item]), 4):
+			if shown >= 12:
+				break
+			_fly_to_ship(item, start, target, shown * 0.035)
+			shown += 1
+	if view.ship_fx != null:
+		get_tree().create_timer(0.3).timeout.connect(view.ship_fx.bump)
+
+
+func _fly_to_ship(item: String, start: Vector2, target: Vector2, delay: float) -> void:
+	var fly := Sprite2D.new()
+	fly.texture = DataRegistry.item_icon(item)
+	fly.global_position = start
+	fly.z_index = 20
+	fly.visible = delay <= 0.0
+	add_child(fly)
+	var mid := (start + target) * 0.5 + Vector2(randf_range(-60, 60), -160)
+	var tw := create_tween()
+	tw.tween_interval(delay)
+	tw.tween_callback(func() -> void: fly.visible = true)
+	tw.tween_method(func(t: float) -> void:
+		fly.global_position = start.lerp(mid, t).lerp(mid.lerp(target, t), t)
+		fly.scale = Vector2.ONE * lerpf(1.0, 0.5, t), 0.0, 1.0, 0.32).set_ease(Tween.EASE_IN)
+	tw.tween_callback(fly.queue_free)
 
 
 ## Icon fliegt vom Fundort zu Rusty und verschwindet.

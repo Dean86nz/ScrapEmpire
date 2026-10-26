@@ -67,6 +67,9 @@ func _process(_delta: float) -> bool:
 					current_scene.debug_scenario(kv[1])
 				"feature":
 					clock.world.unlocked_features[kv[1]] = true
+				"counter":  # counter=wrecks;5 setzt einen Zähler (Meilensteine, Aufgaben)
+					var cv := kv[1].split(";")
+					clock.world.quests.counters[cv[0]] = int(cv[1])
 				"launch":  # launch=1: letzte Reparatur samt Feier und Abflug-Szene
 					var ls: Ship = clock.world.ship()
 					ls.stage = ShipSystem.max_stage(clock.world)

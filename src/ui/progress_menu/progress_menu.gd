@@ -43,6 +43,8 @@ var _ship_cards: Dictionary = {}   # "upg:<id>", "repair", "bot", "drone" → Bu
 var _skill_cards: Dictionary = {}  # id → Button
 var _refresh_timer := 0.0
 var _stage_track := StageTrack.new()
+var _goal_lines: Array[String] = []   # zuletzt gezeigte Ziele (nur bei Änderung neu bauen, sonst geht der Fokus verloren)
+var _journal_sig := ""
 
 
 func _ready() -> void:
@@ -478,8 +480,6 @@ func _refresh_skills() -> void:
 
 
 func _refresh_goals() -> void:
-	for c in _goals_list.get_children():
-		c.queue_free()
 	var lines: Array[String] = []
 	var cur := _world.zones.current_chapter_zone()
 	if cur != "":
@@ -527,6 +527,21 @@ func _refresh_goals() -> void:
 		lines.append("🧸 %s: %d / %d" % [tr("GOAL_COLLECTIBLES"), _world.collectibles_found.size(), _world.collectible_total()])
 	if not _world.progression.is_max_level():
 		lines.append("⭐ %s: %d / %d XP" % [tr("HUD_LEVEL") % (_world.progression.level + 1), _world.progression.xp, _world.progression.xp_needed()])
+	# Meilensteine: nächste Schwelle je Zähler
+	lines.append("")
+	lines.append("🏆 " + tr("MS_HEADER"))
+	for md: Dictionary in _world.milestones.defs:
+		var nxt := _world.milestones.next_step(md)
+		var cur_v := MilestoneState.stat(_world, str(md.get("stat", "")))
+		var stars := "★".repeat(_world.milestones.steps_done(str(md["id"]))) + "☆".repeat((md.get("steps", []) as Array).size() - _world.milestones.steps_done(str(md["id"])))
+		if nxt < 0:
+			lines.append("%s  %s · %s" % [stars, tr(str(md["name_key"])) % Fmt.int_str(cur_v), tr("MS_ALL_DONE")])
+		else:
+			lines.append("%s  %s  (%s / %s)" % [stars, tr(str(md["name_key"])) % Fmt.int_str(nxt), Fmt.int_str(mini(cur_v, nxt)), Fmt.int_str(nxt)])
+	if lines == _goal_lines and _goals_list.get_child_count() == lines.size():
+		return
+	_goal_lines = lines
+	var focus_idx := _clear_keep_focus(_goals_list)
 	for text in lines:
 		if text == "":
 			var gap := Control.new()
@@ -539,12 +554,39 @@ func _refresh_goals() -> void:
 		title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		(card.get_node("Box/Detail") as Label).visible = false
 		_goals_list.add_child(card)
+	_restore_focus(_goals_list, focus_idx)
+
+
+## Leert eine Liste sofort und merkt sich, welcher Eintrag den Fokus hatte (-1: keiner).
+func _clear_keep_focus(list: Container) -> int:
+	var f := get_viewport().gui_get_focus_owner()
+	var idx := -1
+	for i in list.get_child_count():
+		if list.get_child(i) == f:
+			idx = i
+	for c in list.get_children():
+		list.remove_child(c)
+		c.queue_free()
+	return idx
+
+
+func _restore_focus(list: Container, idx: int) -> void:
+	if idx < 0:
+		return
+	for i in range(mini(idx, list.get_child_count() - 1), -1, -1):
+		var c := list.get_child(i) as Control
+		if c != null and c.focus_mode != Control.FOCUS_NONE:
+			c.grab_focus()
+			return
 
 
 ## Journal: Fundstücke mit Text, Unbekannte mit Kapitel-Hinweis.
 func _refresh_journal() -> void:
-	for c in _journal_list.get_children():
-		c.queue_free()
+	var sig := "%d|%s|%d" % [_world.building_count("museum"), ",".join(_world.collectibles_found.keys()), _world.zones.unlocked.size()]
+	if sig == _journal_sig and _journal_list.get_child_count() > 0:
+		return
+	_journal_sig = sig
+	var focus_idx := _clear_keep_focus(_journal_list)
 	var found := _world.collectibles_found.size()
 	var total := _world.collectible_total()
 	var has_museum := _world.building_count("museum") > 0
@@ -567,6 +609,7 @@ func _refresh_journal() -> void:
 			_set_card(card, tr("JOURNAL_UNKNOWN") % where, TINT_NO)
 		card.custom_minimum_size = Vector2(1360, 96)
 		_journal_list.add_child(card)
+	_restore_focus(_journal_list, focus_idx)
 
 
 func _next_locked_object() -> Dictionary:

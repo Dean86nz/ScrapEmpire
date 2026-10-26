@@ -355,6 +355,8 @@ Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten 
 
 **Seit MS22 (v1.11.0): Das Schiff heilt.** Jede Reparatur schickt eine Putzwelle vom Schiff aus (Radius je Stufe 4, 7, 10, 13, 16 Kacheln, `clean_radius` in `data/ship.json`). Reparatur = Jubelmoment (Menü zu, Kamera zum Schiff, Konfetti, Schild mit Geschenken). Stufe 5 = Abflug-Szene und Endbildschirm; danach geht das Spiel weiter.
 
+**Seit MS23 (v1.12.0): Erfolgserlebnisse.** Meilensteine (`data/milestones.json`): sechs Zähler mit Stufen, je Stufe Bolts und XP, Pokal-Schild. Die Aufgabenkette hat 26 kurze Ziele; Abstand zwischen zwei Erfolgsmomenten soll in Kapitel 1 unter 2 Minuten liegen (prüfen in MS26). Abliefern hat Bild und Ton (fliegende Teile, großer Betrag, Münzklang).
+
 ### 23a. Kapitel und Tore (MS12, umgesetzt)
 
 - Die Zonen einer Karte haben eine feste Reihenfolge (`zone_order` in der Karten-JSON); jede Zone ist ein **Kapitel**. Nur die erste Zone ist zu Beginn freigeschaltet.

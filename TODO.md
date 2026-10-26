@@ -5,7 +5,8 @@
 - [x] MS20 Kern-Ablauf sammeln/abliefern/aufrüsten (v1.9.0): Schiff-Menü, 5 Upgrades, Reparatur mit Blaupausen, Bots und Drohnen am Schiff, Fabrik entfernt, Doppelkauf behoben
 - [x] MS21 Sichtbar sauber (v1.10.0): Schmutz je Kachel, Saugen putzt, Gras wächst nach, Sauberkeit aus geputzter Fläche
 - [x] MS22 Schiff als Herz (v1.11.0): fünf Schiffsbilder, Putzwelle je Stufe, Jubel-Schild, Stufenleiste, Abflug-Szene
-- [ ] MS23 Erfolgserlebnisse: mehr kurze Ziele, Meilensteine, fliegende Zahlen, Effekt beim Abliefern
+- [x] MS23 Erfolgserlebnisse (v1.12.0): Meilensteine, 7 neue kurze Aufgaben, Abliefer-Effekt, erste Sounds, Kapitel-Tab scrollbar
+- [ ] MS24 Menüs entschlacken: große Icons, wenig Text, am Anfang höchstens 3 Menüpunkte, volle Gamepad-Bedienung
 - [ ] MS26: Putzwelle des Schiffs (Radius 16 auf Stufe 5) gegen Tor-Schwelle abwägen
 - [ ] MS26: Prüfen, ob 50 % geputzte Fläche fürs Tor zu lang dauert
 - [ ] Ally-Rückmeldung: Minuten bis erstes Upgrade und Schiffsstufe 2 (für MS26)

@@ -23,6 +23,8 @@ var _world: SimWorld
 var _slots: Array = []
 var _selected := 0
 var stage_banner := StageBanner.new()
+var _bolts_shown := 0
+var _bolts_tween: Tween
 
 
 func _process(_delta: float) -> void:
@@ -80,7 +82,24 @@ func set_planet(fraction: float) -> void:
 	_planet_label.text = "%d %%" % int(round(fraction * 100.0))
 
 
+## Bolts zählen sichtbar hoch (bei Gewinn) und das Feld hüpft; Ausgaben springen sofort.
 func set_bolts(value: int) -> void:
+	if _bolts_tween != null:
+		_bolts_tween.kill()
+	if value <= _bolts_shown or not is_inside_tree():
+		_show_bolts(value)
+		return
+	var panel: Control = $BoltsPanel
+	panel.pivot_offset = panel.size * 0.5
+	_bolts_tween = create_tween()
+	_bolts_tween.set_parallel(true)
+	_bolts_tween.tween_method(_show_bolts, _bolts_shown, value, clampf((value - _bolts_shown) / 200.0, 0.25, 0.8))
+	panel.scale = Vector2(1.12, 1.12)
+	_bolts_tween.tween_property(panel, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+func _show_bolts(value: int) -> void:
+	_bolts_shown = value
 	_bolts_label.text = "%d %s" % [value, tr("HUD_BOLTS")]
 
 

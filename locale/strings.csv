@@ -509,3 +509,20 @@ STAGE_TRACK_NEXT,Nächste Reparatur: %d / %d Bolts,Next repair: %d / %d bolts
 STAGE_TRACK_PLANET,Planet erst zu %d %% geheilt (braucht %d %%),Planet only %d %% healed (needs %d %%)
 STAGE_TRACK_DONE,Das Schiff ist startklar!,The ship is ready for launch!
 LAUNCH_Q,"Festhalten! Zündung in drei, zwei … ach, einfach los!","Hold on! Ignition in three, two … oh, just go!"
+MS_COLLECTED,%s Teile gesammelt,%s items collected
+MS_CLEANED,%s Bodenkacheln geputzt,%s ground tiles cleaned
+MS_DELIVERIES,%s-mal am Schiff abgeliefert,Delivered to the ship %s times
+MS_BOLTS,%s Bolts verdient,%s bolts earned
+MS_WRECKS,%s Müllteile zerlegt,%s pieces of trash smashed
+MS_UPGRADES,%s Upgrades gekauft,%s upgrades bought
+MS_TITLE,Meilenstein!,Milestone!
+MS_REWARD,+%s Bolts,+%s bolts
+MS_HEADER,Meilensteine,Milestones
+MS_ALL_DONE,alle geschafft,all done
+QUEST_CLEAN,Sauge 30 Bodenkacheln sauber (RT über den Dreck).,Vacuum 30 ground tiles clean (RT over the dirt).
+QUEST_DELIVER3,Liefere dreimal am Schiff ab.,Deliver to the ship three times.
+QUEST_SPEED,Kauf am Schiff das erste Fahrtempo-Upgrade.,Buy the first speed upgrade at the ship.
+QUEST_CLEAN2,Putze 300 Bodenkacheln.,Clean 300 ground tiles.
+QUEST_SUCTION,Bau das Saugtempo auf Stufe 2 aus.,Upgrade suction speed to level 2.
+QUEST_YIELD,Bau den Ertrag auf Stufe 3 aus.,Upgrade yield to level 3.
+QUEST_CLEAN3,Putze 2.000 Bodenkacheln.,"Clean 2,000 ground tiles."

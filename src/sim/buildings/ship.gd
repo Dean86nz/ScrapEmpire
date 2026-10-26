@@ -7,6 +7,7 @@ extends Building
 var stage := 1
 var sprite_path := ""
 var pending: Dictionary = {}   # item → Menge, abgeliefert seit dem letzten Tick
+var pending_by_player := false  # die aktuelle Abgabe kam von Rusty (für Effekte)
 var clean_radius := 0          # so weit hat die Putzwelle des Schiffs den Boden schon gesäubert (Kacheln)
 
 

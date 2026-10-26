@@ -2,6 +2,31 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.12.0] – 2026-10-26 – MS23 Erfolgserlebnisse (Kurswechsel Block 5)
+
+Öfter ein kleines „Yes!“: mehr kurze Ziele, Meilensteine, sichtbares und hörbares Abliefern.
+
+### Neu
+- **Abliefern fühlt sich gut an:** Die Teile fliegen im Bogen von Rusty ins Schiff, das Schiff wippt, ein großer goldener Betrag springt über dem Schiff auf, Münzklang. Die Bolts oben links zählen hoch und hüpfen. Bots und Drohnen zeigen nur eine kleine Zahl (kein Klang)
+- **Meilensteine** (6 Zähler mit 3 bis 4 Stufen): Teile gesammelt (100, 1.000, 5.000, 20.000), Bodenkacheln geputzt, Abgaben am Schiff, Bolts verdient, Müll zerlegt, Upgrades gekauft. Jede Stufe zeigt ein Pokal-Schild mit Zahl und Belohnung (Bolts und XP), dazu Konfetti und ein kleines Arpeggio. Liste mit Sternen und Fortschritt im Tab „Kapitel“. Zahlen in `data/milestones.json`
+- **Sieben neue kurze Aufgaben** zwischen den großen (26 statt 19): 30 Kacheln putzen, dreimal abliefern, erstes Tempo-Upgrade, 300 Kacheln putzen, Saugtempo 2, Ertrag 3, 2.000 Kacheln putzen
+- **Erste Soundeffekte**, im Spiel selbst erzeugt (keine fremden Dateien, keine Lizenzfragen): Münzen beim Abliefern, Glocke bei erledigter Aufgabe, Arpeggio beim Meilenstein, Fanfare bei der Reparatur, Plopp beim Kaufen, Grollen beim Abflug. Eigener Lautstärkekanal; der Regler kommt in MS25
+
+### Behoben
+- **Tab „Kapitel“ und Journal ließen sich mit dem D-Pad nicht scrollen:** Die Liste wurde jede halbe Sekunde neu gebaut, dabei ging der Fokus verloren. Jetzt wird nur bei Änderungen neu gebaut und der Fokus bleibt
+
+### Technik
+- `MilestoneState` (Sim, prüft alle 20 Ticks), Spielstand-Schlüssel `milestones`; alte Stände bekommen Erreichtes still nachgetragen. Aufgaben werden jetzt über ihre ID gespeichert, neue Aufgaben verschieben alte Stände nicht
+- `ship_delivered` meldet, ob Rusty geliefert hat. `Sfx`-Autoload, `Fmt.int_str` für Tausenderpunkte
+- 175 Unit-Tests (8 neue für Meilensteine und Aufgaben), 31 Gamepad-Prüfungen und 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Taschen füllen, am Schiff A: Teile fliegen ins Schiff, goldene Zahl, Münzklang, Bolts zählen hoch
+2. Ton: Sind die Effekte zu laut, zu leise, zu piepsig? (Lautstärke-Regler folgt in MS25)
+3. Nach 5 zerlegten Müllteilen: Pokal-Schild „5 Müllteile zerlegt · +25 Bolts“
+4. Select, Tab „Kapitel“, mit dem D-Pad bis ganz nach unten: Meilensteine mit Sternen
+5. Kommen die Aufgaben jetzt oft genug? Gibt es Stellen, wo lange nichts passiert?
+
 ## [1.11.0] – 2026-10-26 – MS22 Schiff als Herz (Kurswechsel Block 4)
 
 Jede Reparatur ist jetzt ein Ereignis, und am Ende hebt das Schiff wirklich ab.

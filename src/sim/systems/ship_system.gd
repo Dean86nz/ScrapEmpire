@@ -34,11 +34,16 @@ static func _cmd_deliver_all(w: SimWorld, _cmd: Dictionary) -> void:
 		moved += n
 	if moved == 0:
 		w.ship_failed.emit("empty")
+		return
+	s.pending_by_player = true
+	w.quests.on_delivery()
 
 
 ## Wandelt die Abgabe eines Ticks in Bolts um (Wert × Ertrag × Kenner-Bonus).
 static func credit(w: SimWorld, s: Ship) -> void:
 	var p := s.take_pending()
+	var by_player := s.pending_by_player
+	s.pending_by_player = false
 	var total := 0
 	for item in p:
 		var n := int(p[item])
@@ -51,7 +56,7 @@ static func credit(w: SimWorld, s: Ship) -> void:
 	w.bolts += total
 	w.progression.on_sale(total)
 	w.bolts_changed.emit(w.bolts)
-	w.ship_delivered.emit(p, total)
+	w.ship_delivered.emit(p, total, by_player)
 
 
 # --- Upgrades ------------------------------------------------------------------

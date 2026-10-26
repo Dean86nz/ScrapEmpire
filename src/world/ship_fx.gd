@@ -187,6 +187,15 @@ func celebrate(clean_radius_tiles: int) -> void:
 	rt.tween_property(self, "_ring_a", 0.0, 1.4).set_ease(Tween.EASE_IN)
 
 
+## Kleiner Hüpfer, wenn Rusty abliefert.
+func bump() -> void:
+	if _sprite == null or _launching:
+		return
+	var tw := create_tween()
+	tw.tween_property(_sprite, "scale", Vector2(1.08, 0.94), 0.07)
+	tw.tween_property(_sprite, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+
+
 ## Abflug: Rütteln, Düsen zünden, Staub, dann steigt das Schiff aus dem Bild. Meldet `launch_finished`.
 func launch() -> void:
 	_launching = true

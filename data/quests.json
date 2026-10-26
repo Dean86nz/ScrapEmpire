@@ -32,6 +32,13 @@
       "xp": 15
     },
     {
+      "id": "q_clean",
+      "text_key": "QUEST_CLEAN",
+      "type": "cleaned",
+      "amount": 30,
+      "xp": 15
+    },
+    {
       "id": "q_hammer",
       "text_key": "QUEST_HAMMER",
       "type": "wrecks",
@@ -39,11 +46,27 @@
       "xp": 15
     },
     {
+      "id": "q_deliver3",
+      "text_key": "QUEST_DELIVER3",
+      "type": "deliveries",
+      "amount": 3,
+      "xp": 15,
+      "bolts": 15
+    },
+    {
       "id": "q_cargo",
       "text_key": "QUEST_CARGO",
       "type": "upgrade_level",
       "upgrade": "cargo",
       "amount": 2,
+      "xp": 20
+    },
+    {
+      "id": "q_speed",
+      "text_key": "QUEST_SPEED",
+      "type": "upgrade_level",
+      "upgrade": "speed",
+      "amount": 1,
       "xp": 20
     },
     {
@@ -60,6 +83,14 @@
       "upgrade": "tool",
       "amount": 1,
       "xp": 30
+    },
+    {
+      "id": "q_clean2",
+      "text_key": "QUEST_CLEAN2",
+      "type": "cleaned",
+      "amount": 300,
+      "xp": 30,
+      "bolts": 40
     },
     {
       "id": "q_zone1",
@@ -80,6 +111,14 @@
       "type": "helpers",
       "amount": 1,
       "xp": 40
+    },
+    {
+      "id": "q_suction",
+      "text_key": "QUEST_SUCTION",
+      "type": "upgrade_level",
+      "upgrade": "suction",
+      "amount": 2,
+      "xp": 30
     },
     {
       "id": "q_earn2",
@@ -103,6 +142,14 @@
       "xp": 40
     },
     {
+      "id": "q_yield",
+      "text_key": "QUEST_YIELD",
+      "type": "upgrade_level",
+      "upgrade": "yield",
+      "amount": 3,
+      "xp": 40
+    },
+    {
       "id": "q_collectibles",
       "text_key": "QUEST_COLLECTIBLES",
       "type": "collectibles",
@@ -115,6 +162,14 @@
       "type": "helpers",
       "amount": 3,
       "xp": 60
+    },
+    {
+      "id": "q_clean3",
+      "text_key": "QUEST_CLEAN3",
+      "type": "cleaned",
+      "amount": 2000,
+      "xp": 80,
+      "bolts": 300
     },
     {
       "id": "q_ship4",
