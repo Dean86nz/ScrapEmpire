@@ -26,7 +26,7 @@ func test_deliver_all_turns_inventory_into_bolts_immediately() -> void:
 	w.player.inventory.add("copper", 10)
 	w.player.inventory.add("chrome", 2)
 	var delivered := []
-	w.ship_delivered.connect(func(items: Dictionary, bolts: int) -> void: delivered.append([items, bolts]))
+	w.ship_delivered.connect(func(items: Dictionary, bolts: int, _p: bool) -> void: delivered.append([items, bolts]))
 	w.queue_command({"type": "deliver_all"})
 	w.tick()
 	assert_eq(w.player.inventory.total(), 0, "alles abgeliefert")

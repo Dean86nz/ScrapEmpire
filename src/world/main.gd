@@ -49,6 +49,7 @@ func _ready() -> void:
 	_world.ship_cfg = DataRegistry.ship_config()
 	_world.dirt_cfg = DirtMap.load_config()
 	_world.quests.setup(DataRegistry.quest_defs())
+	_world.milestones.setup(MilestoneState.load_defs())
 	_world.setup_progression_data(DataRegistry.tech_defs(), DataRegistry.skill_data())
 	var start_px: Vector2
 	SaveManager.log_step("Spielszene startet (Version %s)" % str(ProjectSettings.get_setting("application/config/version", "?")))
@@ -68,6 +69,9 @@ func _ready() -> void:
 		MapLoader.ensure_dirt(_world, _map_data)
 		SaveManager.log_step("Aufgaben abgleichen")
 		_world.quests.fast_forward(_world, bool(_world.flags.get("tutorial_done", false)))
+		if not _world.flags.has("milestones_v1"):
+			_world.milestones.check(_world, true)   # alte Stände: Erreichtes still nachtragen
+		_world.flags["milestones_v1"] = true
 		_loaded_from_save = true
 	else:
 		SaveManager.log_step("Neues Spiel")
@@ -129,6 +133,10 @@ func _ready() -> void:
 		_player.celebrate()
 		Quips.say("upgrade_bought", true))
 	_world.ship_delivered.connect(_on_ship_delivered)
+	_world.milestone_reached.connect(_on_milestone_reached)
+	_world.ship_upgrade_bought.connect(func(_id: String, _l: int) -> void: Sfx.play("buy", 0.05))
+	_world.helper_added.connect(func(_h: Helper) -> void: Sfx.play("buy", 0.05))
+	_world.drone_added.connect(func(_d: Drone) -> void: Sfx.play("buy", 0.05))
 	_world.zone_unlocked.connect(_on_zone_unlocked)
 	_world.collectible_found.connect(_on_collectible_found)
 	_setup_nature()
@@ -315,7 +323,10 @@ func debug_scenario(name: String) -> void:
 
 
 ## Rusty liefert ab: kleiner Spruch beim ersten Mal und bei großen Lieferungen.
-func _on_ship_delivered(_items: Dictionary, bolts: int) -> void:
+func _on_ship_delivered(_items: Dictionary, bolts: int, by_player: bool) -> void:
+	if not by_player:
+		return
+	Sfx.play("deliver", 0.04)
 	if not bool(_world.flags.get("first_delivery", false)):
 		_world.flags["first_delivery"] = true
 		Quips.say("first_delivery", true)
@@ -407,8 +418,17 @@ func _refresh_chapter_hud() -> void:
 	_hud.set_tutorial(text)
 
 
+## Meilenstein: Pokal-Schild mit Zahl und Belohnung, Arpeggio, Konfetti.
+func _on_milestone_reached(def: Dictionary, _step: int, value: int, bolts: int) -> void:
+	_player.celebrate()
+	Sfx.play("milestone")
+	_hud.stage_banner.show_card(tr("MS_TITLE"), tr(str(def.get("name_key", ""))) % Fmt.int_str(value),
+		tr("MS_REWARD") % Fmt.int_str(bolts) if bolts > 0 else "", "res://assets/sprites/ui/trophy.svg", 2.6)
+
+
 func _on_quest_completed(_id: String, def: Dictionary) -> void:
 	_player.celebrate()
+	Sfx.play("quest")
 	Quips.say("quest_done", true)
 	_hud.set_tutorial("☑  " + tr("HUD_QUEST_DONE") % tr(str(def.get("text_key", ""))))
 	_chapter_timer = 2.5
@@ -420,6 +440,7 @@ func _on_ship_upgraded(s: Ship) -> void:
 	if _progress_menu.visible:
 		_progress_menu.close()
 	_player.celebrate()
+	Sfx.play("repair")
 	Quips.say("ship_upgraded", true)
 	var sd := ShipSystem.stage_def(_world, s.stage)
 	_hud.set_tutorial(tr("HUD_SHIP_UP") % [s.stage, tr(str(sd.get("name_key", "")))])
@@ -449,6 +470,7 @@ func _launch_sequence() -> void:
 	InputRouter.context = InputRouter.Context.MENU
 	_launching = true
 	EventBus.quip.emit("LAUNCH_Q")
+	Sfx.play("launch")
 	var base := view.position
 	_focus_camera(view)
 	view.ship_fx.launch()

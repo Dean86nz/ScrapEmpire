@@ -81,17 +81,25 @@ func refresh(b: Building) -> void:
 		_label.visible = false
 
 
-func show_sale(value: int) -> void:
+## Fliegender Betrag über dem Gebäude. `big`: Rustys Abgabe (groß, springt auf, bleibt länger).
+func show_sale(value: int, big: bool = false) -> void:
 	var fly := Label.new()
 	fly.text = "+%d" % value
-	_style_label(fly, 28)
+	_style_label(fly, 46 if big else 26)
 	fly.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
-	fly.add_theme_constant_override("outline_size", 8)
-	fly.position = Vector2(-30, -70)
+	fly.add_theme_constant_override("outline_size", 12 if big else 8)
+	fly.size = Vector2(240, 60)
+	fly.position = Vector2(-120, -_half_h + (10.0 if big else -30.0))
+	fly.pivot_offset = Vector2(120, 30)
 	fly.z_index = 25
 	add_child(fly)
+	var rise := 70.0 if big else 50.0
+	var life := 1.3 if big else 0.7
 	var tween := create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(fly, "position:y", -120.0, 0.7).set_ease(Tween.EASE_OUT)
-	tween.tween_property(fly, "modulate:a", 0.0, 0.7).set_delay(0.3)
+	if big:
+		fly.scale = Vector2(0.4, 0.4)
+		tween.tween_property(fly, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).set_delay(0.3)
+	tween.tween_property(fly, "position:y", fly.position.y - rise, life).set_ease(Tween.EASE_OUT)
+	tween.tween_property(fly, "modulate:a", 0.0, 0.4).set_delay(life - 0.4)
 	tween.chain().tween_callback(fly.queue_free)

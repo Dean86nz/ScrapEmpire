@@ -50,11 +50,16 @@ func _style(l: Label, size: int, color: Color) -> void:
 
 
 func show_stage(stage: int, stage_name: String, sprite_path: String, gifts: Array[String]) -> void:
-	_title.text = tr("STAGE_BANNER_TITLE")
-	_sub.text = tr("STAGE_BANNER_SUB") % [stage, stage_name]
-	_gifts.text = tr("STAGE_BANNER_NEW") % " · ".join(gifts) if not gifts.is_empty() else ""
-	_gifts.visible = not gifts.is_empty()
-	_icon.texture = load(sprite_path) if sprite_path != "" else null
+	show_card(tr("STAGE_BANNER_TITLE"), tr("STAGE_BANNER_SUB") % [stage, stage_name],
+		tr("STAGE_BANNER_NEW") % " · ".join(gifts) if not gifts.is_empty() else "", sprite_path)
+
+
+func show_card(title: String, sub: String, extra: String, icon_path: String, seconds: float = SHOW_SECONDS) -> void:
+	_title.text = title
+	_sub.text = sub
+	_gifts.text = extra
+	_gifts.visible = extra != ""
+	_icon.texture = load(icon_path) if icon_path != "" else null
 	visible = true
 	reset_size()
 	await get_tree().process_frame
@@ -66,6 +71,6 @@ func show_stage(stage: int, stage_name: String, sprite_path: String, gifts: Arra
 	modulate = Color.WHITE
 	_tween = create_tween()
 	_tween.tween_property(self, "scale", Vector2.ONE, 0.45).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	_tween.tween_interval(SHOW_SECONDS)
+	_tween.tween_interval(seconds)
 	_tween.tween_property(self, "modulate:a", 0.0, 0.5)
 	_tween.tween_callback(func() -> void: visible = false)

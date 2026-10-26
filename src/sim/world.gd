@@ -42,7 +42,8 @@ signal collectible_added(c: Collectible)
 signal collectible_found(c: Collectible, def: Dictionary)
 signal zone_unlocked(zone_id: String)
 signal ship_received(item: String, n: int)
-signal ship_delivered(items: Dictionary, bolts: int)
+signal ship_delivered(items: Dictionary, bolts: int, by_player: bool)
+signal milestone_reached(def: Dictionary, step: int, value: int, bolts: int)
 signal ship_upgraded(ship: Ship)
 signal ship_upgrade_bought(id: String, level: int)
 signal ship_failed(reason: String)
@@ -97,6 +98,7 @@ var collectibles_found: Dictionary = {}    # def_id → true
 var ship_cfg: Dictionary = {}              # data/ship.json
 var ship_upgrades: Dictionary = {}         # upgrade id → Stufe (Laderaum, Ertrag, Tempo, Saugen, Werkzeug)
 var quests := QuestState.new()             # geführte Aufgabenkette
+var milestones := MilestoneState.new()     # Meilensteine (MS23)
 var dirt := DirtMap.new()                  # Schmutz je Kachel (MS21)
 var dirt_cfg: Dictionary = {}              # data/dirt.json
 var _dirt_reward := 0                      # geputzte Kacheln seit dem letzten Kleinschrott
@@ -112,6 +114,7 @@ func _init() -> void:
 	wreck_destroyed.connect(_quest_wreck)
 	ship_received.connect(_quest_ship_received)
 	quests.completed.connect(_on_quest_completed)
+	milestones.reached.connect(_on_milestone_reached)
 
 
 func _quest_collected(item: String, _pos: Vector2i) -> void:
@@ -132,6 +135,10 @@ func _quest_ship_received(_item: String, n: int) -> void:
 
 func _on_quest_completed(id: String, def: Dictionary) -> void:
 	quest_completed.emit(id, def)
+
+
+func _on_milestone_reached(def: Dictionary, step: int, value: int, bolts: int) -> void:
+	milestone_reached.emit(def, step, value, bolts)
 
 
 func _on_zone_unlocked(id: String) -> void:
@@ -205,6 +212,8 @@ func tick() -> void:
 	quests.tick_move(player.pos)
 	if tick_count % 10 == 0:
 		quests.check(self)
+	if tick_count % 20 == 5:
+		milestones.check(self)
 	ToolSystem._tick_suction(self)
 	ToolSystem._tick_clean(self)
 	ShipSystem._tick_clean_wave(self)

@@ -14,6 +14,7 @@ static func make(width: int = 40, height: int = 30) -> SimWorld:
 	w.ship_cfg = ShipSystem.load_config()
 	w.collectible_cfg = {"collectibles": []}
 	w.quests.setup(QuestState.load_defs())
+	w.milestones.setup(MilestoneState.load_defs())
 	w.setup_progression_data(TechState.load_defs("res://data/tech.json"), SkillState.load_file("res://data/skills.json"))
 	w.player.pos = Vector2i(320, 352)
 	w.player.aim = Vector2.RIGHT

@@ -312,6 +312,12 @@ Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers �
 - Sim: `ShipSystem._tick_clean_wave` lässt `Ship.clean_radius` alle `clean_wave_ticks` um eine Kachel wachsen, bis `clean_radius` der Stufe erreicht ist, und putzt den Ring (ohne Kleinschrott, Müll-Kacheln ausgenommen).
 - Darstellung: `ShipFx` hängt an der `BuildingView` des Schiffs (Rauch, Lichter, Düsen, `celebrate`, `launch` → `launch_finished`, `land`). `Main` steuert Kamera-Fokus (`Camera2D.offset`), Weißblende und Endbildschirm; `Hud.stage_banner` (`StageBanner`) zeigt das Jubel-Schild, `StageTrack` die Stufenleiste im Schiff-Tab.
 
+## 10e. Meilensteine und Sound (seit v1.12.0, MS23)
+
+- `MilestoneState` (`src/sim/milestones.gd`): liest Zähler aus `QuestState.counters`, `DirtMap.cleaned_total` und `ShipSystem.upgrades_total`; `check()` alle 20 Ticks, Signal `SimWorld.milestone_reached`. Gespeichert wird nur die Zahl erreichter Stufen je Meilenstein.
+- `QuestState.to_dict` speichert zusätzlich die ID der aktuellen Aufgabe; `from_dict` findet sie über die ID wieder.
+- `Sfx` (Autoload) erzeugt die Effekte beim Start als `AudioStreamWAV` (22 kHz, 16 Bit) und spielt sie über den Bus `SFX` mit sechs Stimmen. Nur die Darstellung ruft `Sfx.play` auf, nie die Sim.
+
 ## 11. Neue Darstellung und UI
 
 - HUD: XP-Leiste (`src/ui/hud/xp_bar.tscn`), Level-Up-Konfetti (`CPUParticles2D` über Rusty), Funken-Partikel bei „Zu hart“.

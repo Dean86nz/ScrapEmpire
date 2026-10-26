@@ -1,0 +1,113 @@
+{
+  "_comment": "Meilensteine: Zähler (stat) mit Stufen (steps). Je Stufe Bolts (bolts[i]) und xp × (i+1). stat: collected, bolts_earned, cleaned, wrecks, deliveries, upgrades.",
+  "milestones": [
+    {
+      "id": "ms_collected",
+      "stat": "collected",
+      "name_key": "MS_COLLECTED",
+      "icon": "res://assets/sprites/items/scrap.svg",
+      "steps": [
+        100,
+        1000,
+        5000,
+        20000
+      ],
+      "bolts": [
+        20,
+        100,
+        400,
+        1500
+      ],
+      "xp": 10
+    },
+    {
+      "id": "ms_cleaned",
+      "stat": "cleaned",
+      "name_key": "MS_CLEANED",
+      "icon": "res://assets/sprites/ui/ms_broom.svg",
+      "steps": [
+        100,
+        1000,
+        3000,
+        8000
+      ],
+      "bolts": [
+        20,
+        150,
+        500,
+        1200
+      ],
+      "xp": 10
+    },
+    {
+      "id": "ms_deliveries",
+      "stat": "deliveries",
+      "name_key": "MS_DELIVERIES",
+      "icon": "res://assets/sprites/ui/ms_crate.svg",
+      "steps": [
+        10,
+        50,
+        200
+      ],
+      "bolts": [
+        20,
+        150,
+        600
+      ],
+      "xp": 10
+    },
+    {
+      "id": "ms_bolts",
+      "stat": "bolts_earned",
+      "name_key": "MS_BOLTS",
+      "icon": "res://assets/sprites/ui/bolt.svg",
+      "steps": [
+        500,
+        5000,
+        25000,
+        100000
+      ],
+      "bolts": [
+        25,
+        250,
+        1000,
+        4000
+      ],
+      "xp": 10
+    },
+    {
+      "id": "ms_wrecks",
+      "stat": "wrecks",
+      "name_key": "MS_WRECKS",
+      "icon": "res://assets/sprites/ui/ms_hammer.svg",
+      "steps": [
+        5,
+        25,
+        100
+      ],
+      "bolts": [
+        25,
+        150,
+        600
+      ],
+      "xp": 10
+    },
+    {
+      "id": "ms_upgrades",
+      "stat": "upgrades",
+      "name_key": "MS_UPGRADES",
+      "icon": "res://assets/sprites/ui/ms_wrench.svg",
+      "steps": [
+        5,
+        15,
+        30
+      ],
+      "bolts": [
+        50,
+        300,
+        1200
+      ],
+      "xp": 10
+    }
+  ]
+}
