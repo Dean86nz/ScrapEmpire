@@ -2,6 +2,28 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.17.0] – 2026-10-26 – MS28 Man sieht Rusty seine Skills an (Spielgefühl, Punkt 4)
+
+### Neu
+- **Anbauteile an Rusty**, je Skill in drei Stufen (angefangen, ab der Hälfte, voll ausgebaut):
+  - Fahrtempo: breitere, gerippte Ketten, voll mit Goldrand
+  - Taschen: kleiner Rucksack, dann grüner Tank mit Gurten, voll ein großer Tank mit Goldbändern und Anzeige
+  - Saugtempo: Saugdüse vorne, wird größer, Rand orange, voll verchromt mit blauem Ring; Reichweite macht sie länger
+  - Werkzeug: Hammer auf der Schulter, Stahl, voll golden
+  - Magnet: ein bis drei Lampen, voll ausgebaut pulsieren sie
+  - Boost: ein bis drei Auspuffrohre, beim Boost mit Flamme
+  - Lackierung: Rennstreifen ab 12 Skill-Stufen, goldener Stern ab 28
+- **Hotbar bricht nach 6 Plätzen um** (zweite Reihe), damit sie mit vielen Taschen nicht über der Aufgabenzeile liegt
+
+### Technik
+- `RustyLook` (zeichnet unter und über dem Körper, dreht sich mit), `Player.setup_look`; Screenshot-Cheats `skills=` und `zoom=`
+- 180 Unit-Tests, 41 Gamepad-Prüfungen, 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Ersten Skill lernen: Am Rusty erscheint sofort ein Teil (z. B. Düse oder Rucksack)
+2. Nach einer Stunde Spiel: Sieht Rusty deutlich anders aus als am Anfang?
+3. Sind die Teile auf 7" erkennbar, oder wird Rusty zu unruhig?
+
 ## [1.16.0] – 2026-10-26 – MS27 Saugen fühlt sich gut an (Spielgefühl, Punkt 5)
 
 ### Neu

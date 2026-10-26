@@ -67,6 +67,14 @@ func _process(_delta: float) -> bool:
 					current_scene.debug_scenario(kv[1])
 				"feature":
 					clock.world.unlocked_features[kv[1]] = true
+				"skills":  # skills=all | half | <Anteil 0..1> setzt alle Skill-Stufen
+					var frac := 1.0 if kv[1] == "all" else (0.5 if kv[1] == "half" else float(kv[1]))
+					for d: Dictionary in clock.world.skills.defs:
+						clock.world.skills.levels[str(d["id"])] = int(ceil(int(d["max_level"]) * frac))
+					clock.world.recompute_modifiers()
+				"zoom":  # zoom=3 vergrößert die Kamera
+					var pz: Node2D = get_nodes_in_group("player")[0]
+					(pz.get_node("Camera2D") as Camera2D).zoom = Vector2.ONE * float(kv[1])
 				"counter":  # counter=wrecks;5 setzt einen Zähler (Meilensteine, Aufgaben)
 					var cv := kv[1].split(";")
 					clock.world.quests.counters[cv[0]] = int(cv[1])

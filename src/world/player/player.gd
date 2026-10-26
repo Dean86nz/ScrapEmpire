@@ -29,6 +29,8 @@ var _boost_cooldown := 0.0
 var _confetti: CPUParticles2D
 var _stars: CPUParticles2D
 var _gulp_tween: Tween
+var _look: RustyLook
+var _look_world: SimWorld
 var _cheer_t := -1.0   # läuft der Jubel: vergangene Sekunden, sonst -1
 
 ## Dauer des Jubels nach einem Kauf (hüpfen, einmal drehen, Sterne).
@@ -99,6 +101,25 @@ func cheer() -> void:
 
 
 ## Kurzes Aufblähen beim Einsaugen (nicht während des Jubels).
+## Anbauteile je Skill an Rusty (MS28); aktualisiert sich bei jedem Skill-Kauf.
+func setup_look(world: SimWorld) -> void:
+	_look_world = world
+	if _look == null:
+		_look = RustyLook.new()
+		_sprite.add_child(_look)
+	world.modifiers_changed.connect(func(_m: Dictionary) -> void: refresh_look())
+	refresh_look()
+
+
+func refresh_look() -> void:
+	if _look == null or _look_world == null:
+		return
+	var maxes := {}
+	for d: Dictionary in _look_world.skills.defs:
+		maxes[str(d["id"])] = int(d["max_level"])
+	_look.set_levels(_look_world.skills.levels, maxes)
+
+
 func gulp() -> void:
 	if is_cheering():
 		return
@@ -142,6 +163,8 @@ func _physics_process(delta: float) -> void:
 	if auto:
 		speed *= float(mods["autopilot_speed_mult"])
 	_sprite.modulate = Color(1.0, 1.0, 0.75) if _boost_time > 0.0 else Color.WHITE
+	if _look != null:
+		_look.boosting = _boost_time > 0.0
 	velocity = move * speed
 	move_and_slide()
 

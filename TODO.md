@@ -10,7 +10,8 @@
 - [x] MS25 Skill und Schiff getrennt (v1.14.0): XP für Rusty, Bolts fürs Schiff, Migration v9
 - [x] MS26 Jubel nach Kauf (v1.15.0)
 - [x] MS27 Saugen fühlt sich gut an (v1.16.0)
-- [ ] Runde „Spielgefühl“ (Go 2026-10-26): MS28 Rusty sichtbar → MS29 Wiese → MS30 Müll endlich und Ereignisse → MS31 Menüs schöner → MS32 Sound und Musik (Stücke vorschlagen, Auftraggeber wählt)
+- [x] MS28 Rusty sichtbar (v1.17.0)
+- [ ] Runde „Spielgefühl“ (Go 2026-10-26): MS29 Wiese → MS30 Müll endlich und Ereignisse → MS31 Menüs schöner → MS32 Sound und Musik (Stücke vorschlagen, Auftraggeber wählt)
 - [ ] MS26: Putzwelle des Schiffs (Radius 16 auf Stufe 5) gegen Tor-Schwelle abwägen
 - [ ] MS26: Prüfen, ob 50 % geputzte Fläche fürs Tor zu lang dauert
 - [ ] Ally-Rückmeldung: Minuten bis erstes Upgrade und Schiffsstufe 2 (für MS26)
