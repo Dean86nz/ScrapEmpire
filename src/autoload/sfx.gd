@@ -1,47 +1,89 @@
 extends Node
-## Kleine Soundeffekte, beim Start selbst erzeugt (Sinus, Dreieck, Rauschen). Keine Dateien, daher
-## keine Lizenzfragen. Eigener Bus „SFX“ (Lautstärke-Regler folgt in MS25). Rein kosmetisch.
-## Sounds: deliver (Münzen), quest (Glocke), milestone (Arpeggio), repair (Fanfare), buy (Plopp), launch (Grollen).
+## Ton (MS32): Soundeffekte aus CC0-Dateien (Kenney, siehe docs/CREDITS.md) unter assets/audio/sfx/,
+## je Effekt mehrere Varianten und leichte Tonhöhen-Variation. Nur zwei Dinge sind selbst erzeugt:
+## das sanfte Rauschen beim Dauersaugen und das tiefe Grollen beim Abflug.
+## Busse „Music“ und „SFX“ mit Lautstärke aus den Einstellungen (Pause-Menü). Rein kosmetisch.
 
+const SFX_DIR := "res://assets/audio/sfx/"
 const RATE := 22050
-const VOICES := 6
-const BUS := "SFX"
-const BUS_DB := -6.0
+const VOICES := 8
+const BUS_SFX := "SFX"
+const BUS_MUSIC := "Music"
+## Grundlautstärke je Effekt (dB), damit alles leise unter der Musik liegt.
+const LEVEL_DB := {"plop": -10.0, "deliver": -6.0, "quest": -6.0, "milestone": -5.0, "cheer": -5.0,
+	"repair": -8.0, "honk": -6.0, "thud": -6.0, "open": -10.0, "close": -10.0, "tab": -12.0, "buy": -8.0, "launch": -4.0}
+## Standard-Tonhöhen-Variation je Effekt.
+const JITTER := 0.06
 
-var _streams: Dictionary = {}
+var _streams: Dictionary = {}   # id → Array[AudioStream]
 var _players: Array[AudioStreamPlayer] = []
 var _next := 0
-var _last_play: Dictionary = {}   # id → Zeitpunkt (ms), für gedrosselte Sounds
+var _last_play: Dictionary = {}
+var _suck := AudioStreamPlayer.new()
+var _suck_target := -80.0
+var music := AudioStreamPlayer.new()
+var volume := {"music": 0.6, "sfx": 0.8}
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	if AudioServer.get_bus_index(BUS) < 0:
-		AudioServer.add_bus()
-		var i := AudioServer.bus_count - 1
-		AudioServer.set_bus_name(i, BUS)
-		AudioServer.set_bus_volume_db(i, BUS_DB)
+	_ensure_bus(BUS_SFX)
+	_ensure_bus(BUS_MUSIC)
 	for i in VOICES:
 		var p := AudioStreamPlayer.new()
-		p.bus = BUS
+		p.bus = BUS_SFX
 		add_child(p)
 		_players.append(p)
-	_build()
+	_load_files()
+	_build_generated()
+	_suck.bus = BUS_SFX
+	_suck.volume_db = -80.0
+	add_child(_suck)
+	music.bus = BUS_MUSIC
+	add_child(music)
+	var s := SaveManager.load_settings()
+	set_volume("music", float(s.get("vol_music", volume["music"])))
+	set_volume("sfx", float(s.get("vol_sfx", volume["sfx"])))
+	_start_music()
 
 
-func play(id: String, pitch_jitter: float = 0.0, volume_db: float = 0.0) -> void:
-	if not _streams.has(id):
+func _ensure_bus(bus_name: String) -> void:
+	if AudioServer.get_bus_index(bus_name) < 0:
+		AudioServer.add_bus()
+		AudioServer.set_bus_name(AudioServer.bus_count - 1, bus_name)
+
+
+## Lautstärke 0..1 für "music" oder "sfx" (0 = stumm).
+func set_volume(kind: String, value: float) -> void:
+	volume[kind] = clampf(value, 0.0, 1.0)
+	var idx := AudioServer.get_bus_index(BUS_MUSIC if kind == "music" else BUS_SFX)
+	if idx < 0:
+		return
+	AudioServer.set_bus_mute(idx, float(volume[kind]) <= 0.001)
+	AudioServer.set_bus_volume_db(idx, linear_to_db(maxf(float(volume[kind]), 0.001)))
+
+
+func save_volume() -> void:
+	var s := SaveManager.load_settings()
+	s["vol_music"] = volume["music"]
+	s["vol_sfx"] = volume["sfx"]
+	SaveManager.save_settings(s)
+
+
+func play(id: String, pitch_jitter: float = JITTER, volume_db: float = 0.0) -> void:
+	var list: Array = _streams.get(id, [])
+	if list.is_empty():
 		return
 	var p := _players[_next]
 	_next = (_next + 1) % VOICES
-	p.stream = _streams[id]
+	p.stream = list[randi() % list.size()]
 	p.pitch_scale = 1.0 + randf_range(-pitch_jitter, pitch_jitter)
-	p.volume_db = volume_db
+	p.volume_db = float(LEVEL_DB.get(id, -6.0)) + volume_db
 	p.play()
 
 
 ## Wie play, aber höchstens einmal je `min_gap` Sekunden (z. B. Plopp beim Dauersaugen).
-func play_throttled(id: String, min_gap: float, pitch_jitter: float = 0.0, volume_db: float = 0.0) -> void:
+func play_throttled(id: String, min_gap: float, pitch_jitter: float = JITTER, volume_db: float = 0.0) -> void:
 	var now := Time.get_ticks_msec()
 	if now - int(_last_play.get(id, -100000)) < int(min_gap * 1000.0):
 		return
@@ -49,112 +91,93 @@ func play_throttled(id: String, min_gap: float, pitch_jitter: float = 0.0, volum
 	play(id, pitch_jitter, volume_db)
 
 
-# --- Erzeugung ----------------------------------------------------------------
+## Sanftes Rauschen, solange Rusty saugt (weich ein- und ausgeblendet).
+func set_sucking(on: bool) -> void:
+	_suck_target = -16.0 if on else -80.0
+	if on and not _suck.playing:
+		_suck.play()
 
-func _build() -> void:
+
+func _process(delta: float) -> void:
+	if _suck.playing:
+		_suck.volume_db = move_toward(_suck.volume_db, _suck_target, delta * (60.0 if _suck_target > _suck.volume_db else 90.0))
+		if _suck.volume_db <= -79.0 and _suck_target <= -80.0:
+			_suck.stop()
+
+
+## Musik aus data/audio.json („music“: Pfad). Leer = keine Musik (Auswahl durch den Auftraggeber).
+func _start_music() -> void:
+	var text := FileAccess.get_file_as_string("res://data/audio.json")
+	var cfg: Variant = JSON.parse_string(text) if text != "" else null
+	var path := str(cfg.get("music", "")) if cfg is Dictionary else ""
+	if path == "" or not ResourceLoader.exists(path):
+		return
+	var stream: AudioStream = load(path)
+	if stream is AudioStreamOggVorbis:
+		(stream as AudioStreamOggVorbis).loop = true
+	elif stream is AudioStreamMP3:
+		(stream as AudioStreamMP3).loop = true
+	music.stream = stream
+	music.volume_db = float(cfg.get("music_db", -8.0))
+	music.play()
+
+
+# --- Dateien ------------------------------------------------------------------
+
+## Lädt assets/audio/sfx/<id>_<n>.ogg als Varianten von <id>.
+func _load_files() -> void:
+	var dir := DirAccess.open(SFX_DIR)
+	if dir == null:
+		return
+	for f in dir.get_files():
+		var fname := f.trim_suffix(".import").trim_suffix(".remap")
+		if not fname.ends_with(".ogg"):
+			continue
+		var id := fname.get_basename()
+		var cut := id.rfind("_")
+		if cut > 0:
+			id = id.substr(0, cut)
+		var stream: AudioStream = load(SFX_DIR + fname)
+		if stream == null:
+			continue
+		if not _streams.has(id):
+			_streams[id] = []
+		if not (_streams[id] as Array).has(stream):
+			_streams[id].append(stream)
+
+
+# --- selbst erzeugt: Saug-Rauschen und Abflug-Grollen --------------------------
+
+func _build_generated() -> void:
 	var buf := PackedFloat32Array()
-	# Münzen: drei helle Klicks und ein weicher Schlag
-	buf = _silence(0.45)
-	_mix_tone(buf, 0.0, 0.12, 110.0, "sine", 0.5, 30.0)
-	_mix_tone(buf, 0.0, 0.18, 1568.0, "bell", 0.35, 22.0)
-	_mix_tone(buf, 0.06, 0.18, 2093.0, "bell", 0.32, 22.0)
-	_mix_tone(buf, 0.12, 0.30, 2637.0, "bell", 0.30, 14.0)
-	_streams["deliver"] = _to_stream(buf)
-	# Glocke: zwei Töne
-	buf = _silence(0.7)
-	_mix_tone(buf, 0.0, 0.5, 880.0, "bell", 0.4, 7.0)
-	_mix_tone(buf, 0.12, 0.55, 1318.5, "bell", 0.38, 6.0)
-	_streams["quest"] = _to_stream(buf)
-	# Meilenstein: C-E-G-C aufwärts
-	buf = _silence(1.0)
-	var notes := [523.25, 659.25, 783.99, 1046.5]
-	for i in notes.size():
-		_mix_tone(buf, i * 0.085, 0.6 if i == 3 else 0.3, notes[i], "tri", 0.32, 5.0 if i == 3 else 9.0)
-	_streams["milestone"] = _to_stream(buf)
-	# Fanfare: Auftakt und gehaltener Dur-Akkord
-	buf = _silence(1.4)
-	_mix_tone(buf, 0.0, 0.14, 392.0, "tri", 0.3, 8.0)
-	_mix_tone(buf, 0.12, 0.14, 523.25, "tri", 0.3, 8.0)
-	for f in [523.25, 659.25, 783.99, 1046.5]:
-		_mix_tone(buf, 0.26, 1.1, f, "tri", 0.2, 2.6)
-	_streams["repair"] = _to_stream(buf)
-	# Jubel: weiches, tiefes Dreiklang-Arpeggio (G-C-E), leise
-	buf = _silence(0.8)
-	var cheer := [392.0, 523.25, 659.25]
-	for i in cheer.size():
-		_mix_tone(buf, i * 0.09, 0.55 if i == 2 else 0.3, cheer[i], "sine", 0.22, 4.0 if i == 2 else 8.0)
-	_streams["cheer"] = _to_stream(buf)
-	# Hupe der Touristen: zwei tiefe, weiche Töne
-	buf = _silence(0.6)
-	_mix_tone(buf, 0.0, 0.22, 233.0, "tri", 0.3, 3.0)
-	_mix_tone(buf, 0.26, 0.3, 294.0, "tri", 0.3, 3.0)
-	_streams["honk"] = _to_stream(buf)
-	# Aufprall: tiefer Schlag
-	buf = _silence(0.3)
-	_mix_sweep(buf, 0.0, 0.25, 140.0, 50.0, 0.55)
-	_streams["thud"] = _to_stream(buf)
-	# Einsaug-Plopp: sehr kurz, tief, leise
-	buf = _silence(0.09)
-	_mix_sweep(buf, 0.0, 0.07, 520.0, 240.0, 0.28)
-	_streams["plop"] = _to_stream(buf)
-	# Plopp: kurzer fallender Ton
-	buf = _silence(0.12)
-	_mix_sweep(buf, 0.0, 0.09, 950.0, 380.0, 0.5)
-	_streams["buy"] = _to_stream(buf)
-	# Grollen: tiefes, anschwellendes Rauschen
-	buf = _silence(3.0)
-	_mix_rumble(buf, 3.0, 0.55)
-	_streams["launch"] = _to_stream(buf)
-
-
-func _silence(seconds: float) -> PackedFloat32Array:
-	var b := PackedFloat32Array()
-	b.resize(int(seconds * RATE))
-	b.fill(0.0)
-	return b
-
-
-func _mix_tone(buf: PackedFloat32Array, start: float, dur: float, freq: float, wave: String, vol: float, decay: float) -> void:
-	var s0 := int(start * RATE)
-	var n := mini(int(dur * RATE), buf.size() - s0)
-	var attack := int(0.004 * RATE)
-	for i in n:
-		var t := float(i) / RATE
-		var ph := t * freq
-		var v := 0.0
-		match wave:
-			"sine":
-				v = sin(TAU * ph)
-			"bell":
-				v = sin(TAU * ph) + 0.35 * sin(TAU * ph * 2.76) * exp(-t * 18.0)
-			"tri":
-				v = 1.0 - 4.0 * absf(fposmod(ph, 1.0) - 0.5)
-		var env := exp(-t * decay) * (float(i) / attack if i < attack else 1.0)
-		var fade := clampf(float(n - i) / (0.01 * RATE), 0.0, 1.0)
-		buf[s0 + i] += v * vol * env * fade
-
-
-func _mix_sweep(buf: PackedFloat32Array, start: float, dur: float, f0: float, f1: float, vol: float) -> void:
-	var s0 := int(start * RATE)
-	var n := mini(int(dur * RATE), buf.size() - s0)
-	var ph := 0.0
-	for i in n:
-		var k := float(i) / n
-		ph += lerpf(f0, f1, k) / RATE
-		buf[s0 + i] += sin(TAU * ph) * vol * (1.0 - k)
-
-
-func _mix_rumble(buf: PackedFloat32Array, dur: float, vol: float) -> void:
-	var n := mini(int(dur * RATE), buf.size())
-	var lp := 0.0
+	buf.resize(RATE)  # 1 s Schleife, gefiltertes Rauschen
 	var rng := RandomNumberGenerator.new()
-	rng.seed = 7
-	for i in n:
-		var k := float(i) / n
+	rng.seed = 3
+	var lp := 0.0
+	var lp2 := 0.0
+	for i in buf.size():
+		lp += (rng.randf_range(-1.0, 1.0) - lp) * 0.08
+		lp2 += (lp - lp2) * 0.2
+		buf[i] = lp2 * 2.2
+	# Anfang und Ende überblenden, damit die Schleife nicht knackt
+	var fade := 600
+	for i in fade:
+		var k := float(i) / fade
+		buf[i] = buf[i] * k + buf[buf.size() - fade + i] * (1.0 - k)
+	buf.resize(buf.size() - fade)
+	var loop := _to_stream(buf)
+	loop.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	loop.loop_end = buf.size()
+	_suck.stream = loop
+	buf = PackedFloat32Array()
+	buf.resize(RATE * 3)
+	lp = 0.0
+	for i in buf.size():
+		var k := float(i) / buf.size()
 		lp += (rng.randf_range(-1.0, 1.0) - lp) * 0.04
-		var hum := sin(TAU * 55.0 * i / RATE) * 0.4
 		var env := minf(k * 2.5, 1.0) * clampf((1.0 - k) * 6.0, 0.0, 1.0)
-		buf[i] += (lp * 3.0 + hum) * vol * env
+		buf[i] = (lp * 3.0 + sin(TAU * 55.0 * i / RATE) * 0.4) * 0.5 * env
+	_streams["launch"] = [_to_stream(buf)]
 
 
 func _to_stream(buf: PackedFloat32Array) -> AudioStreamWAV:

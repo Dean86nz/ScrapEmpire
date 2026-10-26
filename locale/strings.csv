@@ -570,3 +570,5 @@ GOAL_NEXT,Danach,Next
 GOAL_DONE_N,%d Aufgaben erledigt,%d tasks done
 GOAL_DONE_SHOW,A: anzeigen,A: show
 GOAL_DONE_HIDE,A: einklappen,A: hide
+MENU_VOL_MUSIC,Musik  %s,Music  %s
+MENU_VOL_SFX,Effekte  %s,Effects  %s

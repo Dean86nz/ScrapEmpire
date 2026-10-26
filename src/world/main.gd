@@ -185,6 +185,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_update_camera_focus(delta)
+	Sfx.set_sucking(_world.player.suck_held and InputRouter.context == InputRouter.Context.GAME)
 	_hud.set_hint(_current_hint())
 	_chapter_timer -= delta
 	if _chapter_timer <= 0.0:

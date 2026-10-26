@@ -2,6 +2,37 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.21.0] – 2026-10-26 – MS32 Echte Sounds, Lautstärke, Musik vorbereitet (Spielgefühl, Punkt 8)
+
+### Neu
+- **Echte Soundeffekte statt Piepsen:** 22 weiche, eher tiefe CC0-Sounds von Kenney (Interface Sounds, Impact Sounds): Plopp beim Einsaugen, Metallklirren beim Abliefern, Glocke bei erledigter Aufgabe, aufsteigender Ton beim Meilenstein, freundliche Bestätigung beim Kauf-Jubel, tiefe Glocke bei der Reparatur, Fragezeichen-Ton als Touristen-Hupe, weicher Aufprall bei Säcken und Meteoren, leise Klicks beim Öffnen, Schließen und Tabwechsel des Menüs. Jeder Effekt mit mehreren Varianten und leichter Tonhöhen-Variation, alle leise abgemischt
+- **Dauersaugen:** sanftes Rauschen, das weich ein- und ausblendet, statt Einzeltönen
+- **Lautstärke im Pause-Menü:** „Musik“ und „Effekte“, mit dem D-Pad links/rechts in 10-%-Schritten (A springt im Kreis). Wird gespeichert
+- **Musik vorbereitet:** Eigener Musik-Kanal, das Stück wird in `data/audio.json` eingetragen. Noch keine Musik drin: Die Auswahl triffst du (Vorschläge unten)
+- `docs/CREDITS.md` mit allen Quellen und Lizenzen
+
+### Musik-Vorschläge (alle CC0, fröhlich; bitte eins auswählen)
+1. **Feel Good Island** von Brandon75689: Marimba, Klavier, Bass, leichte Drums; verspielt und gut gelaunt. https://opengameart.org/content/feel-good-island
+2. **Happy Lullaby (song17)** von cynicmusic: Glöckchen und Arpeggios, ruhig-fröhlich, nahtlos loopbar. https://opengameart.org/content/happy-lullaby-song17
+3. **Happy Clappy Loop** von OwlishMedia: Klavier, beschwingt, nahtloser Loop. https://opengameart.org/content/happy-clappy-loop
+4. **Apple Cider** von Zane Little Music: Akustikgitarre, Flöte, Pfeifen, gemütlich (leichter Retro-Klang). https://opengameart.org/content/apple-cider
+5. **Green Hills** von Igor Gundarev: fröhliche Plattformer-Musik. https://opengameart.org/content/green-hills
+
+Eine echte CC0-Ukulele-Nummer habe ich nicht gefunden; die Ukulele-Stücke auf OpenGameArt verlangen eine Namensnennung (CC-BY). Wenn das okay ist, suche ich gern danach.
+
+### Behoben
+- Pause-Menü: Die Reihenfolge für D-Pad hoch/runter läuft jetzt im Kreis über alle Einträge (vorher feste Nachbarn aus der Szene)
+
+### Technik
+- `Sfx` lädt `assets/audio/sfx/<id>_<n>.ogg` als Varianten, Busse `SFX` und `Music`, `set_volume`, `set_sucking`, Musik aus `data/audio.json`; Lautstärken in den Einstellungen (`vol_music`, `vol_sfx`)
+- 188 Unit-Tests, 44 Gamepad-Prüfungen (neu: Lautstärke per D-Pad), 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Saugen, abliefern, kaufen, Aufgabe erledigen: Klingt alles weich und angenehm? Ist etwas zu laut oder nervig?
+2. RT lange halten: sanftes Rauschen, beim Loslassen blendet es aus
+3. Start: „Effekte“ auswählen, D-Pad links/rechts ändert die Lautstärke, Spiel neu starten: Wert bleibt
+4. Musik-Vorschläge oben anhören und eins auswählen
+
 ## [1.20.0] – 2026-10-26 – MS31 Menüs schöner (Spielgefühl, Punkt 2)
 
 ### Neu

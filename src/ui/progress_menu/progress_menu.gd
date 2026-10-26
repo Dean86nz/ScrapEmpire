@@ -206,12 +206,15 @@ func open(tab: Tab = Tab.SHIP) -> void:
 	var tw := create_tween().set_parallel(true)
 	tw.tween_property(panel, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tw.tween_property(panel, "modulate:a", 1.0, 0.15)
+	Sfx.play("open")
 	InputRouter.context = InputRouter.Context.MENU
 	_refresh_all()
 	_show_tab()
 
 
 func close() -> void:
+	if visible:
+		Sfx.play("close")
 	visible = false
 	InputRouter.context = InputRouter.Context.GAME
 
@@ -234,10 +237,12 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif MenuInput.accept_pressed(event) and _tab != Tab.MAP:
 		MenuInput.press_focused(get_viewport())
 	elif event.is_action_pressed("hotbar_next"):
+		Sfx.play("tab")
 		_next_tab(1)
 		_show_tab()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("hotbar_prev"):
+		Sfx.play("tab")
 		_next_tab(-1)
 		_show_tab()
 		get_viewport().set_input_as_handled()
