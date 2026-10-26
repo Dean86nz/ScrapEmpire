@@ -249,15 +249,42 @@ func _fly_to_ship(item: String, start: Vector2, target: Vector2, delay: float) -
 	tw.tween_callback(fly.queue_free)
 
 
-## Icon fliegt vom Fundort zu Rusty und verschwindet.
+## Icon fliegt im kleinen Bogen vom Fundort zu Rusty, dreht sich, schrumpft und verschwindet mit
+## einem Plopp-Wölkchen; Rusty bläht sich kurz auf.
 func _on_item_collected(item_id: String, from_pos: Vector2i) -> void:
 	var fly := Sprite2D.new()
 	fly.texture = DataRegistry.item_icon(item_id)
 	fly.position = Vector2(from_pos)
 	fly.z_index = 20
 	add_child(fly)
-	var tween := create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(fly, "global_position", _player.global_position, 0.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween.tween_property(fly, "scale", Vector2.ONE * 0.4, 0.2)
-	tween.chain().tween_callback(fly.queue_free)
+	var start := Vector2(from_pos)
+	var bend := Vector2(randf_range(-30, 30), randf_range(-50, -20))
+	var spin := randf_range(-1.0, 1.0) * PI
+	var tw := create_tween()
+	tw.tween_method(func(t: float) -> void:
+		var target := _player.global_position
+		var mid := (start + target) * 0.5 + bend
+		fly.global_position = start.lerp(mid, t).lerp(mid.lerp(target, t), t)
+		fly.rotation = spin * t
+		fly.scale = Vector2.ONE * lerpf(1.1, 0.35, t * t), 0.0, 1.0, 0.24).set_ease(Tween.EASE_IN)
+	tw.tween_callback(func() -> void:
+		_puff(_player.global_position)
+		if _player.has_method("gulp"):
+			_player.gulp()
+		Sfx.play_throttled("plop", 0.06, 0.12)
+		fly.queue_free())
+
+
+## Kleines Plopp-Wölkchen (weicher Kreis, wächst und verblasst).
+func _puff(at: Vector2) -> void:
+	var p := Sprite2D.new()
+	p.texture = ShipFx._soft_dot()
+	p.global_position = at + Vector2(randf_range(-6, 6), randf_range(-6, 6))
+	p.z_index = 21
+	p.modulate = Color(1, 1, 1, 0.8)
+	p.scale = Vector2.ONE * 0.6
+	add_child(p)
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(p, "scale", Vector2.ONE * 1.6, 0.18).set_ease(Tween.EASE_OUT)
+	tw.tween_property(p, "modulate:a", 0.0, 0.18)
+	tw.chain().tween_callback(p.queue_free)

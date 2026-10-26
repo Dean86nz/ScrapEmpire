@@ -28,6 +28,7 @@ var _boost_cooldown := 0.0
 
 var _confetti: CPUParticles2D
 var _stars: CPUParticles2D
+var _gulp_tween: Tween
 var _cheer_t := -1.0   # läuft der Jubel: vergangene Sekunden, sonst -1
 
 ## Dauer des Jubels nach einem Kauf (hüpfen, einmal drehen, Sterne).
@@ -95,6 +96,17 @@ func cheer() -> void:
 	_stars.restart()
 	_stars.emitting = true
 	_cheer_t = 0.0
+
+
+## Kurzes Aufblähen beim Einsaugen (nicht während des Jubels).
+func gulp() -> void:
+	if is_cheering():
+		return
+	if _gulp_tween != null:
+		_gulp_tween.kill()
+	_sprite.scale = Vector2(1.14, 1.14)
+	_gulp_tween = create_tween()
+	_gulp_tween.tween_property(_sprite, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func is_cheering() -> bool:

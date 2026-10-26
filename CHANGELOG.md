@@ -2,6 +2,22 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.16.0] – 2026-10-26 – MS27 Saugen fühlt sich gut an (Spielgefühl, Punkt 5)
+
+### Neu
+- **Eingesaugte Teile** fliegen im kleinen Bogen und drehend zu Rusty, schrumpfen und verschwinden mit einem Plopp-Wölkchen und einem leisen, tiefen Plopp (höchstens alle 60 ms, mit Tonhöhen-Variation)
+- **Rusty bläht sich** bei jedem eingesaugten Teil kurz auf
+- **Hotbar:** Kommt ein Teil dazu, springt die Zahl hoch und das Icon hüpft
+- **Nächstes Ziel immer im HUD** (unter dem Planet-Balken): „Noch 40 Bolts bis Ertrag 3“, grün „Ertrag 3: jetzt leistbar!“, oder „Skillpunkt frei!“. Gezeigt wird das günstigste Schiff-Ziel (Reparatur, Ertrag, Bot, Drohne)
+
+### Technik
+- `GoalHint.next_goal`, `Player.gulp()`, `Sfx.play_throttled`; 179 Unit-Tests (2 neue fürs Ziel), 41 Gamepad-Prüfungen, 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. RT auf einen Schrotthaufen halten: Teile fliegen zu Rusty, Plopp, Rusty pumpt, Hotbar-Zahl hüpft. Macht das Saugen allein schon Spaß?
+2. Links oben unter „Planet“: Stimmt das nächste Ziel, wird es grün, sobald es leistbar ist?
+3. Ist das Plopp beim Dauersaugen angenehm oder nervig? (Echte Sounds kommen in MS32)
+
 ## [1.15.0] – 2026-10-26 – MS26 Jubel nach dem Kauf (Spielgefühl, Punkt 3)
 
 ### Neu
