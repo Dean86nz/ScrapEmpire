@@ -27,6 +27,11 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **16** | Überarbeitung Block 1: Ally-Bugs (A in Menüs, Trigger-Schwelle, Sauger-Reset) | v1.5.0 |
 | **17** | Überarbeitung Block 7: `world.gd` in acht Teilsysteme aufgeteilt | v1.6.0 |
 | **18a** | Überarbeitung Block 2: Raumschiff-Basis mit Stufen, Planeten-Heilungsbalken, geführte Aufgabenkette, Außenposten | v1.7.0 |
+| **19** | Kurswechsel Block 1: Weiterspielen absichern (Lade-Protokoll, Ladeschutz, F-Tasten nur Debug) | v1.8.0 |
+
+## Kurswechsel nach dem zweiten Ally-Test (Go 2026-10-26)
+
+Ersetzt den bisherigen Plan ab MS19. Weniger Fabrik, mehr Incremental: sammeln, am Schiff abliefern, aufrüsten, später Bots und Drohnen bauen. MS19 Absturz beim Weiterspielen → MS20 Kern-Ablauf (Förderband, Ofen, Presse, Rezepte fallen weg; alte Spielstände werden gesichert und verworfen; Blaupausen über Schiffsstufen) → MS21 Sichtbar sauber (Schmutz je Kachel, Gras wächst nach) → MS22 Schiff als Herz (Schiffsmenü, sichtbare Stufen, Abflug als Spielende) → MS23 Erfolgserlebnisse → MS24 Menüs → MS25 Animation und Sound → MS26 Balancing.
 
 ## Überarbeitung nach dem Ally-Test (Go 2026-10-25)
 

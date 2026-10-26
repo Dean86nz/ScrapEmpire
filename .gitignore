@@ -9,3 +9,6 @@ Godot_v4.7.2-stable_win64.exe/
 # OS
 Thumbs.db
 .DS_Store
+
+# Vom Auftraggeber kopierte Ally-Logs und Spielstände (nicht ins Repo)
+logs/

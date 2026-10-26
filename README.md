@@ -32,7 +32,7 @@ Controller in Armoury Crate auf **Gamepad-Modus** stellen (nicht Desktop-Modus).
 | Schiff ausbauen (am Schiff) | X | Q |
 | Pause-Menü | Start | Esc |
 
-Entwickler-Tasten: F3 Debug-Overlay, F4 Cheat (Bolts, Material, XP), F5 speichern, F6 Perf-Szenario, F7 Beispielkette. Screenshot-Werkzeug (`tests/shot.sh`) kennt zusätzlich die Szenarien `auto`, `helpers`, `drones`, `cozy`, `endgame`.
+Entwickler-Tasten (nur Debug-Builds, in der Release-EXE ohne Wirkung): F3 Debug-Overlay, F4 Cheat (Bolts, Material, XP), F5 speichern, F6 Perf-Szenario, F7 Beispielkette. Screenshot-Werkzeug (`tests/shot.sh`) kennt zusätzlich die Szenarien `auto`, `helpers`, `drones`, `cozy`, `endgame`.
 
 ## Spielablauf in Kürze
 

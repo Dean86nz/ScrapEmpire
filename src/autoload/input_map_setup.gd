@@ -9,6 +9,8 @@ const DEADZONE := 0.2
 ## Abzüge (RT/LT) brauchen eine höhere Schwelle: der Ally X liefert in Ruhe Werte über 0,2 (Dauersaugen).
 const TRIGGER_DEADZONE := 0.5
 const DEADZONES := {"tool_primary": TRIGGER_DEADZONE, "tool_secondary": TRIGGER_DEADZONE}
+## Entwickler-Tasten (F3–F7): in der Release-EXE ohne Belegung, damit sie nichts auslösen.
+const DEV_ACTIONS := ["debug_overlay", "debug_cheat", "debug_save", "debug_perf", "debug_chain"]
 
 
 static func _key(code: Key) -> InputEventKey:
@@ -77,13 +79,15 @@ static var ACTIONS: Dictionary = {
 }
 
 
-static func apply() -> void:
+static func apply(dev_keys: bool = OS.is_debug_build()) -> void:
 	for action: String in ACTIONS.keys():
 		if InputMap.has_action(action):
 			InputMap.action_erase_events(action)
 		else:
 			InputMap.add_action(action, DEADZONE)
 		InputMap.action_set_deadzone(action, float(DEADZONES.get(action, DEADZONE)))
+		if not dev_keys and DEV_ACTIONS.has(action):
+			continue
 		for ev: InputEvent in ACTIONS[action]:
 			InputMap.action_add_event(action, ev)
 	# Menü-Navigation: A bestätigt, B bricht ab – auch wenn ein Projekt-Export die Godot-Standards verliert.

@@ -50,17 +50,26 @@ func _ready() -> void:
 	_world.quests.setup(DataRegistry.quest_defs())
 	_world.setup_progression_data(DataRegistry.tech_defs(), DataRegistry.skill_data())
 	var start_px: Vector2
+	SaveManager.log_step("Spielszene startet (Version %s)" % str(ProjectSettings.get_setting("application/config/version", "?")))
 	var save_data := SaveManager.read()
 	_map_data = MapLoader.read(MAP_PATH)
 	if not save_data.is_empty():
+		SaveManager.begin_load(SaveManager.last_read_file)
+		SaveCodec.log_steps = true
+		SaveManager.log_step("Spielstand %s gelesen, Version %d" % [SaveManager.last_read_file, int(save_data.get("version", 0))])
 		MapLoader.apply(_world, _map_data, false)
 		start_px = SaveCodec.decode(save_data, _world)
+		SaveManager.log_step("Zonen auffüllen")
 		MapLoader.fill_missing_zones(_world, _map_data)
+		SaveManager.log_step("Schiff prüfen")
 		MapLoader.ensure_ship(_world, _map_data)
+		SaveManager.log_step("Aufgaben abgleichen")
 		_world.quests.fast_forward(_world, bool(_world.flags.get("tutorial_done", false)))
 		_loaded_from_save = true
 	else:
+		SaveManager.log_step("Neues Spiel")
 		start_px = Vector2(MapLoader.apply(_world, _map_data))
+	SaveManager.log_step("Fundstücke")
 	_world.spawn_collectibles()
 	SimClock.reset_world(_world)
 	var start := Vector2i(start_px)
@@ -79,7 +88,9 @@ func _ready() -> void:
 	cam.zoom = Vector2.ONE * GameConfig.CAMERA_ZOOM
 	cam.reset_smoothing()
 
+	SaveManager.log_step("Weltansicht aufbauen")
 	_world_view.bind(_world, _player)
+	SaveManager.log_step("HUD und Menüs")
 	_hud.bind(_world)
 	_progress_menu.bind(_world)
 	_player.hotbar_selected.connect(_hud.set_selected_slot)
@@ -106,6 +117,7 @@ func _ready() -> void:
 	_hud.bind_minimap(_player)
 	_progress_menu.bind_player(_player)
 	_world.zones.stage_changed.connect(_on_zone_stage_changed)
+	SaveManager.log_step("Zonen und Natur")
 	_world.zones.refresh(_world.nodes)
 	_world.quest_completed.connect(_on_quest_completed)
 	_world.ship_upgraded.connect(_on_ship_upgraded)
@@ -137,6 +149,12 @@ func _ready() -> void:
 	_world.building_placed.connect(_on_building_placed)
 	_world.too_hard.connect(func(_n: ResourceNode, tool: String) -> void: Quips.say("too_hard_" + tool, true))
 	_world.progression.level_up.connect(_on_level_up)
+	SaveManager.log_step("Spielszene bereit")
+	# Ladeschutz erst nach 3 s ohne Absturz entfernen (die ersten Frames zeichnen die ganze Welt).
+	get_tree().create_timer(3.0).timeout.connect(func() -> void:
+		SaveManager.end_load()
+		SaveCodec.log_steps = false
+		SaveManager.log_step("Laden abgeschlossen"))
 	if not _loaded_from_save:
 		get_tree().create_timer(1.0).timeout.connect(func() -> void: Quips.say("start"))
 	else:

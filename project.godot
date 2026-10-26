@@ -11,8 +11,9 @@ config_version=5
 [application]
 
 config/name="Scrap Empire"
-config/version="1.7.0"
+config/version="1.8.0"
 run/main_scene="res://src/ui/title/title.tscn"
+run/flush_stdout_on_print=true
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
 

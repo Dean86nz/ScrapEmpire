@@ -57,6 +57,15 @@ func test_ui_accept_and_cancel_have_gamepad_buttons() -> void:
 	assert_true(InputMap.action_has_event("interact", a), "A bleibt interact")
 
 
+func test_dev_keys_only_in_debug_builds() -> void:
+	InputMapSetup.apply(false)
+	for a in InputMapSetup.DEV_ACTIONS:
+		assert_true(InputMap.has_action(a), "Aktion existiert: " + a)
+		assert_eq(InputMap.action_get_events(a).size(), 0, "Release: keine Taste für " + a)
+	InputMapSetup.apply(true)
+	assert_true(InputMap.action_get_events("debug_save").size() > 0, "Debug: F5 belegt")
+
+
 func test_deadzone_applied() -> void:
 	InputMapSetup.apply()
 	assert_true(absf(InputMap.action_get_deadzone("move_left") - InputMapSetup.DEADZONE) < 0.001)

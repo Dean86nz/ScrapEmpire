@@ -16,9 +16,14 @@ static func back_pressed(event: InputEvent) -> bool:
 
 
 ## Löst den fokussierten, sichtbaren, aktiven Button aus. true, wenn einer gedrückt wurde.
+## Das Ereignis wird VOR dem Auslösen als erledigt markiert: Der Knopf kann die Szene wechseln
+## (Weiterspielen, Sprache), danach hat das Menü keinen Viewport mehr.
 static func press_focused(viewport: Viewport) -> bool:
+	if viewport == null:
+		return false
 	var f := viewport.gui_get_focus_owner()
 	if f is BaseButton and f.is_visible_in_tree() and not (f as BaseButton).disabled:
+		viewport.set_input_as_handled()
 		(f as BaseButton).pressed.emit()
 		return true
 	return false

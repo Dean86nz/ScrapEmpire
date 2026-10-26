@@ -2,6 +2,9 @@
 
 ## Jetzt
 
+- [x] MS19 Weiterspielen absichern (v1.8.0): Lade-Protokoll, Ladeschutz mit Rettung, F-Tasten nur Debug, Weiterspielen-Test über drei Programmstarts
+- [ ] Ally-Spielstand und godot.log nach einem Absturz einsammeln, Ursache beheben
+- [ ] Kurswechsel (Go 2026-10-26): MS20 Kern-Ablauf Sammeln/Abliefern/Aufrüsten → MS21 Sichtbar sauber → MS22 Schiff als Herz → MS23 Erfolgserlebnisse → MS24 Menüs → MS25 Animation und Sound (Musik abstimmen) → MS26 Balancing
 - [x] MS18a Raumschiff-Basis, Heilungsbalken, Aufgabenkette (v1.7.0)
 - [x] MS17 Sim-Aufteilung (v1.6.0): world.gd 1.259 → 388 Zeilen, acht Teilsysteme, keine Verhaltensänderung
 - [x] MS16 Ally-Bugs (v1.5.0): A in allen Menüs, Trigger-Schwelle 0,5, Sauger-Reset, Baumenü zeigt fehlendes Material, Gamepad-Prüfung

@@ -129,8 +129,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		close()
 		get_viewport().set_input_as_handled()
 	elif MenuInput.accept_pressed(event):
-		if MenuInput.press_focused(get_viewport()):
-			get_viewport().set_input_as_handled()
+		MenuInput.press_focused(get_viewport())
 	elif (event.is_action_pressed("hotbar_next") or event.is_action_pressed("hotbar_prev")) and _decor_available():
 		_page = 1 - _page
 		_rebuild()
