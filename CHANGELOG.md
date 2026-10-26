@@ -2,6 +2,24 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.8.0] – 2026-10-26 – MS19 Weiterspielen absichern (Kurswechsel Block 1)
+
+### Behoben
+- **Menüs nach einem Szenenwechsel:** Wenn A am Titel „Weiterspielen“, „Neues Spiel“ oder „Sprache“ auslöste, griff der Titel danach noch auf seinen bereits entfernten Bildschirm zu (Skriptfehler). Jetzt wird die Eingabe vor dem Auslösen als erledigt markiert; das gilt für alle Menüs
+- Den Absturz vom Ally konnte ich hier nicht nachstellen: fünf gespielte Partien laden fehlerfrei, auch mit einer Debug-EXE. Die Ally-Logs enthielten keinen Fehler, weil das Log bisher gepuffert geschrieben wurde. Für die genaue Ursache brauche ich die Spielstand-Dateien vom Ally
+
+### Hinzugefügt
+- **Lade-Protokoll:** Jeder Ladeschritt steht mit Zeitstempel im Log (`[Laden … ms] …`), und das Log wird jetzt sofort geschrieben. Stürzt das Spiel beim Laden ab, zeigt die letzte Zeile im Log, wo
+- **Ladeschutz mit Rettung:** Während des Ladens liegt eine Schutzdatei im Spielstand-Ordner; sie verschwindet erst nach 3 s fehlerfreiem Spiel. War das letzte Laden nicht fertig, bietet der Titel „Vorherigen Spielstand laden“ (falls ein zweiter, lesbarer Stand existiert) oder „Neu beginnen (alter Stand wird gesichert)“ an. Der alte Stand wird umbenannt (`save_a.json.bak_…`), nicht gelöscht. So endet kein Start mehr in einer Absturzschleife
+- **Entwickler-Tasten F3 bis F7 nur in Debug-Builds:** In der Release-EXE sind sie ohne Belegung
+- `tests/continue_check.sh`: drei echte Programmstarts. 1) Neues Spiel, spielen, Start, D-Pad zu „Speichern und Beenden“, A. 2) Titel, A auf „Weiterspielen“, Zustand vergleichen, weiterspielen, Ladeschutz verschwindet. 3) Abgestürztes Laden simulieren, Rettung wählen, alter Stand gesichert. Schützt den echten Spielstand
+- Unit-Test: Entwickler-Tasten in Release ohne Belegung; 213 Tests, 31 Gamepad-Prüfungen und 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Spielen, Start, „Speichern und Beenden“. Spiel neu starten, A auf „Weiterspielen“: Spiel lädt
+2. Stürzt es trotzdem ab: Spiel nochmal starten. Der Titel zeigt einen roten Hinweis und die Rettung. Bitte vorher `%APPDATA%\Godot\app_userdata\Scrap Empire\saves\` und `...\logs\godot.log` kopieren und mir schicken; die letzte Zeile `[Laden …]` zeigt die Absturzstelle
+3. F3 bis F7 tun in dieser EXE nichts
+
 ## [1.7.0] – 2026-10-25 – MS18a Raumschiff-Basis, Heilungsbalken, Aufgabenkette (Überarbeitung Block 2, Teil 1)
 
 ### Hinzugefügt

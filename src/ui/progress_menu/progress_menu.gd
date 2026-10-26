@@ -162,8 +162,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		close()
 		get_viewport().set_input_as_handled()
 	elif MenuInput.accept_pressed(event) and _tab != Tab.MAP:
-		if MenuInput.press_focused(get_viewport()):
-			get_viewport().set_input_as_handled()
+		MenuInput.press_focused(get_viewport())
 	elif event.is_action_pressed("hotbar_next"):
 		_next_tab(1)
 		_show_tab()

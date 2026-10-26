@@ -117,7 +117,17 @@ static func _building_state(b: Building) -> Dictionary:
 
 ## Stellt den Zustand in einer vorbereiteten Welt her (Größe, defs, recipes, Tech-/Skilldaten
 ## müssen bereits gesetzt sein; Nodes/Gebäude müssen leer sein). Liefert die Spielerposition.
+## Schrittprotokoll beim Laden (setzt main.gd); Tests bleiben still.
+static var log_steps := false
+
+
+static func _log(msg: String) -> void:
+	if log_steps:
+		print("[Laden %6d ms] decode: %s" % [Time.get_ticks_msec(), msg])
+
+
 static func decode(data: Dictionary, world: SimWorld) -> Vector2:
+	_log("Version %d, Fortschritt" % int(data.get("version", 0)))
 	world.tick_count = int(data.get("tick_count", 0))
 	world.bolts = int(data.get("bolts", 0))
 	world.rng.set_state(int(data.get("rng_state", 0)))
@@ -127,6 +137,7 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 	for id in world.tech.unlocked.keys():
 		world._apply_tech_effects(str(id))
 
+	_log("Objekte: %d" % data.get("nodes", []).size())
 	for nd: Dictionary in data.get("nodes", []):
 		var kind := str(nd.get("kind", ""))
 		if not ResourceNode.has_kind(kind):
@@ -138,6 +149,7 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 		n.regen_counter = int(nd.get("regen_counter", 0))
 	for ld: Dictionary in data.get("loose", []):
 		world.add_loose(str(ld.get("item", "scrap")), to_v2(ld.get("pos")), int(ld.get("tier", 1)))
+	_log("lose Items: %d, Gebäude: %d" % [data.get("loose", []).size(), data.get("buildings", []).size()])
 	for bd: Dictionary in data.get("buildings", []):
 		var def_id := str(bd.get("def", ""))
 		if not world.defs.has(def_id):
@@ -151,6 +163,7 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 	for rd: Dictionary in data.get("respawns", []):
 		world.respawns.append({"kind": str(rd.get("kind", "")), "tile": to_v2(rd.get("tile")), "ticks_left": int(rd.get("ticks_left", 100))})
 
+	_log("Aufgabenliste, Helfer: %d, Drohnen: %d" % [data.get("helpers", []).size(), data.get("drones", []).size()])
 	world.tasks.from_dict(data.get("tasks", {}))
 	for k in data.get("helper_upgrades", {}):
 		world.helper_upgrades[str(k)] = int(data["helper_upgrades"][k])
@@ -179,6 +192,7 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 	var tut: Dictionary = data.get("tutorial", {})
 	world.flags["tutorial_step"] = int(tut.get("step", 0))
 	world.flags["tutorial_done"] = bool(tut.get("done", false))
+	_log("Spieler")
 	var pd: Dictionary = data.get("player", {})
 	world.player.inventory.from_dict(pd.get("inventory", {}))
 	world.recompute_modifiers()

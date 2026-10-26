@@ -6,6 +6,9 @@ extends Node
 const DEFAULT_SAVE_DIR := "user://saves/"
 const SLOTS := ["save_a.json", "save_b.json"]
 const SETTINGS_FILE := "user://settings.json"
+## Steht während des Ladens; wird erst nach erfolgreichem Start gelöscht. Existiert sie beim
+## nächsten Start noch, ist das letzte Laden abgestürzt und der Titel bietet die Rettung an.
+const GUARD_FILE := "load_guard.json"
 
 ## Tests setzen einen eigenen Ordner, damit sie nie den echten Spielstand berühren.
 var save_dir := DEFAULT_SAVE_DIR
@@ -15,6 +18,8 @@ var meta_file := DEFAULT_SAVE_DIR + "save_meta.json"
 var migrations: Dictionary = SaveMigrations.all()
 
 var _last_written := ""
+var last_read_file := ""   # Datei, aus der read() zuletzt geladen hat
+var skip_file := ""        # Rettung „Backup laden“: diese Datei beim Lesen überspringen
 
 
 func use_directory(dir: String) -> void:
@@ -36,6 +41,62 @@ func _ready() -> void:
 
 func has_save() -> bool:
 	return _latest_file() != ""
+
+
+func latest_file_name() -> String:
+	return _latest_file()
+
+
+## Protokollzeile fürs Log (wird dank flush_stdout_on_print sofort geschrieben).
+static func log_step(msg: String) -> void:
+	print("[Laden %6d ms] %s" % [Time.get_ticks_msec(), msg])
+
+
+func begin_load(file: String) -> void:
+	var g := failed_load()
+	var f := FileAccess.open(save_dir + GUARD_FILE, FileAccess.WRITE)
+	if f:
+		f.store_string(JSON.stringify({"file": file, "attempts": int(g.get("attempts", 0)) + 1}))
+		f.close()
+
+
+func end_load() -> void:
+	if FileAccess.file_exists(save_dir + GUARD_FILE):
+		DirAccess.remove_absolute(save_dir + GUARD_FILE)
+
+
+## Nicht leer, wenn das letzte Laden nie fertig wurde: {file, attempts}.
+func failed_load() -> Dictionary:
+	return _read_file(save_dir + GUARD_FILE)
+
+
+## Der andere, ältere Spielstand, falls vorhanden und lesbar ("" sonst).
+func backup_file() -> String:
+	var bad := str(failed_load().get("file", ""))
+	for s in SLOTS:
+		if s != bad and FileAccess.file_exists(save_dir + s) and not _read_file(save_dir + s).is_empty():
+			return s
+	return ""
+
+
+## Rettung „Backup laden“: das abgestürzte Spielstand-File beim nächsten Lesen überspringen.
+func use_backup() -> void:
+	var bad := str(failed_load().get("file", ""))
+	end_load()
+	skip_file = bad
+
+
+## Rettung „Neu beginnen“: alte Stände werden umbenannt (nicht gelöscht), Schutzdatei entfernt.
+func archive_all() -> String:
+	var stamp := str(int(Time.get_unix_time_from_system()))
+	for s in SLOTS:
+		if FileAccess.file_exists(save_dir + s):
+			DirAccess.rename_absolute(save_dir + s, save_dir + s + ".bak_" + stamp)
+	if FileAccess.file_exists(meta_file):
+		DirAccess.remove_absolute(meta_file)
+	end_load()
+	skip_file = ""
+	return stamp
 
 
 func write(data: Dictionary) -> bool:
@@ -68,8 +129,11 @@ func read() -> Dictionary:
 		if s != latest:
 			candidates.append(s)
 	for file in candidates:
+		if file == skip_file:
+			continue
 		var data := _read_file(save_dir + file)
 		if not data.is_empty():
+			last_read_file = file
 			return migrate(data)
 	return {}
 
@@ -80,6 +144,8 @@ func delete_all() -> void:
 			DirAccess.remove_absolute(save_dir + s)
 	if FileAccess.file_exists(meta_file):
 		DirAccess.remove_absolute(meta_file)
+	end_load()
+	skip_file = ""
 
 
 func migrate(data: Dictionary) -> Dictionary:

@@ -438,3 +438,6 @@ QUEST_DRONE,Kaufe eine Drohne (Select → Drohnen).,Buy a drone (Select → Dron
 QUEST_SHIP3,Baue das Schiff auf Stufe 3 aus.,Upgrade the ship to stage 3.
 QUEST_COLLECTIBLES,Finde 3 Fundstücke (sie funkeln im Müll).,Find 3 collectibles (they sparkle in the trash).
 QUEST_PLANET,Heile den ganzen Planeten: alle Zonen sauber.,Heal the whole planet: all zones clean.
+TITLE_LOAD_FAILED,"Das letzte Laden ist abgestürzt. Du kannst den vorherigen Spielstand laden oder neu beginnen; der alte Stand wird dabei gesichert.","Loading crashed last time. You can load the previous save or start over; the old save is kept as a backup."
+TITLE_LOAD_BACKUP,Vorherigen Spielstand laden,Load previous save
+TITLE_FRESH_SAFE,Neu beginnen (alter Stand wird gesichert),Start over (old save is kept)

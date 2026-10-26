@@ -50,8 +50,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		close()
 		get_viewport().set_input_as_handled()
 	elif visible and MenuInput.accept_pressed(event):
-		if MenuInput.press_focused(get_viewport()):
-			get_viewport().set_input_as_handled()
+		MenuInput.press_focused(get_viewport())
 
 
 func open() -> void:

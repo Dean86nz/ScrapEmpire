@@ -10,6 +10,8 @@ const MAIN_SCENE := "res://src/world/main.tscn"
 @onready var _tagline: Label = $Center/VBox/Tagline
 @onready var _title: Label = $Center/VBox/Title
 @onready var _rusty: Sprite2D = $Rusty
+var _warning := Label.new()
+var _rescue := false
 
 var _confirm_new := false
 var _t := 0.0
@@ -24,7 +26,18 @@ func _ready() -> void:
 	_quit_btn.text = tr("TITLE_QUIT")
 	_refresh_lang()
 	_continue_btn.visible = SaveManager.has_save()
-	_continue_btn.pressed.connect(_start)
+	_warning.name = "Warning"
+	_warning.add_theme_font_size_override("font_size", 26)
+	_warning.add_theme_color_override("font_color", Color(0.6, 0.2, 0.15))
+	_warning.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_warning.custom_minimum_size = Vector2(520, 0)
+	_warning.visible = false
+	$Center/VBox.add_child(_warning)
+	$Center/VBox.move_child(_warning, _tagline.get_index() + 1)
+	if not SaveManager.failed_load().is_empty():
+		_setup_rescue()
+	_continue_btn.pressed.connect(_on_continue)
 	_new_btn.pressed.connect(_new_game)
 	_lang_btn.pressed.connect(_toggle_lang)
 	_quit_btn.pressed.connect(func() -> void: get_tree().quit())
@@ -32,8 +45,8 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if MenuInput.accept_pressed(event) and MenuInput.press_focused(get_viewport()):
-		get_viewport().set_input_as_handled()
+	if MenuInput.accept_pressed(event):
+		MenuInput.press_focused(get_viewport())
 
 
 func _process(delta: float) -> void:
@@ -55,7 +68,28 @@ func _toggle_lang() -> void:
 	get_tree().reload_current_scene()
 
 
+## Das letzte Laden ist abgestürzt: Backup anbieten (falls vorhanden) oder sicher neu beginnen.
+func _setup_rescue() -> void:
+	_rescue = true
+	SaveManager.log_step("Titel: letztes Laden nicht beendet, Rettung angeboten (%s)" % str(SaveManager.failed_load()))
+	_warning.text = tr("TITLE_LOAD_FAILED")
+	_warning.visible = true
+	_continue_btn.visible = SaveManager.backup_file() != ""
+	_continue_btn.text = tr("TITLE_LOAD_BACKUP")
+	_new_btn.text = tr("TITLE_FRESH_SAFE")
+
+
+func _on_continue() -> void:
+	if _rescue:
+		SaveManager.use_backup()
+	_start()
+
+
 func _new_game() -> void:
+	if _rescue:
+		SaveManager.archive_all()
+		_start()
+		return
 	if SaveManager.has_save() and not _confirm_new:
 		_confirm_new = true
 		_new_btn.text = tr("MENU_NEW_GAME_CONFIRM")
