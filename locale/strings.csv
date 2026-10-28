@@ -235,7 +235,7 @@ ZONE_Q_3,Zone sauber! Fast schon gemütlich.,Zone clean! Almost cozy.
 MENU_PROGRESS_FOOTER_MAP,D-Pad: Zone · RT/LT: Zoom · LB/RB: Tab · B: schließen,D-pad: zone · RT/LT: zoom · LB/RB: tab · B: close
 HUD_MINIMAP_HINT,M / Select lang: Minimap,M / hold Select: minimap
 MENU_TAB_HELPERS,Helfer,Helpers
-MENU_PROGRESS_FOOTER_HELPERS,D-Pad: wählen · A: bauen / kaufen · LT auf Bot: abbauen · B: schließen,D-pad: select · A: build / buy · LT on bot: dismantle · B: close
+MENU_PROGRESS_FOOTER_HELPERS,D-Pad: wählen · A: bauen / kaufen / Bot zuweisen · LT auf Bot: abbauen · B: schließen,D-pad: select · A: build / buy / assign bot · LT on bot: dismantle · B: close
 HELPER_UPGRADES,Bot-Upgrades (für alle Bots),Bot upgrades (all bots)
 HELPER_BUY,Helfer kaufen,Buy helper
 HELPER_BUY_HINT,A: Zone und Lager wählen,A: pick zone and depot
@@ -577,3 +577,26 @@ BOT_BORED_TOO_HARD,Zu hart für mich! Ich brauch besseres Werkzeug.,Too tough fo
 QUIP_BOT_BORED,"Ein Bot langweilt sich. Im Bots-Tab mit LT abbauen und dort neu bauen, wo Müll liegt.",A bot is bored. Dismantle it in the Bots tab with LT and build it again where there is trash.
 HELPER_STATE_BORED,langweilt sich: hier ist nichts mehr · LT: abbauen,bored: nothing left here · LT: dismantle
 HELPER_STATE_BORED_HARD,Müll zu hart · Bot-Werkzeug kaufen oder LT: abbauen,trash too tough · buy bot tools or LT: dismantle
+BLD_COLLECTION,Sammelstelle,Collection point
+HINT_POINT,Sammelstelle (%d eingelagert)   ·   A: %d Teile abladen   ·   Drohnen bringen alles zum Schiff,Collection point (%d stored)   ·   A: unload %d items   ·   drones carry it to the ship
+HINT_POINT_KB,Sammelstelle (%d eingelagert)   ·   E: %d Teile abladen   ·   Drohnen bringen alles zum Schiff,Collection point (%d stored)   ·   E: unload %d items   ·   drones carry it to the ship
+HUD_COURIER_READY,D-Pad ↓: Kurier,D-pad ↓: courier
+HUD_COURIER_READY_KB,C: Kurier,C: courier
+HUD_COURIER_BUSY,unterwegs,on the way
+QUIP_COURIER_EMPTY,Was soll der Kurier holen? Meine Taschen sind leer.,What should the courier fetch? My bags are empty.
+QUIP_COURIER_WAIT,Der Kurier braucht noch einen Moment.,The courier needs a moment.
+UPG_COURIER,Kurier,Courier
+UPG_COURIER_DESC,"Schneller, mehr Ladung, mehr Kuriere","Faster, more load, more couriers"
+UPG_LOCKED_STAGE3,Ab Schiffsstufe 3,From ship stage 3
+COURIER_AUTO,Kurier-Automatik,Courier auto
+COURIER_AUTO_DESC,"Kommt von selbst, wenn die Taschen voll sind",Comes by itself when your bags are full
+COURIER_AUTO_ON,An  ·  A: aus,On  ·  A: off
+COURIER_AUTO_OFF,Aus  ·  A: an,Off  ·  A: on
+ASSIGN_FOOTER,%s zuweisen: D-Pad Zone wählen · A: hierher · Y: Automatisch · B: zurück,Assign %s: D-pad pick zone · A: here · Y: automatic · B: back
+QUEST_POINT,Bau eine Sammelstelle (Y) in einer Zone weit weg vom Schiff.,Build a collection point (Y) in a zone far from the ship.
+QUEST_ASSIGN,Weise einen Bot einer Zone zu (Select → Bots → A auf den Bot).,Assign a bot to a zone (Select → Bots → A on the bot).
+QUEST_COURIER,Lass dir die Taschen vom Kurier abholen (D-Pad ↓).,Let the courier pick up your bags (D-pad ↓).
+UNLOCK_COLLECTION,Sammelstellen,Collection points
+UNLOCK_COURIER,Kurier,Courier
+GIFT_COLLECTION,Sammelstelle,Collection point
+GIFT_COURIER,Kurier,Courier

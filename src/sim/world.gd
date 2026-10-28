@@ -33,6 +33,13 @@ signal helper_removed(id: int)
 signal helper_failed(reason: String)
 signal helper_quip(helper: Helper, key: String)
 signal helper_bored(helper: Helper)
+signal helper_assigned(helper: Helper)
+signal point_stored(point: Building, count: int)
+signal courier_added(courier: Courier)
+signal courier_removed(id: int)
+signal courier_loaded(courier: Courier, items: Dictionary)
+signal courier_unloaded(courier: Courier, depot: Building)
+signal courier_failed(reason: String)
 signal helper_upgrade_bought(id: String, level: int)
 signal drone_added(drone: Drone)
 signal drone_removed(id: int)
@@ -105,6 +112,8 @@ var quests := QuestState.new()             # geführte Aufgabenkette
 var milestones := MilestoneState.new()     # Meilensteine (MS23)
 var events_cfg: Dictionary = {}            # data/events.json (MS30)
 var events_state: Dictionary = {}          # nächste Termine, Vorwarnungen, Abwürfe
+var couriers: Dictionary = {}              # id → Courier (MS34)
+var courier_cooldown := 0                  # Ticks bis zum nächsten Kurier
 var dirt := DirtMap.new()                  # Schmutz je Kachel (MS21)
 var dirt_cfg: Dictionary = {}              # data/dirt.json
 var _dirt_reward := 0                      # geputzte Kacheln seit dem letzten Kleinschrott
@@ -236,6 +245,8 @@ func tick() -> void:
 	_tick_hammer()
 	NodeSystem._tick_respawns(self)
 	EventSystem._tick(self)
+	NetworkSystem._tick_auto(self)
+	NetworkSystem._tick_couriers(self)
 	if tick_count % 20 == 0:
 		zones.check_unlocks(nodes)
 		if dirt.is_active():
@@ -271,6 +282,10 @@ func _apply(cmd: Dictionary) -> void:
 			HelperSystem._cmd_buy_helper_upgrade(self, cmd)
 		"remove_helper":
 			HelperSystem._cmd_remove_helper(self, cmd)
+		"assign_helper":
+			NetworkSystem._cmd_assign_helper(self, cmd)
+		"call_courier":
+			NetworkSystem._cmd_call_courier(self, cmd)
 		"buy_drone":
 			DroneSystem._cmd_buy_drone(self, cmd)
 		"remove_drone":

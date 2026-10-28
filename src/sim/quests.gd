@@ -62,6 +62,14 @@ func on_delivery() -> void:
 	_add("deliveries", 1)
 
 
+func on_assign() -> void:
+	_add("assigns", 1)
+
+
+func on_courier() -> void:
+	_add("courier_pickups", 1)
+
+
 func tick_move(pos: Vector2i) -> void:
 	if _last_pos.x >= 0:
 		var d := int(Vector2(pos - _last_pos).length())
@@ -87,6 +95,10 @@ func progress(w: SimWorld) -> Array:
 			return [mini(int(counters.get("ship_delivered", 0)), amount), amount]
 		"deliveries":
 			return [mini(int(counters.get("deliveries", 0)), amount), amount]
+		"assigns":
+			return [mini(int(counters.get("assigns", 0)), amount), amount]
+		"courier_pickups":
+			return [mini(int(counters.get("courier_pickups", 0)), amount), amount]
 		"cleaned":
 			return [mini(w.dirt.cleaned_total, amount), amount]
 		"sold_value":

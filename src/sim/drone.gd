@@ -4,7 +4,7 @@ extends RefCounted
 ## Rohstoffhaufen in einer freigeschalteten Zone, saugt bis zur Tragkraft und liefert am Schiff ab.
 ## Lose Teile (z. B. aus zerhämmertem Müll) haben Vorrang. Deterministisch, rein tickbasiert.
 
-enum State { SEEK, COLLECT, RETURN, IDLE }
+enum State { SEEK, COLLECT, RETURN, IDLE, FETCH }
 
 const ARRIVE_PX := 24
 const IDLE_TICKS := 40
@@ -23,6 +23,8 @@ var target_loose := -1             # id eines losen Teils
 var target_node := -1              # id eines Haufens
 var target_pos := Vector2i.ZERO
 var trips := 0
+var target_point := -1             # Sammelstelle, von der gerade abgeholt wird
+var fetch_min := 8
 var _cooldown := 0
 var _idle := 0
 
@@ -58,6 +60,8 @@ func tick(world: SimWorld) -> void:
 			_seek(world)
 		State.COLLECT:
 			_collect(world)
+		State.FETCH:
+			_fetch(world)
 		State.RETURN:
 			if _fly_to(home):
 				var s := ShipSystem.ship(world)
@@ -72,6 +76,19 @@ func tick(world: SimWorld) -> void:
 func _seek(world: SimWorld) -> void:
 	if carry_total() >= capacity:
 		state = State.RETURN
+		return
+	# Transport hat Vorrang: Sammelstelle mit dem meisten noch nicht verplanten Material
+	var best_p: CollectionPoint = null
+	var best_free := fetch_min - 1 if not is_carrying() else 0
+	for p in NetworkSystem.points(world):
+		var free := p.total() - _claimed_at(world, p.id)
+		if free > best_free:
+			best_free = free
+			best_p = p
+	if best_p != null:
+		target_point = best_p.id
+		target_pos = best_p.center_px()
+		state = State.FETCH
 		return
 	var best_d := float(search_radius_px)
 	target_loose = -1
@@ -133,6 +150,32 @@ func _collect(world: SimWorld) -> void:
 		state = State.RETURN
 	elif target_loose < 0 and target_node < 0:
 		state = State.SEEK
+
+
+## Bei der Sammelstelle laden, dann zum Schiff.
+func _fetch(world: SimWorld) -> void:
+	var p: Building = world.buildings.get(target_point)
+	if not (p is CollectionPoint):
+		target_point = -1
+		state = State.SEEK
+		return
+	if not _fly_to(target_pos):
+		return
+	var got := (p as CollectionPoint).take(capacity - carry_total())
+	for k in got:
+		carry[k] = int(carry.get(k, 0)) + int(got[k])
+	world.building_changed.emit(p)
+	target_point = -1
+	state = State.RETURN if is_carrying() else State.SEEK
+
+
+## Wie viel Material an dieser Sammelstelle schon andere Drohnen abholen wollen.
+func _claimed_at(world: SimWorld, point_id: int) -> int:
+	var n := 0
+	for d: Drone in world.drones.values():
+		if d != self and d.state == State.FETCH and d.target_point == point_id:
+			n += d.capacity - d.carry_total()
+	return n
 
 
 func _claimed_by_other(world: SimWorld, loose_id: int) -> bool:

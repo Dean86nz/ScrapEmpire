@@ -53,6 +53,10 @@ static func _cmd_place(w: SimWorld, cmd: Dictionary) -> void:
 	if not can_place_def(w, def, tile, rot):
 		w.place_failed.emit("blocked")
 		return
+	var zr := NetworkSystem.zone_check(w, def, tile)
+	if zr != "":
+		w.place_failed.emit(zr)
+		return
 	var cost := next_cost(w, def)
 	if not ShipSystem.can_afford(w, cost):
 		w.place_failed.emit("cost")
@@ -64,6 +68,8 @@ static func _cmd_place(w: SimWorld, cmd: Dictionary) -> void:
 	w.buildings[b.id] = b
 	w.progression.on_build()
 	w.building_placed.emit(b)
+	if b is CollectionPoint:
+		NetworkSystem.on_point_built(w, b as CollectionPoint)
 
 
 ## Platziert ohne Kosten und Reichweite (Karte, Spielstand, Tests, Dev-Szenarien).

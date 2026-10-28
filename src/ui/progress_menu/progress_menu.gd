@@ -51,6 +51,7 @@ var _refresh_timer := 0.0
 var _stage_track := StageTrack.new()
 var _goals_sig := ""                  # zuletzt gezeigter Ziele-Stand (nur bei Änderung neu bauen, sonst geht der Fokus verloren)
 var _goals_show_done := false
+var _assign_bot := -1   # Bot, der gerade über die Karte zugewiesen wird (-1 = keiner)
 var _journal_sig := ""
 
 
@@ -213,6 +214,7 @@ func open(tab: Tab = Tab.SHIP) -> void:
 
 
 func close() -> void:
+	_assign_bot = -1
 	if visible:
 		Sfx.play("close")
 	visible = false
@@ -231,7 +233,12 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
-	if MenuInput.back_pressed(event) or event.is_action_pressed("tech_tree"):
+	if _assign_bot >= 0 and MenuInput.back_pressed(event):
+		_assign_bot = -1
+		_tab = Tab.HELPERS
+		_show_tab()
+		get_viewport().set_input_as_handled()
+	elif MenuInput.back_pressed(event) or event.is_action_pressed("tech_tree"):
 		close()
 		get_viewport().set_input_as_handled()
 	elif MenuInput.accept_pressed(event) and _tab != Tab.MAP:
@@ -245,6 +252,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		Sfx.play("tab")
 		_next_tab(-1)
 		_show_tab()
+		get_viewport().set_input_as_handled()
+	elif _tab == Tab.MAP and _assign_bot >= 0 and (event.is_action_pressed("ui_accept") or MenuInput.accept_pressed(event)):
+		var zid := _map_view.selected_zone()
+		if zid != "" and _world.zones.is_unlocked(zid):
+			_finish_assign(zid, false)
+		get_viewport().set_input_as_handled()
+	elif _tab == Tab.MAP and _assign_bot >= 0 and event.is_action_pressed("build_menu"):
+		_finish_assign("", true)
 		get_viewport().set_input_as_handled()
 	elif _tab == Tab.MAP and _map_view.handle_input(event):
 		get_viewport().set_input_as_handled()
@@ -406,6 +421,12 @@ func _build_ship_cards() -> void:
 		btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_upgrade", "id": id}))
 		_ship_grid.add_child(btn)
 		_ship_cards["upg:" + id] = btn
+	var auto := _make_card(tr("COURIER_AUTO"), "res://assets/sprites/robot/courier.svg")
+	auto.custom_minimum_size = SHIP_CARD_MIN
+	auto.pressed.connect(func() -> void:
+		_world.flags["courier_auto"] = not bool(_world.flags.get("courier_auto", true))
+		_refresh_ship())
+	_ship_cards["courier_auto"] = auto
 	var bot := _make_card(tr("BOT_BUILD"), "res://assets/sprites/robot/rusty.svg")
 	bot.custom_minimum_size = SHIP_CARD_MIN
 	(_part(bot, "Icon") as TextureRect).modulate = Color(0.75, 0.9, 1.0)
@@ -417,6 +438,7 @@ func _build_ship_cards() -> void:
 	drone.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_drone"}))
 	_ship_grid.add_child(drone)
 	_ship_cards["drone"] = drone
+	_ship_grid.add_child(auto)
 
 
 func _build_skill_cards() -> void:
@@ -497,8 +519,16 @@ func _refresh_ship() -> void:
 		_set_card(btn, tr(str(u["desc_key"])), TINT_DONE if reason == "max" else (TINT_OK if reason == "" else TINT_NO))
 		if reason == "max":
 			_set_cost(btn, "✓ " + tr("SKILL_MAXED"), COST_OK, false)
+		elif reason == "locked":
+			_set_cost(btn, tr("UPG_LOCKED_STAGE3"), COST_NO, false)
 		else:
 			_set_cost(btn, Fmt.int_str(ShipSystem.upgrade_cost(w, id)), COST_OK if reason == "" else COST_NO, true)
+	if _ship_cards.has("courier_auto"):
+		var auto_btn: Button = _ship_cards["courier_auto"]
+		auto_btn.visible = w.unlocked_features.has("courier")
+		var on := bool(w.flags.get("courier_auto", true))
+		_set_card(auto_btn, tr("COURIER_AUTO_DESC"), TINT_OK)
+		_set_cost(auto_btn, tr("COURIER_AUTO_ON") if on else tr("COURIER_AUTO_OFF"), COST_OK if on else COST_NO, false)
 	# Bot und Drohne
 	_refresh_build_card(_ship_cards["bot"], "BOT_CARD", "BOT_DESC", "BOT_LOCKED", w.can_buy_helper(), int(w.next_helper_cost()["bolts"]),
 		w.helpers.size(), int(w.helper_cfg.get("max_helpers", 10)))
@@ -568,6 +598,8 @@ func _refresh_helpers() -> void:
 		(_part(card, "Icon") as TextureRect).custom_minimum_size = Vector2(60, 60)
 		card.custom_minimum_size = Vector2(740, 96)
 		card.set_meta("helper_id", h.id)
+		var hid := h.id
+		card.pressed.connect(func() -> void: _start_assign(hid))
 		var state := tr("HELPER_STATE_WAIT") if h.tasks.wait_ticks > 0 else (tr("HELPER_STATE_WORK") if h.tasks.active else tr("HELPER_STATE_IDLE"))
 		if h.bored != "" and h.inventory.total() == 0:
 			state = tr("HELPER_STATE_BORED_HARD") if h.bored == "too_hard" else tr("HELPER_STATE_BORED")
@@ -583,6 +615,30 @@ func _refresh_helpers() -> void:
 
 
 ## Upgrade-Karte für Bots und Drohnen: Stufen-Punkte, kurzer Text, Kosten (oder Sperre).
+func _start_assign(helper_id: int) -> void:
+	_assign_bot = helper_id
+	_tab = Tab.MAP
+	_show_tab()
+	_refresh_assign_info()
+
+
+func _refresh_assign_info() -> void:
+	if _assign_bot < 0 or not _world.helpers.has(_assign_bot):
+		return
+	var h: Helper = _world.helpers[_assign_bot]
+	_footer.text = tr("ASSIGN_FOOTER") % h.display_name(_world.helper_cfg.get("names", []))
+
+
+func _finish_assign(zone_id: String, auto: bool) -> void:
+	if auto:
+		SimClock.world.queue_command({"type": "assign_helper", "id": _assign_bot, "auto": true})
+	else:
+		SimClock.world.queue_command({"type": "assign_helper", "id": _assign_bot, "zone": zone_id})
+	_assign_bot = -1
+	_tab = Tab.HELPERS
+	_show_tab()
+
+
 func _refresh_upgrade_card(btn: Button, u: Dictionary, level: int, reason: String) -> void:
 	_set_pips(btn, level, int(u["max_level"]))
 	_set_card(btn, tr(str(u["desc_key"])), TINT_DONE if reason == "max" else (TINT_OK if reason == "" else TINT_NO))
@@ -642,6 +698,8 @@ func _refresh_all() -> void:
 	match _tab:
 		Tab.MAP:
 			_footer.text = tr("MENU_PROGRESS_FOOTER_MAP")
+			_refresh_assign_info()
+			_map_view.queue_redraw()
 		Tab.HELPERS:
 			_footer.text = tr("MENU_PROGRESS_FOOTER_HELPERS")
 		Tab.DRONES:

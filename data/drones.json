@@ -1,10 +1,10 @@
 {
-  "_comment": "Drohnen fliegen vom Schiff aus, sammeln lose Teile und Haufen (Stufe 1) in freigeschalteten Zonen und liefern am Schiff ab. Schneller als Bots, tragen weniger.",
-  "max_drones": 6,
+  "_comment": "Drohnen (seit MS34 vor allem Transport): fliegen zu Sammelstellen mit Material, laden bis zur Tragkraft und bringen es zum Schiff (dort entstehen die Bolts). Ohne Transportauftrag sammeln sie lose Teile und Haufen. Jede Sammelstelle bringt free_per_point Drohnen mit.",
+  "max_drones": 12,
   "cost_base_bolts": 400,
   "cost_growth": 1.5,
-  "base_speed_px_per_s": 260,
-  "base_capacity": 6,
+  "base_speed_px_per_s": 300,
+  "base_capacity": 20,
   "collect_interval_ticks": 4,
   "search_radius_tiles": 30,
   "upgrades": [
@@ -45,5 +45,7 @@
         }
       ]
     }
-  ]
+  ],
+  "free_per_point": 1,
+  "fetch_min_items": 8
 }

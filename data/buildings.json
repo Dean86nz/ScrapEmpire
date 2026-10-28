@@ -14,6 +14,22 @@
       "buildable": false
     },
     {
+      "id": "collection_point",
+      "name_key": "BLD_COLLECTION",
+      "size": [
+        2,
+        2
+      ],
+      "cost": {
+        "bolts": 300
+      },
+      "cost_growth": 1.6,
+      "sprite": "res://assets/sprites/buildings/collection_point.svg",
+      "ports": [],
+      "requires_feature": "collection",
+      "max_per_zone": 1
+    },
+    {
       "id": "lantern",
       "name_key": "BLD_LANTERN",
       "size": [

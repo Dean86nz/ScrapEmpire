@@ -28,6 +28,8 @@ var _goal_panel := PanelContainer.new()
 var _goal_icon := TextureRect.new()
 var _goal_label := Label.new()
 var _goal_timer := 0.0
+var _courier_panel := PanelContainer.new()
+var _courier_label := Label.new()
 var _bolts_shown := 0
 var _bolts_tween: Tween
 
@@ -39,6 +41,7 @@ func _process(delta: float) -> void:
 	if _goal_timer <= 0.0:
 		_goal_timer = 0.4
 		_refresh_goal()
+	_refresh_courier()
 	var t := _world.tech
 	_research.visible = t.is_researching()
 	if t.is_researching():
@@ -70,6 +73,7 @@ func rebuild_hotbar() -> void:
 func _ready() -> void:
 	add_child(stage_banner)
 	_build_goal_panel()
+	_build_courier_panel()
 	set_hint(tr("HUD_HINT_GAME"))
 	set_bolts(0)
 
@@ -118,6 +122,46 @@ func set_bolts(value: int) -> void:
 func _show_bolts(value: int) -> void:
 	_bolts_shown = value
 	_bolts_label.text = "%s %s" % [Fmt.int_str(value), tr("HUD_BOLTS")]
+
+
+func _build_courier_panel() -> void:
+	_courier_panel.add_theme_stylebox_override("panel", ($BoltsPanel as PanelContainer).get_theme_stylebox("panel"))
+	_courier_panel.anchor_left = 1.0
+	_courier_panel.anchor_right = 1.0
+	_courier_panel.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_courier_panel.offset_right = -32.0
+	_courier_panel.offset_top = 196.0
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	var icon := TextureRect.new()
+	icon.texture = load("res://assets/sprites/robot/courier.svg")
+	icon.custom_minimum_size = Vector2(40, 40)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_courier_label.add_theme_font_size_override("font_size", 22)
+	row.add_child(icon)
+	row.add_child(_courier_label)
+	_courier_panel.add_child(row)
+	_courier_panel.visible = false
+	add_child(_courier_panel)
+
+
+## Kurier: grün „bereit“, sonst Wartezeit oder unterwegs. Nur sichtbar, wenn freigeschaltet.
+func _refresh_courier() -> void:
+	var st := NetworkSystem.courier_stats(_world)
+	_courier_panel.visible = not st.is_empty()
+	if st.is_empty():
+		return
+	var kb := "" if InputRouter.is_gamepad else "_KB"
+	if _world.courier_cooldown > 0:
+		_courier_label.text = "%d s" % int(ceil(_world.courier_cooldown / 20.0))
+		_courier_label.add_theme_color_override("font_color", Color(1, 1, 1, 0.8))
+	elif _world.couriers.size() >= int(st.get("count", 1)):
+		_courier_label.text = tr("HUD_COURIER_BUSY")
+		_courier_label.add_theme_color_override("font_color", Color(1, 1, 1, 0.8))
+	else:
+		_courier_label.text = tr("HUD_COURIER_READY" + kb)
+		_courier_label.add_theme_color_override("font_color", Color(0.55, 0.95, 0.5))
 
 
 func _build_goal_panel() -> void:

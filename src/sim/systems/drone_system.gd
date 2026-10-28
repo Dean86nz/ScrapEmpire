@@ -37,6 +37,7 @@ static func add_drone(w: SimWorld) -> Drone:
 	d.home = s.center_px() if s != null else w.player.pos
 	d.pos = d.home
 	_apply_drone_mods(w, d)
+	d.fetch_min = int(w.drone_cfg.get("fetch_min_items", 8))
 	w.drones[d.id] = d
 	w.drone_added.emit(d)
 	return d

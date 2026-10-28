@@ -71,6 +71,10 @@ func _clamp_offset() -> void:
 	_offset.y = clampf(_offset.y, minf(size.y - map_px.y, 0.0), 0.0)
 
 
+func selected_zone() -> String:
+	return str(_summary[_selected]["id"]) if _selected < _summary.size() else ""
+
+
 func handle_input(event: InputEvent) -> bool:
 	if _summary.is_empty():
 		return false
@@ -160,7 +164,25 @@ func _draw() -> void:
 		lx += 32 + 150.0
 	for b: Building in _world.buildings.values():
 		var br := b.rect_px()
-		draw_rect(Rect2(_offset + Vector2(br.position) / 64.0 * s, Vector2(br.size) / 64.0 * s), Color(0.95, 0.55, 0.16))
+		var col := Color(0.3, 0.75, 0.35) if b is CollectionPoint else Color(0.95, 0.55, 0.16)
+		draw_rect(Rect2(_offset + Vector2(br.position) / 64.0 * s, Vector2(br.size) / 64.0 * s), col)
+		draw_rect(Rect2(_offset + Vector2(br.position) / 64.0 * s, Vector2(br.size) / 64.0 * s), Color(0.165, 0.165, 0.2), false, 2.0)
+	# Netz: Drohnen und Kuriere als Punkte, Bots je Zone als Zahl
+	for d: Drone in _world.drones.values():
+		draw_circle(_offset + Vector2(d.pos) / 64.0 * s, 4.0, Color(0.3, 0.7, 1.0))
+	for c: Courier in _world.couriers.values():
+		draw_circle(_offset + Vector2(c.pos) / 64.0 * s, 4.5, Color(0.95, 0.55, 0.16))
+	var bots := {}
+	for h: Helper in _world.helpers.values():
+		var zid := h.zone_id if h.zone_id != "" else _world.zones.zone_id_at(Vector2i(h.pos.x / 64, h.pos.y / 64))
+		bots[zid] = int(bots.get(zid, 0)) + 1
+	for z in _summary:
+		if not bots.has(z["id"]):
+			continue
+		var zr: Rect2i = z["rect"]
+		var at := _offset + Vector2(zr.position.x, zr.end.y) * s + Vector2(10, -14)
+		draw_rect(Rect2(at + Vector2(-4, -26), Vector2(86, 34)), Color(1.0, 0.96, 0.8, 0.92))
+		draw_string(font, at, "🤖 %d" % int(bots[z["id"]]), HORIZONTAL_ALIGNMENT_LEFT, -1, 24, Color(0.165, 0.165, 0.2))
 	if _player:
 		var p := _offset + _player.global_position / 64.0 * s
 		draw_circle(p, 9.0, Color(0.165, 0.165, 0.2))

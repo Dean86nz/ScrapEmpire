@@ -27,6 +27,21 @@
           "per_level": 0.05
         }
       ]
+    },
+    {
+      "id": "courier",
+      "name_key": "UPG_COURIER",
+      "desc_key": "UPG_COURIER_DESC",
+      "icon": "res://assets/sprites/robot/courier.svg",
+      "max_level": 4,
+      "cost_bolts": [
+        1500,
+        4000,
+        9000,
+        18000
+      ],
+      "requires_feature": "courier",
+      "effects": []
     }
   ],
   "stages": [
@@ -43,7 +58,8 @@
       "sprite": "res://assets/sprites/buildings/ship_2.svg",
       "cost_bolts": 300,
       "unlocks": [
-        "helpers"
+        "helpers",
+        "collection"
       ],
       "clean_radius": 7
     },
@@ -54,7 +70,8 @@
       "cost_bolts": 1200,
       "unlocks": [
         "drones",
-        "decor"
+        "decor",
+        "courier"
       ],
       "clean_radius": 10
     },
@@ -81,5 +98,40 @@
       "clean_radius": 16
     }
   ],
-  "clean_wave_ticks": 3
+  "clean_wave_ticks": 3,
+  "courier": {
+    "_comment": "Kurier-Abholung (MS34): Stufe 1 kommt gratis mit Schiffsstufe 3, Stufen 2–5 über das Upgrade „courier“. wait_s: Wartezeit zwischen Abholungen, load: Teile je Abholung (0 = alles), count: Kuriere gleichzeitig, speed: px/s.",
+    "levels": [
+      {
+        "wait_s": 90,
+        "load": 40,
+        "count": 1,
+        "speed": 360
+      },
+      {
+        "wait_s": 60,
+        "load": 60,
+        "count": 1,
+        "speed": 400
+      },
+      {
+        "wait_s": 40,
+        "load": 100,
+        "count": 2,
+        "speed": 440
+      },
+      {
+        "wait_s": 25,
+        "load": 0,
+        "count": 2,
+        "speed": 480
+      },
+      {
+        "wait_s": 15,
+        "load": 0,
+        "count": 3,
+        "speed": 520
+      }
+    ]
+  }
 }

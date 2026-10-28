@@ -140,6 +140,11 @@ func _ready() -> void:
 		Quips.say("upgrade_bought", true))
 	_world.ship_delivered.connect(_on_ship_delivered)
 	_world.milestone_reached.connect(_on_milestone_reached)
+	_world.courier_failed.connect(func(r: String) -> void:
+		if r == "empty":
+			EventBus.quip.emit("QUIP_COURIER_EMPTY")
+		elif r == "cooldown" or r == "busy":
+			EventBus.quip.emit("QUIP_COURIER_WAIT"))
 	_world.helper_bored.connect(func(h: Helper) -> void:
 		var key := "bored_hint_%d" % h.id
 		if not _world.flags.has(key):
@@ -264,6 +269,10 @@ func _on_language_changed(locale: String) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("call_courier") and InputRouter.context == InputRouter.Context.GAME:
+		_world.queue_command({"type": "call_courier"})
+		get_viewport().set_input_as_handled()
+		return
 	if InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("tool_swap") and _player.nearby_building() is Ship:
 		# X am Schiff: Schiff-Menü (Upgrades, Reparatur, Bots, Drohnen)
 		_progress_menu.open(_progress_menu.Tab.SHIP)
@@ -306,6 +315,21 @@ func _unhandled_input(event: InputEvent) -> void:
 ## "cozy" = Deko und Museum, "endgame" = viele Bolts für die Schiffsstufen.
 func debug_scenario(name: String) -> void:
 	match name:
+		"network":
+			for f in ["collection", "helpers", "drones", "courier"]:
+				_world.unlocked_features[f] = true
+			_world.bolts += 5000
+			_world.bolts_changed.emit(_world.bolts)
+			var pt := _world.place_free("collection_point", _world.player_tile() + Vector2i(5, -4), 0)
+			if pt != null:
+				NetworkSystem.on_point_built(_world, pt as CollectionPoint)
+				(pt as CollectionPoint).accept_stack("scrap", 30)
+				_world.building_changed.emit(pt)
+			for i in 3:
+				_world.queue_command({"type": "buy_helper"})
+			var inv := _world.player.inventory
+			for i in inv.slot_count:
+				inv.add("scrap", inv.stack_size)
 		"endgame":
 			_world.bolts += 100000
 			_world.bolts_changed.emit(_world.bolts)
@@ -669,6 +693,8 @@ func _current_hint() -> String:
 	var b := _player.nearby_building()
 	if b != null and b is Ship:
 		return _ship_hint(b as Ship, kb)
+	if b != null and b is CollectionPoint:
+		return tr("HINT_POINT" + kb) % [(b as CollectionPoint).total(), _world.player.inventory.total()]
 	if b != null:
 		var slot: Dictionary = _world.player.inventory.slots[_player.selected_slot]
 		if slot["item"] != "":

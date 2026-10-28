@@ -22,6 +22,8 @@ var suck_cooldown := 0
 var hammer_cooldown := 0
 var idle_quip_timer := 1200  # Ticks bis zum nächsten Leerlauf-Spruch
 var bored := ""               # "" = hat Arbeit; "empty" = nichts mehr da; "too_hard" = nur zu harter Müll
+var zone_id := ""             # zugewiesene Zone (seit MS34); "" = alter Kreis um zone_tile
+var auto := false             # sucht sich selbst die nächste Zone mit passendem Müll
 
 
 func _init() -> void:
@@ -46,7 +48,18 @@ func zone_center_px() -> Vector2i:
 
 
 func in_zone(tile: Vector2i) -> bool:
+	if zone_id != "" and _zones != null:
+		return _zones.zone_id_at(tile) == zone_id
 	return Vector2(tile - zone_tile).length() <= float(radius_tiles) + 0.5
+
+
+var _zones: ZoneTracker
+
+
+## Nach dem Umsetzen sofort neu planen.
+func request_replan() -> void:
+	_plan_cooldown = 0
+	tasks.steps.clear()
 
 
 ## Ein Tick: ggf. neu planen, Aufgaben ausführen, bewegen.
@@ -65,6 +78,10 @@ func tick(world: SimWorld) -> void:
 
 ## Sucht das nächste abbaubare Objekt in der Zone; ohne Ziel: nur abliefern oder warten.
 func _plan(world: SimWorld) -> void:
+	_zones = world.zones
+	var depot := NetworkSystem.depot_for(world, zone_id if zone_id != "" else world.zones.zone_id_at(zone_tile))
+	if depot != null:
+		depot_tile = depot.tile
 	tasks.stop(self)
 	tasks.steps.clear()
 	tasks.index = 0
@@ -120,7 +137,7 @@ func to_dict() -> Dictionary:
 		"name_index": name_index, "color_index": color_index,
 		"pos": [pos.x, pos.y], "zone": [zone_tile.x, zone_tile.y], "radius": radius_tiles,
 		"depot": [depot_tile.x, depot_tile.y], "inventory": inventory.to_dict(),
-		"stuck_timer": stuck_timer,
+		"stuck_timer": stuck_timer, "zone_id": zone_id, "auto": auto,
 	}
 
 
@@ -133,3 +150,5 @@ func from_dict(d: Dictionary) -> void:
 	depot_tile = SaveCodec.to_v2(d.get("depot"))
 	inventory.from_dict(d.get("inventory", {}))
 	stuck_timer = int(d.get("stuck_timer", 0))
+	zone_id = str(d.get("zone_id", ""))
+	auto = bool(d.get("auto", false))
