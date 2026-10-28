@@ -48,4 +48,4 @@ func _on_request(key: String) -> void:
 	_since_any = 0.0
 	if chatter:
 		_since_chatter = 0.0
-	EventBus.speak.emit(key, _cfg("show_s", 3.2))
+	EventBus.speak.emit(key, _cfg("show_s", 2.0))

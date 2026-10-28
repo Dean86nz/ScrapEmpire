@@ -185,7 +185,7 @@ func _ready() -> void:
 		SaveManager.log_step("Laden abgeschlossen"))
 	if not _loaded_from_save:
 		if Engine.get_meta("skip_intro", false):
-			get_tree().create_timer(1.0).timeout.connect(func() -> void: Quips.say("start"))
+			get_tree().create_timer(1.0).timeout.connect(func() -> void: Quips.say("start", true))
 		else:
 			_start_intro.call_deferred()
 	else:
