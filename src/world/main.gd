@@ -87,6 +87,10 @@ func _ready() -> void:
 
 	SaveManager.log_step("Weltansicht aufbauen")
 	_world_view.bind(_world, _player)
+	var gags := Gags.new()   # kleine Humor-Momente (MS59)
+	gags.name = "Gags"
+	add_child(gags)
+	gags.bind(_world, _world_view, _player)
 	_player.setup_look(_world)
 	var events := EventView.new()
 	events.name = "Events"

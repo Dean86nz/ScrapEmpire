@@ -2,6 +2,33 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.17.0] – 2026-10-28 – MS59 Humor-Momente (Phase 2.3)
+
+### Neu (alle 14 aus dem Plan, reine Darstellung, Spiel und Balance unverändert)
+1. Toaster spuckt beim Hammerschlag manchmal Toast aus, der davonhüpft
+2. Doppel-Kühlschrank hüpft beim ersten Treffer ein Stück weg (statt Waschmaschine, die es im Spiel nicht gibt)
+3. Bots stolpern ab und zu: Purzelbaum, danach Sternchen
+4. Touristen-Ufo hustet Rauch und verliert eine Schraube, die herunterfällt und aufschlägt
+5. Kühlschrank: beim ersten Treffer watschelt ein Pinguin heraus
+6. Riesen-Wirbel: nach 6 s Dauersaugen dreht es Rusty selbst mit, Sternchen
+7. Bot-Stau: zwei Bots dicht beieinander – kurzes „?“ und „!“
+8. Fernseher zeigt beim Treffer kurz Rustys Gesicht
+9. Reifenstapel: ein Reifen hüpft mit „Boing“ davon
+10. Kabelmonster-Boss verheddert beim Fallen alle Bots kurz (wackeln, Wirbel-Symbol)
+11. Drohnen lassen ab und zu ein Teil fallen und fangen es wieder auf
+12. Rusty niest beim Saugen („Hatschi!“) mit kleinem Rückstoß
+13. Satelliten piepen beim Treffer ein kaputtes „SOS“
+14. Fusion: Konfetti; Mega-Bots tragen einen viel zu kleinen Zylinder
+
+### Technik
+- `Gags` (`src/world/gags.gd`) hängt an Sim-Signalen (`wreck_hit`, `boss_defeated`, `helper_fused`, `event_started`) und Zufallstimern
+- 229 Unit-Tests, 71 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Normal spielen: Welche Gags fallen dir auf? Zu oft, zu selten, lustig?
+2. Kühlschrank-Zone: Pinguin, hüpfender Doppel-Kühlschrank
+3. Mit voll ausgebautem Saugen 6 s saugen: Rusty wird schwindelig?
+
 ## [2.16.0] – 2026-10-28 – MS57/58 Tiefe Upgrades, Bot-Fusion, Spiellänge (Phase 2.3)
 
 ### Neu
