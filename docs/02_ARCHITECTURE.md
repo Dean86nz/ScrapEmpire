@@ -336,6 +336,11 @@ Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers �
 - `ResourceNode.boss/bots_needed/final`; `NetworkSystem.team_can_hit` erlaubt Bots (Planung, Aufgabe, Hammer) höhere Stufen; `NodeSystem._remove_node` zahlt die Belohnung, setzt Flags und sendet `boss_defeated`.
 - `ZoneTracker.check_unlocks` wartet auf `boss_alive() == false`; `ShipSystem.can_upgrade` liefert `"boss"`, solange `final_boss` fehlt.
 
+## 10i. Finale (seit v1.26.0, MS37)
+
+- `main.gd`: `_launch_sequence` → `_finale_tour` (Kamera-Marker je Zone, Schild) → `ShipFx.launch` → `EndScreen.show_stats` → Signal `closed` → `_on_credits_closed`.
+- `EndScreen` (`src/ui/end_screen/`): Sterne, Schiff, rollender `VBoxContainer`; Zahlen aus `FinaleStats.rows(w)` (`src/sim/finale_stats.gd`).
+
 ## 11. Neue Darstellung und UI
 
 - HUD: XP-Leiste (`src/ui/hud/xp_bar.tscn`), Level-Up-Konfetti (`CPUParticles2D` über Rusty), Funken-Partikel bei „Zu hart“.

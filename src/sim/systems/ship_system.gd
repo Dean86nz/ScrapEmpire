@@ -203,6 +203,7 @@ static func _cmd_upgrade_ship(w: SimWorld, _cmd: Dictionary) -> void:
 	w.progression.add_xp(50 * s.stage)
 	if s.stage >= max_stage(w):
 		w.flags["launched"] = true
+		w.flags["launch_tick"] = w.tick_count
 	w.building_changed.emit(s)
 	w.ship_upgraded.emit(s)
 

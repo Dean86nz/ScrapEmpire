@@ -45,6 +45,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **34** | Phase 2, Punkt 1: Sammelstellen, Drohnen-Transport, Bots per Karte zuweisen, Kurier | v1.23.0 |
 | **35** | Phase 2, Punkt 2: Saugen wächst zum Wirbel, große Upgrade-Sprünge, 40 Bots, Bolts-Strom | v1.24.0 |
 | **36** | Phase 2, Punkt 4: neue Karte, sechs Themen-Zonen mit Müllberg-Bossen, Endboss vor dem Abflug | v1.25.0 |
+| **37** | Phase 2, Punkt 5: Finale mit Rundflug, Abflug, Abspann mit Bilanz, Weiterspielen | v1.26.0 |
 
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
 

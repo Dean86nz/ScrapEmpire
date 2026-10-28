@@ -1,0 +1,11 @@
+{
+  "sections": [
+    {"title_key": "CRED_STARRING", "lines": ["Rusty", "@CRED_BOTS_LINE"]},
+    {"title_key": "CRED_IDEA", "lines": ["PH"]},
+    {"title_key": "CRED_DEV", "lines": ["Claude (Anthropic)"]},
+    {"title_key": "CRED_MUSIC", "lines": ["„Apple Cider“", "Zane Little Music (CC0)"]},
+    {"title_key": "CRED_SFX", "lines": ["Kenney · kenney.nl (CC0)", "Impact Sounds · RPG Audio · Music Jingles · Interface Sounds"]},
+    {"title_key": "CRED_ART", "lines": ["@CRED_ART_LINE"]},
+    {"title_key": "CRED_ENGINE", "lines": ["Godot Engine 4.7 · godotengine.org", "© Juan Linietsky, Ariel Manzur & Godot contributors (MIT)"]}
+  ]
+}

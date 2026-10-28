@@ -640,3 +640,33 @@ SHIP_NEEDS_BOSS,Erst den Ur-Müllberg knacken,Crack the Primordial Trash Heap fi
 CH_GOAL_BOSS,Boss knacken: %s,Crack the boss: %s
 QUEST_BOSSES,"Knacke 4 Müllberg-Bosse (Werkzeugstufe oder 3 Bots).",Crack 4 junk-pile bosses (tool tier or 3 bots).
 QUEST_FINAL,"Knacke den Ur-Haufen im Monolithen-Feld.",Crack the Ur-Heap in the monolith field.
+END_STORY,"Rustys Schiff ist repariert. Die Triebwerke husten, dann brummen sie. Unter ihm leuchtet der Planet grün, die Tiere sind zurück, und irgendwo spielt eine alte Spieluhr.","Rusty's ship is repaired. The engines cough, then hum. Below, the planet glows green, the animals are back, and somewhere an old music box plays."
+END_RUSTY,"Rusty sagt: Ich komme wieder. Spätestens, wenn hier jemand Müll fallen lässt.","Rusty says: I'll be back. At the latest when someone drops trash here."
+CREDITS_STATS,Deine Bilanz,Your record
+CREDITS_THANKS,Danke fürs Aufräumen!,Thanks for cleaning up!
+CREDITS_HINT,A halten: schneller   ·   B: zum Ende,Hold A: faster   ·   B: skip to end
+STAT_TIME,Spielzeit,Play time
+STAT_BOLTS,Bolts verdient,Bolts earned
+STAT_WRECKS,Müll zerlegt,Junk taken apart
+STAT_TILES,Boden geputzt,Ground cleaned
+STAT_BOSSES,Bosse geknackt,Bosses cracked
+STAT_ZONES,Saubere Zonen,Clean zones
+STAT_PLANET,Planet geheilt,Planet healed
+STAT_LEVEL,Level,Level
+STAT_BOTS,Bots,Bots
+STAT_DRONES,Drohnen,Drones
+STAT_FINDS,Fundstücke,Finds
+CRED_STARRING,In der Hauptrolle,Starring
+CRED_BOTS_LINE,und eine Armee kleiner Bots,and an army of little bots
+CRED_IDEA,Idee und Auftrag,Idea and direction
+CRED_DEV,Programmierung und Grafik,Programming and art
+CRED_MUSIC,Musik,Music
+CRED_SFX,Klänge,Sounds
+CRED_ART,Grafik,Art
+CRED_ART_LINE,Alle Bilder selbst gezeichnet,All pictures drawn for this game
+CRED_ENGINE,Gebaut mit,Made with
+FINALE_ZONE,%d %% sauber,%d %% clean
+FINALE_TOUR_Q,Moment! Ein letzter Blick auf alles. Schau mal!,Wait! One last look at everything. Look!
+FINALE_AFTER_TITLE,Danke fürs Spielen!,Thanks for playing!
+FINALE_AFTER_SUB,Rusty bleibt noch. Räum ruhig weiter auf.,Rusty is staying a bit. Feel free to keep tidying.
+FINALE_AFTER_Q,"Bin wieder da. Hab was vergessen: den Rest vom Müll.","I'm back. Forgot something: the rest of the trash."
