@@ -187,3 +187,13 @@ func test_bored_bot_says_why() -> void:
 	h.idle_quip_timer = 1
 	TestWorlds.run(w, 120)
 	assert_eq(h.bored, "too_hard", "nur zu harter Müll")
+
+
+func test_bots_pick_up_loose_items_first() -> void:
+	# MS49: Bots sammeln alles, was herumliegt, nicht nur selbst Abgebautes.
+	var w := _world()
+	var h := w.add_helper(Vector2i(10, 6), w.ship().tile)
+	var item := w.add_loose("scrap", Vector2i(12, 6) * 64, 1)
+	var id := item.id
+	TestWorlds.run(w, 20 * 15)
+	assert_false(w.loose.has(id), "loses Teil wurde eingesammelt")
