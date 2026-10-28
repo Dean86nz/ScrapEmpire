@@ -2,6 +2,24 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.6.0] – 2026-10-28 – MS46 Musik je Zone (Phase 2.1)
+
+### Neu
+- **Jede Zone hat ihr eigenes fröhliches Stück:** Schrottplatz „Apple Cider“, Kabelsenke „Wednesday Night“ (Funk), Plastikbucht „Happy Vibes“ (Insel), Kühlschrank-Friedhof „Happy Clappy Loop“ (Klavier), Satellitenfeld „Shine Blitz“ (treibend), Monolith-Ebene „Happy Beat“ (Trommeln und Flöte)
+- **Finale-Stück** („Course 5“ von Zane Little Music) für Rundflug, Abflug und Abspann; danach wieder die Zonen-Musik
+- Wechsel beim Betreten einer Zone mit Überblenden (2,5 s). Ein Stück läuft etwa 2 Minuten (kurze Stücke wiederholen sich), dann blendet es aus, 20–40 s Pause, dann wieder
+- **Copyright:** alle Stücke CC0 (kommerziell frei), Lizenz auf jeder Seite geprüft, Urheber in `docs/CREDITS.md` und im Abspann genannt
+
+### Technik
+- Musik-Zustandsmaschine in `Sfx` (`music_zone`, `music_finale`), Werte in `data/audio.json`
+- 221 Unit-Tests (neu: Stück je Zone, Finale hat Vorrang, Pausen), 53 Gamepad-Prüfungen grün
+
+### Ally-Testliste
+1. Durch alle Zonen fahren: Passt jedes Stück zum Thema? Ist das Überblenden weich?
+2. Länger in einer Zone bleiben: Fühlen sich die Pausen gut an (nicht zu lang, nicht zu kurz)?
+3. Finale: Passt das Stück zu Rundflug und Abspann?
+4. Lautstärke im Pausenmenü (Musik) wirkt auf alle Stücke?
+
 ## [2.5.0] – 2026-10-28 – MS45 Sound im Comic-Stil (Phase 2.1)
 
 ### Geändert

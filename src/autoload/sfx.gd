@@ -124,6 +124,7 @@ func set_driving(speed_frac: float) -> void:
 
 
 func _process(delta: float) -> void:
+	_music_tick(delta)
 	if _drive.playing:
 		_drive.volume_db = move_toward(_drive.volume_db, _drive_target, delta * 80.0)
 		if _drive.volume_db <= -79.0 and _drive_target <= -80.0:
@@ -134,21 +135,87 @@ func _process(delta: float) -> void:
 			_suck.stop()
 
 
-## Musik aus data/audio.json („music“: Pfad). Leer = keine Musik (Auswahl durch den Auftraggeber).
+# --- Musik je Zone (MS46) --------------------------------------------------------
+
+var _music_cfg: Dictionary = {}
+var _music_path := ""          # gewünschtes Stück (Zone oder Finale)
+var _music_playing_path := ""
+var _music_state := "off"      # off, fade_in, play, fade_out, pause
+var _music_played := 0.0
+var _music_pause := 0.0
+var _finale := false
+
+
 func _start_music() -> void:
 	var text := FileAccess.get_file_as_string("res://data/audio.json")
 	var cfg: Variant = JSON.parse_string(text) if text != "" else null
-	var path := str(cfg.get("music", "")) if cfg is Dictionary else ""
-	if path == "" or not ResourceLoader.exists(path):
+	_music_cfg = cfg if cfg is Dictionary else {}
+	_music_path = str(_music_cfg.get("default", ""))
+
+
+## Spieler betritt eine Zone: deren Stück (mit Überblenden), Finale hat Vorrang.
+func music_zone(zone_id: String) -> void:
+	var path := str((_music_cfg.get("zones", {}) as Dictionary).get(zone_id, _music_cfg.get("default", "")))
+	if not _finale:
+		_music_path = path
+
+
+## Rundflug, Abflug, Abspann: Finale-Stück ohne Pausen; danach wieder die Zone.
+func music_finale(on: bool, zone_id: String = "") -> void:
+	_finale = on
+	if on:
+		_music_path = str(_music_cfg.get("finale", ""))
+	else:
+		music_zone(zone_id)
+
+
+func _music_tick(delta: float) -> void:
+	var base := float(_music_cfg.get("music_db", -10.0))
+	var fade := maxf(float(_music_cfg.get("fade_s", 2.5)), 0.1)
+	var step := delta * 60.0 / fade  # ca. 60 dB je Überblendung
+	if _music_path != _music_playing_path and _music_state in ["play", "fade_in"]:
+		_music_state = "fade_out"
+	match _music_state:
+		"off", "pause":
+			if _music_state == "pause" and _music_path == _music_playing_path:
+				_music_pause -= delta
+				if _music_pause > 0.0:
+					return
+			_music_begin(base)
+		"fade_in":
+			music.volume_db = move_toward(music.volume_db, base, step)
+			_music_played += delta
+			if music.volume_db >= base:
+				_music_state = "play"
+		"play":
+			_music_played += delta
+			if not _finale and _music_played >= float(_music_cfg.get("min_play_s", 110.0)):
+				_music_state = "fade_out"
+		"fade_out":
+			music.volume_db = move_toward(music.volume_db, -60.0, step)
+			if music.volume_db <= -59.0:
+				music.stop()
+				if _music_path != _music_playing_path:
+					_music_state = "off"  # Zonenwechsel: gleich das neue Stück
+				else:
+					_music_state = "pause"
+					_music_pause = randf_range(float(_music_cfg.get("pause_min_s", 20.0)), float(_music_cfg.get("pause_max_s", 40.0)))
+
+
+func _music_begin(_base: float) -> void:
+	if _music_path == "" or not ResourceLoader.exists(_music_path):
 		return
-	var stream: AudioStream = load(path)
+	var stream: AudioStream = load(_music_path)
 	if stream is AudioStreamOggVorbis:
 		(stream as AudioStreamOggVorbis).loop = true
 	elif stream is AudioStreamMP3:
 		(stream as AudioStreamMP3).loop = true
 	music.stream = stream
-	music.volume_db = float(cfg.get("music_db", -8.0))
+	music.volume_db = -60.0
 	music.play()
+	_music_playing_path = _music_path
+	_music_played = 0.0
+	_music_state = "fade_in"
 
 
 # --- Dateien ------------------------------------------------------------------

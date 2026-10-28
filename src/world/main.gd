@@ -18,6 +18,7 @@ var _cam_focus: Node2D = null     # solange gesetzt, schaut die Kamera dorthin (
 var _cam_focus_time := 0.0        # > 0: Fokus endet nach dieser Zeit von selbst
 var _fade: ColorRect
 var _launching := false
+var _music_zone := ""
 
 var _world: SimWorld
 var _map_data: Dictionary = {}
@@ -192,6 +193,10 @@ func _process(delta: float) -> void:
 	_update_camera_focus(delta)
 	Sfx.set_sucking(_world.player.suck_held and InputRouter.context == InputRouter.Context.GAME)
 	Sfx.set_driving(_player.velocity.length() / maxf(GameConfig.PLAYER_SPEED_PX, 1.0))
+	var zid := _world.zones.zone_id_at(_world.player_tile())
+	if zid != "" and zid != _music_zone:
+		_music_zone = zid
+		Sfx.music_zone(zid)  # eigenes Stück je Zone (MS46)
 	_hud.set_hint(_current_hint())
 	_chapter_timer -= delta
 	if _chapter_timer <= 0.0:
@@ -530,6 +535,7 @@ func _launch_sequence() -> void:
 		_progress_menu.close()
 	InputRouter.context = InputRouter.Context.MENU
 	_launching = true
+	Sfx.music_finale(true)
 	await _finale_tour()
 	_focus_camera(view)
 	await get_tree().create_timer(1.2).timeout
@@ -563,6 +569,7 @@ func _finale_tour() -> void:
 
 
 func _on_credits_closed() -> void:
+	Sfx.music_finale(false, _music_zone)
 	_hud.stage_banner.show_card(tr("FINALE_AFTER_TITLE"), tr("FINALE_AFTER_SUB"), "", "res://assets/sprites/robot/rusty.svg", 3.5)
 	EventBus.quip.emit("FINALE_AFTER_Q")
 
