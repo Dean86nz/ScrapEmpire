@@ -91,6 +91,10 @@ func _ready() -> void:
 	gags.name = "Gags"
 	add_child(gags)
 	gags.bind(_world, _world_view, _player)
+	var secrets := SecretsView.new()   # Secrets und Easter Eggs (MS60)
+	secrets.name = "Secrets"
+	add_child(secrets)
+	secrets.bind(self, _world, _player, _hud)
 	_player.setup_look(_world)
 	var events := EventView.new()
 	events.name = "Events"

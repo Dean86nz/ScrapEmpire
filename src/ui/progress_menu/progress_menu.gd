@@ -1030,7 +1030,7 @@ func _refresh_journal() -> void:
 	var focus_idx := _clear_keep_focus(_journal_list)
 	var found := _world.collectibles_found.size()
 	var total := _world.collectible_total()
-	var head := _make_card("📖 %s: %d / %d" % [tr("JOURNAL_HEADER"), found, total])
+	var head := _make_card("📖 %s: %d / %d   ·   🔍 %s" % [tr("JOURNAL_HEADER"), found, total, tr("SECRETS_HEADER") % [SecretSystem.found_count(_world), SecretSystem.defs.size()]])
 	head.custom_minimum_size = Vector2(1360, 72)
 	_part(head, "Detail").visible = false
 	_journal_list.add_child(head)

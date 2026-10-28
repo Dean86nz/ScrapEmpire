@@ -35,6 +35,8 @@ signal helper_quip(helper: Helper, key: String)
 signal helper_bored(helper: Helper)
 signal boss_defeated(kind: String, zone_id: String, reward: int)
 signal hammer_impact(node: ResourceNode, tool_tier: int, one_hit: bool)  # Rustys Schlag (Effekte je Stufe)
+signal secret_found(id: String)                            # Secret entdeckt (MS60)
+signal secret_progress(id: String, n: int, total: int)      # z. B. Ente 5/12
 signal helper_fused(helper: Helper)                        # Fusion zu Super-/Mega-Bot (MS57)
 signal boss_rally(boss: ResourceNode, called: int)          # Rusty ruft Verstärkung
 signal boss_blocked(boss: ResourceNode, have: int, need: int)  # Schlag ohne genug Bots
@@ -217,6 +219,7 @@ func tick() -> void:
 	for cmd in _commands:
 		_apply(cmd)
 	_commands.clear()
+	SecretSystem.tick(self)
 
 	for n: ResourceNode in nodes.values():
 		if n.tick():
@@ -285,6 +288,9 @@ func _apply(cmd: Dictionary) -> void:
 			HelperSystem._cmd_buy_helper(self, cmd)
 		"buy_helper_upgrade":
 			HelperSystem._cmd_buy_helper_upgrade(self, cmd)
+		"secret":
+			if str(cmd.get("id", "")) in ["disco", "fireflies"]:
+				SecretSystem.progress(self, str(cmd["id"]))
 		"fuse_helpers":
 			HelperSystem._cmd_fuse(self, cmd)
 		"remove_helper":

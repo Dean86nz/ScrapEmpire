@@ -646,3 +646,39 @@ OBJ_SATELLITE_BIG,Riesen-Satellit,Giant satellite
 OBJ_SOLAR_PANEL,Solarpaneel,Solar panel
 OBJ_MONOLITH_DARK,Dunkler Monolith,Dark monolith
 OBJ_CRYSTAL_CLUSTER,Kristallnest,Crystal nest
+OBJ_CRACKED_WALL,Rissige Wand,Cracked wall
+OBJ_RUBBER_DUCK,Gummiente,Rubber duck
+OBJ_GOLDEN_HEAP,Goldener Haufen,Golden heap
+OBJ_TOILET,Sprechende Toilette,Talking toilet
+OBJ_KALTHOLZ,Kaltholz-Kühlschrank,Kaltholz fridge
+SECRET_FOUND,Geheimnis gefunden!,Secret found!
+SECRET_BONUS,+2 % Bolts für immer,+2% bolts forever
+SECRET_PROGRESS,%s: %d/%d,%s: %d/%d
+SECRETS_HEADER,Geheimnisse: %d / %d,Secrets: %d / %d
+SECRET_WALLS,Hinter den Rissen,Behind the cracks
+SECRET_WALLS_DESC,Alle 6 rissigen Wände aufgebrochen,Broke all 6 cracked walls
+SECRET_DUCKS,Entenfamilie,Duck family
+SECRET_DUCKS_DESC,Alle 12 Gummienten gefunden – Rusty trägt jetzt Ente,Found all 12 rubber ducks – Rusty now wears a duck
+SECRET_CAT,Katzen-Bot,Cat bot
+SECRET_CAT_DESC,Aus dem goldenen Haufen schlüpfte ein Katzen-Bot,A cat bot hatched from the golden heap
+SECRET_DISCO,Disco-Schrott,Junk disco
+SECRET_DISCO_DESC,↑↑↓↓←→←→ – der Planet tanzt,↑↑↓↓←→←→ – the planet dances
+SECRET_TOILET,Weise Toilette,Wise toilet
+SECRET_TOILET_DESC,Die Toilette hat alles gesagt,The toilet has said it all
+SECRET_DEV,Hier war der Entwickler,The developer was here
+SECRET_DEV_DESC,Der geheime Raum in der Ecke der Monolith-Ebene,The secret room in the corner of the monolith plain
+SECRET_STATUE,Goldene Statue,Golden statue
+SECRET_STATUE_DESC,Planet zu 100 % sauber – Rusty steht in Gold am Schiff,Planet 100% clean – Rusty stands in gold by the ship
+SECRET_FIREFLIES,Glühwürmchen-Tanz,Firefly dance
+SECRET_FIREFLIES_DESC,In der Monolith-Ebene 20 s stillgestanden,Stood still for 20 s in the monolith plain
+SECRET_KALTHOLZ,Kaltholz-Rezept,Kaltholz recipe
+SECRET_KALTHOLZ_DESC,Im braunen Kühlschrank lag ein Rezept,There was a recipe in the brown fridge
+SECRET_SPEEDRUN,Turbo-Abflug,Turbo launch
+SECRET_SPEEDRUN_DESC,Abflug in unter 2 Stunden,Launched in under 2 hours
+TOILET_1,„Alles fließt.“,"""Everything flows."""
+TOILET_2,"„Wer spült, gewinnt.“","""Who flushes, wins."""
+TOILET_3,„Auch der größte Haufen beginnt klein.“,"""Even the biggest heap starts small."""
+TOILET_4,„Sitz nicht rum. Räum auf.“,"""Don’t just sit there. Tidy up."""
+TOILET_5,„Ich habe viel gesehen. Zu viel.“,"""I have seen a lot. Too much."""
+KALTHOLZ_RECIPE,"Rezept: Schrottsuppe – 1 Schraube, 2 Kabel, viel Liebe","Recipe: junk soup – 1 bolt, 2 cables, lots of love"
+DEV_ROOM,Hier war der Entwickler. Danke fürs Spielen!,The developer was here. Thanks for playing!
