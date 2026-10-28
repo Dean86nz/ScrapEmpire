@@ -4,6 +4,9 @@ extends RefCounted
 ## `w` ist die Welt. Werte in data/ship.json („courier“) und data/buildings.json („collection_point“).
 
 
+const POINT_DEF := "collection_point"
+const SITE_REACH_PX := 170.0   # so nah muss Rusty am Bauplatz stehen (A baut)
+
 # --- Sammelstellen --------------------------------------------------------------
 
 static func points(w: SimWorld) -> Array[CollectionPoint]:
@@ -42,6 +45,33 @@ static func nearest_depot(w: SimWorld, pos: Vector2i) -> Building:
 
 
 ## Eine Sammelstelle je Zone (max_per_zone). "" = erlaubt.
+## Fester Bauplatz der Zone (Kachel oben links), (-1, -1) ohne Bauplatz.
+static func site_of(w: SimWorld, zone_id: String) -> Vector2i:
+	var z := w.zones.zone_by_id(zone_id)
+	return z.get("site", Vector2i(-1, -1)) if not z.is_empty() else Vector2i(-1, -1)
+
+
+## Leerer Bauplatz, an dem Rusty gerade steht (Zonen-ID), sonst "".
+static func site_near_player(w: SimWorld, reach_px: float = SITE_REACH_PX) -> String:
+	for z in w.zones.zones:
+		var site: Vector2i = z.get("site", Vector2i(-1, -1))
+		if site.x < 0 or not w.zones.is_unlocked(str(z["id"])) or w.grid.at(site) != null:
+			continue
+		var center := Vector2(site * Building.TILE + Vector2i(Building.TILE, Building.TILE))
+		if center.distance_to(Vector2(w.player.pos)) <= reach_px:
+			return str(z["id"])
+	return ""
+
+
+## A am Bauplatz: Sammelstelle genau dort bauen (Kosten, Freischaltung prüft _cmd_place).
+static func _cmd_build_point(w: SimWorld, cmd: Dictionary) -> void:
+	var site := site_of(w, str(cmd.get("zone", "")))
+	if site.x < 0:
+		w.place_failed.emit("site")
+		return
+	BuildingSystem._cmd_place(w, {"def_id": POINT_DEF, "tile": site, "rot": 0})
+
+
 static func zone_check(w: SimWorld, def: BuildingDef, tile: Vector2i) -> String:
 	if def.max_per_zone <= 0:
 		return ""

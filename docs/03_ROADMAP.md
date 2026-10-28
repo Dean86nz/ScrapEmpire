@@ -50,6 +50,18 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | ~~39~~ | Balancing per Simulation: entfällt auf Wunsch, Feintuning nach Ally-Durchlauf | – |
 | **40** | Abschluss Phase 2: durchspielbare EXE, Durchlauf-Testliste, offene Punkte | v2.0.0 |
 
+## Phase 2.1 nach dem Test von v2.0.0 (Go 2026-10-28)
+
+| MS | Inhalt | Version |
+|---|---|---|
+| **41** | Fehler: Endboss, Sauger nach Pause, Karte, Sammelstelle auf festem Bauplatz | v2.1.0 |
+| 42 | Bots automatisch, Bot-Werkzeug bis T5, Boss-Verstärkung | v2.2.0 |
+| 43 | Hammer spürbar stärker (Schläge nach Stufen-Unterschied) | v2.3.0 |
+| 44 | Sprechblasen dezenter, Bot-Symbole | v2.4.0 |
+| 45 | Sound im Comic-Stil | v2.5.0 |
+| 46 | Musik je Zone und Finale | v2.6.0 |
+| 47 | Absturz-Intro | v2.7.0 |
+
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
 
 Ziel: Steam-Release, 3 bis 4 Stunden mit klarem Ende, danach Content-Stopp. Beschlossen:

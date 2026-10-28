@@ -30,7 +30,11 @@
    "x": 0,
    "y": 45,
    "w": 40,
-   "h": 45
+   "h": 45,
+   "site": {
+    "x": 11,
+    "y": 76
+   }
   },
   {
    "id": "z11",
@@ -40,7 +44,11 @@
    "x": 40,
    "y": 45,
    "w": 40,
-   "h": 45
+   "h": 45,
+   "site": {
+    "x": 51,
+    "y": 76
+   }
   },
   {
    "id": "z21",
@@ -50,7 +58,11 @@
    "x": 80,
    "y": 45,
    "w": 40,
-   "h": 45
+   "h": 45,
+   "site": {
+    "x": 91,
+    "y": 76
+   }
   },
   {
    "id": "z20",
@@ -60,7 +72,11 @@
    "x": 80,
    "y": 0,
    "w": 40,
-   "h": 45
+   "h": 45,
+   "site": {
+    "x": 91,
+    "y": 31
+   }
   },
   {
    "id": "z10",
@@ -70,7 +86,11 @@
    "x": 40,
    "y": 0,
    "w": 40,
-   "h": 45
+   "h": 45,
+   "site": {
+    "x": 51,
+    "y": 31
+   }
   },
   {
    "id": "z00",
@@ -80,7 +100,11 @@
    "x": 0,
    "y": 0,
    "w": 40,
-   "h": 45
+   "h": 45,
+   "site": {
+    "x": 11,
+    "y": 31
+   }
   }
  ],
  "nodes": [
@@ -227,11 +251,6 @@
    "y": 48
   },
   {
-   "kind": "tire_stack",
-   "x": 14,
-   "y": 76
-  },
-  {
    "kind": "scrap_pile",
    "x": 6,
    "y": 69,
@@ -347,12 +366,6 @@
    "amount": 7
   },
   {
-   "kind": "scrap_pile",
-   "x": 13,
-   "y": 79,
-   "amount": 8
-  },
-  {
    "kind": "pallet",
    "x": 11,
    "y": 61
@@ -413,6 +426,12 @@
    "amount": 10
   },
   {
+   "kind": "scrap_pile",
+   "x": 13,
+   "y": 80,
+   "amount": 6
+  },
+  {
    "kind": "copper_tangle",
    "x": 18,
    "y": 75,
@@ -444,12 +463,6 @@
    "y": 67
   },
   {
-   "kind": "copper_tangle",
-   "x": 9,
-   "y": 77,
-   "amount": 7
-  },
-  {
    "kind": "toaster",
    "x": 26,
    "y": 59
@@ -477,37 +490,31 @@
    "y": 82
   },
   {
-   "kind": "cable_monster",
-   "x": 59,
-   "y": 61
-  },
-  {
-   "kind": "copper_tangle",
-   "x": 72,
-   "y": 54,
-   "amount": 7
-  },
-  {
-   "kind": "charger_nest",
-   "x": 54,
+   "kind": "tv",
+   "x": 14,
    "y": 50
   },
   {
+   "kind": "cable_monster",
+   "x": 57,
+   "y": 62
+  },
+  {
    "kind": "copper_tangle",
-   "x": 73,
-   "y": 48,
+   "x": 66,
+   "y": 59,
    "amount": 6
   },
   {
-   "kind": "copper_tangle",
-   "x": 44,
-   "y": 53,
-   "amount": 7
+   "kind": "scrap_pile",
+   "x": 63,
+   "y": 59,
+   "amount": 8
   },
   {
-   "kind": "charger_nest",
-   "x": 63,
-   "y": 59
+   "kind": "cart",
+   "x": 53,
+   "y": 50
   },
   {
    "kind": "concrete",
@@ -524,11 +531,6 @@
    "x": 63,
    "y": 84,
    "amount": 6
-  },
-  {
-   "kind": "radio",
-   "x": 51,
-   "y": 78
   },
   {
    "kind": "charger_nest",
@@ -652,12 +654,6 @@
    "x": 49,
    "y": 57,
    "amount": 8
-  },
-  {
-   "kind": "copper_tangle",
-   "x": 50,
-   "y": 76,
-   "amount": 9
   },
   {
    "kind": "cart",
@@ -785,12 +781,6 @@
    "y": 49
   },
   {
-   "kind": "copper_tangle",
-   "x": 52,
-   "y": 74,
-   "amount": 6
-  },
-  {
    "kind": "radio",
    "x": 67,
    "y": 70
@@ -827,93 +817,79 @@
    "y": 69
   },
   {
-   "kind": "plastic_whale",
-   "x": 100,
-   "y": 71
-  },
-  {
-   "kind": "flipflop_heap",
-   "x": 101,
-   "y": 55
-  },
-  {
-   "kind": "duck_pile",
-   "x": 95,
+   "kind": "cart",
+   "x": 65,
    "y": 66
   },
   {
-   "kind": "umbrella_wreck",
-   "x": 88,
-   "y": 76
+   "kind": "radio",
+   "x": 55,
+   "y": 66
   },
   {
-   "kind": "driftwood_pile",
-   "x": 108,
+   "kind": "scrap_pile",
+   "x": 68,
    "y": 50,
    "amount": 9
   },
   {
-   "kind": "driftwood_pile",
-   "x": 84,
-   "y": 49,
-   "amount": 8
-  },
-  {
-   "kind": "plastic_crumbs",
-   "x": 91,
+   "kind": "copper_tangle",
+   "x": 51,
    "y": 67,
    "amount": 6
   },
   {
-   "kind": "duck_pile",
-   "x": 114,
-   "y": 79
-  },
-  {
-   "kind": "driftwood_pile",
-   "x": 91,
+   "kind": "scrap_pile",
+   "x": 51,
    "y": 70,
    "amount": 7
   },
   {
-   "kind": "duck_pile",
-   "x": 101,
-   "y": 76
-  },
-  {
-   "kind": "umbrella_wreck",
-   "x": 110,
+   "kind": "cart",
+   "x": 70,
    "y": 86
   },
   {
-   "kind": "umbrella_wreck",
-   "x": 98,
+   "kind": "plastic_whale",
+   "x": 104,
+   "y": 61
+  },
+  {
+   "kind": "flipflop_heap",
+   "x": 99,
    "y": 64
   },
   {
+   "kind": "duck_pile",
+   "x": 112,
+   "y": 51
+  },
+  {
+   "kind": "plastic_crumbs",
+   "x": 114,
+   "y": 56,
+   "amount": 6
+  },
+  {
    "kind": "flipflop_heap",
-   "x": 115,
-   "y": 50
-  },
-  {
-   "kind": "duck_pile",
-   "x": 101,
-   "y": 78
-  },
-  {
-   "kind": "duck_pile",
-   "x": 86,
-   "y": 85
+   "x": 91,
+   "y": 55
   },
   {
    "kind": "umbrella_wreck",
-   "x": 113,
-   "y": 49
+   "x": 84,
+   "y": 51
   },
   {
-   "kind": "flipflop_heap",
+   "kind": "duck_pile",
+   "x": 110,
+   "y": 78
+  },
+  {
+   "kind": "driftwood_pile",
    "x": 83,
-   "y": 75
+   "y": 75,
+   "amount": 7
   },
   {
    "kind": "flipflop_heap",
@@ -978,11 +954,6 @@
    "y": 81
   },
   {
-   "kind": "flipflop_heap",
-   "x": 113,
-   "y": 55
-  },
-  {
    "kind": "umbrella_wreck",
    "x": 104,
    "y": 64
@@ -1009,6 +980,11 @@
    "y": 53
   },
   {
+   "kind": "flipflop_heap",
+   "x": 114,
+   "y": 79
+  },
+  {
    "kind": "plastic_crumbs",
    "x": 106,
    "y": 66,
@@ -1026,19 +1002,9 @@
    "amount": 7
   },
   {
-   "kind": "umbrella_wreck",
-   "x": 90,
-   "y": 77
-  },
-  {
    "kind": "flipflop_heap",
    "x": 103,
    "y": 78
-  },
-  {
-   "kind": "sofa",
-   "x": 115,
-   "y": 57
   },
   {
    "kind": "duck_pile",
@@ -1079,6 +1045,11 @@
    "amount": 10
   },
   {
+   "kind": "flipflop_heap",
+   "x": 113,
+   "y": 49
+  },
+  {
    "kind": "duck_pile",
    "x": 115,
    "y": 84
@@ -1095,15 +1066,20 @@
    "amount": 7
   },
   {
+   "kind": "duck_pile",
+   "x": 92,
+   "y": 69
+  },
+  {
    "kind": "plastic_crumbs",
    "x": 92,
    "y": 57,
    "amount": 9
   },
   {
-   "kind": "duck_pile",
-   "x": 83,
-   "y": 51
+   "kind": "umbrella_wreck",
+   "x": 100,
+   "y": 77
   },
   {
    "kind": "umbrella_wreck",
@@ -1210,6 +1186,12 @@
    "y": 53
   },
   {
+   "kind": "driftwood_pile",
+   "x": 108,
+   "y": 50,
+   "amount": 9
+  },
+  {
    "kind": "flipflop_heap",
    "x": 115,
    "y": 53
@@ -1241,151 +1223,96 @@
    "y": 80
   },
   {
-   "kind": "freezer_king",
+   "kind": "flipflop_heap",
+   "x": 100,
+   "y": 56
+  },
+  {
+   "kind": "flipflop_heap",
    "x": 94,
-   "y": 23
+   "y": 54
   },
   {
-   "kind": "rubble_field",
-   "x": 112,
-   "y": 41,
-   "amount": 7
+   "kind": "duck_pile",
+   "x": 107,
+   "y": 52
   },
   {
-   "kind": "freezer",
+   "kind": "plastic_crumbs",
    "x": 104,
-   "y": 15
-  },
-  {
-   "kind": "rubble_field",
-   "x": 92,
-   "y": 28,
-   "amount": 7
-  },
-  {
-   "kind": "scrap_pile",
-   "x": 86,
-   "y": 13,
-   "amount": 8
-  },
-  {
-   "kind": "scrap_pile",
-   "x": 88,
-   "y": 6,
+   "y": 67,
    "amount": 9
   },
   {
-   "kind": "fridge",
-   "x": 103,
-   "y": 39
-  },
-  {
-   "kind": "scrap_pile",
-   "x": 107,
-   "y": 15,
-   "amount": 10
-  },
-  {
-   "kind": "freezer",
-   "x": 94,
-   "y": 9
-  },
-  {
-   "kind": "fridge",
-   "x": 85,
-   "y": 23
-  },
-  {
-   "kind": "fridge",
-   "x": 107,
-   "y": 7
-  },
-  {
-   "kind": "rubble_field",
-   "x": 104,
-   "y": 22,
-   "amount": 9
-  },
-  {
-   "kind": "rubble_field",
-   "x": 89,
-   "y": 38,
-   "amount": 10
-  },
-  {
-   "kind": "pizza_tower",
-   "x": 103,
-   "y": 41
-  },
-  {
-   "kind": "ruin_wall",
+   "kind": "sofa",
    "x": 102,
-   "y": 35
+   "y": 80
   },
   {
-   "kind": "scrap_pile",
+   "kind": "plastic_crumbs",
    "x": 86,
-   "y": 15,
+   "y": 60,
    "amount": 10
   },
   {
-   "kind": "scrap_pile",
+   "kind": "plastic_crumbs",
    "x": 113,
-   "y": 25,
+   "y": 70,
    "amount": 6
   },
   {
-   "kind": "freezer",
+   "kind": "flipflop_heap",
    "x": 99,
-   "y": 13
+   "y": 58
   },
   {
-   "kind": "rubble_field",
-   "x": 83,
-   "y": 33,
+   "kind": "driftwood_pile",
+   "x": 102,
+   "y": 48,
    "amount": 8
   },
   {
-   "kind": "fridge",
-   "x": 94,
-   "y": 12
-  },
-  {
-   "kind": "freezer",
+   "kind": "flipflop_heap",
    "x": 107,
-   "y": 33
+   "y": 78
   },
   {
-   "kind": "freezer",
+   "kind": "flipflop_heap",
    "x": 92,
-   "y": 26
+   "y": 71
+  },
+  {
+   "kind": "driftwood_pile",
+   "x": 101,
+   "y": 82,
+   "amount": 7
+  },
+  {
+   "kind": "umbrella_wreck",
+   "x": 105,
+   "y": 76
+  },
+  {
+   "kind": "freezer_king",
+   "x": 103,
+   "y": 21
   },
   {
    "kind": "scrap_pile",
-   "x": 93,
-   "y": 30,
-   "amount": 8
-  },
-  {
-   "kind": "pizza_tower",
-   "x": 104,
-   "y": 12
-  },
-  {
-   "kind": "ruin_wall",
-   "x": 97,
-   "y": 8
-  },
-  {
-   "kind": "ruin_wall",
    "x": 99,
-   "y": 20
+   "y": 20,
+   "amount": 6
   },
   {
    "kind": "rubble_field",
    "x": 93,
    "y": 37,
    "amount": 10
+  },
+  {
+   "kind": "fridge",
+   "x": 95,
+   "y": 24
   },
   {
    "kind": "pizza_tower",
@@ -1401,6 +1328,16 @@
    "kind": "fridge",
    "x": 95,
    "y": 34
+  },
+  {
+   "kind": "pizza_tower",
+   "x": 94,
+   "y": 12
+  },
+  {
+   "kind": "fridge",
+   "x": 93,
+   "y": 22
   },
   {
    "kind": "pizza_tower",
@@ -1478,6 +1415,11 @@
   },
   {
    "kind": "freezer",
+   "x": 87,
+   "y": 13
+  },
+  {
+   "kind": "freezer",
    "x": 100,
    "y": 18
   },
@@ -1485,6 +1427,12 @@
    "kind": "freezer",
    "x": 109,
    "y": 6
+  },
+  {
+   "kind": "rubble_field",
+   "x": 85,
+   "y": 22,
+   "amount": 9
   },
   {
    "kind": "fridge",
@@ -1523,6 +1471,11 @@
    "x": 111,
    "y": 10,
    "amount": 7
+  },
+  {
+   "kind": "freezer",
+   "x": 99,
+   "y": 12
   },
   {
    "kind": "freezer",
@@ -1587,15 +1540,24 @@
    "y": 28
   },
   {
-   "kind": "rubble_field",
-   "x": 88,
-   "y": 14,
-   "amount": 7
+   "kind": "freezer",
+   "x": 92,
+   "y": 27
+  },
+  {
+   "kind": "freezer",
+   "x": 103,
+   "y": 35
   },
   {
    "kind": "fridge",
    "x": 97,
    "y": 37
+  },
+  {
+   "kind": "ruin_wall",
+   "x": 105,
+   "y": 16
   },
   {
    "kind": "freezer",
@@ -1630,9 +1592,20 @@
    "y": 24
   },
   {
+   "kind": "rubble_field",
+   "x": 105,
+   "y": 22,
+   "amount": 8
+  },
+  {
    "kind": "ruin_wall",
    "x": 115,
    "y": 8
+  },
+  {
+   "kind": "fridge",
+   "x": 88,
+   "y": 15
   },
   {
    "kind": "pizza_tower",
@@ -1640,10 +1613,20 @@
    "y": 33
   },
   {
+   "kind": "freezer",
+   "x": 107,
+   "y": 15
+  },
+  {
    "kind": "rubble_field",
    "x": 91,
    "y": 13,
    "amount": 6
+  },
+  {
+   "kind": "pizza_tower",
+   "x": 95,
+   "y": 10
   },
   {
    "kind": "ruin_wall",
@@ -1662,86 +1645,76 @@
    "y": 6
   },
   {
-   "kind": "mega_dish",
-   "x": 57,
-   "y": 28
-  },
-  {
-   "kind": "scrap_pile",
-   "x": 68,
-   "y": 22,
+   "kind": "rubble_field",
+   "x": 105,
+   "y": 20,
    "amount": 8
   },
   {
-   "kind": "satellite",
-   "x": 46,
-   "y": 21
-  },
-  {
-   "kind": "ship_part",
-   "x": 52,
-   "y": 6
-  },
-  {
-   "kind": "copper_tangle",
-   "x": 76,
-   "y": 9,
-   "amount": 10
-  },
-  {
-   "kind": "ship_part",
-   "x": 49,
-   "y": 19
-  },
-  {
-   "kind": "satellite",
-   "x": 51,
-   "y": 11
-  },
-  {
-   "kind": "scrap_pile",
-   "x": 54,
-   "y": 21,
-   "amount": 6
-  },
-  {
-   "kind": "copper_tangle",
-   "x": 43,
-   "y": 40,
-   "amount": 7
-  },
-  {
-   "kind": "robot_arm",
-   "x": 62,
-   "y": 16
-  },
-  {
-   "kind": "robot_arm",
-   "x": 60,
-   "y": 15
-  },
-  {
-   "kind": "scrap_pile",
-   "x": 54,
-   "y": 18,
-   "amount": 9
-  },
-  {
-   "kind": "copper_tangle",
-   "x": 71,
-   "y": 14,
-   "amount": 10
-  },
-  {
-   "kind": "satellite",
-   "x": 61,
+   "kind": "pizza_tower",
+   "x": 102,
    "y": 3
   },
   {
    "kind": "scrap_pile",
-   "x": 72,
-   "y": 19,
+   "x": 105,
+   "y": 12,
+   "amount": 8
+  },
+  {
+   "kind": "rubble_field",
+   "x": 116,
+   "y": 36,
+   "amount": 6
+  },
+  {
+   "kind": "fridge",
+   "x": 110,
+   "y": 29
+  },
+  {
+   "kind": "mega_dish",
+   "x": 62,
+   "y": 20
+  },
+  {
+   "kind": "satellite",
+   "x": 59,
+   "y": 26
+  },
+  {
+   "kind": "copper_tangle",
+   "x": 52,
+   "y": 7,
+   "amount": 8
+  },
+  {
+   "kind": "copper_tangle",
+   "x": 74,
+   "y": 20,
    "amount": 9
+  },
+  {
+   "kind": "ship_part",
+   "x": 59,
+   "y": 40
+  },
+  {
+   "kind": "scrap_pile",
+   "x": 65,
+   "y": 12,
+   "amount": 7
+  },
+  {
+   "kind": "satellite",
+   "x": 46,
+   "y": 9
+  },
+  {
+   "kind": "copper_tangle",
+   "x": 71,
+   "y": 32,
+   "amount": 8
   },
   {
    "kind": "copper_tangle",
@@ -1766,15 +1739,37 @@
    "y": 9
   },
   {
+   "kind": "copper_tangle",
+   "x": 53,
+   "y": 20,
+   "amount": 10
+  },
+  {
    "kind": "scrap_pile",
    "x": 45,
    "y": 11,
    "amount": 8
   },
   {
+   "kind": "robot_arm",
+   "x": 50,
+   "y": 10
+  },
+  {
+   "kind": "satellite",
+   "x": 50,
+   "y": 19
+  },
+  {
    "kind": "ship_part",
    "x": 49,
    "y": 39
+  },
+  {
+   "kind": "copper_tangle",
+   "x": 70,
+   "y": 13,
+   "amount": 8
   },
   {
    "kind": "scrap_pile",
@@ -1814,10 +1809,20 @@
    "y": 25
   },
   {
+   "kind": "ship_part",
+   "x": 53,
+   "y": 17
+  },
+  {
    "kind": "copper_tangle",
    "x": 75,
    "y": 35,
    "amount": 8
+  },
+  {
+   "kind": "ship_part",
+   "x": 60,
+   "y": 16
   },
   {
    "kind": "scrap_pile",
@@ -1826,9 +1831,9 @@
    "amount": 7
   },
   {
-   "kind": "ship_part",
-   "x": 50,
-   "y": 31
+   "kind": "satellite",
+   "x": 61,
+   "y": 14
   },
   {
    "kind": "scrap_pile",
@@ -1852,6 +1857,12 @@
    "x": 61,
    "y": 7,
    "amount": 6
+  },
+  {
+   "kind": "copper_tangle",
+   "x": 51,
+   "y": 12,
+   "amount": 9
   },
   {
    "kind": "ship_part",
@@ -1896,12 +1907,6 @@
    "y": 25
   },
   {
-   "kind": "copper_tangle",
-   "x": 59,
-   "y": 41,
-   "amount": 6
-  },
-  {
    "kind": "satellite",
    "x": 61,
    "y": 37
@@ -1920,11 +1925,6 @@
    "kind": "satellite",
    "x": 53,
    "y": 38
-  },
-  {
-   "kind": "satellite",
-   "x": 50,
-   "y": 13
   },
   {
    "kind": "satellite",
@@ -1948,6 +1948,11 @@
    "y": 36
   },
   {
+   "kind": "robot_arm",
+   "x": 72,
+   "y": 13
+  },
+  {
    "kind": "satellite",
    "x": 49,
    "y": 16
@@ -1962,21 +1967,6 @@
    "x": 66,
    "y": 33,
    "amount": 9
-  },
-  {
-   "kind": "satellite",
-   "x": 53,
-   "y": 31
-  },
-  {
-   "kind": "ship_part",
-   "x": 69,
-   "y": 14
-  },
-  {
-   "kind": "ship_part",
-   "x": 65,
-   "y": 12
   },
   {
    "kind": "scrap_pile",
@@ -2002,11 +1992,6 @@
    "y": 9
   },
   {
-   "kind": "satellite",
-   "x": 49,
-   "y": 10
-  },
-  {
    "kind": "ship_part",
    "x": 58,
    "y": 18
@@ -2020,6 +2005,11 @@
    "kind": "ship_part",
    "x": 48,
    "y": 34
+  },
+  {
+   "kind": "satellite",
+   "x": 73,
+   "y": 18
   },
   {
    "kind": "copper_tangle",
@@ -2045,6 +2035,12 @@
    "amount": 8
   },
   {
+   "kind": "scrap_pile",
+   "x": 61,
+   "y": 4,
+   "amount": 7
+  },
+  {
    "kind": "ship_part",
    "x": 74,
    "y": 22
@@ -2055,70 +2051,30 @@
    "y": 15
   },
   {
-   "kind": "ur_heap",
-   "x": 17,
-   "y": 16
-  },
-  {
-   "kind": "mystery_cube",
-   "x": 20,
-   "y": 3
-  },
-  {
-   "kind": "monolith",
-   "x": 12,
-   "y": 35
-  },
-  {
-   "kind": "monolith",
-   "x": 10,
-   "y": 20
-  },
-  {
-   "kind": "stardust_crystal",
-   "x": 19,
-   "y": 41
-  },
-  {
-   "kind": "monolith",
-   "x": 25,
+   "kind": "satellite",
+   "x": 65,
    "y": 7
   },
   {
-   "kind": "monolith",
-   "x": 32,
-   "y": 31
-  },
-  {
-   "kind": "monolith",
-   "x": 12,
-   "y": 16
-  },
-  {
-   "kind": "monolith",
-   "x": 10,
-   "y": 29
-  },
-  {
-   "kind": "rubble_field",
-   "x": 34,
+   "kind": "copper_tangle",
+   "x": 74,
    "y": 40,
    "amount": 8
   },
   {
-   "kind": "stardust_crystal",
-   "x": 20,
+   "kind": "ship_part",
+   "x": 60,
    "y": 9
   },
   {
-   "kind": "monolith",
-   "x": 30,
+   "kind": "satellite",
+   "x": 70,
    "y": 23
   },
   {
-   "kind": "mystery_cube",
-   "x": 31,
-   "y": 21
+   "kind": "ur_heap",
+   "x": 26,
+   "y": 23
   },
   {
    "kind": "stardust_crystal",
@@ -2167,6 +2123,11 @@
    "amount": 6
   },
   {
+   "kind": "stardust_crystal",
+   "x": 19,
+   "y": 8
+  },
+  {
    "kind": "monolith",
    "x": 36,
    "y": 9
@@ -2186,6 +2147,12 @@
    "x": 15,
    "y": 37,
    "amount": 7
+  },
+  {
+   "kind": "rubble_field",
+   "x": 31,
+   "y": 20,
+   "amount": 6
   },
   {
    "kind": "scrap_pile",
@@ -2227,9 +2194,9 @@
    "amount": 8
   },
   {
-   "kind": "stardust_crystal",
-   "x": 12,
-   "y": 31
+   "kind": "monolith",
+   "x": 31,
+   "y": 24
   },
   {
    "kind": "mystery_cube",
@@ -2278,6 +2245,92 @@
    "kind": "mystery_cube",
    "x": 17,
    "y": 36
+  },
+  {
+   "kind": "scrap_pile",
+   "x": 6,
+   "y": 40,
+   "amount": 6
+  },
+  {
+   "kind": "monolith",
+   "x": 25,
+   "y": 8
+  },
+  {
+   "kind": "stardust_crystal",
+   "x": 27,
+   "y": 31
+  },
+  {
+   "kind": "stardust_crystal",
+   "x": 11,
+   "y": 24
+  },
+  {
+   "kind": "monolith",
+   "x": 18,
+   "y": 17
+  },
+  {
+   "kind": "scrap_pile",
+   "x": 30,
+   "y": 11,
+   "amount": 6
+  },
+  {
+   "kind": "mystery_cube",
+   "x": 12,
+   "y": 5
+  },
+  {
+   "kind": "monolith",
+   "x": 5,
+   "y": 18
+  },
+  {
+   "kind": "rubble_field",
+   "x": 32,
+   "y": 22,
+   "amount": 7
+  },
+  {
+   "kind": "scrap_pile",
+   "x": 31,
+   "y": 30,
+   "amount": 9
+  },
+  {
+   "kind": "stardust_crystal",
+   "x": 15,
+   "y": 10
+  },
+  {
+   "kind": "rubble_field",
+   "x": 16,
+   "y": 20,
+   "amount": 9
+  },
+  {
+   "kind": "monolith",
+   "x": 15,
+   "y": 12
+  },
+  {
+   "kind": "monolith",
+   "x": 6,
+   "y": 3
+  },
+  {
+   "kind": "scrap_pile",
+   "x": 3,
+   "y": 41,
+   "amount": 10
+  },
+  {
+   "kind": "monolith",
+   "x": 4,
+   "y": 20
   }
  ]
 }

@@ -2,6 +2,26 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.1.0] – 2026-10-28 – MS41 Fehler aus dem v2.0.0-Test (Phase 2.1)
+
+### Behoben
+- **Endboss besiegbar:** Ur-Haufen jetzt Werkzeugstufe 5 (Übergang bis zur Bot-Verstärkung in MS42). Der Erreichbarkeitstest prüft auch Bosse: alles auf der Karte muss mit Rustys höchster Werkzeugstufe machbar sein
+- **Sauger hängt nach Pause:** Beim Pausieren, Fortsetzen und Fensterwechsel werden Saugen und Hammer zurückgesetzt und neu vom Controller gelesen
+- **Karte:** Y zeigt jederzeit die ganze Karte, Schließen (B oder Select) setzt den Zoom zurück; Fußzeile nennt Y
+
+### Geändert
+- **Sammelstelle auf festem Bauplatz:** Jede Zone hat einen gut sichtbaren Bauplatz (gestrichelte Platte, Recycling-Zeichen, Schild mit Preis; vor Schiffsstufe 2 mit Schloss). Hinfahren, A drücken, fertig. Freies Platzieren und das Baumenü auf Y sind entfernt
+
+### Technik
+- `NetworkSystem.site_of/site_near_player`, Befehl `build_point`; Karten-Zonen haben `site`; `SiteView`; `InputRouter.reset_tools()`; `MapView.reset_zoom()`; Baumenü und Bau-Cursor gelöscht
+- 211 Unit-Tests, 56 Gamepad-Prüfungen (neu: RT über Pause, Karte zoomen/zurück/schließen, Sammelstelle per A), Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. RT halten, Start drücken, RT loslassen, fortsetzen: Saugt Rusty nicht mehr?
+2. Karte: mit RT reinzoomen, mit LT raus, Y = ganze Karte, B schließt immer. Klemmt irgendwas?
+3. Ab Schiffsstufe 2: Bauplatz in der Startzone finden, A drücken. Steht die Sammelstelle sofort?
+4. Monolith-Ebene: Ist der Ur-Haufen jetzt mit Werkzeugstufe 5 zu knacken?
+
 ## [2.0.0] – 2026-10-28 – MS40 Abschluss Phase 2: komplett durchspielbar
 
 Phase 2 ist fertig: neues Spiel → sechs Zonen mit Bossen → Ur-Haufen → Schiffsstufe 5 → Rundflug, Abflug, Abspann → Weiterspielen. Danach Inhaltsstopp.

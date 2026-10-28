@@ -37,6 +37,7 @@ func setup(zone_defs: Array, map_nodes: Array, zone_order: Array = [], p_unlock:
 			"theme": str(z.get("theme", "")),
 			"rect": Rect2i(int(z.get("x", 0)), int(z.get("y", 0)), int(z.get("w", 1)), int(z.get("h", 1))),
 			"tutorial": bool(z.get("tutorial", false)),
+			"site": Vector2i(int(z["site"]["x"]), int(z["site"]["y"])) if z.has("site") else Vector2i(-1, -1),
 		})
 		start_trash[id] = 0
 	# Müll-Start aus der Kartendefinition (deterministisch, unabhängig vom Spielstand)

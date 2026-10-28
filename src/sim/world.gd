@@ -283,6 +283,8 @@ func _apply(cmd: Dictionary) -> void:
 			HelperSystem._cmd_remove_helper(self, cmd)
 		"assign_helper":
 			NetworkSystem._cmd_assign_helper(self, cmd)
+		"build_point":
+			NetworkSystem._cmd_build_point(self, cmd)
 		"call_courier":
 			NetworkSystem._cmd_call_courier(self, cmd)
 		"buy_drone":

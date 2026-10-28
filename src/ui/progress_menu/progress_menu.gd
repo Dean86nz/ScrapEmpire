@@ -215,6 +215,7 @@ func open(tab: Tab = Tab.SHIP) -> void:
 
 func close() -> void:
 	_assign_bot = -1
+	_map_view.reset_zoom()
 	if visible:
 		Sfx.play("close")
 	visible = false

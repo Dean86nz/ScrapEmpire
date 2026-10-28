@@ -50,6 +50,12 @@ func bind(world: SimWorld, player: Node2D) -> void:
 	for h: Helper in world.helpers.values():
 		_on_helper_added(h)
 	_build_zone_tints()
+	for z in world.zones.zones:
+		var site: Vector2i = z.get("site", Vector2i(-1, -1))
+		if site.x >= 0:
+			var sv := SiteView.new()
+			sv.setup(world, str(z["id"]), site)
+			add_child(sv)
 	meadow_view.name = "Meadow"
 	add_child(meadow_view)
 	meadow_view.bind(world)

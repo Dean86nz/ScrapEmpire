@@ -446,7 +446,7 @@
     {
       "id": "ur_heap",
       "name_key": "OBJ_UR_HEAP",
-      "tier": 6,
+      "tier": 5,
       "tool": "hammer",
       "type": "loot",
       "boss": true,

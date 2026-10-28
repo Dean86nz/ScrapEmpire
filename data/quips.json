@@ -30,6 +30,9 @@
   "fail_cost": [
     "FAIL_COST"
   ],
+  "fail_site": [
+    "FAIL_SITE"
+  ],
   "fail_blocked": [
     "FAIL_BLOCKED"
   ],

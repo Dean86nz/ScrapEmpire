@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://src/world/main.gd" id="1"]
 [ext_resource type="PackedScene" path="res://src/world/player/player.tscn" id="2"]
@@ -6,8 +6,6 @@
 [ext_resource type="Script" path="res://src/world/world_view.gd" id="4"]
 [ext_resource type="PackedScene" path="res://src/ui/hud/hud.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://src/ui/pause_menu/pause_menu.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://src/ui/build_menu/build_menu.tscn" id="7"]
-[ext_resource type="Script" path="res://src/world/build_cursor.gd" id="8"]
 [ext_resource type="PackedScene" path="res://src/ui/progress_menu/progress_menu.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://src/ui/end_screen/end_screen.tscn" id="12"]
 
@@ -19,12 +17,7 @@ script = ExtResource("4")
 
 [node name="Player" parent="." instance=ExtResource("2")]
 
-[node name="BuildCursor" type="Node2D" parent="."]
-script = ExtResource("8")
-
 [node name="Hud" parent="." instance=ExtResource("5")]
-
-[node name="BuildMenu" parent="." instance=ExtResource("7")]
 
 [node name="ProgressMenu" parent="." instance=ExtResource("9")]
 

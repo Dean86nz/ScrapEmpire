@@ -94,8 +94,6 @@ func _new_quips() -> bool:
 # --- Schrittfolge -------------------------------------------------------------
 
 func _build_steps() -> void:
-	var cursor := _node("BuildCursor")
-	var build_menu := _node("BuildMenu")
 	var progress := _node("ProgressMenu")
 	var pause := _node("PauseMenu")
 	var router: Node = root.get_node("/root/InputRouter")
@@ -122,12 +120,16 @@ func _build_steps() -> void:
 				_world.unlocked_features[f] = true,
 		func() -> bool: return _world.player.inventory.count_of("wood") >= 20 and _world.ship() != null)
 
-	# Baumenü (Sammelstelle)
-	_step("Y kurz öffnet das Baumenü", func() -> void: _tap(JOY_BUTTON_Y), func() -> bool: return build_menu.visible)
-	_step("A wählt die fokussierte Sammelstelle (Baumodus startet)", func() -> void: _tap(JOY_BUTTON_A),
-		func() -> bool: return not build_menu.visible and cursor.mode == cursor.Mode.PLACE and cursor.def.id == "collection_point")
-	_step("B bricht den Baumodus ab", func() -> void: _tap(JOY_BUTTON_B),
-		func() -> bool: return cursor.mode == cursor.Mode.OFF and router.context == router.Context.GAME)
+	# Fester Bauplatz (MS41): hinfahren, A, Sammelstelle steht
+	_step("Rusty fährt zum Bauplatz der Startzone", func() -> void:
+			var site := NetworkSystem.site_of(_world, _world.zones.zone_id_at(_world.player_tile()))
+			player.global_position = Vector2(site * 64 + Vector2i(64, 64 + 110)),
+		func() -> bool: return NetworkSystem.site_near_player(_world) != "", 4, 100)
+	_step("A baut die Sammelstelle", func() -> void: _tap(JOY_BUTTON_A),
+		func() -> bool: return NetworkSystem.points(_world).size() == 1 and _world.bolts < 5000, 6, 200)
+	_step("Nach dem Bau-Jubel: Steuerung zurück", func() -> void: pass,
+		func() -> bool: return router.context == router.Context.GAME, 4, 1000)
+	_step("Bolts zurücksetzen", func() -> void: _world.bolts = 5000, func() -> bool: return _world.bolts == 5000)
 
 	# Am Schiff: A liefert ab, X öffnet das Schiff-Menü
 	_step("Rusty fährt ans Schiff, Taschen voll Schrott", func() -> void:
@@ -194,14 +196,12 @@ func _build_steps() -> void:
 				_tap(JOY_BUTTON_RIGHT_SHOULDER),
 		func() -> bool: return progress._tab == progress.Tab.DRONES, 6)
 	_step("A auf „Drohne bauen“ baut eine Drohne", func() -> void: _tap(JOY_BUTTON_A),
-		func() -> bool: return _world.drones.size() == 1, 8, 200)
+		func() -> bool: return _world.drones.size() == 2, 8, 200)  # 1 kam mit der Sammelstelle
 	_step("Drohne gebaut: Menü zu, nach dem Jubel Steuerung zurück", func() -> void: pass,
 		func() -> bool: return not progress.visible and router.context == router.Context.GAME, 4, 1000)
 
-	# Y lang: kein Aufgaben-Editor mehr, Loslassen öffnet einfach das Baumenü
-	_step("Y lang (halten)", func() -> void: _btn(JOY_BUTTON_Y, true), func() -> bool: return not build_menu.visible, 2, 700)
-	_step("Y loslassen: Baumenü offen", func() -> void: _btn(JOY_BUTTON_Y, false), func() -> bool: return build_menu.visible, 6)
-	_step("B schließt das Baumenü", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return not build_menu.visible and router.context == router.Context.GAME)
+	# Y im Spiel: kein Baumenü mehr, nichts öffnet sich
+	_step("Y im Spiel öffnet nichts", func() -> void: _tap(JOY_BUTTON_Y), func() -> bool: return router.context == router.Context.GAME, 4)
 
 	# Pause
 	_step("Start öffnet Pause", func() -> void: _tap(JOY_BUTTON_START), func() -> bool: return pause.visible)
@@ -223,3 +223,40 @@ func _build_steps() -> void:
 		func() -> bool: return not _world.player.suck_held, 6)
 	_step("RT 0,6 saugt", func() -> void: _axis(JOY_AXIS_TRIGGER_RIGHT, 0.6), func() -> bool: return _world.player.suck_held, 6)
 	_step("RT 0,0 stoppt", func() -> void: _axis(JOY_AXIS_TRIGGER_RIGHT, 0.0), func() -> bool: return not _world.player.suck_held, 6)
+	# Ally-Fehler v2.0.0: RT gehalten, Pause, Loslassen verpasst → Rusty saugte danach weiter
+	_step("RT 0,8 saugt (vor Pause)", func() -> void: _axis(JOY_AXIS_TRIGGER_RIGHT, 0.8), func() -> bool: return _world.player.suck_held, 6)
+	_step("Start pausiert mit gehaltenem RT", func() -> void: _tap(JOY_BUTTON_START), func() -> bool: return pause.visible and not _world.player.suck_held)
+	_step("Start setzt fort: RT neu gelesen, kein Dauersaugen", func() -> void: _tap(JOY_BUTTON_START),
+		func() -> bool: return not pause.visible and not _world.player.suck_held and not Input.is_action_pressed("tool_primary"), 6)
+
+	# Karte: Zoom rein/raus, Y = ganze Karte, Schließen aus dem Zoom (Ally-Fehler v2.0.0)
+	_step("Select öffnet das Menü, Karten-Tab", func() -> void:
+			_tap(JOY_BUTTON_BACK),
+		func() -> bool: return progress.visible)
+	_step("Karten-Tab aktiv", func() -> void:
+			progress._tab = progress.Tab.MAP
+			progress._show_tab(),
+		func() -> bool: return progress._tab == progress.Tab.MAP)
+	_step("RT zoomt rein (2×)", func() -> void:
+			for n in 2:
+				_axis(JOY_AXIS_TRIGGER_RIGHT, 1.0)
+				_axis(JOY_AXIS_TRIGGER_RIGHT, 0.0),
+		func() -> bool: return progress._map_view.zoom_level() == 2, 6)
+	_step("LT zoomt raus", func() -> void:
+			_axis(JOY_AXIS_TRIGGER_LEFT, 1.0)
+			_axis(JOY_AXIS_TRIGGER_LEFT, 0.0),
+		func() -> bool: return progress._map_view.zoom_level() == 1, 6)
+	_step("Y zeigt die ganze Karte", func() -> void: _tap(JOY_BUTTON_Y),
+		func() -> bool: return progress._map_view.zoom_level() == 0 and progress.visible, 6)
+	_step("RT zoomt wieder rein", func() -> void:
+			_axis(JOY_AXIS_TRIGGER_RIGHT, 1.0)
+			_axis(JOY_AXIS_TRIGGER_RIGHT, 0.0),
+		func() -> bool: return progress._map_view.zoom_level() == 1, 6)
+	_step("B schließt auch gezoomt", func() -> void: _tap(JOY_BUTTON_B),
+		func() -> bool: return not progress.visible and progress._map_view.zoom_level() == 0 and router.context == router.Context.GAME, 6)
+	_step("Select öffnet wieder (Karte)", func() -> void: _tap(JOY_BUTTON_BACK), func() -> bool: return progress.visible)
+	_step("Select schließt die Karte", func() -> void:
+			progress._tab = progress.Tab.MAP
+			progress._show_tab()
+			_tap(JOY_BUTTON_BACK),
+		func() -> bool: return not progress.visible, 6)

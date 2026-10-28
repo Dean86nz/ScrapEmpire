@@ -28,14 +28,11 @@ func test_every_map_object_is_reachable() -> void:
 	var max_tier := _max_rusty_tier()
 	assert_true(max_tier >= 5, "Rusty erreicht mindestens Stufe 5: %d" % max_tier)
 	var bad := []
-	var max_bots := int(JSON.parse_string(FileAccess.get_file_as_string("res://data/helpers.json"))["max_helpers"])
 	for n: Dictionary in _map().get("nodes", []):
 		var d: Dictionary = ResourceNode.defs.get(str(n["kind"]), {})
 		if int(d.get("tier", 1)) <= max_tier:
 			continue
-		# Zu hart für Rusty: nur erlaubt, wenn es ein Boss ist, den ein Bot-Team knackt
-		if bool(d.get("boss", false)) and int(d.get("bots_needed", 0)) > 0 and int(d["bots_needed"]) <= max_bots and str(d.get("tool", "")) == "hammer":
-			continue
+		# Auch Bosse: Rusty muss sie mit seiner höchsten Werkzeugstufe erreichen (Ally-Fehler v2.0.0: Endboss T6)
 		bad.append("%s (T%d)" % [n["kind"], int(d["tier"])])
 	assert_eq(bad, [], "zu harte Objekte auf der Karte")
 
