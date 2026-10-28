@@ -31,7 +31,8 @@
 - [x] MS47 Absturz-Intro (v2.7.0); Phase 2.1 abgeschlossen
 - [x] MS48 Fehler: Endboss, Sauger zentral, Bot-Wegfindung (v2.8.0)
 - [x] MS53/54 Menüs Kenney-Stil, Laden, Scrollen, Repo aufgeräumt (v2.13.0)
-- [ ] Phase 2.3: MS55 Cheat-Menü → MS56 Bots sichtbar → MS57 Upgrades/Fusion → MS58 Spiellänge (Übersicht zuerst) → MS59 Humor (alle) → MS60 Secrets (alle)
+- [x] MS55 Cheat-Menü, Debug-EXE (v2.14.0)
+- [ ] Phase 2.3: MS56 Bots sichtbar → MS57 Upgrades/Fusion → MS58 Spiellänge (Übersicht zuerst) → MS59 Humor (alle) → MS60 Secrets (alle)
 - [x] Phase 2.2: MS49 Bots sammeln alles (v2.9.0) ✓ → MS50 Wackeln (v2.10.0) ✓ → MS51 Sprechblasen (v2.11.0) ✓ → MS52 Musik (v2.12.0) ✓ → MS53 Menüs (Entwurf) Intro
 - [ ] Ally-Durchlauf mit Zeiten auswerten, Zahlen in JSON nachjustieren (siehe docs/OFFENE_PUNKTE.md)
 - [ ] Balancing nach der Runde „Spielgefühl“: Tempo bis Level 2, Ereignis-Abstände, Torschwelle mit Schiffswelle

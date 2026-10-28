@@ -2,6 +2,26 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.14.0] – 2026-10-28 – MS55 Cheat-Menü nur in der Debug-EXE (Phase 2.3)
+
+### Neu
+- **Zwei EXEs je Version:** `ScrapEmpire_v2.14.0.exe` (Release, für Steam, **ohne** Cheat-Menü) und `ScrapEmpire_v2.14.0_DEBUG.exe` (nur zum Testen)
+- **Cheat-Menü (nur Debug-EXE):** Ally **L3 + R3** (beide Sticks drücken) 1 s halten, PC **F12**. Funktionen: +100K Bolts, +10K XP, alles freischalten (Bots, Sammelstellen, Drohnen, Kurier, alle Zonen), zur nächsten Zone springen, Boss neben Rusty erzeugen, Zeit ×10 an/aus, Touristen jetzt, Meteoriten jetzt, Spielstand zurücksetzen. B oder F12 schließt
+- Das Menü wird nur hinter `OS.is_debug_build()` erzeugt; in der Release-EXE existiert es nicht
+
+### Behoben
+- Sprache wechseln überschrieb die übrigen Einstellungen (Lautstärke, Wackeln)
+- Nach dem Merge in MS54 hatte Git den Spielordner `Scrap Empire/` auf der Platte gelöscht; Spielstände und Einstellungen sind aus der Historie wiederhergestellt
+
+### Technik
+- `CheatMenu` (`src/ui/cheat_menu/`), `SimClock.speed`; `build.ps1` exportiert Release und Debug
+- 229 Unit-Tests (neu: Cheat-Menü nur hinter Debug-Prüfung, Zeit ×10), 69 Gamepad-Prüfungen (neu: F12 öffnet, A gibt Bolts, B schließt), Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Debug-EXE: L3 + R3 1 s halten öffnet das Cheat-Menü? Alle Funktionen ausprobieren
+2. Release-EXE: L3 + R3 und F12 tun nichts
+3. Weiterspielen: Ist dein Spielstand noch da?
+
 ## [2.13.0] – 2026-10-28 – MS53/54 Menüs im Kenney-Stil, Fehler aus dem v2.12.0-Test (Phase 2.3)
 
 ### Behoben

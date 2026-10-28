@@ -4,6 +4,7 @@ extends Node
 
 var world: SimWorld = SimWorld.new()
 var paused := false
+var speed := 1.0   # Cheat „Zeit ×10“ (nur Debug-Build)
 var last_tick_ms := 0.0
 var alpha := 0.0
 var _acc := TickAccumulator.new()
@@ -20,7 +21,7 @@ func reset_world(new_world: SimWorld) -> void:
 func _process(delta: float) -> void:
 	if paused:
 		return
-	var ticks := _acc.advance(delta)
+	var ticks := _acc.advance(delta * speed)
 	for i in ticks:
 		var t0 := Time.get_ticks_usec()
 		world.tick()
