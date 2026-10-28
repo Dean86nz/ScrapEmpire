@@ -2,6 +2,17 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.11.0] – 2026-10-28 – MS51 Sprechblasen klein (Phase 2.2)
+
+### Behoben
+- **Sprechblasen waren zu groß:** Die Kamera zoomt das Spielbild 1,5×, die Blase wurde mitvergrößert. Jetzt unabhängig vom Zoom und genau nach Vorgabe: eine Zeile (zu lange Sprüche enden mit „…“), höchstens 25 % der Bildschirmbreite, Schrift 22 px, leicht transparent, kleiner Zipfel, weich ein und aus, nach 2 s weg. Vom Auftraggeber abgenommen (Screenshot `docs/screens/ms51_sprechblase.png`)
+- Bot-Symbole (Herz, Zzz, ?, !) in 32 px, ebenfalls unabhängig vom Zoom
+- Rustys erster Spruch nach dem Start wurde fälschlich als Plauderei unterdrückt
+
+### Ally-Testliste
+1. Sind die Blasen jetzt angenehm klein und gut lesbar auf 7 Zoll?
+2. Bot-Symbole gut erkennbar?
+
 ## [2.10.0] – 2026-10-28 – MS50 Bildschirmwackeln (Phase 2.2)
 
 ### Geändert
