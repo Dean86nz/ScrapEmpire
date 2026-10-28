@@ -484,6 +484,7 @@ func _celebrate_purchase(jingle: bool = true) -> void:
 		_progress_menu.close()
 	InputRouter.context = InputRouter.Context.MENU
 	_player.cheer()
+	Sfx.play("boing", 0.04)
 	if jingle:
 		Sfx.play("cheer", 0.03)
 	get_tree().create_timer(Player.CHEER_SECONDS).timeout.connect(func() -> void:
