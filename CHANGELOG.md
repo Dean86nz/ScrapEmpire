@@ -2,6 +2,21 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.3.0] – 2026-10-28 – MS43 Hammer spürbar stärker (Phase 2.1)
+
+### Geändert
+- **Schläge nach Stufen-Unterschied:** Grundwert 3 + Objektstufe (T1 = 4, T4 = 7 Schläge). Werkzeug eine Stufe drüber: 40 % davon (aufgerundet, meist 2–3 Schläge). Zwei Stufen drüber: **ein Schlag**. Jeder Schlag wirft entsprechend viele Teile aus, die Gesamtausbeute bleibt gleich. Bosse: feste 30 Schläge, Stufe egal (nur gemeinsam)
+- **Effekte je Stufe:** mehr und schnellere Funken, Farbe von Gelb zu Orange, Schockwellen-Ring wächst mit der Stufe, Objekt staucht sich. Ab T4 und bei jedem Ein-Schlag wackelt die Kamera; Ein-Schlag hat einen kurzen Trefferstopp
+- Alle Werte in `data/scrap_objects.json` unter `hammer` (hits_base, hits_per_tier, diff1_factor, one_hit_diff, boss_hits); einzelne Objekte können `hits` setzen
+
+### Technik
+- `ResourceNode.hits_needed/items_per_hit`, Signal `hammer_impact`, `ResourceNodeView.impact`, `ImpactRing`, `_hit_stop`
+- 215 Unit-Tests (neu: Schlagzahl je Stufen-Unterschied), 53 Gamepad-Prüfungen grün
+
+### Ally-Testliste
+1. Mit dem Startwerkzeug einen T1-Fernseher zerlegen (4 Schläge), nach dem Werkzeug-Upgrade nochmal (2 Schläge), zwei Stufen drüber (1 Schlag). Spürbar?
+2. Mit T4/T5: Wackeln und Trefferstopp angenehm oder zu viel?
+
 ## [2.2.0] – 2026-10-28 – MS42 Bots automatisch, Boss-Verstärkung (Phase 2.1)
 
 ### Neu

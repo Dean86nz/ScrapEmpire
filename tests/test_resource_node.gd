@@ -67,3 +67,20 @@ func test_rng_state_roundtrip() -> void:
 	var b := SimRng.new(0)
 	b.set_state(state)
 	assert_eq(b.randi_range(0, 100), next)
+
+
+func test_hammer_hits_drop_with_tool_tier() -> void:
+	ResourceNode.load_defs("res://data/scrap_objects.json")
+	var n := ResourceNode.new()
+	n.kind = "toaster"
+	n.tier = 2
+	n.max_amount = 20
+	n.amount = 20
+	var base := ResourceNode.hits_needed(n, 2)
+	assert_eq(base, 5, "3 + 1 × Stufe 2")
+	assert_eq(ResourceNode.hits_needed(n, 3), 2, "eine Stufe drüber: 40 %, aufgerundet")
+	assert_eq(ResourceNode.hits_needed(n, 4), 1, "zwei Stufen drüber: ein Schlag")
+	assert_eq(ResourceNode.items_per_hit(n, 4), 20)
+	assert_eq(ResourceNode.items_per_hit(n, 2), 4)
+	n.boss = true
+	assert_eq(ResourceNode.hits_needed(n, 5), 30, "Bosse: feste Schlagzahl")

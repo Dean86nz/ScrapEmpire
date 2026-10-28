@@ -1,5 +1,13 @@
 {
   "_comment": "Müll-Objekte (Phase 2, MS36): alles endlich, je Zone eigene Objekte und ein Boss (boss: braucht die nächste Werkzeugstufe oder bots_needed Bots gemeinsam; reward_bolts: Bonus beim Knacken; final: Endboss, nötig für den Abflug).",
+  "hammer": {
+    "_comment": "MS43: Schläge = hits_base + hits_per_tier × Stufe; 1 Stufe drüber × diff1_factor (aufgerundet); ab one_hit_diff Stufen drüber 1 Schlag. Bosse: boss_hits Schläge, Stufe egal. Optional je Objekt: \"hits\".",
+    "hits_base": 3,
+    "hits_per_tier": 1,
+    "diff1_factor": 0.4,
+    "one_hit_diff": 2,
+    "boss_hits": 30
+  },
   "objects": [
     {
       "id": "scrap_pile",

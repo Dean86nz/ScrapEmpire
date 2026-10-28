@@ -56,7 +56,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 |---|---|---|
 | **41** | Fehler: Endboss, Sauger nach Pause, Karte, Sammelstelle auf festem Bauplatz | v2.1.0 |
 | **42** | Bots automatisch, Bot-Werkzeug bis T5, Boss-Verstärkung | v2.2.0 |
-| 43 | Hammer spürbar stärker (Schläge nach Stufen-Unterschied) | v2.3.0 |
+| **43** | Hammer spürbar stärker (Schläge nach Stufen-Unterschied) | v2.3.0 |
 | 44 | Sprechblasen dezenter, Bot-Symbole | v2.4.0 |
 | 45 | Sound im Comic-Stil | v2.5.0 |
 | 46 | Musik je Zone und Finale | v2.6.0 |
