@@ -29,6 +29,7 @@ var _goal_icon := TextureRect.new()
 var _goal_label := Label.new()
 var _goal_timer := 0.0
 var _courier_panel := PanelContainer.new()
+var _coin_gate := 0.0
 var _courier_label := Label.new()
 var _bolts_shown := 0
 var _bolts_tween: Tween
@@ -71,6 +72,7 @@ func rebuild_hotbar() -> void:
 
 
 func _ready() -> void:
+	add_to_group("hud")
 	add_child(stage_banner)
 	_build_goal_panel()
 	_build_courier_panel()
@@ -122,6 +124,32 @@ func set_bolts(value: int) -> void:
 func _show_bolts(value: int) -> void:
 	_bolts_shown = value
 	_bolts_label.text = "%s %s" % [Fmt.int_str(value), tr("HUD_BOLTS")]
+
+
+## Ein paar Münzen fliegen von `world_px` (Schiff) zur Bolts-Anzeige (gedrosselt).
+func coin_stream(world_px: Vector2, bolts: int) -> void:
+	var now := Time.get_ticks_msec() / 1000.0
+	if now < _coin_gate:
+		return
+	_coin_gate = now + 0.25
+	var start := get_viewport().get_canvas_transform() * world_px
+	var target := ($BoltsPanel as Control).global_position + Vector2(40, 26)
+	var n := clampi(int(ceil(bolts / 15.0)), 1, 5)
+	for i in n:
+		var c := TextureRect.new()
+		c.texture = load("res://assets/sprites/ui/bolt.svg")
+		c.custom_minimum_size = Vector2(26, 26)
+		c.size = Vector2(26, 26)
+		c.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		c.position = start + Vector2(randf_range(-20, 20), randf_range(-20, 20))
+		add_child(c)
+		var mid := (c.position + target) * 0.5 + Vector2(randf_range(-80, 80), -120)
+		var from := c.position
+		var tw := c.create_tween()
+		tw.tween_interval(i * 0.06)
+		tw.tween_method(func(t: float) -> void: c.position = from.lerp(mid, t).lerp(mid.lerp(target, t), t), 0.0, 1.0, 0.7).set_ease(Tween.EASE_IN)
+		tw.tween_callback(c.queue_free)
 
 
 func _build_courier_panel() -> void:

@@ -21,6 +21,8 @@ var suck_interval := BASE_SUCK_INTERVAL
 var hammer_interval := BASE_HAMMER_INTERVAL
 var hammer_items := 1
 var magnet_radius_px := 0
+var suck_targets := 1
+var suck_half_angle := SUCK_HALF_ANGLE_RAD   # halbe Kegelöffnung; ≥ PI = Wirbel rundherum
 
 
 func _init() -> void:
@@ -41,6 +43,8 @@ func apply_modifiers(m: Dictionary) -> bool:
 	hammer_interval = maxi(int(round(BASE_HAMMER_INTERVAL / mine_mult)), 2)
 	hammer_items = int(m["hammer_items"])
 	magnet_radius_px = int(m["magnet_radius"]) * TILE
+	suck_targets = maxi(int(m["suck_targets"]), 1)
+	suck_half_angle = deg_to_rad(float(m["suck_cone_deg"])) * 0.5
 	var slots: int = INVENTORY_SLOTS + int(m["slots_add"])
 	var stack: int = STACK_SIZE + int(m["stack_add"])
 	if slots != inventory.slot_count or stack != inventory.stack_size:

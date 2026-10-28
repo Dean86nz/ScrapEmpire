@@ -163,7 +163,7 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 	world.bolts = int(data.get("bolts", 0))
 	world.rng.set_state(int(data.get("rng_state", 0)))
 	world.progression.from_dict(data.get("progression", {}))
-	world.skills.from_dict(data.get("skills", {}))
+	world.progression.skill_points += world.skills.from_dict(data.get("skills", {}))
 	world.tech.from_dict(data.get("tech", {}))
 	for id in world.tech.unlocked.keys():
 		world._apply_tech_effects(str(id))

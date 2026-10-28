@@ -330,6 +330,25 @@ func debug_scenario(name: String) -> void:
 			var inv := _world.player.inventory
 			for i in inv.slot_count:
 				inv.add("scrap", inv.stack_size)
+		"army":
+			# 40 Bots in allen Zonen, Sammelstellen, 12 Drohnen: Leistungstest
+			for f in ["collection", "helpers", "drones", "courier", "helper_tools"]:
+				_world.unlocked_features[f] = true
+			for z: Dictionary in _world.zones.zones:
+				_world.zones.unlocked[str(z["id"])] = true
+			_world.bolts += 1000000
+			for z: Dictionary in _world.zones.zones:
+				var r: Rect2i = z["rect"]
+				var pt := _world.place_free("collection_point", r.get_center(), 0)
+				if pt != null:
+					(pt as CollectionPoint).accept_stack("scrap", 60)
+			while _world.drones.size() < int(_world.drone_cfg.get("max_drones", 12)):
+				_world.add_drone()
+			var zs: Array = _world.zones.zones
+			for i in int(_world.helper_cfg.get("max_helpers", 40)):
+				var zr: Rect2i = zs[i % zs.size()]["rect"]
+				var hh := HelperSystem.add_helper(_world, zr.get_center(), _world.ship().tile)
+				hh.zone_id = str(zs[i % zs.size()]["id"])
 		"endgame":
 			_world.bolts += 100000
 			_world.bolts_changed.emit(_world.bolts)

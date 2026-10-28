@@ -1,7 +1,7 @@
 {
-  "max_helpers": 10,
+  "max_helpers": 40,
   "cost_base_bolts": 150,
-  "cost_growth": 1.5,
+  "cost_growth": 1.12,
   "cost_chrome": 0,
   "zone_radius_tiles": 8,
   "base_speed_px_per_s": 224,

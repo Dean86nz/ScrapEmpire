@@ -22,6 +22,8 @@ const DEFAULTS := {
 	"range_add": 0.0,           # Kacheln Saug-/Hammerreichweite
 	"hammer_items": 1,          # Items pro Hammerschlag
 	"suck_speed_mult": 1.0,     # Schiff-Upgrade Saugtempo (teilt den Saugtakt)
+	"suck_targets": 1,          # Teile je Saug-Zug (Skill Saugtempo, bis zum Wirbel)
+	"suck_cone_deg": 90.0,      # Öffnung des Saugkegels; 360 = Wirbel rundherum
 	"autopilot_speed_mult": 1.0,
 	"helper_tier": 1,
 	"helper_speed_mult": 1.0,

@@ -92,8 +92,13 @@ func to_dict() -> Dictionary:
 	return levels.duplicate()
 
 
-func from_dict(d: Dictionary) -> void:
+## Lädt Stufen; liefert die Punkte zurück, die durch gesenkte Höchststufen frei werden.
+func from_dict(d: Dictionary) -> int:
 	levels.clear()
+	var refund := 0
 	for k in d:
 		if by_id.has(str(k)):
-			levels[str(k)] = clampi(int(d[k]), 0, max_level(str(k)))
+			var want := int(d[k])
+			levels[str(k)] = clampi(want, 0, max_level(str(k)))
+			refund += maxi(want - max_level(str(k)), 0) * cost(str(k))
+	return refund

@@ -84,21 +84,31 @@ static func _tick_magnet(w: SimWorld) -> void:
 		return
 
 
+## Je Zug bis zu `suck_targets` Teile (Skill Saugtempo): vom dünnen Strahl bis zum Wirbel.
 static func _tick_suction(w: SimWorld) -> void:
 	if not w.player.suck_held or w.player.suck_cooldown > 0:
 		return
+	for i in w.player.suck_targets:
+		if not _suck_one(w, i == 0):
+			break
+	w.player.suck_cooldown = w.player.suck_interval
+
+
+## Saugt ein Teil ein. false, wenn nichts (mehr) da ist oder die Taschen voll sind.
+static func _suck_one(w: SimWorld, first: bool) -> bool:
 	var target: Variant = _find_suck_target(w)
 	if target == null:
-		var hard := _find_too_hard_suck_target(w)
-		if hard != null:
-			w._emit_too_hard(hard, "suction")
-		return
+		if first:
+			var hard := _find_too_hard_suck_target(w)
+			if hard != null:
+				w._emit_too_hard(hard, "suction")
+		return false
 	var item_id: String = target.item_id if target is LooseItem else _peek_suck_item(w, target as ResourceNode)
 	if not w.player.inventory.can_add(item_id):
 		if not w._full_notified:
 			w._full_notified = true
 			w.inventory_full.emit()
-		return
+		return false
 	var from_pos: Vector2i
 	var tier := 1
 	if target is LooseItem:
@@ -113,9 +123,9 @@ static func _tick_suction(w: SimWorld) -> void:
 		node.take_one()
 		NodeSystem.after_take(w, node)
 	w.player.inventory.add(item_id, 1)
-	w.player.suck_cooldown = w.player.suck_interval
 	w.progression.on_collect(tier)
 	w.item_collected.emit(item_id, from_pos)
+	return true
 
 
 ## Sauger putzt den Boden im Saugkegel (auch ohne Ziel). Unter liegendem Müll geht das nicht.
@@ -222,7 +232,7 @@ static func _cone_distance(w: SimWorld, target: Vector2i) -> float:
 		return INF
 	if dist < 1.0:
 		return 0.0
-	if d.normalized().dot(w.player.aim) < cos(PlayerState.SUCK_HALF_ANGLE_RAD):
+	if w.player.suck_half_angle < PI and d.normalized().dot(w.player.aim) < cos(w.player.suck_half_angle):
 		return INF
 	return dist
 

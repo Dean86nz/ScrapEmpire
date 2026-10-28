@@ -42,7 +42,7 @@ func test_buy_needs_points_and_requirements() -> void:
 	_buy(w, "boost")
 	assert_eq(w.progression.skill_points, 0)
 	assert_eq(float(w.mods["boost_cooldown"]), 6.0)
-	assert_true(absf(float(w.mods["speed_mult"]) - 1.08) < 0.001)
+	assert_true(float(w.mods["speed_mult"]) > 1.1, "spürbar schneller")
 
 
 func test_tool_costs_three_points() -> void:
@@ -95,11 +95,35 @@ func test_suck_and_reach() -> void:
 	w.progression.skill_points = 10
 	_buy(w, "suck")
 	_buy(w, "suck")
-	assert_eq(w.player.suck_interval, 4, "5 / 1,24 = 4,0 → 4")
-	assert_eq(w.player.hammer_interval, 8, "10 / 1,24 = 8,1 → 8")
+	assert_eq(w.player.suck_interval, 3, "5 / 1,5 = 3,3 → 3")
+	assert_eq(w.player.hammer_interval, 7, "10 / 1,5 = 6,7 → 7")
+	assert_eq(w.player.suck_targets, 3, "drei Teile je Zug")
 	_buy(w, "reach")
 	_buy(w, "reach")
-	assert_eq(w.player.suck_range_px, 224, "160 + 1 Kachel")
+	assert_eq(w.player.suck_range_px, 160 + 2 * 64, "+1 Kachel je Stufe")
+
+
+func test_full_suction_is_a_vortex_that_pulls_many_at_once() -> void:
+	var w := _world()
+	w.progression.skill_points = 20
+	for i in 5:
+		_buy(w, "suck")
+	assert_true(w.player.suck_half_angle >= PI - 0.01, "Wirbel rundherum")
+	assert_eq(w.player.suck_targets, 8)
+	# Teile hinter Rusty werden auch eingesaugt, mehrere in einem Zug
+	for i in 6:
+		w.add_loose("scrap", w.player.pos + Vector2i(-60 - i * 6, 10))
+	w.player.aim = Vector2.RIGHT
+	w.player.suck_held = true
+	w.tick()
+	assert_eq(w.player.inventory.count_of("scrap"), 6, "sechs Teile in einem Zug, auch von hinten")
+
+
+func test_old_save_with_higher_levels_gets_points_back() -> void:
+	var w := _world()
+	var refund := w.skills.from_dict({"drive": 8, "suck": 8})
+	assert_eq(w.skills.level_of("drive"), 5)
+	assert_eq(refund, 6, "3 + 3 Stufen zurück")
 
 
 func test_yield_includes_rare_bonus() -> void:

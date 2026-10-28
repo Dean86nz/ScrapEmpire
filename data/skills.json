@@ -1,5 +1,5 @@
 {
-  "_comment": "Skilltree (XP → Skillpunkte): nur Rustys eigene Fähigkeiten. Schiff-Sachen (Bolts) stehen in ship.json. cost_points = Punkte je Stufe (Standard 1).",
+  "_comment": "Skilltree (XP → Skillpunkte): nur Rustys eigene Fähigkeiten. Schiff-Sachen (Bolts) stehen in ship.json. cost_points = Punkte je Stufe (Standard 1). Seit MS35 große Sprünge: Saugtempo 5 Stufen (mehr Teile je Zug, Kegel bis 360° = Wirbel), Reichweite +1 Kachel je Stufe, Fahrtempo 5 Stufen à +15 %.",
   "branches": [
     {
       "id": "movement",
@@ -29,18 +29,18 @@
       "name_key": "SKILL_DRIVE",
       "desc_key": "SKILL_DRIVE_DESC",
       "icon": "res://assets/sprites/ui/upg_speed.svg",
-      "max_level": 8,
+      "max_level": 5,
       "requires": {},
       "effects": [
         {
           "key": "speed_mult",
           "op": "add",
-          "per_level": 0.08
+          "per_level": 0.15
         },
         {
           "key": "turn_mult",
           "op": "add",
-          "per_level": 0.1
+          "per_level": 0.15
         }
       ]
     },
@@ -72,13 +72,35 @@
       "name_key": "SKILL_SUCK",
       "desc_key": "SKILL_SUCK_DESC",
       "icon": "res://assets/sprites/ui/upg_suction.svg",
-      "max_level": 8,
+      "max_level": 5,
       "requires": {},
       "effects": [
         {
           "key": "mine_speed_mult",
           "op": "add",
-          "per_level": 0.12
+          "per_level": 0.25
+        },
+        {
+          "key": "suck_targets",
+          "op": "table",
+          "values": [
+            2,
+            3,
+            4,
+            6,
+            8
+          ]
+        },
+        {
+          "key": "suck_cone_deg",
+          "op": "table",
+          "values": [
+            110,
+            140,
+            180,
+            250,
+            360
+          ]
         }
       ]
     },
@@ -94,7 +116,7 @@
         {
           "key": "range_add",
           "op": "add",
-          "per_level": 0.5
+          "per_level": 1.0
         }
       ]
     },
