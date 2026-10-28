@@ -38,13 +38,23 @@ static func theme() -> Theme:
 		t.set_color(c, "Button", INK)
 	t.set_color("font_disabled_color", "Button", Color(INK, 0.45))
 	t.set_font_size("font_size", "Button", 28)
+	# Große Karten (Upgrades, Bots, Ziele): helle Platte, Fokus mit gelbem Rahmen statt Glanzstreifen
+	t.add_type("Card")
+	t.set_type_variation("Card", "Button")
+	t.set_stylebox("normal", "Card", _box("panel.png", 24, Vector4(16, 12, 16, 18)))
+	t.set_stylebox("disabled", "Card", _box("panel.png", 24, Vector4(16, 12, 16, 18)))
+	t.set_stylebox("hover", "Card", _box("card_focus.png", 24, Vector4(16, 12, 16, 18)))
+	t.set_stylebox("focus", "Card", _box("card_focus.png", 24, Vector4(16, 12, 16, 18)))
+	t.set_stylebox("pressed", "Card", _box("card_pressed.png", 24, Vector4(16, 16, 16, 14)))
+	t.set_stylebox("hover_pressed", "Card", _box("card_pressed.png", 24, Vector4(16, 16, 16, 14)))
 	t.set_stylebox("panel", "PanelContainer", _box("panel.png", 40, Vector4(56, 40, 56, 52)))
 	t.set_color("font_color", "Label", INK)
 	_theme = t
 	return t
 
 
-## Panel und alle Knöpfe darunter auf den Kenney-Stil stellen.
+## Panel und alle Knöpfe darunter auf den Kenney-Stil stellen. Später erzeugte Karten
+## (Upgrades, Bots …) bekommen ihn über `card()`.
 static func apply(panel: Control) -> void:
 	panel.theme = theme()
 	panel.remove_theme_stylebox_override("panel")
@@ -52,3 +62,8 @@ static func apply(panel: Control) -> void:
 		var btn := b as Button
 		for s in ["normal", "hover", "focus", "pressed", "disabled"]:
 			btn.remove_theme_stylebox_override(s)
+
+
+## Große Karte statt Knopf-Stil (helle Platte, gelber Rahmen im Fokus).
+static func card(btn: Button) -> void:
+	btn.theme_type_variation = "Card"

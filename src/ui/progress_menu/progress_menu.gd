@@ -56,6 +56,30 @@ var _journal_sig := ""
 
 func _ready() -> void:
 	visible = false
+	# Lange Listen (20+ Bots) scrollen mit dem Gamepad-Fokus in beide Richtungen (MS54)
+	for list: Control in [_helper_list, _upgrade_list, _drone_list, _drone_upgrade_list]:
+		_wrap_in_scroll(list)
+	KenneySkin.apply($Center/Panel)  # einheitlicher Menü-Stil (MS54)
+
+
+func _wrap_in_scroll(list: Control) -> void:
+	var parent := list.get_parent()
+	var idx := list.get_index()
+	var sc := ScrollContainer.new()
+	sc.follow_focus = true
+	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	sc.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	sc.size_flags_horizontal = list.size_flags_horizontal
+	sc.custom_minimum_size = Vector2(0, 200)
+	parent.add_child(sc)
+	parent.move_child(sc, idx)
+	# Fokus springt aus der Liste nach oben (z. B. auf „Bot bauen“): Liste ganz nach oben
+	get_viewport().gui_focus_changed.connect(func(c: Control) -> void:
+		if c != null and c.get_parent() == parent and c.get_index() < sc.get_index():
+			sc.scroll_vertical = 0)
+	list.reparent(sc, false)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	(parent as Control).size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 
 func bind(world: SimWorld) -> void:
@@ -268,6 +292,7 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Karte: optional großes Icon links, rechts Titel, Stufen-Punkte, Text und Kostenzeile (Bolt-Symbol).
 func _make_card(title: String, icon_path: String = "") -> Button:
 	var btn := Button.new()
+	KenneySkin.card(btn)
 	btn.custom_minimum_size = CARD_SCENE_MIN
 	btn.text = ""
 	btn.clip_contents = true

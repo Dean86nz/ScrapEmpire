@@ -18,6 +18,7 @@ var _t := 0.0
 
 
 func _ready() -> void:
+	KenneySkin.apply($Center)  # einheitlicher Menü-Stil (MS54)
 	InputRouter.context = InputRouter.Context.MENU
 	_title.text = "Scrap Empire"
 	_tagline.text = tr("TITLE_TAGLINE")

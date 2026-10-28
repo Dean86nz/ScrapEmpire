@@ -188,6 +188,40 @@ func _build_steps() -> void:
 		func() -> bool: return _world.helpers.is_empty(), 8, 200)
 	_step("B schließt", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return not progress.visible)
 
+	# Lange Bot-Liste (Ally-Fehler v2.12.0: mit 20 Bots kein Scrollen nach oben)
+	_step("20 Bots dazu", func() -> void:
+			for i in 20:
+				_world.add_helper(_world.player_tile(), _world.ship().tile),
+		func() -> bool: return _world.helpers.size() >= 20 and router.context == router.Context.GAME, 8, 1000)
+	_step("Select öffnet das Menü (Bot-Liste)", func() -> void: _tap(JOY_BUTTON_BACK),
+		func() -> bool: return progress.visible, 6)
+	_step("Bots-Tab zeigen, Fokus auf erste Bot-Karte", func() -> void:
+			progress._tab = progress.Tab.HELPERS
+			progress._show_tab(),
+		func() -> bool: return progress._helper_cards.size() >= 20, 8, 700)
+	_step("Fokus auf die erste Bot-Karte", func() -> void: progress._helper_cards[0].grab_focus(),
+		func() -> bool: return progress.get_viewport().gui_get_focus_owner() == progress._helper_cards[0], 6, 200)
+	_step("D-Pad runter 25×: Liste scrollt mit nach unten", func() -> void:
+			for i in 25:
+				_tap(JOY_BUTTON_DPAD_DOWN),
+		func() -> bool: return (progress._helper_list.get_parent() as ScrollContainer).scroll_vertical > 300, 10, 300)
+	for k in 2:
+		_step("D-Pad hoch 12× (Teil %d)" % (k + 1), func() -> void:
+				for i in 12:
+					_tap(JOY_BUTTON_DPAD_UP),
+			func() -> bool: return true, 6, 300)
+	_step("D-Pad hoch 6×: Liste scrollt wieder ganz nach oben", func() -> void:
+			for i in 6:
+				_tap(JOY_BUTTON_DPAD_UP),
+		func() -> bool:
+			var f := progress.get_viewport().gui_get_focus_owner()
+			return (progress._helper_list.get_parent() as ScrollContainer).scroll_vertical <= 20 and (f == progress._helper_cards[0] or not progress._helper_cards.has(f)), 10, 600)
+	_step("B schließt, Bots wieder weg", func() -> void:
+			_tap(JOY_BUTTON_B)
+			for h: Helper in _world.helpers.values().duplicate():
+				_world.queue_command({"type": "remove_helper", "id": h.id}),
+		func() -> bool: return not progress.visible and _world.helpers.is_empty(), 6)
+
 	# Drohnen-Tab
 	_step("Drohnen-Blaupause frei", func() -> void: _world.unlocked_features["drones"] = true, func() -> bool: return true)
 	_step("Select öffnet Schiff und Ziele (2)", func() -> void: _tap(JOY_BUTTON_BACK), func() -> bool: return progress.visible)

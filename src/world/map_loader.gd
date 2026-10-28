@@ -89,24 +89,15 @@ static func ensure_ship(world: SimWorld, data: Dictionary) -> Ship:
 	return null
 
 
-## Ergänzt Karten-Objekte in Zonen, die im Spielstand leer sind (z. B. nach der Migration
-## der alten Tutorial-Karte). Belegte Kacheln werden übersprungen.
-static func fill_missing_zones(world: SimWorld, data: Dictionary) -> int:
-	var per_zone: Dictionary = {}
-	for n: ResourceNode in world.nodes.values():
-		per_zone[world.zones.zone_id_at(n.tile)] = true
-	var added := 0
-	for entry: Dictionary in data.get("nodes", []):
-		var kind := str(entry.get("kind", ""))
-		var tile := Vector2i(int(entry.get("x", 0)), int(entry.get("y", 0)))
-		var zid := world.zones.zone_id_at(tile)
-		if per_zone.has(zid) or not ResourceNode.has_kind(kind):
-			continue
-		if world.grid.at(tile) != null or world._node_tiles.has(tile):
-			continue
-		world.add_object(kind, tile, int(entry.get("amount", -1)))
-		added += 1
-	return added
+## Spielstand in eine frische Welt laden (MS54): Karte nur als Gerüst (Zonen, Schiff, Zäune),
+## Objekte kommen ausschließlich aus dem Spielstand. Früher füllte `fill_missing_zones` leere Zonen
+## aus der Karte nach, dadurch kamen bei 100 % sauberen Zonen Müll und Bosse zurück.
+static func load_save(world: SimWorld, map_data: Dictionary, save_data: Dictionary) -> Vector2:
+	apply(world, map_data, false)
+	var start_px := SaveCodec.decode(save_data, world)
+	ensure_ship(world, map_data)
+	ensure_dirt(world, map_data)
+	return start_px
 
 
 static func _start_px(world: SimWorld, start: Dictionary) -> Vector2i:
