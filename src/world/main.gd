@@ -198,6 +198,10 @@ func _process(delta: float) -> void:
 	Sfx.set_driving(_player.velocity.length() / maxf(GameConfig.PLAYER_SPEED_PX, 1.0))
 	var zid := _world.zones.zone_id_at(_world.player_tile())
 	if zid != "" and zid != _music_zone:
+		if _music_zone != "" and not _world.flags.has("zone_seen_" + zid):
+			Sfx.duck(8.0, 1.2)
+			Sfx.play("zone_jingle", 0.0)  # erstes Betreten einer Zone (MS52)
+		_world.flags["zone_seen_" + zid] = true
 		_music_zone = zid
 		Sfx.music_zone(zid)  # eigenes Stück je Zone (MS46)
 	_hud.set_hint(_current_hint())
