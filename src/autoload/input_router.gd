@@ -7,6 +7,8 @@ enum Context { GAME, BUILD, MENU }
 var context: Context = Context.GAME
 var is_gamepad := true
 
+const TOOL_AXES := {"tool_primary": JOY_AXIS_TRIGGER_RIGHT, "tool_secondary": JOY_AXIS_TRIGGER_LEFT}
+
 
 func _input(event: InputEvent) -> void:
 	var from_gamepad := event is InputEventJoypadButton or event is InputEventJoypadMotion
@@ -21,6 +23,25 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("toggle_fullscreen"):
 		var w := get_window()
 		w.mode = Window.MODE_WINDOWED if w.mode == Window.MODE_FULLSCREEN else Window.MODE_FULLSCREEN
+
+
+## Saugen/Hammer neu einlesen (Pause, Fortsetzen, Fokuswechsel): Ein verpasstes Loslassen darf
+## Rusty nicht dauerhaft saugen lassen. Gedrückt bleibt nur, was der Controller jetzt meldet.
+func reset_tools() -> void:
+	for action: String in TOOL_AXES:
+		Input.action_release(action)
+		for dev in Input.get_connected_joypads():
+			var v := Input.get_joy_axis(dev, TOOL_AXES[action])
+			if v >= InputMapSetup.TRIGGER_DEADZONE:
+				Input.action_press(action, v)
+	if SimClock.world != null:
+		SimClock.world.player.suck_held = false
+		SimClock.world.player.hammer_pressed = false
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_FOCUS_IN:
+		reset_tools()
 
 
 func _set_gamepad(value: bool) -> void:

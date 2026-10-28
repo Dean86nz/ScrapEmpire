@@ -71,6 +71,17 @@ func _clamp_offset() -> void:
 	_offset.y = clampf(_offset.y, minf(size.y - map_px.y, 0.0), 0.0)
 
 
+## Ganze Karte zeigen (Y oder beim Schließen): aus dem Zoom kommt man immer heraus.
+func reset_zoom() -> void:
+	_zoom_index = 0
+	_offset = Vector2.ZERO
+	queue_redraw()
+
+
+func zoom_level() -> int:
+	return _zoom_index
+
+
 func selected_zone() -> String:
 	return str(_summary[_selected]["id"]) if _selected < _summary.size() else ""
 
@@ -99,6 +110,9 @@ func handle_input(event: InputEvent) -> bool:
 	elif event.is_action_pressed("tool_secondary"):
 		_zoom_index = maxi(_zoom_index - 1, 0)
 		_center_on_selected()
+		moved = true
+	elif event.is_action_pressed("build_menu"):
+		reset_zoom()
 		moved = true
 	if moved:
 		if _zoom_index > 0:

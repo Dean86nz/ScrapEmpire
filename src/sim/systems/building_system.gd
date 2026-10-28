@@ -54,6 +54,10 @@ static func _cmd_place(w: SimWorld, cmd: Dictionary) -> void:
 		w.place_failed.emit("blocked")
 		return
 	var zr := NetworkSystem.zone_check(w, def, tile)
+	if zr == "" and def.id == NetworkSystem.POINT_DEF:
+		var site := NetworkSystem.site_of(w, w.zones.zone_id_at(tile))
+		if site.x >= 0 and tile != site:
+			zr = "site"  # Karten mit Bauplätzen: Sammelstelle nur dort (MS41)
 	if zr != "":
 		w.place_failed.emit(zr)
 		return

@@ -60,7 +60,13 @@ for (zx, zy), name_key, theme, target, table, piles, boss in ZONES:
     zid = f"z{zx}{zy}"
     order.append(zid)
     x0, y0 = zx * ZW, zy * ZH
-    zone_list.append({"id": zid, "name_key": name_key, "name": name_key, "theme": theme, "x": x0, "y": y0, "w": ZW, "h": ZH})
+    # Fester Bauplatz für die Sammelstelle (2×2), frei gehalten samt Rand (MS41)
+    site = (x0 + ZW // 2 - 9, y0 + ZH // 2 + 9)
+    for sx in range(site[0] - 2, site[0] + 4):
+        for sy in range(site[1] - 2, site[1] + 4):
+            occupied.add((sx, sy))
+    zone_list.append({"id": zid, "name_key": name_key, "name": name_key, "theme": theme, "x": x0, "y": y0, "w": ZW, "h": ZH,
+                      "site": {"x": site[0], "y": site[1]}})
 
     def rand_tile(margin=3):
         return rng.randint(x0 + margin, x0 + ZW - 1 - margin), rng.randint(y0 + margin, y0 + ZH - 1 - margin)

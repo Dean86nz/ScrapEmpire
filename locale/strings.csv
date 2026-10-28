@@ -198,12 +198,12 @@ ZONE_STAGE_0,Zustand: vermüllt,State: trashed
 ZONE_STAGE_1,Zustand: unordentlich,State: messy
 ZONE_STAGE_2,Zustand: aufgeräumt (kein neuer Müll mehr),State: tidy (no new trash)
 ZONE_STAGE_3,Zustand: sauber,State: clean
-ZONE_HELP,D-Pad: Zone wählen · RT/LT: Zoom · rechter Stick: scrollen,D-pad: select zone · RT/LT: zoom · right stick: scroll
+ZONE_HELP,D-Pad: Zone wählen · RT/LT: Zoom · Y: ganze Karte · rechter Stick: scrollen,D-pad: select zone · RT/LT: zoom · Y: whole map · right stick: scroll
 ZONE_Q_0,Hier sieht es wieder wüst aus.,Looks like a dump again here.
 ZONE_Q_1,Die Zone wird unordentlich. Ich räume.,The zone is getting messy. I tidy.
 ZONE_Q_2,Zone aufgeräumt! Hier wird nichts mehr angeschwemmt.,Zone tidy! Nothing washes up here anymore.
 ZONE_Q_3,Zone sauber! Fast schon gemütlich.,Zone clean! Almost cozy.
-MENU_PROGRESS_FOOTER_MAP,D-Pad: Zone · RT/LT: Zoom · LB/RB: Tab · B: schließen,D-pad: zone · RT/LT: zoom · LB/RB: tab · B: close
+MENU_PROGRESS_FOOTER_MAP,D-Pad: Zone · RT/LT: Zoom · Y: ganze Karte · LB/RB: Tab · B: schließen,D-pad: zone · RT/LT: zoom · Y: whole map · LB/RB: tab · B: close
 HUD_MINIMAP_HINT,M / Select lang: Minimap,M / hold Select: minimap
 MENU_TAB_HELPERS,Helfer,Helpers
 MENU_PROGRESS_FOOTER_HELPERS,D-Pad: wählen · A: bauen / kaufen / Bot zuweisen · LT auf Bot: abbauen · B: schließen,D-pad: select · A: build / buy / assign bot · LT on bot: dismantle · B: close
@@ -613,3 +613,7 @@ FINALE_TOUR_Q,Moment! Ein letzter Blick auf alles. Schau mal!,Wait! One last loo
 FINALE_AFTER_TITLE,Danke fürs Spielen!,Thanks for playing!
 FINALE_AFTER_SUB,Rusty bleibt noch. Räum ruhig weiter auf.,Rusty is staying a bit. Feel free to keep tidying.
 FINALE_AFTER_Q,"Bin wieder da. Hab was vergessen: den Rest vom Müll.","I'm back. Forgot something: the rest of the trash."
+HINT_SITE,A: Sammelstelle bauen (%s Bolts),A: build collection point (%s bolts)
+HINT_SITE_KB,E: Sammelstelle bauen (%s Bolts),E: build collection point (%s bolts)
+HINT_SITE_LOCKED,Bauplatz für eine Sammelstelle (ab Schiffsstufe 2),Site for a collection point (from ship stage 2)
+FAIL_SITE,Hier nicht. Die Sammelstelle kommt auf den Bauplatz.,Not here. The collection point goes on the site.

@@ -10,9 +10,7 @@ const LONG_PRESS_SECONDS := 0.45
 @onready var _player: Player = $Player
 @onready var _world_view: WorldView = $WorldView
 @onready var _hud: CanvasLayer = $Hud
-@onready var _build_menu: CanvasLayer = $BuildMenu
 @onready var _progress_menu: CanvasLayer = $ProgressMenu
-@onready var _cursor: BuildCursor = $BuildCursor
 @onready var _pause_menu: CanvasLayer = $PauseMenu
 @onready var _end_screen: CanvasLayer = $EndScreen
 
@@ -28,7 +26,6 @@ var _nature: NatureView
 var _sky: DayLight
 var _rain: RainLayer
 var _chapter_timer := 0.0
-var _build_press_time := -1.0
 var _tech_press_time := -1.0
 var _first_collected: Dictionary = {}
 var _autosave_timer := AUTOSAVE_SECONDS
@@ -161,9 +158,6 @@ func _ready() -> void:
 	get_tree().auto_accept_quit = false
 	_world.skill_bought.connect(func(_id: String, _lvl: int) -> void: Quips.say("skill_bought"))
 
-	_build_menu.build_selected.connect(_on_build_selected)
-	_build_menu.demolish_selected.connect(_cursor.start_demolish)
-	_cursor.menu_requested.connect(_build_menu.open)
 
 	_world.inventory_full.connect(func() -> void: Quips.say("inventory_full"))
 	_world.wreck_destroyed.connect(func(_id: int) -> void: Quips.say("wreck_destroyed"))
@@ -195,11 +189,7 @@ func _process(delta: float) -> void:
 		_chapter_timer = 1.0
 		_refresh_chapter_hud()
 		_hud.set_planet(_world.zones.planet_health(_world.nodes))
-	# Loslassen bzw. Kurz/Lang-Erkennung per Zustandsabfrage (funktioniert auch mit simulierten Eingaben).
-	if _build_press_time >= 0.0 and not Input.is_action_pressed("build_menu"):
-		_build_press_time = -1.0
-		if InputRouter.context == InputRouter.Context.GAME:
-			_build_menu.open()
+	# Kurz/Lang-Erkennung per Zustandsabfrage (funktioniert auch mit simulierten Eingaben).
 	if _tech_press_time >= 0.0:
 		_tech_press_time += delta
 		if not Input.is_action_pressed("tech_tree"):
@@ -262,10 +252,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	if InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("tool_swap") and _player.nearby_building() is Ship:
 		# X am Schiff: Schiff-Menü (Upgrades, Reparatur, Bots, Drohnen)
 		_progress_menu.open(_progress_menu.Tab.SHIP)
-		get_viewport().set_input_as_handled()
-	elif InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("build_menu"):
-		# Y: Baumenü (beim Loslassen, per Abfrage in _process).
-		_build_press_time = 0.0
 		get_viewport().set_input_as_handled()
 	elif InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("tech_tree"):
 		# Select kurz: Fortschritt; Select lang: Minimap ein/aus.
@@ -471,7 +457,7 @@ func _celebrate_purchase(jingle: bool = true) -> void:
 
 
 func _any_menu_open() -> bool:
-	return _progress_menu.visible or _build_menu.visible or _pause_menu.visible or _end_screen.visible
+	return _progress_menu.visible or _pause_menu.visible or _end_screen.visible
 
 
 ## Reparatur: Menü zu, Kamera zum Schiff, Konfetti, Putzring, Jubel-Schild. Auf der letzten Stufe
@@ -675,24 +661,24 @@ func _on_level_up(_level: int, _points: int) -> void:
 	Quips.say("level_up", true)
 
 
-func _on_build_selected(def_id: String) -> void:
-	_cursor.start_place(DataRegistry.building_defs[def_id])
-
-
 ## Hinweiszeile je nach Kontext und Eingabegerät (Gamepad-Tasten oder Tastatur/Maus).
 func _current_hint() -> String:
 	var kb := "" if InputRouter.is_gamepad else "_KB"
 	if _launching or _player.is_cheering():
 		return ""
 	match InputRouter.context:
-		InputRouter.Context.BUILD:
-			return tr(("HINT_DEMOLISH" if _cursor.mode == BuildCursor.Mode.DEMOLISH else "HINT_PLACE") + kb)
 		InputRouter.Context.MENU:
 			# Das Fortschritts-Menü hat eine eigene Fußzeile: unten keine zweite
 			return "" if _progress_menu.visible else tr("HINT_MENU" + kb)
 	var b := _player.nearby_building()
 	if b != null and b is Ship:
 		return _ship_hint(b as Ship, kb)
+	var site := NetworkSystem.site_near_player(_world)
+	if b == null and site != "":
+		if not _world.is_building_unlocked(NetworkSystem.POINT_DEF):
+			return tr("HINT_SITE_LOCKED")
+		var cost := int(_world.next_cost(_world.defs[NetworkSystem.POINT_DEF]).get("bolts", 0))
+		return tr("HINT_SITE" + kb) % Fmt.int_str(cost)
 	if b != null and b is CollectionPoint:
 		return tr("HINT_POINT" + kb) % [(b as CollectionPoint).total(), _world.player.inventory.total()]
 	if b != null:

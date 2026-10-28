@@ -69,3 +69,15 @@ func test_dev_keys_only_in_debug_builds() -> void:
 func test_deadzone_applied() -> void:
 	InputMapSetup.apply()
 	assert_true(absf(InputMap.action_get_deadzone("move_left") - InputMapSetup.DEADZONE) < 0.001)
+
+
+func test_pause_resets_stuck_suction() -> void:
+	# Ally-Fehler v2.0.0: nach Pause saugte Rusty weiter, weil das Loslassen von RT verpasst wurde.
+	InputMapSetup.apply()
+	var router: Node = Engine.get_main_loop().root.get_node_or_null("InputRouter")
+	assert_true(router != null, "InputRouter-Autoload da")
+	Input.action_press("tool_primary", 1.0)
+	SimClock.world.player.suck_held = true
+	router.reset_tools()
+	assert_false(Input.is_action_pressed("tool_primary"), "RT nach Pause nicht mehr gedrückt")
+	assert_false(SimClock.world.player.suck_held, "Sim saugt nicht mehr")

@@ -349,6 +349,11 @@ Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers �
 - Deko-Gebäude (Laterne, Bank, Blumenkasten, Skulptur, Schild, Steinkreis) und Museum entfernt: `buildings.json`, Features `decor`/`museum` in `ship.json`, Sprites, Dev-Szenario `cozy`, `BuildingDef.category`. Gebaut wird nur noch die Sammelstelle (`requires_feature: "collection"`).
 - Journal der Fundstücke bleibt; der Tab erscheint, sobald ein Fundstück gefunden ist (ohne Museums-Hinweis). Dekor der Natur (`nature.json`, `zone_themes.json`) bleibt unberührt.
 
+## 10k. Bauplätze (seit v2.1.0, MS41)
+
+- Zonen in der Karte haben `site` (2×2, oben links); `ZoneTracker` speichert ihn. `NetworkSystem.site_near_player` findet einen freien Bauplatz in Reichweite, Befehl `build_point` baut dort über `BuildingSystem._cmd_place`. Auf Karten mit Bauplätzen lehnt `_cmd_place` andere Kacheln mit `site` ab.
+- `SiteView` zeichnet Platte, Rand, Schild; `Player` löst mit A `build_point` aus, wenn kein Gebäude in der Nähe ist.
+
 ## 11. Neue Darstellung und UI
 
 - HUD: XP-Leiste (`src/ui/hud/xp_bar.tscn`), Level-Up-Konfetti (`CPUParticles2D` über Rusty), Funken-Partikel bei „Zu hart“.

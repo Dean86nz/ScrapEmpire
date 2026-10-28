@@ -159,3 +159,38 @@ func test_store_and_courier_survive_save() -> void:
 	assert_eq(p2.store, {"chrome": 7})
 	assert_eq(w2.couriers.size(), 1)
 	assert_true(w2.courier_cooldown > 0)
+
+
+func _site_world() -> SimWorld:
+	var w := TestWorlds.make(60, 30)
+	MapLoader.apply(w, {"width": 60, "height": 30, "seed": 2, "zone_order": ["a", "b"], "unlock_cleanliness": 0.5,
+		"player_start": {"x": 5, "y": 15}, "ship": {"x": 2, "y": 13},
+		"zones": [{"id": "a", "name": "A", "x": 0, "y": 0, "w": 30, "h": 30, "site": {"x": 12, "y": 20}},
+			{"id": "b", "name": "B", "x": 30, "y": 0, "w": 30, "h": 30, "site": {"x": 40, "y": 20}}],
+		"nodes": []})
+	w.unlocked_features["collection"] = true
+	w.bolts = 2000
+	return w
+
+
+func test_point_only_on_fixed_site() -> void:
+	var w := _site_world()
+	var failed := []
+	w.place_failed.connect(func(r: String) -> void: failed.append(r))
+	w.player.pos = Vector2i(8, 24) * 64
+	w.queue_command({"type": "place", "def_id": "collection_point", "tile": Vector2i(8, 20), "rot": 0})
+	w.tick()
+	assert_eq(failed, ["site"], "frei platzieren geht nicht mehr")
+
+
+func test_a_at_site_builds_point() -> void:
+	var w := _site_world()
+	assert_eq(NetworkSystem.site_near_player(w), "", "weit weg: kein Bauplatz")
+	w.player.pos = Vector2i(12, 20) * 64 + Vector2i(64, 64 + 90)
+	assert_eq(NetworkSystem.site_near_player(w), "a")
+	w.queue_command({"type": "build_point", "zone": "a"})
+	w.tick()
+	assert_eq(NetworkSystem.points(w).size(), 1)
+	assert_eq(NetworkSystem.points(w)[0].tile, Vector2i(12, 20))
+	assert_eq(NetworkSystem.site_near_player(w), "", "Bauplatz belegt")
+	assert_true(w.bolts < 2000, "kostet Bolts")
