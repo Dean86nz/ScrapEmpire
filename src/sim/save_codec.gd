@@ -75,6 +75,8 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		"quests": world.quests.to_dict(),
 		"milestones": world.milestones.to_dict(),
 		"events": world.events_state.duplicate(true),
+		"couriers": _couriers(world),
+		"courier_cooldown": world.courier_cooldown,
 		"bonus_nodes": _bonus_ids(world),
 		"dirt": world.dirt.to_dict(),
 		"flags": world.flags.duplicate(),
@@ -95,6 +97,13 @@ static func _helpers(world: SimWorld) -> Array:
 	for h: Helper in world.helpers.values():
 		arr.append(h.to_dict())
 	return arr
+
+
+static func _couriers(world: SimWorld) -> Array:
+	var out: Array = []
+	for c: Courier in world.couriers.values():
+		out.append(c.to_dict())
+	return out
 
 
 static func _bonus_ids(world: SimWorld) -> Array:
@@ -130,6 +139,8 @@ static func _int_tiles(a: Array) -> Array:
 static func _building_state(b: Building) -> Dictionary:
 	if b is Ship:
 		return {"stage": (b as Ship).stage, "clean_radius": (b as Ship).clean_radius}
+	if b is CollectionPoint:
+		return {"store": (b as CollectionPoint).store.duplicate()}
 	return {}
 
 
@@ -202,6 +213,12 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 	world.quests.from_dict(data.get("quests", {}))
 	if data.has("milestones"):
 		world.milestones.from_dict(data["milestones"])
+	for cd: Dictionary in data.get("couriers", []):
+		var c := Courier.new()
+		c.id = world.next_id()
+		c.from_dict(cd)
+		world.couriers[c.id] = c
+	world.courier_cooldown = int(data.get("courier_cooldown", 0))
 	if data.has("events"):
 		world.events_state = _events_from(data["events"])
 	for t in data.get("bonus_nodes", []):
@@ -237,3 +254,6 @@ static func _restore_building(b: Building, st: Dictionary, world: SimWorld) -> v
 		s.stage = maxi(int(st.get("stage", 1)), 1)
 		ShipSystem.apply_stage(world, s)
 		s.clean_radius = int(st.get("clean_radius", ShipSystem.clean_target(world, s)))
+	elif b is CollectionPoint:
+		for k in st.get("store", {}):
+			(b as CollectionPoint).store[str(k)] = int(st["store"][k])

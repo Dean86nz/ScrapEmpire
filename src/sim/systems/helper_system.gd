@@ -50,6 +50,7 @@ static func add_helper(w: SimWorld, zone_tile: Vector2i, depot_tile: Vector2i, n
 	h.depot_tile = depot_tile
 	var depot := w.grid.at(depot_tile)
 	h.pos = depot.center_px() + Vector2i(0, 48) if depot != null else zone_tile * SimWorld.TILE
+	h._zones = w.zones
 	_apply_helper_mods(w, h)
 	_schedule_stuck(w, h)
 	w.helpers[h.id] = h
@@ -67,6 +68,8 @@ static func _cmd_buy_helper(w: SimWorld, cmd: Dictionary) -> void:
 	w.bolts -= int(next_helper_cost(w)["bolts"])
 	w.bolts_changed.emit(w.bolts)
 	var h := add_helper(w, zone_tile, ShipSystem.ship(w).tile)
+	h.zone_id = w.zones.zone_id_at(zone_tile)   # arbeitet in der ganzen Zone, in der Rusty steht
+	h._zones = w.zones
 	var hired: Array = w.helper_cfg.get("quips_hired", [])
 	if not hired.is_empty():
 		w.helper_quip.emit(h, str(hired[h.id % hired.size()]))

@@ -25,7 +25,7 @@ func test_skills_and_ship_do_not_overlap() -> void:
 		ids.append(u["id"])
 		for e: Dictionary in u["effects"]:
 			assert_false(skill_keys.has(str(e["key"])), "doppelt in Skill und Schiff: " + str(e["key"]))
-	assert_eq(ids, ["yield"], "am Schiff nur noch Ertrag")
+	assert_eq(ids, ["yield", "courier"], "am Schiff nur Ertrag und Kurier")
 
 
 func test_buy_needs_points_and_requirements() -> void:

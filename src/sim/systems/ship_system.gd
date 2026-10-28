@@ -21,7 +21,23 @@ static func ship(w: SimWorld) -> Ship:
 # --- Abliefern ---------------------------------------------------------------
 
 ## Legt Rustys ganzes Inventar ins Schiff (A am Schiff).
-static func _cmd_deliver_all(w: SimWorld, _cmd: Dictionary) -> void:
+static func _cmd_deliver_all(w: SimWorld, cmd: Dictionary) -> void:
+	# Ziel: angegebene Sammelstelle (A an der Sammelstelle) oder das Schiff
+	var to: Building = w.buildings.get(int(cmd.get("to", -1)))
+	if to is CollectionPoint:
+		var stored := 0
+		for slot: Dictionary in w.player.inventory.slots.duplicate(true):
+			if slot["item"] == "":
+				continue
+			stored += to.accept_stack(str(slot["item"]), int(slot["count"]))
+			w.player.inventory.remove(str(slot["item"]), int(slot["count"]))
+		if stored == 0:
+			w.ship_failed.emit("empty")
+			return
+		w.quests.on_delivery()
+		w.building_changed.emit(to)
+		w.point_stored.emit(to, stored)
+		return
 	var s := ship(w)
 	if s == null:
 		return
@@ -85,11 +101,14 @@ static func upgrade_cost(w: SimWorld, id: String) -> int:
 	return int(u["cost_bolts"][level])
 
 
-## "" wenn kaufbar, sonst: unknown, max, bolts
+## "" wenn kaufbar, sonst: unknown, locked, max, bolts
 static func can_buy_upgrade(w: SimWorld, id: String) -> String:
 	var u := upgrade_def(w, id)
 	if u.is_empty():
 		return "unknown"
+	var feat := str(u.get("requires_feature", ""))
+	if feat != "" and not w.unlocked_features.has(feat):
+		return "locked"
 	var cost := upgrade_cost(w, id)
 	if cost < 0:
 		return "max"
@@ -224,6 +243,10 @@ static func count_available(w: SimWorld, item: String) -> int:
 
 static func can_afford(w: SimWorld, cost: Dictionary) -> bool:
 	for item in cost:
+		if str(item) == "bolts":
+			if w.bolts < int(cost[item]):
+				return false
+			continue
 		if count_available(w, str(item)) < int(cost[item]):
 			return false
 	return true
@@ -233,7 +256,8 @@ static func can_afford(w: SimWorld, cost: Dictionary) -> bool:
 static func missing(w: SimWorld, cost: Dictionary) -> Dictionary:
 	var result: Dictionary = {}
 	for item in cost:
-		var m := int(cost[item]) - count_available(w, str(item))
+		var have := w.bolts if str(item) == "bolts" else count_available(w, str(item))
+		var m := int(cost[item]) - have
 		if m > 0:
 			result[str(item)] = m
 	return result
@@ -241,4 +265,8 @@ static func missing(w: SimWorld, cost: Dictionary) -> Dictionary:
 
 static func pay(w: SimWorld, cost: Dictionary) -> void:
 	for item in cost:
+		if str(item) == "bolts":
+			w.bolts -= int(cost[item])
+			w.bolts_changed.emit(w.bolts)
+			continue
 		w.player.inventory.remove(str(item), int(cost[item]))

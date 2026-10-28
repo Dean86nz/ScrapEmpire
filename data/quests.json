@@ -121,6 +121,21 @@
       "xp": 40
     },
     {
+      "id": "q_point",
+      "text_key": "QUEST_POINT",
+      "type": "build",
+      "def": "collection_point",
+      "amount": 1,
+      "xp": 40
+    },
+    {
+      "id": "q_assign",
+      "text_key": "QUEST_ASSIGN",
+      "type": "assigns",
+      "amount": 1,
+      "xp": 30
+    },
+    {
       "id": "q_suck2",
       "text_key": "QUEST_SUCK2",
       "type": "skill_level",
@@ -141,6 +156,13 @@
       "type": "ship_stage",
       "amount": 3,
       "xp": 80
+    },
+    {
+      "id": "q_courier",
+      "text_key": "QUEST_COURIER",
+      "type": "courier_pickups",
+      "amount": 1,
+      "xp": 40
     },
     {
       "id": "q_drone",

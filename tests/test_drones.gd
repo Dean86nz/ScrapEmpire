@@ -38,7 +38,7 @@ func test_cost_curve_and_max() -> void:
 	assert_eq(w.next_drone_cost(), {"bolts": 400})
 	w.add_drone()
 	assert_eq(w.next_drone_cost()["bolts"], 600)
-	for i in 5:
+	for i in int(w.drone_cfg["max_drones"]) - 1:
 		w.add_drone()
 	w.bolts = 1000000
 	assert_eq(w.can_buy_drone(), "max")
@@ -47,14 +47,15 @@ func test_cost_curve_and_max() -> void:
 func test_drone_collects_loose_items_and_delivers() -> void:
 	var w := _world()
 	_unlock(w)
-	for i in 8:
-		w.add_loose("copper", Vector2i(12 * 64 + i * 10, 10 * 64))
 	var d := w.add_drone()
-	assert_eq(d.capacity, 6)
-	TestWorlds.run(w, 20 * 30)
+	var n := d.capacity + 2
+	for i in n:
+		w.add_loose("copper", Vector2i(12 * 64 + (i % 10) * 10, 10 * 64 + (i / 10) * 10))
+	assert_eq(d.capacity, int(w.drone_cfg["base_capacity"]))
+	TestWorlds.run(w, 20 * 40)
 	assert_eq(w.loose.size(), 0, "alle losen Teile eingesammelt")
-	assert_eq(w.bolts, 8 * 3, "Kupfer à 3 Bolts am Schiff")
-	assert_true(d.trips >= 2, "Tragkraft 6: mindestens zwei Flüge (%d)" % d.trips)
+	assert_eq(w.bolts, n * 3, "Kupfer à 3 Bolts am Schiff")
+	assert_true(d.trips >= 2, "mehr als eine Ladung: mindestens zwei Flüge (%d)" % d.trips)
 
 
 func test_drone_takes_from_piles_when_no_loose_items() -> void:
@@ -105,7 +106,7 @@ func test_upgrades_change_speed_and_capacity() -> void:
 	w.queue_command({"type": "buy_drone_upgrade", "id": "drone_speed"})
 	w.tick()
 	assert_eq(int(w.drone_upgrades.get("drone_capacity", 0)), 1)
-	assert_eq(d.capacity, 10)
+	assert_eq(d.capacity, int(w.drone_cfg["base_capacity"]) + 4)
 	assert_true(d.speed_px_per_tick > base_speed)
 	assert_eq(w.bolts, 10000 - 600 - 400)
 

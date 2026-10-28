@@ -2,6 +2,27 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.23.0] – 2026-10-28 – MS34 Sammelstellen, Drohnen-Netz, Bots zuweisen, Kurier (Phase 2, Punkt 1)
+
+### Neu
+- **Sammelstellen** (Recycling-Container, ab Schiffsstufe 2, eine je Zone, 300 Bolts, jede weitere ×1,6): mit Y bauen, mit A dort abladen statt zum Schiff zu fahren. **Bolts gibt es erst, wenn das Material am Schiff ankommt.** Jede Sammelstelle bringt eine Drohne mit; der Container zeigt, wie viel darin lagert
+- **Drohnen sind der Transport:** Sie fliegen zu Sammelstellen mit Material, laden bis zu 20 Teile und bringen sie zum Schiff. Ohne Transportauftrag sammeln sie wie bisher lose Teile. Höchstens 12 Drohnen, 300 px/s
+- **Bots zuweisen:** Bots arbeiten jetzt in einer ganzen Zone (nicht mehr nur im Kreis um den Kaufort) und liefern an die Sammelstelle ihrer Zone, sonst ans Schiff. Im Bots-Tab A auf einen Bot: Die Karte öffnet sich, D-Pad wählt die Zone, A weist zu, Y stellt auf „Automatisch“ (der Bot sucht sich selbst die nächste Zone mit passendem Müll), B zurück
+- **Karte zeigt das Netz:** Sammelstellen grün, Drohnen blau, Kuriere orange, Anzahl Bots je Zone
+- **Kurier** (ab Schiffsstufe 3): kleine orange Lastdrohne holt Rustys Ladung ab und bringt sie zur nächsten Sammelstelle oder zum Schiff; Rusty arbeitet weiter. Kommt automatisch, wenn die Taschen voll sind, oder per D-Pad runter (Tastatur C). HUD rechts zeigt Bereitschaft oder Wartezeit. Upgrade „Kurier“ im Schiff-Tab: 4 Stufen bis 15 s Wartezeit, ganze Ladung, 3 Kuriere. Die Automatik lässt sich im Schiff-Tab abschalten
+- Drei neue Aufgaben: Sammelstelle bauen, Bot zuweisen, Kurier rufen
+
+### Technik
+- `CollectionPoint`, `Courier`, `NetworkSystem` (Sammelstellen, Zuweisung, Automatik, Kurier), Drohnen-Zustand `FETCH`; Kosten in Bolts für Gebäude; Spielstand speichert Lager, Kuriere, Zuweisungen
+- 200 Unit-Tests (8 neue fürs Netz), 47 Gamepad-Prüfungen (neu: Bot über die Karte zuweisen), 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Nach Schiffsstufe 2: Y, Sammelstelle in einer zweiten Zone bauen. Eine Drohne startet
+2. Dort A drücken: Teile landen im Container, die Drohne bringt sie zum Schiff, erst dann kommen Bolts
+3. Bot bauen, im Bots-Tab A, auf der Karte eine andere Zone wählen, A. Läuft er hin und liefert an die Sammelstelle?
+4. Nach Schiffsstufe 3: Taschen füllen, der Kurier kommt von selbst. D-Pad runter ruft ihn bei halbvollen Taschen
+5. Fühlt sich das Netz gegen Ende lebendig an?
+
 ## [1.22.0] – 2026-10-28 – MS33 Fehler aus dem Test, natürlicher Klang, Musik (Phase 2, Punkt 0)
 
 ### Behoben

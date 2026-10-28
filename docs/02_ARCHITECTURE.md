@@ -323,6 +323,13 @@ Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers �
 - `EventSystem` (`src/sim/systems/event_system.gd`): Zustand `SimWorld.events_state` = {next: Typ → Tick, warn: [{type, ticks_left, tiles}], drops: [{type, tile, ticks_left, loot}]}. Signale `event_warning`, `event_started` (Ziele und Verzögerungen für die Darstellung), `event_landed`. Zufall über `SimRng` (deterministisch). Bonus-Objekte tragen `ResourceNode.bonus` und stehen im Spielstand unter `bonus_nodes`.
 - `EventView` (`src/world/event_view.gd`) zeigt Vorwarnung, UFO, fallende Säcke, Meteore und Einschläge passend zu den Zeitpunkten der Sim.
 
+## 10g. Netz und Kurier (seit v1.23.0, MS34)
+
+- `CollectionPoint` (Gebäude, `store`), `NetworkSystem`: `depot_for` (Sammelstelle der Zone, sonst Schiff), `zone_check` (eine je Zone), Befehle `assign_helper` (Zone oder `auto`) und `call_courier`, Tick für Automatik und Kuriere.
+- `Helper.zone_id`/`auto`: Bots arbeiten in einer Zone; `_plan` bestimmt den Abgabeort neu.
+- `Drone.State.FETCH`: Transport von der Sammelstelle mit dem meisten unverplanten Material zum Schiff hat Vorrang.
+- `Courier`: TO_PLAYER → TO_DEPOT → HOME; Stufen aus `ship.json` „courier“; Upgrade „courier“ mit `requires_feature`.
+
 ## 11. Neue Darstellung und UI
 
 - HUD: XP-Leiste (`src/ui/hud/xp_bar.tscn`), Level-Up-Konfetti (`CPUParticles2D` über Rusty), Funken-Partikel bei „Zu hart“.

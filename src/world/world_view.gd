@@ -38,6 +38,13 @@ func bind(world: SimWorld, player: Node2D) -> void:
 	world.building_changed.connect(_on_building_changed)
 	world.building_removed.connect(_on_building_removed)
 	world.ship_delivered.connect(_on_ship_delivered)
+	world.courier_added.connect(_on_courier_added)
+	world.courier_removed.connect(_on_courier_removed)
+	world.courier_loaded.connect(_on_courier_loaded)
+	world.point_stored.connect(func(p: Building, n: int) -> void:
+		if _building_views.has(p.id):
+			_building_views[p.id].show_sale(n, true)
+		Sfx.play("courier", 0.08))
 	world.too_hard.connect(_on_too_hard)
 	world.node_respawned.connect(_on_node_respawned)
 	for h: Helper in world.helpers.values():
@@ -199,6 +206,35 @@ func _on_building_placed(b: Building) -> void:
 	view.setup(b)
 	add_child(view)
 	_building_views[b.id] = view
+
+
+var _courier_views: Dictionary = {}
+
+
+func _on_courier_added(c: Courier) -> void:
+	var v := CourierView.new()
+	v.setup(c)
+	add_child(v)
+	_courier_views[c.id] = v
+	Sfx.play("courier", 0.1, -4.0)
+
+
+func _on_courier_removed(id: int) -> void:
+	if _courier_views.has(id):
+		_courier_views[id].leave()
+		_courier_views.erase(id)
+
+
+## Die Teile fliegen im Bogen aus Rusty in den Kurier.
+func _on_courier_loaded(c: Courier, items: Dictionary) -> void:
+	var shown := 0
+	for item: String in items:
+		for k in mini(int(items[item]), 4):
+			if shown >= 10:
+				break
+			_fly_to_ship(item, _player.global_position, Vector2(c.pos), shown * 0.03)
+			shown += 1
+	Sfx.play("courier", 0.08)
 
 
 ## Ansicht des Schiffs (für Feier und Abflug), null ohne Schiff.

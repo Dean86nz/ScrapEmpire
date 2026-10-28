@@ -42,6 +42,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **31** | Spielgefühl 7: Ziele-Tab mit Hauptaufgabe, Schiff-Tab 2×2, eine Hinweiszeile, runder und animiert | v1.20.0 |
 | **32** | Spielgefühl 8: echte CC0-Sounds, Saug-Rauschen, Lautstärke-Regler, Musik vorbereitet | v1.21.0 |
 | **33** | Phase 2, Punkt 0: Werkzeug bis T5, Wirtschafts- und Erreichbarkeits-Test, Bot-Langeweile, natürlicher Klang, Musik | v1.22.0 |
+| **34** | Phase 2, Punkt 1: Sammelstellen, Drohnen-Transport, Bots per Karte zuweisen, Kurier | v1.23.0 |
 
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
 

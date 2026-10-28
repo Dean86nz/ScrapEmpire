@@ -63,6 +63,7 @@ static var ACTIONS: Dictionary = {
 	"hotbar_prev": [_btn(JOY_BUTTON_LEFT_SHOULDER), _mouse(MOUSE_BUTTON_WHEEL_UP)],
 	"hotbar_next": [_btn(JOY_BUTTON_RIGHT_SHOULDER), _mouse(MOUSE_BUTTON_WHEEL_DOWN)],
 	"tech_tree": [_btn(JOY_BUTTON_BACK), _key(KEY_T)],
+	"call_courier": [_btn(JOY_BUTTON_DPAD_DOWN), _key(KEY_C)],
 	"pause": [_btn(JOY_BUTTON_START), _key(KEY_ESCAPE)],
 	# Rastercursor im Baumodus
 	"cursor_up": [_btn(JOY_BUTTON_DPAD_UP), _key(KEY_UP)],

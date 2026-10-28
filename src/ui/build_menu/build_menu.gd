@@ -102,7 +102,7 @@ func _missing_text(missing: Dictionary) -> String:
 func _cost_text(cost: Dictionary) -> String:
 	var parts: Array[String] = []
 	for item in cost:
-		parts.append("%d %s" % [cost[item], DataRegistry.item_name(item)])
+		parts.append("%s %s" % [Fmt.int_str(int(cost[item])), tr("HUD_BOLTS") if str(item) == "bolts" else DataRegistry.item_name(item)])
 	return ", ".join(parts)
 
 

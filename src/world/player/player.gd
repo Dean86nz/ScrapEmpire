@@ -232,6 +232,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			w.queue_command({"type": "deliver_all"})
 			get_viewport().set_input_as_handled()
 			return
+		if b is CollectionPoint:
+			w.queue_command({"type": "deliver_all", "to": b.id})
+			get_viewport().set_input_as_handled()
+			return
 		var slot: Dictionary = w.player.inventory.slots[selected_slot]
 		if slot["item"] != "":
 			w.queue_command({"type": "deposit", "tile": b.tile, "slot": selected_slot})

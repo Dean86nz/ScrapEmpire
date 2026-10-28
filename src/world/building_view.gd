@@ -71,6 +71,12 @@ func refresh(b: Building) -> void:
 			ship_fx.set_stage(sh.stage)
 		_label.visible = false
 		return
+	if s.has("stored"):
+		_label.text = "♻ %d" % int(s["stored"])
+		_label.visible = int(s["stored"]) > 0
+		_sprite.scale = Vector2(1.08, 0.94)
+		create_tween().tween_property(_sprite, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		return
 	if s.has("buffer"):
 		_label.text = "%d / %d" % [s["buffer"], s["buffer_max"]]
 		_label.visible = s["buffer"] > 0
