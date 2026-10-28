@@ -243,6 +243,8 @@ func _tick_transfer(world: SimWorld, body: WorkerBody, step: Dictionary, deposit
 				body.inventory.remove(s["item"], accepted)
 				world.building_changed.emit(b)
 				moved = true
+				if body is Helper and body.inventory.total() == 0:
+					world.helper_quip.emit(body as Helper, "HELPER_LOVE")  # Herz beim Abliefern (MS44)
 				break  # ein Stapel je Tick
 	else:
 		if not body.inventory.is_full():

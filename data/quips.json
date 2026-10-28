@@ -1,4 +1,10 @@
 {
+  "_config": {
+    "_comment": "MS44: Ereignis-Sprüche frühestens event_gap_s nach der letzten Blase; Plauder-Sprüche (idle, Inventar voll …) höchstens alle chatter_gap_s. Immer nur eine Blase.",
+    "event_gap_s": 6.0,
+    "chatter_gap_s": 150.0,
+    "show_s": 3.2
+  },
   "start": [
     "QUIP_START_1",
     "QUIP_START_2"

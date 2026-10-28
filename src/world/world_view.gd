@@ -167,9 +167,25 @@ func _on_helper_removed(id: int) -> void:
 		_helper_views.erase(id)
 
 
+## Bots sprechen nicht mehr, sie zeigen nur ein kleines Symbol (MS44).
 func _on_helper_quip(h: Helper, key: String) -> void:
-	if _helper_views.has(h.id):
-		_helper_views[h.id].say(tr(key))
+	if not _helper_views.has(h.id):
+		return
+	var sym := "♪"
+	var col := Color(0.55, 0.85, 1.0)
+	if key.begins_with("BOT_BORED_TOO_HARD"):
+		sym = "?"
+		col = Color(1.0, 0.85, 0.3)
+	elif key.begins_with("BOT_BORED"):
+		sym = "Zzz"
+		col = Color(0.8, 0.85, 1.0)
+	elif key.begins_with("HELPER_STUCK"):
+		sym = "!?"
+		col = Color(1.0, 0.6, 0.3)
+	elif key.begins_with("HELPER_HIRED") or key == "HELPER_LOVE":
+		sym = "♥"
+		col = Color(1.0, 0.45, 0.55)
+	_helper_views[h.id].emote(sym, col)
 
 
 ## Kurzer schwebender Text in der Welt (steigt auf, verblasst).

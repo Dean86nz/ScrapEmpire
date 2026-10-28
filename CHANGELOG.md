@@ -2,6 +2,22 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.4.0] – 2026-10-28 – MS44 Sprechblasen dezenter (Phase 2.1)
+
+### Geändert
+- **Nur noch Rusty spricht, und seltener:** Ereignisse (Boss, Tor, Schiffsstufe, Fundstück, Verstärkung …) frühestens 6 s nach der letzten Blase, Plaudereien (Leerlauf, Taschen voll, Skill gekauft …) höchstens alle 2,5 Minuten. Immer nur eine Blase; eine neue ersetzt die alte. Werte in `data/quips.json` unter `_config`
+- **Bots zeigen Symbole statt Text:** ♥ beim Abliefern und beim Einstellen, Zzz bei Langeweile, ? bei zu hartem Müll, !? beim Steckenbleiben, ! bei Verstärkung, ♪ sonst
+- **Neue Blase:** kleiner (22 px), cremeweiß, runde Ecken, weicher Schatten, kleiner Zipfel zu Rusty, springt sanft auf und blendet aus; lange Sprüche brechen bei 520 px um
+
+### Technik
+- `Quips` filtert alle Wünsche (EventBus.quip) und sendet Gezeigtes über `EventBus.speak`; Helfer-Sprechblase entfernt, `HelperView.emote`
+- 217 Unit-Tests (neu: Mindestabstand, seltene Plaudereien), 53 Gamepad-Prüfungen grün
+
+### Ally-Testliste
+1. 10 Minuten spielen: Ist es ruhiger? Fehlen dir Sprüche oder sind es noch zu viele?
+2. Bots mit Herz, Zzz, ?: Verständlich und gut sichtbar?
+3. Gefällt dir die neue Blase?
+
 ## [2.3.0] – 2026-10-28 – MS43 Hammer spürbar stärker (Phase 2.1)
 
 ### Geändert

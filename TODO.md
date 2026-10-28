@@ -25,7 +25,8 @@
 - [x] MS41 Fehler: Endboss, Sauger nach Pause, Karte, Bauplatz (v2.1.0)
 - [x] MS42 Bots automatisch, Boss-Verstärkung (v2.2.0)
 - [x] MS43 Hammer spürbar stärker (v2.3.0)
-- [ ] Phase 2.1: MS44 Sprechblasen → MS45 Sound → MS46 Musik → MS47 Intro
+- [x] MS44 Sprechblasen dezenter (v2.4.0)
+- [ ] Phase 2.1: MS45 Sound → MS46 Musik → MS47 Intro
 - [ ] Ally-Durchlauf mit Zeiten auswerten, Zahlen in JSON nachjustieren (siehe docs/OFFENE_PUNKTE.md)
 - [ ] Balancing nach der Runde „Spielgefühl“: Tempo bis Level 2, Ereignis-Abstände, Torschwelle mit Schiffswelle
 - [ ] MS26: Putzwelle des Schiffs (Radius 16 auf Stufe 5) gegen Tor-Schwelle abwägen
