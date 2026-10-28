@@ -79,6 +79,16 @@ static func _remove_node(w: SimWorld, n: ResourceNode) -> void:
 	# Rohstoffquellen respawnen immer; Müll nur, solange die Zone unter 50 % sauber ist.
 	if n.respawn_ticks > 0 and (n.is_resource() or w.zones.allows_trash_respawn(n.tile, w.nodes)):
 		w.respawns.append({"kind": n.kind, "tile": n.tile, "ticks_left": n.respawn_ticks})
+	if n.boss:
+		var zid := w.zones.zone_id_at(n.tile)
+		var reward := int(ResourceNode.defs.get(n.kind, {}).get("reward_bolts", 0))
+		w.flags["boss_" + zid] = true
+		if n.final:
+			w.flags["final_boss"] = true
+		if reward > 0:
+			w.bolts += reward
+			w.bolts_changed.emit(w.bolts)
+		w.boss_defeated.emit(n.kind, zid, reward)
 	w.zones.refresh(w.nodes)
 
 

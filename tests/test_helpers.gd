@@ -90,6 +90,7 @@ func test_bot_hammers_toaster() -> void:
 
 func test_bot_ignores_objects_above_tier_and_outside_radius() -> void:
 	var w := _world()
+	ResourceNode.load_defs("res://tests/data/scrap_objects_test.json")  # feste Test-Objekte
 	_unlock(w)
 	var fridge := w.add_object("fridge", Vector2i(14, 8))      # T2
 	var far := w.add_pile("scrap_pile", Vector2i(35, 8), 10)    # 25 Kacheln entfernt

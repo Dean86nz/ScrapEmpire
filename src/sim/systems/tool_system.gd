@@ -32,7 +32,7 @@ static func helper_work(w: SimWorld, h: Helper) -> void:
 		else:
 			var hit_point := Vector2(h.pos) + h.aim * PlayerState.HAMMER_REACH_PX
 			for n: ResourceNode in w.nodes.values():
-				if not n.uses_hammer() or n.tier > h.hammer_tier:
+				if not n.uses_hammer() or (n.tier > h.hammer_tier and not NetworkSystem.team_can_hit(w, n)):
 					continue
 				if hit_point.distance_to(Vector2(n.center_px())) <= float(h.hammer_range_px):
 					h.hammer_cooldown = PlayerState.BASE_HAMMER_INTERVAL

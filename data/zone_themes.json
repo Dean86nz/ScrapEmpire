@@ -1,0 +1,219 @@
+{
+  "_comment": "Zonen-Themen (MS36): ground = Bodenfarbe über dem Sand (RGBA), meadow = Färbung der Wiese (RGB-Faktoren; rainbow = Regenbogen), plants = Pflanzen je geputzter Kachel, decor = Deko je Reinigungsstufe, animals = Tiere je Stufe.",
+  "scrapyard": {
+    "ground": [
+      0.55,
+      0.38,
+      0.22,
+      0.28
+    ],
+    "meadow": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "plants": {
+      "grass": 0.24,
+      "grass_tall": 0.08,
+      "daisy": 0.12,
+      "flower_yellow": 0.05
+    },
+    "decor": {
+      "2": {
+        "bush": 0.006
+      },
+      "3": {
+        "bush": 0.012,
+        "pond": 0.0025
+      }
+    },
+    "animals": {
+      "2": {
+        "bug": 1
+      },
+      "3": {
+        "bug": 2,
+        "bird": 2
+      }
+    }
+  },
+  "cables": {
+    "ground": [
+      0.85,
+      0.48,
+      0.2,
+      0.25
+    ],
+    "meadow": [
+      0.82,
+      1.0,
+      1.12
+    ],
+    "plants": {
+      "grass": 0.24,
+      "grass_tall": 0.1,
+      "flower_blue": 0.12
+    },
+    "decor": {
+      "2": {
+        "bush": 0.006
+      },
+      "3": {
+        "bush": 0.01,
+        "pond": 0.003
+      }
+    },
+    "animals": {
+      "2": {
+        "dragonfly": 2
+      },
+      "3": {
+        "dragonfly": 3,
+        "bird": 1
+      }
+    }
+  },
+  "beach": {
+    "ground": [
+      0.95,
+      0.85,
+      0.55,
+      0.3
+    ],
+    "meadow": [
+      1.12,
+      1.08,
+      0.82
+    ],
+    "plants": {
+      "grass_tall": 0.16,
+      "flower_pink": 0.06,
+      "shell": 0.05
+    },
+    "decor": {
+      "2": {
+        "palm": 0.006
+      },
+      "3": {
+        "palm": 0.012,
+        "pond": 0.004
+      }
+    },
+    "animals": {
+      "2": {
+        "crab": 2
+      },
+      "3": {
+        "crab": 3,
+        "bird": 2
+      }
+    }
+  },
+  "fridges": {
+    "ground": [
+      0.85,
+      0.9,
+      0.95,
+      0.3
+    ],
+    "meadow": [
+      0.92,
+      1.1,
+      1.16
+    ],
+    "plants": {
+      "grass": 0.2,
+      "snowdrop": 0.14
+    },
+    "decor": {
+      "2": {
+        "snowman": 0.004
+      },
+      "3": {
+        "snowman": 0.007,
+        "bush": 0.006
+      }
+    },
+    "animals": {
+      "2": {
+        "penguin": 1
+      },
+      "3": {
+        "penguin": 3
+      }
+    }
+  },
+  "satellites": {
+    "ground": [
+      0.45,
+      0.32,
+      0.62,
+      0.3
+    ],
+    "meadow": [
+      0.95,
+      0.82,
+      1.2
+    ],
+    "plants": {
+      "grass": 0.18,
+      "mushroom_glow": 0.1,
+      "crystal": 0.06
+    },
+    "decor": {
+      "2": {
+        "crystal_cluster": 0.006
+      },
+      "3": {
+        "crystal_cluster": 0.012,
+        "pond": 0.0025
+      }
+    },
+    "animals": {
+      "2": {
+        "glowbug": 2
+      },
+      "3": {
+        "glowbug": 4
+      }
+    }
+  },
+  "monoliths": {
+    "ground": [
+      0.25,
+      0.25,
+      0.35,
+      0.35
+    ],
+    "meadow": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "rainbow": true,
+    "plants": {
+      "grass": 0.2,
+      "rainbow_flower": 0.14,
+      "flower_blue": 0.04,
+      "flower_pink": 0.04
+    },
+    "decor": {
+      "2": {
+        "bush": 0.006
+      },
+      "3": {
+        "bush": 0.01,
+        "pond": 0.003
+      }
+    },
+    "animals": {
+      "2": {
+        "butterfly": 2
+      },
+      "3": {
+        "butterfly": 4,
+        "bird": 1
+      }
+    }
+  }
+}

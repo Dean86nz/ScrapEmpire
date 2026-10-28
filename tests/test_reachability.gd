@@ -28,11 +28,35 @@ func test_every_map_object_is_reachable() -> void:
 	var max_tier := _max_rusty_tier()
 	assert_true(max_tier >= 5, "Rusty erreicht mindestens Stufe 5: %d" % max_tier)
 	var bad := []
+	var max_bots := int(JSON.parse_string(FileAccess.get_file_as_string("res://data/helpers.json"))["max_helpers"])
 	for n: Dictionary in _map().get("nodes", []):
 		var d: Dictionary = ResourceNode.defs.get(str(n["kind"]), {})
-		if int(d.get("tier", 1)) > max_tier:
-			bad.append("%s (T%d)" % [n["kind"], int(d["tier"])])
+		if int(d.get("tier", 1)) <= max_tier:
+			continue
+		# Zu hart für Rusty: nur erlaubt, wenn es ein Boss ist, den ein Bot-Team knackt
+		if bool(d.get("boss", false)) and int(d.get("bots_needed", 0)) > 0 and int(d["bots_needed"]) <= max_bots and str(d.get("tool", "")) == "hammer":
+			continue
+		bad.append("%s (T%d)" % [n["kind"], int(d["tier"])])
 	assert_eq(bad, [], "zu harte Objekte auf der Karte")
+
+
+func test_every_zone_has_one_boss_and_one_final() -> void:
+	ResourceNode.load_defs("res://data/scrap_objects.json")
+	var bosses := {}
+	var finals := 0
+	var m := _map()
+	for n: Dictionary in m.get("nodes", []):
+		var d: Dictionary = ResourceNode.defs[str(n["kind"])]
+		if bool(d.get("boss", false)):
+			for z: Dictionary in m["zones"]:
+				if int(n["x"]) >= int(z["x"]) and int(n["x"]) < int(z["x"]) + int(z["w"]) and int(n["y"]) >= int(z["y"]) and int(n["y"]) < int(z["y"]) + int(z["h"]):
+					bosses[z["id"]] = int(bosses.get(z["id"], 0)) + 1
+			if bool(d.get("final", false)):
+				finals += 1
+	assert_eq(bosses.size(), (m["zones"] as Array).size(), "jede Zone hat einen Boss")
+	for k in bosses:
+		assert_eq(int(bosses[k]), 1, "genau ein Boss in " + str(k))
+	assert_eq(finals, 1, "genau ein Endboss")
 
 
 func test_event_objects_are_reachable_from_the_start() -> void:

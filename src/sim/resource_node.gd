@@ -32,6 +32,9 @@ var tool: String = "suction"
 var respawn_ticks: int = 0
 var resource: bool = false  # unendliche Rohstoffquelle, zählt nicht als Müll
 var bonus: bool = false     # aus einem Ereignis (Touristen, Meteoriten), liegt auf sauberem Boden
+var boss := false           # Müllberg-Boss der Zone (MS36): nächste Werkzeugstufe oder Bot-Team
+var bots_needed := 0        # so viele Bots der Zone knacken ihn auch ohne passende Stufe
+var final := false          # Endboss: nötig für den Abflug
 var _pile_item: String = ""
 var regen_counter: int = 0
 
@@ -67,6 +70,9 @@ static func from_kind(p_id: int, p_kind: String, p_tile: Vector2i, amount_overri
 	n.tier = int(d.get("tier", 1))
 	n.tool = str(d.get("tool", "suction"))
 	n.resource = bool(d.get("resource", false))
+	n.boss = bool(d.get("boss", false))
+	n.bots_needed = int(d.get("bots_needed", 0))
+	n.final = bool(d.get("final", false))
 	if str(d.get("type", "pile")) == "pile":
 		n._pile_item = str(d.get("item", "scrap"))
 		n.max_amount = int(d.get("max", PILE_MAX))

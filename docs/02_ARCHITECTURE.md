@@ -330,6 +330,12 @@ Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers �
 - `Drone.State.FETCH`: Transport von der Sammelstelle mit dem meisten unverplanten Material zum Schiff hat Vorrang.
 - `Courier`: TO_PLAYER → TO_DEPOT → HOME; Stufen aus `ship.json` „courier“; Upgrade „courier“ mit `requires_feature`.
 
+## 10h. Themen-Zonen und Bosse (seit v1.25.0, MS36)
+
+- Karte aus `tools/gen_main_map.py` (Zonen mit `name_key` und `theme`); Themen in `data/zone_themes.json`, gelesen über `DataRegistry.zone_theme()` von `WorldView` (Bodenton), `MeadowView` (Wiesen-Tönung, Regenbogen-Shader) und `NatureView` (Pflanzen, Deko, Tiere).
+- `ResourceNode.boss/bots_needed/final`; `NetworkSystem.team_can_hit` erlaubt Bots (Planung, Aufgabe, Hammer) höhere Stufen; `NodeSystem._remove_node` zahlt die Belohnung, setzt Flags und sendet `boss_defeated`.
+- `ZoneTracker.check_unlocks` wartet auf `boss_alive() == false`; `ShipSystem.can_upgrade` liefert `"boss"`, solange `final_boss` fehlt.
+
 ## 11. Neue Darstellung und UI
 
 - HUD: XP-Leiste (`src/ui/hud/xp_bar.tscn`), Level-Up-Konfetti (`CPUParticles2D` über Rusty), Funken-Partikel bei „Zu hart“.

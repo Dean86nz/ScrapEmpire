@@ -173,13 +173,16 @@ static func next_stage_unlocks(w: SimWorld, s: Ship) -> Array:
 	return stage_def(w, s.stage + 1).get("unlocks", [])
 
 
-## "" wenn reparierbar, sonst: no_ship, max, bolts, planet
+## "" wenn reparierbar, sonst: no_ship, max, boss, bolts, planet
 static func can_upgrade(w: SimWorld, s: Ship) -> String:
 	if s == null:
 		return "no_ship"
 	if s.stage >= max_stage(w):
 		return "max"
 	var d := stage_def(w, s.stage + 1)
+	var flag := str(d.get("requires_flag", ""))
+	if flag != "" and not w.flags.has(flag):
+		return "boss"
 	if w.bolts < int(d.get("cost_bolts", 0)):
 		return "bolts"
 	if w.zones.planet_health(w.nodes) < float(d.get("requires_planet", 0.0)):

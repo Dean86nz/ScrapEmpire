@@ -93,7 +93,7 @@ func _plan(world: SimWorld) -> void:
 	for n: ResourceNode in world.nodes.values():
 		if n.is_depleted() or not in_zone(n.tile):
 			continue
-		var tier_ok := n.tier <= (hammer_tier if n.uses_hammer() else suction_tier)
+		var tier_ok := n.tier <= (hammer_tier if n.uses_hammer() else suction_tier) or NetworkSystem.team_can_hit(world, n)
 		if not tier_ok:
 			too_hard = true
 			continue

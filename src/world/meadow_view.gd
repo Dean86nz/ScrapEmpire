@@ -7,6 +7,7 @@ extends Node2D
 const SHADER := """
 shader_type canvas_item;
 uniform sampler2D mask : filter_linear, repeat_disable;
+uniform sampler2D tint : filter_nearest, repeat_disable;
 uniform vec2 map_size;
 varying vec2 world_pos;
 void vertex() {
@@ -17,7 +18,15 @@ void fragment() {
 	float m = texture(mask, world_pos / map_size).r;
 	float edge = (pat.g - 0.55) * 0.5;
 	float a = smoothstep(0.12, 0.42, m + edge);
-	COLOR = vec4(pat.rgb, a);
+	vec4 t = texture(tint, world_pos / map_size);
+	vec3 col = pat.rgb * t.rgb * 1.25;
+	if (t.a < 0.75) {
+		// Regenbogen-Wiese: Farbe wandert über die Fläche
+		float h = fract((world_pos.x + world_pos.y) / 1400.0);
+		vec3 rb = clamp(abs(fract(h + vec3(0.0, 0.333, 0.667)) * 6.0 - 3.0) - 1.0, 0.0, 1.0);
+		col = mix(pat.rgb, pat.rgb * (0.55 + rb * 0.75), 0.6);
+	}
+	COLOR = vec4(col, a);
 }
 """
 const GROW_SECONDS := 2.5
@@ -56,9 +65,23 @@ func bind(world: SimWorld) -> void:
 	mat.shader = sh
 	mat.set_shader_parameter("mask", _tex)
 	mat.set_shader_parameter("map_size", size)
+	mat.set_shader_parameter("tint", _tint_texture(world))
 	_sprite.material = mat
 	add_child(_sprite)
 	z_index = -9
+
+
+## Färbung je Kachel nach dem Thema der Zone (Alpha 0,5 = Regenbogen).
+func _tint_texture(world: SimWorld) -> ImageTexture:
+	var img := Image.create(world.width_tiles, world.height_tiles, false, Image.FORMAT_RGBA8)
+	img.fill(Color(1, 1, 1, 1))
+	for z: Dictionary in world.zones.zones:
+		var th := DataRegistry.zone_theme(str(z.get("theme", "")))
+		var m: Array = th.get("meadow", [1, 1, 1])
+		var c := Color(float(m[0]) / 1.25, float(m[1]) / 1.25, float(m[2]) / 1.25, 0.5 if bool(th.get("rainbow", false)) else 1.0)
+		var r: Rect2i = z["rect"]
+		img.fill_rect(r, c)
+	return ImageTexture.create_from_image(img)
 
 
 ## Von DirtView: Kacheln, deren Schmutz oder Wiese sich geändert hat.

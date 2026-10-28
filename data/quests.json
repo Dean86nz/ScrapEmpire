@@ -202,6 +202,14 @@
       "bolts": 300
     },
     {
+      "id": "q_bosses",
+      "text_key": "QUEST_BOSSES",
+      "type": "bosses",
+      "amount": 4,
+      "xp": 100,
+      "bolts": 200
+    },
+    {
       "id": "q_ship4",
       "text_key": "QUEST_SHIP4",
       "type": "ship_stage",
@@ -213,6 +221,13 @@
       "text_key": "QUEST_PLANET",
       "type": "planet",
       "amount": 80,
+      "xp": 150
+    },
+    {
+      "id": "q_final",
+      "text_key": "QUEST_FINAL",
+      "type": "flag",
+      "flag": "final_boss",
       "xp": 150
     },
     {

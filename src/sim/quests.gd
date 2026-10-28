@@ -121,7 +121,17 @@ func progress(w: SimWorld) -> Array:
 			var cur := w.zones.current_chapter_zone()
 			var pct := int(round(w.zones.cleanliness(cur, w.nodes) * 100.0)) if cur != "" else 100
 			var goal := int(round(w.zones.unlock_cleanliness * 100.0))
+			if cur != "" and w.zones.boss_alive(cur, w.nodes):
+				pct = mini(pct, goal - 1)  # erst der Boss, dann geht das Tor auf
 			return [mini(pct, goal), goal]
+		"bosses":
+			var beaten := 0
+			for k: String in w.flags:
+				if k.begins_with("boss_"):
+					beaten += 1
+			return [mini(beaten, amount), amount]
+		"flag":
+			return [1 if w.flags.has(str(q.get("flag", ""))) else 0, 1]
 		"zone_clean":
 			var pct2 := int(round(w.zones.cleanliness(str(q.get("zone", "")), w.nodes) * 100.0))
 			return [mini(pct2, amount), amount]

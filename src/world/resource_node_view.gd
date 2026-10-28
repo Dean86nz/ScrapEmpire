@@ -19,6 +19,7 @@ var _sprite := Sprite2D.new()
 var _badge: Label
 var _tween: Tween
 var _sparks: CPUParticles2D
+var _boss_bar: ProgressBar
 
 
 func setup(node: ResourceNode) -> void:
@@ -29,7 +30,9 @@ func setup(node: ResourceNode) -> void:
 	_sprite.position = Vector2(0, -6)
 	add_child(_sprite)
 	position = Vector2(node.center_px())
-	if node.tier >= 2:
+	if node.boss:
+		_setup_boss(node)
+	elif node.tier >= 2:
 		_badge = Label.new()
 		_badge.text = "T%d" % node.tier
 		_badge.add_theme_font_size_override("font_size", 22)
@@ -41,7 +44,47 @@ func setup(node: ResourceNode) -> void:
 	refresh(node)
 
 
+func _setup_boss(node: ResourceNode) -> void:
+	_sprite.position = Vector2(0, -40)
+	var head := Label.new()
+	head.text = "%s · %s" % [tr("BOSS_LABEL"), tr(str(ResourceNode.defs.get(node.kind, {}).get("name_key", node.kind)))]
+	head.add_theme_font_size_override("font_size", 24)
+	head.add_theme_color_override("font_color", Color.WHITE)
+	head.add_theme_color_override("font_outline_color", Color(0.75, 0.2, 0.15))
+	head.add_theme_constant_override("outline_size", 9)
+	head.position = Vector2(-220, -150)
+	head.size = Vector2(440, 30)
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	add_child(head)
+	_boss_bar = ProgressBar.new()
+	_boss_bar.show_percentage = false
+	_boss_bar.max_value = 1.0
+	_boss_bar.position = Vector2(-90, -116)
+	_boss_bar.size = Vector2(180, 16)
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = Color(0.165, 0.165, 0.2, 0.8)
+	bg.set_corner_radius_all(8)
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color(0.9, 0.3, 0.25)
+	fill.set_corner_radius_all(8)
+	_boss_bar.add_theme_stylebox_override("background", bg)
+	_boss_bar.add_theme_stylebox_override("fill", fill)
+	add_child(_boss_bar)
+	var need := Label.new()
+	need.text = tr("BOSS_NEEDS") % [node.tier, node.bots_needed]
+	need.add_theme_font_size_override("font_size", 22)
+	need.add_theme_color_override("font_color", Color.WHITE)
+	need.add_theme_color_override("font_outline_color", Color(0.165, 0.165, 0.2))
+	need.add_theme_constant_override("outline_size", 7)
+	need.position = Vector2(-220, 34)
+	need.size = Vector2(440, 30)
+	need.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	add_child(need)
+
+
 func refresh(node: ResourceNode) -> void:
+	if _boss_bar != null:
+		_boss_bar.value = float(node.amount) / float(maxi(node.max_amount, 1))
 	if not node.is_pile():
 		_sprite.scale = Vector2.ONE
 		return

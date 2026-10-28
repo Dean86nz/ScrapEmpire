@@ -8,12 +8,12 @@
       "icon": "res://assets/sprites/ui/upg_yield.svg",
       "max_level": 6,
       "cost_bolts": [
-        40,
-        70,
-        110,
-        160,
-        220,
-        300
+        60,
+        150,
+        400,
+        1000,
+        2500,
+        5000
       ],
       "effects": [
         {
@@ -56,7 +56,7 @@
       "stage": 2,
       "name_key": "SHIP_STAGE_2",
       "sprite": "res://assets/sprites/buildings/ship_2.svg",
-      "cost_bolts": 300,
+      "cost_bolts": 500,
       "unlocks": [
         "helpers",
         "collection"
@@ -67,7 +67,7 @@
       "stage": 3,
       "name_key": "SHIP_STAGE_3",
       "sprite": "res://assets/sprites/buildings/ship_3.svg",
-      "cost_bolts": 1200,
+      "cost_bolts": 2500,
       "unlocks": [
         "drones",
         "decor",
@@ -79,7 +79,7 @@
       "stage": 4,
       "name_key": "SHIP_STAGE_4",
       "sprite": "res://assets/sprites/buildings/ship_4.svg",
-      "cost_bolts": 2000,
+      "cost_bolts": 8000,
       "unlocks": [
         "helper_tools",
         "museum"
@@ -90,12 +90,13 @@
       "stage": 5,
       "name_key": "SHIP_STAGE_5",
       "sprite": "res://assets/sprites/buildings/ship_5.svg",
-      "cost_bolts": 2800,
+      "cost_bolts": 15000,
       "requires_planet": 0.8,
       "unlocks": [
         "launch"
       ],
-      "clean_radius": 16
+      "clean_radius": 16,
+      "requires_flag": "final_boss"
     }
   ],
   "clean_wave_ticks": 3,

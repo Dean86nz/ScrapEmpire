@@ -1,0 +1,248 @@
+{
+  "objects": [
+    {
+      "id": "scrap_pile",
+      "name_key": "NODE_SCRAP_PILE",
+      "tier": 1,
+      "tool": "suction",
+      "type": "pile",
+      "item": "scrap",
+      "max": 10,
+      "regen_s": 0,
+      "sprite": "res://assets/sprites/nodes/scrap_pile.svg",
+      "resource": false
+    },
+    {
+      "id": "copper_tangle",
+      "name_key": "NODE_COPPER_TANGLE",
+      "tier": 1,
+      "tool": "suction",
+      "type": "pile",
+      "item": "copper",
+      "max": 10,
+      "regen_s": 0,
+      "sprite": "res://assets/sprites/nodes/copper_tangle.svg",
+      "resource": false
+    },
+    {
+      "id": "plastic_crumbs",
+      "name_key": "NODE_PLASTIC_CRUMBS",
+      "tier": 1,
+      "tool": "suction",
+      "type": "pile",
+      "item": "plastic",
+      "max": 10,
+      "regen_s": 0,
+      "sprite": "res://assets/sprites/nodes/plastic_crumbs.svg",
+      "resource": false
+    },
+    {
+      "id": "toaster",
+      "name_key": "NODE_TOASTER",
+      "tier": 1,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "scrap": 8,
+        "copper": 2
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/toaster.svg",
+      "resource": false
+    },
+    {
+      "id": "fridge",
+      "name_key": "NODE_FRIDGE",
+      "tier": 2,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "scrap": 15,
+        "copper": 6,
+        "plastic": 6
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/fridge.svg",
+      "resource": false
+    },
+    {
+      "id": "cart",
+      "name_key": "NODE_CART",
+      "tier": 2,
+      "tool": "suction",
+      "type": "loot",
+      "yield": {
+        "scrap": 12,
+        "copper": 8
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/cart.svg",
+      "resource": false
+    },
+    {
+      "id": "ship_part",
+      "name_key": "NODE_SHIP_PART",
+      "tier": 3,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "scrap": 10,
+        "copper": 6,
+        "chrome": 4
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/ship_part.svg",
+      "resource": false
+    },
+    {
+      "id": "satellite",
+      "name_key": "NODE_SATELLITE",
+      "tier": 3,
+      "tool": "suction",
+      "type": "loot",
+      "yield": {
+        "copper": 6,
+        "plastic": 6,
+        "chrome": 3
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/satellite.svg",
+      "resource": false
+    },
+    {
+      "id": "robot_arm",
+      "name_key": "NODE_ROBOT_ARM",
+      "tier": 4,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "titanium": 5,
+        "chrome": 2
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/robot_arm.svg",
+      "resource": false
+    },
+    {
+      "id": "monolith",
+      "name_key": "NODE_MONOLITH",
+      "tier": 5,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "stardust": 3
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/monolith.svg",
+      "resource": false
+    },
+    {
+      "id": "driftwood_pile",
+      "name_key": "NODE_DRIFTWOOD",
+      "tier": 1,
+      "tool": "suction",
+      "type": "pile",
+      "item": "wood",
+      "max": 10,
+      "regen_s": 0,
+      "sprite": "res://assets/sprites/nodes/driftwood_pile.svg",
+      "resource": false
+    },
+    {
+      "id": "rubble_field",
+      "name_key": "NODE_RUBBLE",
+      "tier": 1,
+      "tool": "suction",
+      "type": "pile",
+      "item": "stone",
+      "max": 10,
+      "regen_s": 0,
+      "sprite": "res://assets/sprites/nodes/rubble_field.svg",
+      "resource": false
+    },
+    {
+      "id": "pallet",
+      "name_key": "NODE_PALLET",
+      "tier": 1,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "wood": 6,
+        "scrap": 2
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/pallet.svg",
+      "resource": false
+    },
+    {
+      "id": "concrete",
+      "name_key": "NODE_CONCRETE",
+      "tier": 1,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "stone": 6,
+        "scrap": 1
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/concrete.svg",
+      "resource": false
+    },
+    {
+      "id": "sofa",
+      "name_key": "NODE_SOFA",
+      "tier": 2,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "wood": 8,
+        "plastic": 4,
+        "copper": 2
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/sofa.svg",
+      "resource": false
+    },
+    {
+      "id": "ruin_wall",
+      "name_key": "NODE_RUIN_WALL",
+      "tier": 2,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "stone": 10,
+        "scrap": 3
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/ruin_wall.svg",
+      "resource": false
+    },
+    {
+      "id": "trash_bag",
+      "name_key": "OBJ_TRASH_BAG",
+      "tier": 1,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "scrap": 6,
+        "plastic": 4
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/trash_bag.svg"
+    },
+    {
+      "id": "meteor",
+      "name_key": "OBJ_METEOR",
+      "tier": 1,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "chrome": 4,
+        "stardust": 1
+      },
+      "respawn_s": 0,
+      "sprite": "res://assets/sprites/nodes/meteor.svg"
+    }
+  ],
+  "_comment": "Müll-Objekte. Seit MS30 ist alles endlich: Haufen wachsen nicht nach, nichts respawnt, leere Haufen verschwinden. Nachschub kommt über Ereignisse (data/events.json): trash_bag und meteor."
+}

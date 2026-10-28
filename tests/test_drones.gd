@@ -70,6 +70,7 @@ func test_drone_takes_from_piles_when_no_loose_items() -> void:
 
 func test_drone_ignores_hard_objects_and_locked_zones() -> void:
 	var w := TestWorlds.make()
+	ResourceNode.load_defs("res://tests/data/scrap_objects_test.json")  # feste Test-Objekte
 	MapLoader.apply(w, {"width": 40, "height": 30, "zone_order": ["a", "b"],
 		"zones": [{"id": "a", "name": "A", "x": 0, "y": 0, "w": 20, "h": 30}, {"id": "b", "name": "B", "x": 20, "y": 0, "w": 20, "h": 30}],
 		"nodes": [{"kind": "cart", "x": 8, "y": 8}, {"kind": "scrap_pile", "x": 25, "y": 5, "amount": 10}]})

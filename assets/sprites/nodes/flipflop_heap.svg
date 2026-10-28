@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <ellipse cx="40.0" cy="72" rx="32.0" ry="6.4" fill="#000" opacity="0.14"/>
+  <g transform="translate(24 52) rotate(-30)"><ellipse cx="0" cy="0" rx="8" ry="16" fill="#4FB6E8" stroke="#2A2A33" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M0 -10 L-6 0 M0 -10 L6 0" stroke="#2A2A33" stroke-width="2.5"/></g>
+  <g transform="translate(42 56) rotate(20)"><ellipse cx="0" cy="0" rx="8" ry="16" fill="#F28CB1" stroke="#2A2A33" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M0 -10 L-6 0 M0 -10 L6 0" stroke="#2A2A33" stroke-width="2.5"/></g>
+  <g transform="translate(58 48) rotate(60)"><ellipse cx="0" cy="0" rx="8" ry="16" fill="#7CC243" stroke="#2A2A33" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M0 -10 L-6 0 M0 -10 L6 0" stroke="#2A2A33" stroke-width="2.5"/></g>
+  <g transform="translate(34 34) rotate(80)"><ellipse cx="0" cy="0" rx="8" ry="16" fill="#F7CF63" stroke="#2A2A33" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M0 -10 L-6 0 M0 -10 L6 0" stroke="#2A2A33" stroke-width="2.5"/></g>
+  <g transform="translate(52 30) rotate(-50)"><ellipse cx="0" cy="0" rx="8" ry="16" fill="#E05A4F" stroke="#2A2A33" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M0 -10 L-6 0 M0 -10 L6 0" stroke="#2A2A33" stroke-width="2.5"/></g>
+</svg>

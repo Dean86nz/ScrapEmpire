@@ -33,7 +33,8 @@ func setup(zone_defs: Array, map_nodes: Array, zone_order: Array = [], p_unlock:
 	for z: Dictionary in zone_defs:
 		var id := str(z.get("id", ""))
 		zones.append({
-			"id": id, "name": str(z.get("name", id)),
+			"id": id, "name": TranslationServer.translate(str(z["name_key"])) if z.has("name_key") else str(z.get("name", id)),
+			"theme": str(z.get("theme", "")),
 			"rect": Rect2i(int(z.get("x", 0)), int(z.get("y", 0)), int(z.get("w", 1)), int(z.get("h", 1))),
 			"tutorial": bool(z.get("tutorial", false)),
 		})
@@ -95,9 +96,26 @@ func check_unlocks(nodes: Dictionary) -> void:
 	var next := next_chapter_zone()
 	if cur == "" or next == "" or unlocked.has(next):
 		return
+	if boss_alive(cur, nodes):
+		return
 	if cleanliness(cur, nodes) >= unlock_cleanliness:
 		unlocked[next] = true
 		zone_unlocked.emit(next)
+
+
+## Steht in der Zone noch ein Müllberg-Boss? Dann bleibt das Tor zu.
+func boss_alive(zone_id: String, nodes: Dictionary) -> bool:
+	for n: ResourceNode in nodes.values():
+		if n.boss and zone_id_at(n.tile) == zone_id:
+			return true
+	return false
+
+
+func boss_of(zone_id: String, nodes: Dictionary) -> ResourceNode:
+	for n: ResourceNode in nodes.values():
+		if n.boss and zone_id_at(n.tile) == zone_id:
+			return n
+	return null
 
 
 func zone_id_at(tile: Vector2i) -> String:
