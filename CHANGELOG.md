@@ -2,6 +2,24 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.26.0] – 2026-10-28 – MS37 Finale: Rundflug, Abflug, Abspann mit Bilanz (Phase 2, Punkt 5)
+
+### Neu
+- **Rundflug:** Nach der letzten Reparatur fliegt die Kamera jede Zone an und zeigt, wie sauber sie geworden ist („Schrottplatz – 92 % sauber“). Rusty: „Moment! Ein letzter Blick auf alles.“ Danach zurück zum Schiff und Abflug wie bisher
+- **Abspann statt Infokasten:** Sternenhimmel, das Schiff fliegt davon, Text rollt nach oben: Geschichte, **Deine Bilanz** (Spielzeit bis zum Abflug, verdiente Bolts, zerlegter Müll, geputzte Kacheln, Bosse, saubere Zonen, Planet, Level, Bots, Drohnen, Fundstücke) und die Mitwirkenden (Musik, Klänge, Grafik, Godot). A halten = schneller, B = zum Ende
+- **Weiterspielen:** Am Ende „Danke fürs Aufräumen!“ und Knopf „Weiterspielen“. Das Schiff steht wieder da, Schild „Danke fürs Spielen!“, Rusty räumt weiter auf
+- Mitwirkende stehen in `data/credits.json` (leicht änderbar)
+
+### Technik
+- `FinaleStats.rows()` (Sim, testbar); Flag `launch_tick` beim Abflug; `EndScreen` komplett im Code aufgebaut, Signal `closed`
+- 213 Unit-Tests (neu: Abflugzeit, Bilanz, Credits-Daten), 47 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Letzte Schiffsstufe kaufen: Läuft der Rundflug über alle sechs Zonen flüssig, und ist er nicht zu lang?
+2. Abspann: Ist alles gut lesbar (7 Zoll)? Passt das Tempo, und geht A halten bzw. B?
+3. Stimmen die Zahlen in der Bilanz ungefähr mit deinem Spiel überein?
+4. „Weiterspielen“: Ist das Schiff wieder da, und kannst du normal weiterspielen?
+
 ## [1.25.0] – 2026-10-28 – MS36 Zonen neu: sechs Themen-Zonen mit Müllberg-Bossen (Phase 2, Punkt 4)
 
 ### Neu

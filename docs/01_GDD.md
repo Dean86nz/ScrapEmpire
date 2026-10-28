@@ -367,6 +367,8 @@ Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten 
 
 **Seit MS36 (v1.25.0): Themen-Zonen und Bosse.** Karte 120 × 90, sechs Zonen à 40 × 45 in fester Reihenfolge: Schrottplatz → Kabelsenke → Plastikbucht → Kühlschrank-Friedhof → Satellitenfeld → Monolith-Ebene. Thema je Zone in `data/zone_themes.json` (Bodenfarbe, Wiese, Pflanzen, Deko, Tiere). Jede Zone hat genau einen Müllberg-Boss (`boss: true`); er braucht die nächste Werkzeugstufe oder `bots_needed` (3) Bots in der Zone. Solange er steht, bleibt das Tor zu. Belohnung `reward_bolts`, Flag `boss_<zone>`. Der Ur-Haufen (T6, `final: true`) setzt `final_boss`; Schiffsstufe 5 verlangt dieses Flag.
 
+**Seit MS37 (v1.26.0): Finale.** Schiffsstufe 5 → Rundflug über alle Zonen (je 1,9 s, Name und Sauberkeit) → Abflug → Abspann (Geschichte, Bilanz aus `FinaleStats`, Mitwirkende aus `data/credits.json`) → „Weiterspielen“. Die Spielzeit im Abspann ist die Zeit bis zum Abflug (`launch_tick`).
+
 ### 23a. Kapitel und Tore (MS12, umgesetzt)
 
 - Die Zonen einer Karte haben eine feste Reihenfolge (`zone_order` in der Karten-JSON); jede Zone ist ein **Kapitel**. Nur die erste Zone ist zu Beginn freigeschaltet.

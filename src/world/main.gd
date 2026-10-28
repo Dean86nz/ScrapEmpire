@@ -141,6 +141,7 @@ func _ready() -> void:
 	_world.ship_delivered.connect(_on_ship_delivered)
 	_world.milestone_reached.connect(_on_milestone_reached)
 	_world.boss_defeated.connect(_on_boss_defeated)
+	_end_screen.connect("closed", _on_credits_closed)
 	_world.courier_failed.connect(func(r: String) -> void:
 		if r == "empty":
 			EventBus.quip.emit("QUIP_COURIER_EMPTY")
@@ -548,8 +549,8 @@ func _on_ship_upgraded(s: Ship) -> void:
 		get_tree().create_timer(2.5).timeout.connect(_launch_sequence)
 
 
-## Abflug als Endszene: Rusty kann nicht fahren, die Kamera folgt dem Schiff nach oben, dann
-## Weißblende und Endbildschirm. Danach steht das Schiff wieder da und es geht weiter.
+## Finale (MS37): Rundflug über alle Zonen, dann Abflug. Rusty kann nicht fahren, die Kamera folgt
+## dem Schiff nach oben, Weißblende, Abspann. Danach steht das Schiff wieder da und es geht weiter.
 func _launch_sequence() -> void:
 	var view := _world_view.ship_view()
 	if view == null or view.ship_fx == null:
@@ -559,6 +560,9 @@ func _launch_sequence() -> void:
 		_progress_menu.close()
 	InputRouter.context = InputRouter.Context.MENU
 	_launching = true
+	await _finale_tour()
+	_focus_camera(view)
+	await get_tree().create_timer(1.2).timeout
 	EventBus.quip.emit("LAUNCH_Q")
 	Sfx.play("launch")
 	var base := view.position
@@ -571,6 +575,26 @@ func _launch_sequence() -> void:
 	_launching = false
 	_end_screen.show_stats(_world)
 	_fade_to(0.0, 0.8)
+
+
+## Kamera fliegt jede Zone an und zeigt, wie sauber sie geworden ist.
+func _finale_tour() -> void:
+	EventBus.quip.emit("FINALE_TOUR_Q")
+	var marker := Node2D.new()
+	_world_view.add_child(marker)
+	for z in _world.zones.summary(_world.nodes):
+		var r: Rect2i = z["rect"]
+		marker.position = Vector2(r.get_center() * ResourceNode.TILE)
+		_focus_camera(marker)
+		_hud.stage_banner.show_card(str(z["name"]), tr("FINALE_ZONE") % int(round(float(z["cleanliness"]) * 100.0)), "",
+			"res://assets/sprites/ui/tab_map.svg", 1.6)
+		await get_tree().create_timer(1.9).timeout
+	marker.queue_free()
+
+
+func _on_credits_closed() -> void:
+	_hud.stage_banner.show_card(tr("FINALE_AFTER_TITLE"), tr("FINALE_AFTER_SUB"), "", "res://assets/sprites/robot/rusty.svg", 3.5)
+	EventBus.quip.emit("FINALE_AFTER_Q")
 
 
 func _focus_camera(target: Node2D, seconds: float = 0.0) -> void:
