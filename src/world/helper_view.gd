@@ -63,3 +63,107 @@ func _process(delta: float) -> void:
 	position = position.lerp(Vector2(_helper.pos), minf(1.0, delta * 12.0))
 	if _helper.aim.length_squared() > 0.0:
 		_sprite.rotation = rotate_toward(_sprite.rotation, _helper.aim.angle(), 10.0 * delta)
+	_update_work_look(delta)
+
+
+# --- Sichtbar arbeiten (MS56): Saugkegel, Hammerschwung, Teile fliegen herein, Ladebalken,
+# Leerlauf grau und langsam wippend ----------------------------------------------------------
+
+var _cone: Polygon2D
+var _load_bg: ColorRect
+var _load_fill: ColorRect
+var _hammer: Label
+var _last_total := 0
+var _last_cd := 0
+var _t := 0.0
+
+
+func _ensure_work_nodes() -> void:
+	if _cone != null:
+		return
+	_cone = Polygon2D.new()
+	var pts := PackedVector2Array([Vector2.ZERO])
+	for i in 9:
+		pts.append(Vector2.RIGHT.rotated(-0.45 + 0.9 * i / 8.0) * 120.0)
+	_cone.polygon = pts
+	_cone.color = Color(0.4, 0.8, 1.0, 0.28)
+	_cone.z_index = -1
+	_cone.visible = false
+	add_child(_cone)
+	_load_bg = ColorRect.new()
+	_load_bg.color = Color(0.165, 0.165, 0.2, 0.75)
+	_load_bg.size = Vector2(56, 9)
+	_load_bg.position = Vector2(-28, -52)
+	add_child(_load_bg)
+	_load_fill = ColorRect.new()
+	_load_fill.color = Color(0.45, 0.85, 0.4)
+	_load_fill.size = Vector2(0, 5)
+	_load_fill.position = Vector2(-26, -50)
+	add_child(_load_fill)
+	_hammer = Label.new()
+	_hammer.text = "🔨"
+	_hammer.add_theme_font_size_override("font_size", 30)
+	_hammer.position = Vector2(14, -40)
+	_hammer.pivot_offset = Vector2(4, 30)
+	_hammer.visible = false
+	add_child(_hammer)
+
+
+func _update_work_look(delta: float) -> void:
+	_ensure_work_nodes()
+	_t += delta
+	var cap := maxi(_helper.inventory.slot_count * _helper.inventory.stack_size, 1)
+	var total := _helper.inventory.total()
+	_load_fill.size.x = 52.0 * clampf(float(total) / cap, 0.0, 1.0)
+	_load_fill.color = Color(0.45, 0.85, 0.4) if total < cap else Color(1.0, 0.7, 0.25)
+	_load_bg.visible = total > 0
+	_load_fill.visible = total > 0
+	# Saugkegel in Blickrichtung, solange der Bot saugt
+	_cone.visible = _helper.suck_held
+	if _cone.visible:
+		_cone.rotation = _helper.aim.angle()
+		_cone.color.a = 0.2 + 0.1 * sin(_t * 16.0)
+	# Teile fliegen sichtbar in den Bot
+	if total > _last_total:
+		_fly_in(mini(total - _last_total, 3))
+	_last_total = total
+	# Hammerschwung bei jedem Schlag
+	if _helper.hammer_cooldown > _last_cd:
+		_swing()
+	_last_cd = _helper.hammer_cooldown
+	# Leerlauf: grauer, langsam wippend; Arbeit: volle Farbe
+	var idle := _helper.bored != "" and total == 0 and not _helper.has_move_target()
+	var base := _base_modulate()
+	_sprite.modulate = _sprite.modulate.lerp(base.lerp(Color(0.6, 0.6, 0.65), 0.6) if idle else base, minf(1.0, delta * 4.0))
+	_sprite.position.y = sin(_t * 1.6) * 3.0 if idle else 0.0
+
+
+func _base_modulate() -> Color:
+	var col := Color.html(str(_colors[_helper.color_index % _colors.size()])) if not _colors.is_empty() else Color.WHITE
+	return col.lerp(Color.WHITE, 0.25)
+
+
+func _fly_in(n: int) -> void:
+	for i in n:
+		var bit := ColorRect.new()
+		bit.color = Color(0.75, 0.75, 0.8)
+		bit.size = Vector2(9, 9)
+		var start := _helper.aim * (90.0 + 15.0 * i) + Vector2(randf_range(-14, 14), randf_range(-14, 14))
+		bit.position = start
+		add_child(bit)
+		var tw := create_tween()
+		tw.tween_property(bit, "position", Vector2(-4, -4), 0.22).set_ease(Tween.EASE_IN)
+		tw.parallel().tween_property(bit, "scale", Vector2(0.3, 0.3), 0.22)
+		tw.tween_callback(bit.queue_free)
+
+
+func _swing() -> void:
+	_hammer.visible = true
+	_hammer.rotation = -1.2
+	var tw := create_tween()
+	tw.tween_property(_hammer, "rotation", 0.6, 0.09)
+	tw.tween_property(_hammer, "rotation", -0.2, 0.12)
+	tw.tween_callback(func() -> void: _hammer.visible = false)
+	var sq := create_tween()
+	sq.tween_property(_sprite, "scale", Vector2(0.95, 0.75), 0.06)
+	sq.tween_property(_sprite, "scale", Vector2(0.85, 0.85), 0.1)
