@@ -620,3 +620,5 @@ BOSS_HELP_SUB,"Bosse schafft keiner allein. Hau drauf: Alle Bots in der Nähe ko
 BOSS_WAIT,"%d/%d Bots da",%d/%d bots here
 QUIP_RALLY,Verstärkung! Alle Mann zum Haufen!,Reinforcements! Everybody to the heap!
 QUIP_RALLY_NOBODY,Hallo? Bots? Ich brauche Hilfe!,Hello? Bots? I need help!
+INTRO_Q,"Aua. Okay. Räder ja, Plan nein. Erst mal aufräumen!","Ouch. Okay. Wheels yes, plan no. Let's tidy up first!"
+INTRO_SKIP,B: überspringen,B: skip

@@ -21,6 +21,7 @@ var _sm: Node
 
 
 func _initialize() -> void:
+	Engine.set_meta("skip_intro", true)  # Absturz-Intro stört die Abläufe hier nicht (eigene Prüfung im Gamepad-Check)
 	var args := OS.get_cmdline_user_args()
 	if args.size() >= 1:
 		_phase = args[0]

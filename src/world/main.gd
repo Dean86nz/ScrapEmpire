@@ -184,7 +184,10 @@ func _ready() -> void:
 		SaveCodec.log_steps = false
 		SaveManager.log_step("Laden abgeschlossen"))
 	if not _loaded_from_save:
-		get_tree().create_timer(1.0).timeout.connect(func() -> void: Quips.say("start"))
+		if Engine.get_meta("skip_intro", false):
+			get_tree().create_timer(1.0).timeout.connect(func() -> void: Quips.say("start"))
+		else:
+			_start_intro.call_deferred()
 	else:
 		get_tree().create_timer(1.0).timeout.connect(func() -> void: Quips.say("loaded", true))
 
@@ -568,6 +571,17 @@ func _finale_tour() -> void:
 	marker.queue_free()
 
 
+## Neues Spiel: Absturz-Intro (MS47), B überspringt.
+func _start_intro() -> void:
+	var view := _world_view.ship_view()
+	if view == null:
+		return
+	var intro := IntroCrash.new()
+	intro.name = "IntroCrash"
+	add_child(intro)
+	intro.start(self, view, _player)
+
+
 func _on_credits_closed() -> void:
 	Sfx.music_finale(false, _music_zone)
 	_hud.stage_banner.show_card(tr("FINALE_AFTER_TITLE"), tr("FINALE_AFTER_SUB"), "", "res://assets/sprites/robot/rusty.svg", 3.5)
@@ -709,6 +723,8 @@ func _current_hint() -> String:
 	var kb := "" if InputRouter.is_gamepad else "_KB"
 	if _launching or _player.is_cheering():
 		return ""
+	if has_node("IntroCrash"):
+		return tr("INTRO_SKIP")
 	match InputRouter.context:
 		InputRouter.Context.MENU:
 			# Das Fortschritts-Menü hat eine eigene Fußzeile: unten keine zweite
