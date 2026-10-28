@@ -21,7 +21,8 @@
 - [x] MS36 Zonen neu: 6 Themen-Zonen, Müllberg-Bosse, Endboss (v1.25.0)
 - [x] MS37 Finale: Rundflug, Abflug, Abspann mit Bilanz (v1.26.0)
 - [x] MS38 Systeme aufräumen: Autopilot, Deko, Museum entfernt (v1.27.0)
-- [ ] Phase 2 (Go 2026-10-28): MS39 Balancing per Simulation → MS40 Abschluss
+- [x] MS40 Abschluss Phase 2 (v2.0.0); MS39-Simulation entfällt
+- [ ] Ally-Durchlauf mit Zeiten auswerten, Zahlen in JSON nachjustieren (siehe docs/OFFENE_PUNKTE.md)
 - [ ] Balancing nach der Runde „Spielgefühl“: Tempo bis Level 2, Ereignis-Abstände, Torschwelle mit Schiffswelle
 - [ ] MS26: Putzwelle des Schiffs (Radius 16 auf Stufe 5) gegen Tor-Schwelle abwägen
 - [ ] MS26: Prüfen, ob 50 % geputzte Fläche fürs Tor zu lang dauert

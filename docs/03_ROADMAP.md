@@ -47,6 +47,8 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **36** | Phase 2, Punkt 4: neue Karte, sechs Themen-Zonen mit Müllberg-Bossen, Endboss vor dem Abflug | v1.25.0 |
 | **37** | Phase 2, Punkt 5: Finale mit Rundflug, Abflug, Abspann mit Bilanz, Weiterspielen | v1.26.0 |
 | **38** | Phase 2, Punkt 6: Aufgaben-Editor/Autopilot, Deko-Gebäude und Museum entfernt | v1.27.0 |
+| ~~39~~ | Balancing per Simulation: entfällt auf Wunsch, Feintuning nach Ally-Durchlauf | – |
+| **40** | Abschluss Phase 2: durchspielbare EXE, Durchlauf-Testliste, offene Punkte | v2.0.0 |
 
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
 

@@ -2,6 +2,27 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.0.0] – 2026-10-28 – MS40 Abschluss Phase 2: komplett durchspielbar
+
+Phase 2 ist fertig: neues Spiel → sechs Zonen mit Bossen → Ur-Haufen → Schiffsstufe 5 → Rundflug, Abflug, Abspann → Weiterspielen. Danach Inhaltsstopp.
+
+### Geändert
+- MS39 (Balancing per Simulation) entfällt auf Wunsch; Feintuning folgt aus dem Ally-Durchlauf. Offene Punkte: `docs/OFFENE_PUNKTE.md`
+- Version 2.0.0, Doku abgeschlossen
+
+### Ally-Testliste: ein ganzer Durchlauf
+Bitte bei jedem Punkt kurz die **Spielzeit** notieren (Pausenmenü oder Uhr), damit ich gezielt nachjustieren kann.
+1. Neues Spiel starten (alter Stand wird archiviert). Erste 30 Minuten: Kommt alle 2–3 Minuten etwas Neues (Aufgabe, Skill, Upgrade)? Wo wird es zäh?
+2. Schrottplatz: Zeit bis Toaster-Turm geknackt und Tor offen
+3. Kabelsenke, Plastikbucht, Kühlschrank-Friedhof, Satellitenfeld: je Zeit bis Boss geknackt und Tor offen
+4. Schiffsstufen 2, 3, 4: Zeitpunkt; fühlt sich der Bolts-Bedarf fair an?
+5. Sammelstelle, Drohnen, Kurier, Bots zuweisen: Wird es merklich schneller? Etwas unklar?
+6. Monolith-Ebene: Ur-Haufen mit Bots knacken; Zeit
+7. Planet auf Stufe 5 bringen: Zeit, Rundflug, Abflug, Abspann (lesbar? Zahlen plausibel?)
+8. Weiterspielen: Läuft alles normal weiter?
+9. Gesamt: Spielzeit bis zum Abflug (Ziel 3–4 h). Gab es Grind-Phasen? Fehler, Hänger, Abstürze?
+10. Log-Datei der Sitzung wie beim letzten Mal in den Ordner „Scrap Empire“ legen
+
 ## [1.27.0] – 2026-10-28 – MS38 Systeme aufräumen (Phase 2, Punkt 6)
 
 ### Entfernt
