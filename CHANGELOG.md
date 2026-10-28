@@ -2,6 +2,31 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.16.0] – 2026-10-28 – MS57/58 Tiefe Upgrades, Bot-Fusion, Spiellänge (Phase 2.3)
+
+### Neu
+- **Tiefe Upgrades** (nach freigegebener Übersicht): Rusty Fahren 20, Saugen 30 (Wirbel 360° ab Stufe 10, danach bis 40 Teile je Zug), Reichweite 25, Taschen 25, Magnet 10, neu **Hammer-Kraft** 30 (+10 % Teile je Schlag); Level bis 100. Ertrag 50 Stufen (×1,08 je Stufe, am Ende ×47), Bots Tempo/Last/neu **Bot-Kraft** je 30, Drohnen Tempo/Last je 25, Kurier 20 Stufen (bis 6 Kuriere, 5 s). Kosten wachsen von Dutzenden bis in die Millionen
+- **Lesbare große Zahlen:** 12,3K · 3,4M · 1,2B; tiefe Upgrades zeigen „▮▮▮▯▯ 12/50“ statt 50 Punkten
+- **Bot-Fusion:** Knopf im Bots-Tab: 5 Bots → Super-Bot (×5 Arbeit, Last, zählt 5 für Bosse, größer, glänzend), 5 Super-Bots → Mega-Bot (×25, riesig, golden). Anzeige „Armee: N“. Bot-Preis richtet sich nach der Armee-Stärke
+- **Drohnen viel billiger:** ab 100 Bolts (vorher 400 ×1,5 je Drohne), bis zu 40
+- **Mehr und wertvollerer Müll:** 1 093 statt 417 Objekte, 12 neue Varianten (Gold-Toaster, Retro-Fernseher, Kabeltrommel, Radioturm, Entenkönig, Strandstuhl, Doppel-Kühlschrank, Eisblock, Riesen-Satellit, Solarpaneel, Dunkler Monolith, Kristallnest); Chrom 25, Titan 120, Sternenstaub 600 Bolts. Grundwert je Zone 3,7K → 1,1M
+- **Schiffsstufen** 2K / 50K / 1,5M / 20M; **Bosse** brauchen Armee-Stärke 1 / 3 / 8 / 20 / 45 / 100 und zahlen 300 bis 3M
+
+### Behoben
+- Bots-Tab: Fehler beim Aktualisieren (alte Kostenliste), Liste sprang beim Neuaufbau nach oben
+
+### Technik
+- `Costs.upgrade` (Formel `cost_base`·`cost_growth`^Stufe), Effekt-Art `mul`, `Fmt.short`, `HelperSystem.army/can_fuse/_cmd_fuse`, `Helper.power/work_mult`, Varianten mit `tint`/`scale`
+- Bestehende Balancing-Tests lesen ihre Zahlen jetzt aus JSON; Wirtschaftstest: verdienbar 40,2M, nötig (alle Schiffsstufen + Ertrag bis Stufe 40) 27,6M
+- 229 Unit-Tests, 71 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün
+
+### Ally-Testliste (Ziel 3–4 h, bitte Zeiten je Tor/Boss/Schiffsstufe notieren)
+1. Fühlt sich jede Zone länger, aber nicht zäh an? Kommt regelmäßig etwas Neues?
+2. Gegen Ende: riesiger Wirbel, Bots zerlegen in Sekunden, viele Drohnen – ist es „crazy“?
+3. Fusion ausprobieren: Super-Bot und Mega-Bot gut zu erkennen? Bosse mit Armee-Stärke schaffbar?
+4. Läuft das Spiel in der Kühlschrank-Zone (viele Objekte) mit vielen Bots flüssig?
+5. Mit dem Cheat-Menü (Debug-EXE) schnell vorspulen und die Zahlen in jeder Zone prüfen
+
 ## [2.15.0] – 2026-10-28 – MS56 Bots sichtbar arbeiten (Phase 2.3)
 
 ### Neu

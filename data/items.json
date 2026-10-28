@@ -40,7 +40,7 @@
     {
       "id": "chrome",
       "name_key": "ITEM_CHROME",
-      "sell_value": 8,
+      "sell_value": 25,
       "color": "#C9D6E8",
       "icon": "res://assets/sprites/items/chrome.svg",
       "rare": true
@@ -48,7 +48,7 @@
     {
       "id": "titanium",
       "name_key": "ITEM_TITANIUM",
-      "sell_value": 12,
+      "sell_value": 120,
       "color": "#8FA3B8",
       "icon": "res://assets/sprites/items/titanium.svg",
       "rare": true
@@ -56,7 +56,7 @@
     {
       "id": "stardust",
       "name_key": "ITEM_STARDUST",
-      "sell_value": 20,
+      "sell_value": 600,
       "color": "#C77DFF",
       "icon": "res://assets/sprites/items/stardust.svg",
       "rare": true

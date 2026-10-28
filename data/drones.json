@@ -1,8 +1,8 @@
 {
   "_comment": "Drohnen (seit MS34 vor allem Transport): fliegen zu Sammelstellen mit Material, laden bis zur Tragkraft und bringen es zum Schiff (dort entstehen die Bolts). Ohne Transportauftrag sammeln sie lose Teile und Haufen. Jede Sammelstelle bringt free_per_point Drohnen mit.",
-  "max_drones": 12,
-  "cost_base_bolts": 400,
-  "cost_growth": 1.5,
+  "max_drones": 40,
+  "cost_base_bolts": 100,
+  "cost_growth": 1.2891,
   "base_speed_px_per_s": 300,
   "base_capacity": 20,
   "collect_interval_ticks": 4,
@@ -12,38 +12,33 @@
       "id": "drone_speed",
       "name_key": "DRONE_UPG_SPEED",
       "desc_key": "DRONE_UPG_SPEED_DESC",
-      "max_level": 3,
-      "cost_bolts": [
-        400,
-        800,
-        1600
-      ],
+      "max_level": 25,
       "requires_feature": "drones",
       "effects": [
         {
           "key": "drone_speed_mult",
           "op": "add",
-          "per_level": 0.25
+          "per_level": 0.06
         }
-      ]
+      ],
+      "cost_base": 150,
+      "cost_growth": 1.4432
     },
     {
       "id": "drone_capacity",
       "name_key": "DRONE_UPG_CAPACITY",
       "desc_key": "DRONE_UPG_CAPACITY_DESC",
-      "max_level": 2,
-      "cost_bolts": [
-        600,
-        1200
-      ],
+      "max_level": 25,
       "requires_feature": "drones",
       "effects": [
         {
           "key": "drone_capacity_add",
           "op": "add",
-          "per_level": 4
+          "per_level": 2
         }
-      ]
+      ],
+      "cost_base": 150,
+      "cost_growth": 1.4432
     }
   ],
   "free_per_point": 1,

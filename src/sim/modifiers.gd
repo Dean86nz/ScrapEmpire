@@ -29,6 +29,8 @@ const DEFAULTS := {
 	"helper_capacity_add": 0,
 	"drone_speed_mult": 1.0,
 	"drone_capacity_add": 0,
+	"hammer_power": 0.0,         # +Anteil Teile je Hammerschlag (Skill Hammer-Kraft, MS57)
+	"helper_power": 0.0,         # +Anteil Arbeit je Bot (Upgrade Bot-Kraft, MS57)
 }
 
 
@@ -65,6 +67,8 @@ static func _apply_skill_effect(m: Dictionary, eff: Dictionary, level: int) -> v
 				m[key] = int(m[key]) + int(round(per * level))
 			else:
 				m[key] = float(m[key]) + per * level
+		"mul":  # multiplikativ je Stufe (MS57: Ertrag ×1,08 je Stufe)
+			m[key] = float(m[key]) * pow(1.0 + float(eff.get("per_level", 0.0)), level)
 		"table":
 			var values: Array = eff.get("values", [])
 			if not values.is_empty():

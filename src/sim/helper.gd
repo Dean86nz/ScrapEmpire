@@ -25,6 +25,8 @@ var bored := ""               # "" = hat Arbeit; "empty" = nichts mehr da; "too_
 var zone_id := ""             # zugewiesene Zone (seit MS34); "" = alter Kreis um zone_tile
 var auto := true              # seit MS42 immer: sucht sich selbst die nächste Zone mit passendem Müll
 var rally_id := -1
+var power := 1               # Fusion (MS57): 1 = Bot, 5 = Super-Bot, 25 = Mega-Bot
+var work_mult := 1.0         # power × (1 + Bot-Kraft)
 var _nav_goal := Vector2i(-999999, -999999)
 var _nav_path: Array[Vector2i] = []            # Boss, zu dem Rusty gerufen hat (-1 = keiner)
 
@@ -41,7 +43,8 @@ func apply_modifiers(m: Dictionary, base_speed_px_per_s: int, base_slots: int, b
 	suction_tier = int(m["helper_tier"])
 	hammer_tier = int(m["helper_tier"])
 	speed_px_per_tick = maxi(int(round(base_speed_px_per_s * float(m["helper_speed_mult"]) / 20.0)), 1)
-	var stack := base_stack + int(m["helper_capacity_add"])
+	work_mult = float(power) * (1.0 + float(m["helper_power"]))
+	var stack := (base_stack + int(m["helper_capacity_add"])) * power
 	if inventory.slot_count != base_slots or inventory.stack_size != stack:
 		inventory.resize(base_slots, stack)
 
@@ -178,7 +181,7 @@ func to_dict() -> Dictionary:
 		"name_index": name_index, "color_index": color_index,
 		"pos": [pos.x, pos.y], "zone": [zone_tile.x, zone_tile.y], "radius": radius_tiles,
 		"depot": [depot_tile.x, depot_tile.y], "inventory": inventory.to_dict(),
-		"stuck_timer": stuck_timer, "zone_id": zone_id, "rally": rally_id,
+		"stuck_timer": stuck_timer, "zone_id": zone_id, "rally": rally_id, "power": power,
 	}
 
 
@@ -193,3 +196,4 @@ func from_dict(d: Dictionary) -> void:
 	stuck_timer = int(d.get("stuck_timer", 0))
 	zone_id = str(d.get("zone_id", ""))
 	rally_id = int(d.get("rally", -1))
+	power = maxi(1, int(d.get("power", 1)))

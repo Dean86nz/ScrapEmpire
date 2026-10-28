@@ -1,5 +1,5 @@
 {
-  "_comment": "Skilltree (XP → Skillpunkte): nur Rustys eigene Fähigkeiten. Schiff-Sachen (Bolts) stehen in ship.json. cost_points = Punkte je Stufe (Standard 1). Seit MS35 große Sprünge: Saugtempo 5 Stufen (mehr Teile je Zug, Kegel bis 360° = Wirbel), Reichweite +1 Kachel je Stufe, Fahrtempo 5 Stufen à +15 %.",
+  "_comment": "Skilltree (XP → Skillpunkte): nur Rustys eigene Fähigkeiten. Schiff-Sachen (Bolts) stehen in ship.json. cost_points = Punkte je Stufe (Standard 1). Seit MS35 große Sprünge: Saugtempo 5 Stufen (mehr Teile je Zug, Kegel bis 360° = Wirbel), Reichweite +1 Kachel je Stufe, Fahrtempo 5 Stufen à +15 %. MS57: tiefe Stufen (Fahren 20, Saugen 30 mit Wirbel ab 10, Reichweite 25, Taschen 25, Hammer-Kraft 30).",
   "branches": [
     {
       "id": "movement",
@@ -29,18 +29,18 @@
       "name_key": "SKILL_DRIVE",
       "desc_key": "SKILL_DRIVE_DESC",
       "icon": "res://assets/sprites/ui/upg_speed.svg",
-      "max_level": 5,
+      "max_level": 20,
       "requires": {},
       "effects": [
         {
           "key": "speed_mult",
           "op": "add",
-          "per_level": 0.15
+          "per_level": 0.075
         },
         {
           "key": "turn_mult",
           "op": "add",
-          "per_level": 0.15
+          "per_level": 0.075
         }
       ]
     },
@@ -72,13 +72,13 @@
       "name_key": "SKILL_SUCK",
       "desc_key": "SKILL_SUCK_DESC",
       "icon": "res://assets/sprites/ui/upg_suction.svg",
-      "max_level": 5,
+      "max_level": 30,
       "requires": {},
       "effects": [
         {
           "key": "mine_speed_mult",
           "op": "add",
-          "per_level": 0.25
+          "per_level": 0.1
         },
         {
           "key": "suck_targets",
@@ -87,18 +87,68 @@
             2,
             3,
             4,
+            5,
             6,
-            8
+            8,
+            10,
+            12,
+            14,
+            16,
+            18,
+            20,
+            22,
+            24,
+            26,
+            28,
+            30,
+            32,
+            34,
+            36,
+            38,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40,
+            40
           ]
         },
         {
           "key": "suck_cone_deg",
           "op": "table",
           "values": [
-            110,
+            100,
+            120,
             140,
+            160,
             180,
-            250,
+            210,
+            240,
+            270,
+            310,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
+            360,
             360
           ]
         }
@@ -110,13 +160,13 @@
       "name_key": "SKILL_REACH",
       "desc_key": "SKILL_REACH_DESC",
       "icon": "res://assets/sprites/ui/skill_reach.svg",
-      "max_level": 4,
+      "max_level": 25,
       "requires": {},
       "effects": [
         {
           "key": "range_add",
           "op": "add",
-          "per_level": 1.0
+          "per_level": 0.25
         }
       ]
     },
@@ -126,7 +176,7 @@
       "name_key": "SKILL_MAGNET",
       "desc_key": "SKILL_MAGNET_DESC",
       "icon": "res://assets/sprites/ui/skill_magnet.svg",
-      "max_level": 3,
+      "max_level": 10,
       "requires": {
         "suck": 2
       },
@@ -144,13 +194,13 @@
       "name_key": "SKILL_BAGS",
       "desc_key": "SKILL_BAGS_DESC",
       "icon": "res://assets/sprites/ui/upg_cargo.svg",
-      "max_level": 8,
+      "max_level": 25,
       "requires": {},
       "effects": [
         {
           "key": "slots_add",
           "op": "add",
-          "per_level": 1
+          "per_level": 0.2
         },
         {
           "key": "stack_add",
@@ -178,6 +228,24 @@
           "key": "suction_tier",
           "op": "add",
           "per_level": 1
+        }
+      ]
+    },
+    {
+      "id": "hammer",
+      "branch": "tools",
+      "name_key": "SKILL_HAMMER",
+      "desc_key": "SKILL_HAMMER_DESC",
+      "icon": "res://assets/sprites/ui/upg_tool.svg",
+      "max_level": 30,
+      "requires": {
+        "tool": 1
+      },
+      "effects": [
+        {
+          "key": "hammer_power",
+          "op": "add",
+          "per_level": 0.1
         }
       ]
     }

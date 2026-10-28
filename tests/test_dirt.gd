@@ -153,7 +153,7 @@ func test_ship_repair_sends_cleaning_wave() -> void:
 	TestWorlds.run(w, 30)
 	assert_eq(s.clean_radius, 4, "Stufe 1: Welle bis Radius 4")
 	assert_eq(w.dirt.value(near), 200, "außerhalb noch dreckig")
-	w.bolts = 1000
+	w.bolts = ShipSystem.next_stage_cost(w, s)
 	w.queue_command({"type": "upgrade_ship"})
 	TestWorlds.run(w, 30)
 	assert_eq(s.stage, 2)
@@ -165,7 +165,7 @@ func test_ship_repair_sends_cleaning_wave() -> void:
 
 func test_ship_wave_radius_is_saved() -> void:
 	var w := _world()
-	w.bolts = 1000
+	w.bolts = ShipSystem.next_stage_cost(w, w.ship())
 	w.queue_command({"type": "upgrade_ship"})
 	TestWorlds.run(w, 10)
 	var r := w.ship().clean_radius

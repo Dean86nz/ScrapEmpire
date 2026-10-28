@@ -34,7 +34,10 @@ func test_roundtrip_restores_everything() -> void:
 	assert_eq(w2.bolts, 777)
 	assert_eq(w2.player.inventory.count_of("scrap"), 23)
 	assert_eq(w2.player.inventory.count_of("chrome"), 2)
-	assert_eq(w2.player.inventory.slot_count, 5, "Taschen-Skill nach dem Laden")
+	# Taschen-Skill (Werte aus skills.json) wirkt nach dem Laden wie vorher
+	assert_eq(w2.player.inventory.slot_count, w.player.inventory.slot_count, "Taschen-Skill nach dem Laden")
+	assert_eq(w2.player.inventory.stack_size, w.player.inventory.stack_size, "Taschen-Skill nach dem Laden")
+	assert_true(w2.player.inventory.stack_size > TestWorlds.make().player.inventory.stack_size, "Taschen größer als ohne Skill")
 	assert_eq(w2.progression.level, 3)
 	assert_eq(w2.skills.level_of("bags"), 1)
 	assert_eq(int(w2.ship_upgrades.get("yield", 0)), 1)

@@ -9,6 +9,21 @@ func _world() -> SimWorld:
 	return w
 
 
+## Wert je Stufe eines Skill-Effekts aus skills.json.
+func _per(w: SimWorld, id: String, key: String) -> float:
+	for e: Dictionary in w.skills.by_id[id]["effects"]:
+		if e["key"] == key:
+			return float(e.get("per_level", 0.0))
+	return 0.0
+
+
+func _table(w: SimWorld, id: String, key: String) -> Array:
+	for e: Dictionary in w.skills.by_id[id]["effects"]:
+		if e["key"] == key:
+			return e.get("values", [])
+	return []
+
+
 func _buy(w: SimWorld, id: String) -> void:
 	w.queue_command({"type": "buy_skill", "id": id})
 	w.tick()
@@ -42,7 +57,8 @@ func test_buy_needs_points_and_requirements() -> void:
 	_buy(w, "boost")
 	assert_eq(w.progression.skill_points, 0)
 	assert_eq(float(w.mods["boost_cooldown"]), 6.0)
-	assert_true(float(w.mods["speed_mult"]) > 1.1, "spürbar schneller")
+	assert_true(absf(float(w.mods["speed_mult"]) - (1.0 + _per(w, "drive", "speed_mult"))) < 0.001, "schneller um den Wert aus skills.json")
+	assert_true(float(w.mods["speed_mult"]) > 1.0, "spürbar schneller")
 
 
 func test_tool_costs_three_points() -> void:
@@ -57,7 +73,11 @@ func test_tool_costs_three_points() -> void:
 
 func test_no_dead_ends_all_skills_reachable() -> void:
 	var w := _world()
-	w.progression.skill_points = 200
+	var start_points := 0
+	for d: Dictionary in w.skills.defs:
+		start_points += int(d["max_level"]) * int(d.get("cost_points", 1))
+	start_points += 50  # Puffer: es darf nichts übrig bleiben, was noch kaufbar wäre
+	w.progression.skill_points = start_points
 	var progress := true
 	while progress:
 		progress = false
@@ -66,19 +86,26 @@ func test_no_dead_ends_all_skills_reachable() -> void:
 			if w.skills.can_buy(id, w.progression.skill_points) == "":
 				_buy(w, id)
 				progress = true
-	var spent := 200 - w.progression.skill_points
+	var spent := start_points - w.progression.skill_points
 	for d: Dictionary in w.skills.defs:
 		assert_eq(w.skills.level_of(str(d["id"])), int(d["max_level"]), "Skill nicht voll: " + str(d["id"]))
-	assert_true(spent <= 48, "alle Skills voll (%d Punkte) passen in die 48 Punkte bis Level 25" % spent)
+	# alle Punkte bis zum Level-Limit (progression.json) reichen für alle Skills
+	var prog := Progression.load_config("res://data/progression.json")
+	var cap_points := (prog.level_cap - 1) * prog.points_per_level
+	assert_true(spent <= cap_points, "alle Skills voll (%d Punkte) passen in die %d Punkte bis Level %d" % [spent, cap_points, prog.level_cap])
 
 
 func test_bags_and_magnet() -> void:
 	var w := _world()
-	w.progression.skill_points = 10
+	# so viele Taschen-Stufen, dass mindestens ein ganzer Slot dazukommt
+	var bag_levels := ceili(1.0 / _per(w, "bags", "slots_add") - 0.001)
+	w.progression.skill_points = bag_levels + 3
 	w.player.inventory.add("scrap", 10)
-	_buy(w, "bags")
-	assert_eq(w.player.inventory.slot_count, 5)
-	assert_eq(w.player.inventory.stack_size, 12)
+	for i in bag_levels:
+		_buy(w, "bags")
+	assert_eq(w.player.inventory.slot_count, 4 + int(round(_per(w, "bags", "slots_add") * bag_levels)))
+	assert_true(w.player.inventory.slot_count > 4, "mehr Slots")
+	assert_eq(w.player.inventory.stack_size, 10 + int(round(_per(w, "bags", "stack_add") * bag_levels)))
 	assert_eq(w.player.inventory.count_of("scrap"), 10, "Inhalt bleibt")
 	_buy(w, "suck")
 	_buy(w, "suck")
@@ -95,21 +122,35 @@ func test_suck_and_reach() -> void:
 	w.progression.skill_points = 10
 	_buy(w, "suck")
 	_buy(w, "suck")
-	assert_eq(w.player.suck_interval, 3, "5 / 1,5 = 3,3 → 3")
-	assert_eq(w.player.hammer_interval, 7, "10 / 1,5 = 6,7 → 7")
-	assert_eq(w.player.suck_targets, 3, "drei Teile je Zug")
+	var mine := 1.0 + 2 * _per(w, "suck", "mine_speed_mult")
+	assert_eq(w.player.suck_interval, maxi(int(round(5 / mine)), 1), "5 / Saugtempo")
+	assert_eq(w.player.hammer_interval, maxi(int(round(10 / mine)), 2), "10 / Saugtempo")
+	assert_true(w.player.suck_interval < 5, "schneller als ohne Skill")
+	assert_eq(w.player.suck_targets, int(_table(w, "suck", "suck_targets")[1]), "Teile je Zug laut Tabelle")
+	assert_true(w.player.suck_targets > 1, "mehrere Teile je Zug")
 	_buy(w, "reach")
 	_buy(w, "reach")
-	assert_eq(w.player.suck_range_px, 160 + 2 * 64, "+1 Kachel je Stufe")
+	assert_eq(w.player.suck_range_px, 160 + int(round(2 * _per(w, "reach", "range_add") * 64)), "Reichweite je Stufe aus skills.json")
+	assert_true(w.player.suck_range_px > 160)
 
 
 func test_full_suction_is_a_vortex_that_pulls_many_at_once() -> void:
 	var w := _world()
-	w.progression.skill_points = 20
-	for i in 5:
+	# erste Stufe mit 360° laut Tabelle = Wirbel
+	var cones := _table(w, "suck", "suck_cone_deg")
+	var vortex := 0
+	for i in cones.size():
+		if float(cones[i]) >= 360.0:
+			vortex = i + 1
+			break
+	assert_true(vortex > 0, "Saugen hat eine Wirbel-Stufe")
+	w.progression.skill_points = vortex
+	for i in vortex:
 		_buy(w, "suck")
+	assert_eq(w.skills.level_of("suck"), vortex)
 	assert_true(w.player.suck_half_angle >= PI - 0.01, "Wirbel rundherum")
-	assert_eq(w.player.suck_targets, 8)
+	assert_eq(w.player.suck_targets, int(_table(w, "suck", "suck_targets")[vortex - 1]))
+	assert_true(w.player.suck_targets >= 6, "genug Teile je Zug für den Test")
 	# Teile hinter Rusty werden auch eingesaugt, mehrere in einem Zug
 	for i in 6:
 		w.add_loose("scrap", w.player.pos + Vector2i(-60 - i * 6, 10))
@@ -121,8 +162,11 @@ func test_full_suction_is_a_vortex_that_pulls_many_at_once() -> void:
 
 func test_old_save_with_higher_levels_gets_points_back() -> void:
 	var w := _world()
-	var refund := w.skills.from_dict({"drive": 8, "suck": 8})
-	assert_eq(w.skills.level_of("drive"), 5)
+	var max_drive := int(w.skills.by_id["drive"]["max_level"])
+	var max_suck := int(w.skills.by_id["suck"]["max_level"])
+	var refund := w.skills.from_dict({"drive": max_drive + 3, "suck": max_suck + 3})
+	assert_eq(w.skills.level_of("drive"), max_drive)
+	assert_eq(w.skills.level_of("suck"), max_suck)
 	assert_eq(refund, 6, "3 + 3 Stufen zurück")
 
 
@@ -151,6 +195,8 @@ func test_old_save_keeps_every_bought_level() -> void:
 	assert_eq(m["progression"]["skill_points"], 10, "alle Punkte nach neuer Regel zurück")
 	var w := _world()
 	SaveCodec.decode(m, w)
-	assert_eq(w.player.inventory.slot_count, 7, "4 + 3 Taschen")
+	assert_eq(w.skills.level_of("bags"), 3)
+	assert_eq(w.player.inventory.slot_count, 4 + int(round(3 * _per(w, "bags", "slots_add"))), "4 + 3 Taschen-Stufen")
+	assert_eq(w.player.inventory.stack_size, 10 + int(round(3 * _per(w, "bags", "stack_add"))), "Stapel aus 3 Taschen-Stufen")
 	assert_eq(w.player.hammer_tier, 2)
 	assert_eq(w.skills.level_of("suck"), 5)

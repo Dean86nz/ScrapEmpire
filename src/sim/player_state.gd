@@ -20,6 +20,7 @@ var hammer_cooldown := 0
 var suck_interval := BASE_SUCK_INTERVAL
 var hammer_interval := BASE_HAMMER_INTERVAL
 var hammer_items := 1
+var hammer_power := 0.0   # +Anteil Teile je Schlag (MS57)
 var magnet_radius_px := 0
 var suck_targets := 1
 var suck_half_angle := SUCK_HALF_ANGLE_RAD   # halbe Kegelöffnung; ≥ PI = Wirbel rundherum
@@ -42,6 +43,7 @@ func apply_modifiers(m: Dictionary) -> bool:
 	suck_interval = maxi(int(round(BASE_SUCK_INTERVAL * float(m["suck_interval_mult"]) / (mine_mult * float(m["suck_speed_mult"])))), 1)
 	hammer_interval = maxi(int(round(BASE_HAMMER_INTERVAL / mine_mult)), 2)
 	hammer_items = int(m["hammer_items"])
+	hammer_power = float(m["hammer_power"])
 	magnet_radius_px = int(m["magnet_radius"]) * TILE
 	suck_targets = maxi(int(m["suck_targets"]), 1)
 	suck_half_angle = deg_to_rad(float(m["suck_cone_deg"])) * 0.5

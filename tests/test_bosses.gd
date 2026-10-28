@@ -84,9 +84,11 @@ func test_defeat_pays_reward_and_sets_flags() -> void:
 	var w := _world()
 	var got := []
 	w.boss_defeated.connect(func(kind: String, zid: String, reward: int) -> void: got.append([kind, zid, reward]))
+	var reward := int(ResourceNode.defs["toaster_tower"]["reward_bolts"])  # aus scrap_objects.json
+	assert_true(reward > 0, "Boss zahlt eine Belohnung")
 	w._remove_node(_boss(w))
-	assert_eq(got, [["toaster_tower", "a", 150]])
-	assert_eq(w.bolts, 150)
+	assert_eq(got, [["toaster_tower", "a", reward]])
+	assert_eq(w.bolts, reward)
 	assert_true(w.flags.has("boss_a"))
 	assert_false(w.flags.has("final_boss"))
 

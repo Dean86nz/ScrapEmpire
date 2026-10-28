@@ -111,4 +111,4 @@ func test_factory_data_is_gone() -> void:
 	for gone in ["iron_bar", "copper_bar", "plastic_sheet", "gear", "circuit"]:
 		assert_false(items.has(gone), "Produkt entfernt: " + gone)
 	assert_eq(int(items["scrap"]), 1)
-	assert_eq(int(items["chrome"]), 8)
+	assert_true(int(items["chrome"]) > int(items["scrap"]), "Chrom ist mehr wert als Schrott")

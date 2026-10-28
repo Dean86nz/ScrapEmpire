@@ -26,6 +26,7 @@ var _drone_upgrade_cards: Dictionary = {}
 var _drone_cards: Dictionary = {}  # Button → drone id
 @onready var _helpers_tab: Control = $Center/Panel/VBox/Content/HelpersTab
 @onready var _buy_btn: Button = $Center/Panel/VBox/Content/HelpersTab/Left/BuyButton
+var _fuse_btn := Button.new()
 @onready var _helper_list: VBoxContainer = $Center/Panel/VBox/Content/HelpersTab/Left/HelperList
 @onready var _upgrade_list: VBoxContainer = $Center/Panel/VBox/Content/HelpersTab/Right/UpgradeList
 @onready var _upgrade_title: Label = $Center/Panel/VBox/Content/HelpersTab/Right/UpgradeTitle
@@ -98,6 +99,13 @@ func bind(world: SimWorld) -> void:
 	_build_skill_cards()
 	_map_view.zone_selected.connect(_on_zone_selected)
 	_buy_btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_helper"}))
+	# Fusion (MS57): 5 Bots → Super-Bot, 5 Super-Bots → Mega-Bot
+	_fuse_btn.custom_minimum_size = _buy_btn.custom_minimum_size
+	_buy_btn.get_parent().add_child(_fuse_btn)
+	_buy_btn.get_parent().move_child(_fuse_btn, _buy_btn.get_index() + 1)
+	_fuse_btn.pressed.connect(func() -> void:
+		var p := 1 if HelperSystem.can_fuse(SimClock.world, 1) else 5
+		SimClock.world.queue_command({"type": "fuse_helpers", "power": p}))
 	_upgrade_title.text = tr("HELPER_UPGRADES")
 	for u: Dictionary in _world.helper_cfg.get("upgrades", []):
 		var id := str(u["id"])
@@ -402,7 +410,12 @@ func _set_icon(btn: Button, path: String) -> void:
 func _set_pips(btn: Button, level: int, max_level: int) -> void:
 	var p := _part(btn, "Pips") as Label
 	p.visible = max_level > 1
-	p.text = "●".repeat(level) + "○".repeat(maxi(max_level - level, 0))
+	if max_level > 10:
+		# Tiefe Upgrades (MS57): Stufe als Zahl mit kurzem Balken statt 50 Punkten
+		var filled := int(round(10.0 * level / max_level))
+		p.text = "%s  %d/%d" % ["▮".repeat(filled) + "▯".repeat(10 - filled), level, max_level]
+	else:
+		p.text = "●".repeat(level) + "○".repeat(maxi(max_level - level, 0))
 
 
 ## Kostenzeile: Bolt-Symbol mit Betrag (grün = leistbar, rot = fehlt) oder ein kurzer Text ohne Symbol.
@@ -488,7 +501,7 @@ const TINT_DONE := Color(0.75, 1.0, 0.8)
 
 
 func _bolts_text(n: int) -> String:
-	return "%d %s" % [n, tr("HUD_BOLTS")]
+	return "%s %s" % [Fmt.short(n), tr("HUD_BOLTS")]
 
 
 func _missing_text(cost: int) -> String:
@@ -521,7 +534,7 @@ func _refresh_ship() -> void:
 			elif reason == "planet":
 				_set_cost(repair, tr("SHIP_NEEDS_PLANET") % int(round(float(ShipSystem.stage_def(w, s.stage + 1).get("requires_planet", 0.0)) * 100.0)), COST_NO, false)
 			else:
-				_set_cost(repair, Fmt.int_str(ShipSystem.next_stage_cost(w, s)), COST_OK if reason == "" else COST_NO, true)
+				_set_cost(repair, Fmt.short(ShipSystem.next_stage_cost(w, s)), COST_OK if reason == "" else COST_NO, true)
 	# Upgrades: Stufen-Punkte, kurzer Text, Kosten
 	for u: Dictionary in ShipSystem.upgrade_defs(w):
 		var id := str(u["id"])
@@ -535,7 +548,7 @@ func _refresh_ship() -> void:
 		elif reason == "locked":
 			_set_cost(btn, tr("UPG_LOCKED_STAGE3"), COST_NO, false)
 		else:
-			_set_cost(btn, Fmt.int_str(ShipSystem.upgrade_cost(w, id)), COST_OK if reason == "" else COST_NO, true)
+			_set_cost(btn, Fmt.short(ShipSystem.upgrade_cost(w, id)), COST_OK if reason == "" else COST_NO, true)
 	if _ship_cards.has("courier_auto"):
 		var auto_btn: Button = _ship_cards["courier_auto"]
 		auto_btn.visible = w.unlocked_features.has("courier")
@@ -560,7 +573,7 @@ func _refresh_build_card(btn: Button, title_key: String, desc_key: String, locke
 			_set_cost(btn, "✓ " + tr("SKILL_MAXED"), COST_OK, false)
 		_:
 			_set_card(btn, tr(desc_key), TINT_OK if reason == "" else TINT_NO)
-			_set_cost(btn, Fmt.int_str(cost), COST_OK if reason == "" else COST_NO, true)
+			_set_cost(btn, Fmt.short(cost), COST_OK if reason == "" else COST_NO, true)
 
 
 func _build_status(reason: String, cost: int, locked_key: String) -> String:
@@ -578,7 +591,7 @@ func _build_status(reason: String, cost: int, locked_key: String) -> String:
 
 func _upgrade_status(u: Dictionary, level: int, reason: String) -> String:
 	var maxl := int(u["max_level"])
-	var cost_txt := _bolts_text(int(u["cost_bolts"][level])) if level < maxl else ""
+	var cost_txt := _bolts_text(Costs.upgrade(u, level)) if level < maxl else ""
 	var st := tr("HELPER_UPG_BUY")
 	match reason:
 		"max":
@@ -586,7 +599,7 @@ func _upgrade_status(u: Dictionary, level: int, reason: String) -> String:
 		"locked":
 			st = tr("HELPER_UPG_LOCKED")
 		"bolts":
-			st = _missing_text(int(u["cost_bolts"][level]))
+			st = _missing_text(Costs.upgrade(u, level))
 	return "%d / %d · %s\n%s · %s" % [level, maxl, tr(str(u["desc_key"])), cost_txt, st]
 
 
@@ -596,10 +609,19 @@ func _refresh_helpers() -> void:
 	var cost := int(w.next_helper_cost()["bolts"])
 	_buy_btn.text = "%s  –  %s" % [tr("BOT_BUILD"), _build_status(reason, cost, "BOT_LOCKED")]
 	_buy_btn.disabled = reason != ""
+	var fuse1 := HelperSystem.can_fuse(w, 1)
+	var fuse5 := HelperSystem.can_fuse(w, 5)
+	_fuse_btn.visible = w.unlocked_features.has("helpers")
+	_fuse_btn.disabled = not (fuse1 or fuse5)
+	_fuse_btn.text = tr("BOT_FUSE_MEGA") if (fuse5 and not fuse1) else tr("BOT_FUSE") 
+	_fuse_btn.text += "  ·  " + tr("BOT_ARMY") % HelperSystem.army(w)
 	var focused_bot := -1
 	var fb := get_viewport().gui_get_focus_owner()
 	if fb != null and _helper_cards.has(fb):
 		focused_bot = int(fb.get_meta("helper_id", -1))
+	# Neuaufbau der Karten setzt sonst die Liste nach oben, obwohl der Fokus unten bleibt
+	var scroll := _helper_list.get_parent() as ScrollContainer
+	var keep_scroll := scroll.scroll_vertical if scroll != null else 0
 	for c in _helper_list.get_children():
 		_helper_list.remove_child(c)
 		c.queue_free()
@@ -620,6 +642,8 @@ func _refresh_helpers() -> void:
 		_helper_cards.append(card)
 		if h.id == focused_bot:
 			card.grab_focus()
+	if scroll != null:
+		scroll.set_deferred("scroll_vertical", keep_scroll)
 	for u: Dictionary in w.helper_cfg.get("upgrades", []):
 		var id := str(u["id"])
 		_refresh_upgrade_card(_upgrade_cards[id], u, int(w.helper_upgrades.get(id, 0)), w.can_buy_helper_upgrade(id))
@@ -635,7 +659,7 @@ func _refresh_upgrade_card(btn: Button, u: Dictionary, level: int, reason: Strin
 		"locked":
 			_set_cost(btn, tr("HELPER_UPG_LOCKED"), COST_NO, false)
 		_:
-			_set_cost(btn, Fmt.int_str(int(u["cost_bolts"][level])), COST_OK if reason == "" else COST_NO, true)
+			_set_cost(btn, Fmt.short(Costs.upgrade(u, level)), COST_OK if reason == "" else COST_NO, true)
 
 
 func _refresh_drones() -> void:
@@ -733,7 +757,7 @@ func _refresh_goals() -> void:
 		var qd: Dictionary = q.current()
 		var p := q.progress(w)
 		var frac := float(p[0]) / float(maxi(int(p[1]), 1))
-		var count := "%s / %s" % [Fmt.int_str(int(p[0])), Fmt.int_str(int(p[1]))] if int(p[1]) > 1 else ""
+		var count := "%s / %s" % [Fmt.short(int(p[0])), Fmt.short(int(p[1]))] if int(p[1]) > 1 else ""
 		_goals_list.add_child(_hero_card(_quest_icon(qd), tr("GOAL_NOW"), tr(str(qd.get("text_key", ""))), frac, count))
 	# 2) Als Nächstes: höchstens zwei
 	var next_row := HBoxContainer.new()
@@ -779,7 +803,7 @@ func _refresh_goals() -> void:
 		for f in ShipSystem.next_stage_unlocks(w, s):
 			gifts.append(tr("GIFT_" + str(f).to_upper()))
 		var sc := _mini_card(str(ShipSystem.stage_def(w, s.stage + 1).get("sprite", "")), tr("GOAL_SHIP_STAGE") % (s.stage + 1),
-			"%s / %s Bolts · %s" % [Fmt.int_str(mini(w.bolts, cost)), Fmt.int_str(cost), ", ".join(gifts)], clampf(float(w.bolts) / float(cost), 0.0, 1.0))
+			"%s / %s Bolts · %s" % [Fmt.short(mini(w.bolts, cost)), Fmt.short(cost), ", ".join(gifts)], clampf(float(w.bolts) / float(cost), 0.0, 1.0))
 		sc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(sc)
 	if row.get_child_count() > 0:
@@ -804,8 +828,8 @@ func _refresh_goals() -> void:
 		var cur_v := MilestoneState.stat(w, str(md.get("stat", "")))
 		var done_n := w.milestones.steps_done(str(md["id"]))
 		var stars := "★".repeat(done_n) + "☆".repeat((md.get("steps", []) as Array).size() - done_n)
-		var title := tr(str(md["name_key"])) % Fmt.int_str(nxt if nxt >= 0 else cur_v)
-		var mc := _mini_card(str(md.get("icon", "")), title, stars + ("  " + tr("MS_ALL_DONE") if nxt < 0 else "  %s / %s" % [Fmt.int_str(mini(cur_v, nxt)), Fmt.int_str(nxt)]),
+		var title := tr(str(md["name_key"])) % Fmt.short(nxt if nxt >= 0 else cur_v)
+		var mc := _mini_card(str(md.get("icon", "")), title, stars + ("  " + tr("MS_ALL_DONE") if nxt < 0 else "  %s / %s" % [Fmt.short(mini(cur_v, nxt)), Fmt.short(nxt)]),
 			1.0 if nxt < 0 else clampf(float(cur_v) / float(maxi(nxt, 1)), 0.0, 1.0))
 		mc.custom_minimum_size = Vector2(673, 112)
 		grid.add_child(mc)

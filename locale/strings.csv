@@ -140,7 +140,7 @@ SKILL_SUCTION_POWER_DESC,Sauger-Stufe +1 je Stufe,Vacuum tier +1 per level
 SKILL_TEMPO,Tempo,Tempo
 SKILL_TEMPO_DESC,+15 % Abbau-Geschwindigkeit je Stufe,+15% mining speed per level
 SKILL_REACH,Reichweite,Reach
-SKILL_REACH_DESC,"+0,5 Kacheln Reichweite",+0.5 tiles reach
+SKILL_REACH_DESC,"+¼ Kachel Reichweite je Stufe","+¼ tile range per level"
 SKILL_MAXED,Voll ausgebaut,Maxed out
 SKILL_NEEDS,Erst %s %d,First %s %d
 SKILL_NO_POINTS,Kein Skillpunkt,No skill point
@@ -220,9 +220,9 @@ HELPER_STATE_IDLE,nichts zu tun,nothing to do
 HELPER_PICK_ZONE,Wo soll der Helfer arbeiten? Mitte wählen (6 Kacheln Radius).,Where should the helper work? Pick the center (6 tiles radius).
 HELPER_PICK_DEPOT,Und wohin bringt er alles? Kiste oder Terminal wählen.,And where does it all go? Pick a chest or terminal.
 HELPER_UPG_SPEED,Bot-Tempo,Bot speed
-HELPER_UPG_SPEED_DESC,+20 % Tempo,+20% speed
+HELPER_UPG_SPEED_DESC,+5 % Tempo je Stufe,+5% speed per level
 HELPER_UPG_CAPACITY,Bot-Tragkraft,Bot capacity
-HELPER_UPG_CAPACITY_DESC,+10 Teile je Platz,+10 items per slot
+HELPER_UPG_CAPACITY_DESC,+2 Teile Last je Stufe,+2 parts load per level
 HELPER_UPG_TOOL,Bot-Werkzeug,Bot tools
 HELPER_UPG_TOOL_DESC,Knackt härteren Müll,Cracks tougher trash
 HELPER_UPG_LOCKED,Ab Schiffsstufe 4,From ship stage 4
@@ -297,9 +297,9 @@ DRONE_WAIT_MISSING,wartet: Gebäude fehlt,waiting: building missing
 DRONE_PICK_SOURCE,Woher soll die Drohne holen? Kiste oder Maschine wählen.,Where should the drone fetch from? Pick a chest or machine.
 DRONE_PICK_TARGET,"Und wohin? Kiste, Maschine oder Terminal wählen.","And where to? Pick a chest, machine or terminal."
 DRONE_UPG_SPEED,Drohnen-Tempo,Drone speed
-DRONE_UPG_SPEED_DESC,+25 % Flugtempo,+25% flight speed
+DRONE_UPG_SPEED_DESC,+6 % Flugtempo je Stufe,+6% flight speed per level
 DRONE_UPG_CAPACITY,Drohnen-Tragkraft,Drone capacity
-DRONE_UPG_CAPACITY_DESC,+10 Teile je Flug,+10 items per flight
+DRONE_UPG_CAPACITY_DESC,+2 Teile je Flug und Stufe,+2 parts per flight and level
 DRONE_BOUGHT_1,Eine Drohne! Sie fliegt. Ich bin ein bisschen neidisch.,A drone! It flies. I am a little jealous.
 DRONE_BOUGHT_2,Summ summ. Das ist jetzt meine Luftpost.,Buzz buzz. That is my air mail now.
 QUIP_DRONE_LOCKED,Dafür brauche ich erst den Drohnen-Hangar.,I need the drone hangar for that first.
@@ -416,7 +416,7 @@ GOAL_SHIP_STAGE,Schiffsstufe %d,Ship stage %d
 UPG_CARGO,Laderaum,Cargo hold
 UPG_CARGO_DESC,+1 Inventarplatz,+1 inventory slot
 UPG_YIELD,Ertrag,Yield
-UPG_YIELD_DESC,+10 % Bolts beim Abliefern,+10% bolts when delivering
+UPG_YIELD_DESC,"×1,08 Bolts je Stufe (wächst stark)","×1.08 bolts per level (grows fast)"
 UPG_SPEED,Fahrtempo,Speed
 UPG_SPEED_DESC,+8 % schneller fahren,+8% faster driving
 UPG_SUCTION,Saugtempo,Suction speed
@@ -479,11 +479,11 @@ HUD_HINT_NEW_TAB,"Neu im Menü!   ·   Select: ansehen","New in the menu!   ·  
 HUD_HINT_NEW_TAB_KB,"Neu im Menü!   ·   T: ansehen","New in the menu!   ·   T: have a look"
 SKILL_BRANCH_SUCTION,Saugen,Suction
 SKILL_DRIVE,Fahrtempo,Driving
-SKILL_DRIVE_DESC,"+8 % Tempo, wendiger","+8% speed, nimbler"
+SKILL_DRIVE_DESC,"+7,5 % Tempo je Stufe, wendiger","+7.5% speed per level, nimbler"
 SKILL_SUCK,Saugtempo,Suction
-SKILL_SUCK_DESC,+12 % Arbeitstempo,+12% work speed
+SKILL_SUCK_DESC,"+10 % Tempo, mehr Teile je Zug, ab Stufe 10 Wirbel","+10% speed, more parts per pull, vortex from level 10"
 SKILL_BAGS,Taschen,Bags
-SKILL_BAGS_DESC,"+1 Platz, +2 je Stapel","+1 slot, +2 per stack"
+SKILL_BAGS_DESC,"+2 je Stapel, alle 5 Stufen ein Fach mehr","+2 per stack, one more slot every 5 levels"
 SKILL_TOOL,Werkzeug,Tools
 SKILL_TOOL_DESC,Härterer Müll,Tougher trash
 SKILL_COST_POINTS,%d Punkte,%d points
@@ -627,3 +627,22 @@ BOSS_COMING,%d unterwegs,%d on the way
 BOSS_MISSING,Noch %d Bot(s) bauen: Schiff → Bots,Build %d more bot(s): ship → bots
 MENU_SHAKE_ON,Bildschirmwackeln: an,Screen shake: on
 MENU_SHAKE_OFF,Bildschirmwackeln: aus,Screen shake: off
+BOT_FUSE,Fusion: 5 Bots → Super-Bot (×5),Fuse: 5 bots → Super-Bot (×5)
+BOT_FUSE_MEGA,Fusion: 5 Super-Bots → Mega-Bot (×25),Fuse: 5 Super-Bots → Mega-Bot (×25)
+BOT_ARMY,Armee: %d,Army: %d
+SKILL_HAMMER,Hammer-Kraft,Hammer power
+SKILL_HAMMER_DESC,+10 % Teile je Schlag,+10% parts per hit
+HELPER_UPG_POWER,Bot-Kraft,Bot power
+HELPER_UPG_POWER_DESC,+20 % Arbeit je Bot,+20% work per bot
+OBJ_TOASTER_GOLD,Gold-Toaster,Golden toaster
+OBJ_TV_RETRO,Retro-Fernseher,Retro TV
+OBJ_CABLE_DRUM,Kabeltrommel,Cable drum
+OBJ_RADIO_TOWER,Radioturm,Radio tower
+OBJ_DUCK_KING,Entenkönig,Duck king
+OBJ_BEACH_CHAIR,Strandstuhl,Beach chair
+OBJ_FRIDGE_DOUBLE,Doppel-Kühlschrank,Double fridge
+OBJ_ICE_BLOCK,Eisblock,Ice block
+OBJ_SATELLITE_BIG,Riesen-Satellit,Giant satellite
+OBJ_SOLAR_PANEL,Solarpaneel,Solar panel
+OBJ_MONOLITH_DARK,Dunkler Monolith,Dark monolith
+OBJ_CRYSTAL_CLUSTER,Kristallnest,Crystal nest

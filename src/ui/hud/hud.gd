@@ -122,7 +122,7 @@ func set_bolts(value: int) -> void:
 
 func _show_bolts(value: int) -> void:
 	_bolts_shown = value
-	_bolts_label.text = "%s %s" % [Fmt.int_str(value), tr("HUD_BOLTS")]
+	_bolts_label.text = "%s %s" % [Fmt.short(value), tr("HUD_BOLTS")]
 
 
 ## Ein paar Münzen fliegen von `world_px` (Schiff) zur Bolts-Anzeige (gedrosselt).
