@@ -39,6 +39,9 @@ var _pile_item: String = ""
 var regen_counter: int = 0
 
 
+static var hammer_cfg: Dictionary = {}   # Hammer-Formel aus scrap_objects.json („hammer“)
+
+
 ## Lädt data/scrap_objects.json über die eingebauten Definitionen.
 static func load_defs(path: String) -> void:
 	var text := FileAccess.get_file_as_string(path)
@@ -47,8 +50,28 @@ static func load_defs(path: String) -> void:
 		push_error("scrap_objects.json nicht lesbar: " + path)
 		return
 	defs = BUILTIN_DEFS.duplicate(true)
+	hammer_cfg = parsed.get("hammer", {})
 	for entry: Dictionary in parsed.get("objects", []):
 		defs[str(entry["id"])] = entry
+
+
+## Hammer-Formel (MS43): Schläge bis das Objekt leer ist, abhängig von der Werkzeugstufe.
+static func hits_needed(n: ResourceNode, tool_tier: int) -> int:
+	var c := hammer_cfg
+	if n.boss:
+		return maxi(1, int(c.get("boss_hits", 30)))
+	var base := int(defs.get(n.kind, {}).get("hits", int(c.get("hits_base", 3)) + int(c.get("hits_per_tier", 1)) * n.tier))
+	var diff := tool_tier - n.tier
+	if diff >= int(c.get("one_hit_diff", 2)):
+		return 1
+	if diff >= 1:
+		return maxi(1, ceili(base * float(c.get("diff1_factor", 0.4))))
+	return maxi(1, base)
+
+
+## Items je Schlag, damit das Objekt nach `hits_needed` Schlägen leer ist.
+static func items_per_hit(n: ResourceNode, tool_tier: int) -> int:
+	return maxi(1, ceili(float(n.max_amount) / float(hits_needed(n, tool_tier))))
 
 
 static func has_kind(p_kind: String) -> bool:

@@ -40,8 +40,10 @@ func test_hammer_works_with_tier2_tool() -> void:
 	w.player.hammer_tier = 2
 	w.player.hammer_pressed = true
 	w.tick()
-	assert_eq(fridge.amount, 26)
-	assert_eq(w.loose.size(), 1)
+	var per := ResourceNode.items_per_hit(fridge, 2)
+	assert_true(per > 1, "Hammer-Formel: mehrere Teile je Schlag (MS43)")
+	assert_eq(fridge.amount, fridge.max_amount - per)
+	assert_eq(w.loose.size(), per)
 	var item: LooseItem = w.loose.values()[0]
 	assert_eq(item.tier, 2)
 

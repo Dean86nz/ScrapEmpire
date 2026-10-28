@@ -129,6 +129,11 @@ func _ready() -> void:
 	_world.milestone_reached.connect(_on_milestone_reached)
 	_world.boss_defeated.connect(_on_boss_defeated)
 	_world.boss_rally.connect(_on_boss_rally)
+	_world.hammer_impact.connect(func(_n: ResourceNode, tier: int, one_hit: bool) -> void:
+		if tier >= 4 or one_hit:
+			_shake(3.0 + 1.5 * tier, 0.16)
+		if one_hit:
+			_hit_stop(0.06))
 	_world.boss_blocked.connect(func(_b: ResourceNode, have: int, _need: int) -> void:
 		if have == 0 and BossSystem.helpers_at(_world, _b) == 0 and _world.helpers.is_empty():
 			EventBus.quip.emit("QUIP_RALLY_NOBODY"))
@@ -427,6 +432,15 @@ func _on_boss_rally(boss: ResourceNode, _called: int) -> void:
 	EventBus.quip.emit("QUIP_RALLY")
 	Sfx.play("honk")
 	_shake(10.0, 0.35)
+
+
+## Kurzer Trefferstopp beim Ein-Schlag: Zeit fast anhalten, dann weiter (Echtzeit-Timer).
+func _hit_stop(seconds: float) -> void:
+	if Engine.time_scale < 1.0:
+		return
+	Engine.time_scale = 0.05
+	await get_tree().create_timer(seconds, true, false, true).timeout
+	Engine.time_scale = 1.0
 
 
 func _shake(strength: float, seconds: float) -> void:

@@ -371,6 +371,8 @@ Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten 
 
 **Seit MS37 (v1.26.0): Finale.** Schiffsstufe 5 → Rundflug über alle Zonen (je 1,9 s, Name und Sauberkeit) → Abflug → Abspann (Geschichte, Bilanz aus `FinaleStats`, Mitwirkende aus `data/credits.json`) → „Weiterspielen“. Die Spielzeit im Abspann ist die Zeit bis zum Abflug (`launch_tick`).
 
+**Seit MS43 (v2.3.0): Hammer-Formel.** Schläge = 3 + Objektstufe; Werkzeug 1 Stufe drüber: ⌈× 0,4⌉; ab 2 Stufen drüber: 1 Schlag; Bosse 30 Schläge. Teile je Schlag = ⌈Inhalt / Schläge⌉. Werte in `scrap_objects.json` („hammer“).
+
 ### 23a. Kapitel und Tore (MS12, umgesetzt)
 
 - Die Zonen einer Karte haben eine feste Reihenfolge (`zone_order` in der Karten-JSON); jede Zone ist ein **Kapitel**. Nur die erste Zone ist zu Beginn freigeschaltet.

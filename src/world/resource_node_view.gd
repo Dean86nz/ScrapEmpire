@@ -101,6 +101,28 @@ func wobble() -> void:
 	_tween.tween_property(_sprite, "rotation", 0.0, 0.08)
 
 
+## Rustys Hammerschlag (MS43): je höher die Werkzeugstufe, desto mehr Funken, stärkeres
+## Wackeln und ein Schockwellen-Ring; beim Ein-Schlag zusätzlich ein großer Stern.
+func impact(power: int, one_hit: bool) -> void:
+	sparks()
+	_sparks.amount = 10 + 8 * power
+	_sparks.initial_velocity_max = 220.0 + 50.0 * power
+	_sparks.color = Color(1.0, 0.85, 0.3).lerp(Color(1.0, 0.45, 0.2), power / 5.0)
+	_sparks.restart()
+	_sparks.emitting = true
+	var ring := ImpactRing.new()
+	ring.radius_to = 50.0 + 26.0 * power + (60.0 if one_hit else 0.0)
+	ring.width = 4.0 + 1.5 * power
+	ring.z_index = 11
+	add_child(ring)
+	if _tween and _tween.is_valid():
+		_tween.kill()
+	_tween = create_tween()
+	var amp := 0.12 + 0.04 * power
+	_tween.tween_property(_sprite, "scale", _sprite.scale * Vector2(1.0 + amp, 1.0 - amp), 0.05)
+	_tween.tween_property(_sprite, "scale", _sprite.scale, 0.12).set_trans(Tween.TRANS_BACK)
+
+
 ## Funken bei zu niedrigem Werkzeug: kurzer Partikelstoß plus Wackeln.
 func sparks() -> void:
 	wobble()

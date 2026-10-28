@@ -115,13 +115,14 @@ func test_hammer_cooldown_blocks_second_hit() -> void:
 	var w := _world()
 	w.player.pos = Vector2i(300, 352)
 	var wreck := w.add_wreck(Vector2i(5, 5), {"scrap": 5})
+	var per := ResourceNode.items_per_hit(wreck, w.player.hammer_tier)
 	for i in 10:
 		w.player.hammer_pressed = true
 		w.tick()
-	assert_eq(wreck.amount, 4, "innerhalb von 10 Ticks nur ein Schlag")
+	assert_eq(wreck.amount, 5 - per, "innerhalb von 10 Ticks nur ein Schlag")
 	w.player.hammer_pressed = true
 	w.tick()
-	assert_eq(wreck.amount, 3)
+	assert_eq(wreck.amount, maxi(0, 5 - 2 * per))
 
 
 func test_hammer_out_of_range_does_nothing() -> void:

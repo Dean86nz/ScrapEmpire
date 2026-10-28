@@ -46,6 +46,9 @@ func bind(world: SimWorld, player: Node2D) -> void:
 			_building_views[p.id].show_sale(n, true)
 		Sfx.play("courier", 0.08))
 	world.too_hard.connect(_on_too_hard)
+	world.hammer_impact.connect(func(n: ResourceNode, tier: int, one_hit: bool) -> void:
+		if _node_views.has(n.id):
+			_node_views[n.id].impact(tier, one_hit))
 	world.boss_rally.connect(func(boss: ResourceNode, _c: int) -> void:
 		for h: Helper in world.helpers.values():
 			if h.rally_id == boss.id and _helper_views.has(h.id):

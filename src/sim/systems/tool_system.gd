@@ -39,8 +39,10 @@ static func helper_work(w: SimWorld, h: Helper) -> void:
 					if n.boss and not BossSystem.can_damage(w, n):
 						w.boss_swing.emit(n)
 						break
-					var item_id := n.take_one()
-					if item_id != "":
+					for k in ResourceNode.items_per_hit(n, h.hammer_tier):
+						var item_id := n.take_one()
+						if item_id == "":
+							break
 						w.add_loose(item_id, n.center_px() + w._scatter(), n.tier)
 					w.wreck_hit.emit(n)
 					NodeSystem.after_take(w, n)
@@ -256,7 +258,10 @@ static func _tick_hammer(w: SimWorld) -> void:
 	elif wreck.tier > w.player.hammer_tier:
 		w._emit_too_hard(wreck, "hammer")
 		return
-	for i in w.player.hammer_items:
+	var per_hit := ResourceNode.items_per_hit(wreck, w.player.hammer_tier)
+	var one_hit := per_hit >= wreck.amount
+	w.hammer_impact.emit(wreck, w.player.hammer_tier, one_hit)
+	for i in per_hit:
 		var item_id := wreck.take_one()
 		if item_id == "":
 			break

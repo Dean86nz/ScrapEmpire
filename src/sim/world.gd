@@ -34,6 +34,7 @@ signal helper_failed(reason: String)
 signal helper_quip(helper: Helper, key: String)
 signal helper_bored(helper: Helper)
 signal boss_defeated(kind: String, zone_id: String, reward: int)
+signal hammer_impact(node: ResourceNode, tool_tier: int, one_hit: bool)  # Rustys Schlag (Effekte je Stufe)
 signal boss_rally(boss: ResourceNode, called: int)          # Rusty ruft Verstärkung
 signal boss_blocked(boss: ResourceNode, have: int, need: int)  # Schlag ohne genug Bots
 signal boss_swing(boss: ResourceNode)                      # Bot haut, aber noch zu wenige
