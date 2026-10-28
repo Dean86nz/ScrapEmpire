@@ -14,6 +14,9 @@ const TIER_COLORS := {
 	4: Color(0.7, 0.4, 0.9), 5: Color(1.0, 0.7, 0.2),
 }
 
+var _boss_need: Label
+var _boss_node: ResourceNode
+var _boss_tick := 0
 var node_id: int = -1
 var _sprite := Sprite2D.new()
 var _badge: Label
@@ -71,6 +74,8 @@ func _setup_boss(node: ResourceNode) -> void:
 	_boss_bar.add_theme_stylebox_override("fill", fill)
 	add_child(_boss_bar)
 	var need := Label.new()
+	_boss_need = need
+	_boss_node = node
 	need.text = tr("BOSS_NEEDS") % node.bots_needed
 	need.add_theme_font_size_override("font_size", 22)
 	need.add_theme_color_override("font_color", Color.WHITE)
@@ -80,6 +85,32 @@ func _setup_boss(node: ResourceNode) -> void:
 	need.size = Vector2(440, 30)
 	need.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(need)
+
+
+## Boss: laufend „3/6 Bots da · 2 unterwegs“ bzw. „Es fehlen 2 Bots“ (MS48).
+func _process(_delta: float) -> void:
+	if _boss_need == null or _boss_node == null:
+		return
+	_boss_tick -= 1
+	if _boss_tick > 0:
+		return
+	_boss_tick = 15
+	var w := SimClock.world
+	var at := BossSystem.helpers_at(w, _boss_node)
+	var coming := BossSystem.helpers_coming(w, _boss_node)
+	var missing := BossSystem.helpers_missing(w, _boss_node)
+	if missing > 0:
+		_boss_need.text = tr("BOSS_MISSING") % [missing, _boss_node.bots_needed]
+		_boss_need.add_theme_color_override("font_color", Color(1.0, 0.75, 0.3))
+	elif at + coming == 0:
+		_boss_need.text = tr("BOSS_NEEDS") % _boss_node.bots_needed
+		_boss_need.add_theme_color_override("font_color", Color.WHITE)
+	else:
+		var txt := tr("BOSS_COUNT") % [at, _boss_node.bots_needed]
+		if coming > 0:
+			txt += " · " + tr("BOSS_COMING") % coming
+		_boss_need.text = txt
+		_boss_need.add_theme_color_override("font_color", Color(0.6, 1.0, 0.6) if at >= _boss_node.bots_needed else Color.WHITE)
 
 
 func refresh(node: ResourceNode) -> void:

@@ -622,3 +622,6 @@ QUIP_RALLY,Verstärkung! Alle Mann zum Haufen!,Reinforcements! Everybody to the 
 QUIP_RALLY_NOBODY,Hallo? Bots? Ich brauche Hilfe!,Hello? Bots? I need help!
 INTRO_Q,"Aua. Okay. Räder ja, Plan nein. Erst mal aufräumen!","Ouch. Okay. Wheels yes, plan no. Let's tidy up first!"
 INTRO_SKIP,B: überspringen,B: skip
+BOSS_COUNT,%d/%d Bots da,%d/%d bots here
+BOSS_COMING,%d unterwegs,%d on the way
+BOSS_MISSING,"Es fehlen %d Bots (braucht %d): Schiff → Bots, X am Schiff","%d bots missing (needs %d): ship → bots, X at the ship"

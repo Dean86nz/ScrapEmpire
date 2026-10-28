@@ -693,6 +693,7 @@ func _build_zone_fences() -> void:
 		body.add_child(sprite)
 		add_child(body)
 		_world.blocked_tiles[t] = true
+		_world.blocked_version += 1
 		if is_gate:
 			var key: String = gate_tiles[t]
 			if not _zone_gates.has(key):
@@ -711,6 +712,7 @@ func _open_unlocked_gates() -> void:
 					_world.blocked_tiles.erase(t)
 					n.queue_free()
 			_zone_gates.erase(key)
+			_world.blocked_version += 1
 
 
 func _on_level_up(_level: int, _points: int) -> void:

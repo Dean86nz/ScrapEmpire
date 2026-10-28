@@ -24,7 +24,9 @@ var idle_quip_timer := 1200  # Ticks bis zum nächsten Leerlauf-Spruch
 var bored := ""               # "" = hat Arbeit; "empty" = nichts mehr da; "too_hard" = nur zu harter Müll
 var zone_id := ""             # zugewiesene Zone (seit MS34); "" = alter Kreis um zone_tile
 var auto := true              # seit MS42 immer: sucht sich selbst die nächste Zone mit passendem Müll
-var rally_id := -1            # Boss, zu dem Rusty gerufen hat (-1 = keiner)
+var rally_id := -1
+var _nav_goal := Vector2i(-999999, -999999)
+var _nav_path: Array[Vector2i] = []            # Boss, zu dem Rusty gerufen hat (-1 = keiner)
 
 
 func _init() -> void:
@@ -72,7 +74,7 @@ func tick(world: SimWorld) -> void:
 		if _plan_cooldown == 0:
 			_plan(world)
 	tasks.tick(world, self)
-	_move()
+	_move(world)
 	if stuck_timer > 0:
 		stuck_timer -= 1
 
@@ -126,12 +128,21 @@ func _plan(world: SimWorld) -> void:
 		_plan_cooldown = 100
 
 
-func _move() -> void:
+func _move(world: SimWorld) -> void:
 	if not has_move_target():
 		return
-	var d := Vector2(move_target - pos)
+	# Wegfindung um Zäune (MS48): bei neuem Ziel ohne freie Sichtlinie A*-Wegpunkte holen
+	if move_target != _nav_goal:
+		_nav_goal = move_target
+		_nav_path.clear()
+		if not world.nav.line_clear(world, pos, move_target):
+			_nav_path = world.nav.path(world, pos, move_target)
+	var next := _nav_path[0] if not _nav_path.is_empty() else move_target
+	var d := Vector2(next - pos)
 	if d.length() <= speed_px_per_tick:
-		pos = move_target
+		pos = next
+		if not _nav_path.is_empty():
+			_nav_path.remove_at(0)
 		return
 	pos += Vector2i((d.normalized() * speed_px_per_tick).round())
 	if d.length() > 1.0:
