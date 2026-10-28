@@ -49,3 +49,26 @@ func test_music_per_zone_and_finale() -> void:
 	s.music_finale(false, "z11")
 	assert_eq(s._music_path, str(cfg["zones"]["z11"]))
 	assert_true(float(cfg["pause_min_s"]) >= 20.0 and float(cfg["pause_max_s"]) <= 40.0, "Pausen 20–40 s")
+
+
+func test_zone_change_crossfades() -> void:
+	# MS52: altes Stück wird leiser, während das neue lauter wird (zwei Abspieler gleichzeitig).
+	var s := _sfx()
+	s._start_music()
+	s.music_zone("z01")
+	s._music_tick(0.016)
+	s.music.volume_db = -10.0
+	s._music_state = "play"
+	s.music_zone("z21")
+	s._music_tick(0.016)
+	s._music_tick(0.5)
+	assert_eq(s._music_playing_path, str(s._music_cfg["zones"]["z21"]), "neues Stück läuft")
+	assert_true(s._music_old.stream != null and s._music_old.volume_db > -60.0, "altes Stück klingt noch aus")
+	assert_true(s.music.volume_db > -60.0 and s.music.volume_db < -10.0, "neues blendet ein")
+
+
+func test_zone_jingle_is_clean() -> void:
+	var s := _sfx()
+	var buf: PackedFloat32Array = s._jingle()
+	assert_true(absf(buf[0]) < 0.05 and absf(buf[buf.size() - 1]) < 0.05, "kein Knacken")
+	assert_true(buf.size() > 20000, "ca. 1 s")

@@ -70,7 +70,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **49** | Bots sammeln alles Lose | v2.9.0 |
 | **50** | Bildschirmwackeln schwächer, Option an/aus | v2.10.0 |
 | **51** | Sprechblasen klein (Vorgaben), Screenshot zur Abnahme | v2.11.0 |
-| 52 | Musik: echtes Überblenden, Zonen-Jingle | v2.12.0 |
+| **52** | Musik: echtes Überblenden, Zonen-Jingle | v2.12.0 |
 | 53 | Menüs mit Kenney UI Pack, erst Entwurf | v2.13.0 |
 
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
