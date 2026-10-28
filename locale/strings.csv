@@ -625,3 +625,5 @@ INTRO_SKIP,B: überspringen,B: skip
 BOSS_COUNT,%d/%d Bots da,%d/%d bots here
 BOSS_COMING,%d unterwegs,%d on the way
 BOSS_MISSING,"Es fehlen %d Bots (braucht %d): Schiff → Bots, X am Schiff","%d bots missing (needs %d): ship → bots, X at the ship"
+MENU_SHAKE_ON,Bildschirmwackeln: an,Screen shake: on
+MENU_SHAKE_OFF,Bildschirmwackeln: aus,Screen shake: off

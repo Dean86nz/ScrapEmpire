@@ -30,7 +30,7 @@
 - [x] MS46 Musik je Zone und Finale (v2.6.0)
 - [x] MS47 Absturz-Intro (v2.7.0); Phase 2.1 abgeschlossen
 - [x] MS48 Fehler: Endboss, Sauger zentral, Bot-Wegfindung (v2.8.0)
-- [ ] Phase 2.2: MS49 Bots sammeln alles (v2.9.0) ✓ → MS50 Wackeln → MS51 Sprechblasen (Abnahme) → MS52 Musik → MS53 Menüs (Entwurf) Intro
+- [ ] Phase 2.2: MS49 Bots sammeln alles (v2.9.0) ✓ → MS50 Wackeln (v2.10.0) ✓ → MS51 Sprechblasen (Abnahme) → MS52 Musik → MS53 Menüs (Entwurf) Intro
 - [ ] Ally-Durchlauf mit Zeiten auswerten, Zahlen in JSON nachjustieren (siehe docs/OFFENE_PUNKTE.md)
 - [ ] Balancing nach der Runde „Spielgefühl“: Tempo bis Level 2, Ereignis-Abstände, Torschwelle mit Schiffswelle
 - [ ] MS26: Putzwelle des Schiffs (Radius 16 auf Stufe 5) gegen Tor-Schwelle abwägen

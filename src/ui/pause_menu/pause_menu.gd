@@ -18,6 +18,7 @@ signal save_quit_requested
 var _confirm_new_game := false
 var _music_btn := Button.new()
 var _sfx_btn := Button.new()
+var _shake_btn := Button.new()
 
 
 func _ready() -> void:
@@ -29,7 +30,7 @@ func _ready() -> void:
 	_quit_btn.text = tr("MENU_SAVE_QUIT")
 	_refresh_language_label()
 	var box := _resume_btn.get_parent()
-	for b: Button in [_music_btn, _sfx_btn]:
+	for b: Button in [_music_btn, _sfx_btn, _shake_btn]:
 		b.custom_minimum_size = _resume_btn.custom_minimum_size
 		box.add_child(b)
 		box.move_child(b, _language_btn.get_index())
@@ -43,9 +44,12 @@ func _ready() -> void:
 				btn.accept_event())
 	_music_btn.pressed.connect(func() -> void: _step_volume("music", 0.1, true))
 	_sfx_btn.pressed.connect(func() -> void: _step_volume("sfx", 0.1, true))
+	_shake_btn.pressed.connect(func() -> void:
+		SaveManager.set_screen_shake(not SaveManager.screen_shake())
+		_refresh_volume_labels())
 	_refresh_volume_labels()
 	# Reihenfolge für D-Pad hoch/runter (im Kreis), auch über die neuen Regler
-	var order: Array[Button] = [_resume_btn, _music_btn, _sfx_btn, _language_btn, _new_game_btn, _quit_btn]
+	var order: Array[Button] = [_resume_btn, _music_btn, _sfx_btn, _shake_btn, _language_btn, _new_game_btn, _quit_btn]
 	for i in order.size():
 		order[i].focus_neighbor_top = order[i].get_path_to(order[(i - 1 + order.size()) % order.size()])
 		order[i].focus_neighbor_bottom = order[i].get_path_to(order[(i + 1) % order.size()])
@@ -112,6 +116,7 @@ func _step_volume(kind: String, delta: float, wrap: bool) -> void:
 func _refresh_volume_labels() -> void:
 	_music_btn.text = tr("MENU_VOL_MUSIC") % _bar(float(Sfx.volume["music"]))
 	_sfx_btn.text = tr("MENU_VOL_SFX") % _bar(float(Sfx.volume["sfx"]))
+	_shake_btn.text = tr("MENU_SHAKE_ON") if SaveManager.screen_shake() else tr("MENU_SHAKE_OFF")
 
 
 func _bar(v: float) -> String:

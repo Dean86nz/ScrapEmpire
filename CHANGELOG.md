@@ -2,6 +2,20 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.10.0] – 2026-10-28 – MS50 Bildschirmwackeln (Phase 2.2)
+
+### Geändert
+- **Viel weniger Wackeln:** Hammerschläge wackeln nur noch beim Ein-Schlag ab Werkzeugstufe 4, und dann sanft (2,5 statt bis zu 10,5). Verstärkung beim Boss halb so stark, Absturz-Intro etwas sanfter
+- **Pausenmenü: „Bildschirmwackeln: an/aus“** (A schaltet um), wird gespeichert und gilt für alles Wackeln
+
+### Technik
+- `SaveManager.screen_shake/set_screen_shake` (Einstellung `screen_shake`), `main._shake` prüft sie
+- 225 Unit-Tests, 57 Gamepad-Prüfungen (neu: Wackeln-Schalter per D-Pad und A), Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Hämmern mit allen Werkzeugstufen: Ist das Wackeln jetzt angenehm?
+2. Pausenmenü: Wackeln aus, Spiel neu starten: Bleibt es aus?
+
 ## [2.9.0] – 2026-10-28 – MS49 Bots sammeln alles (Phase 2.2)
 
 ### Geändert

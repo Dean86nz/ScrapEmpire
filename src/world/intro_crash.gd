@@ -77,7 +77,7 @@ func _impact() -> void:
 	dust.emitting = true
 	Sfx.play("hammer", 0.0, 6.0, 0.45)
 	Sfx.play("thud", 0.0, 4.0)
-	_main.call("_shake", 22.0, 0.5)
+	_main.call("_shake", 12.0, 0.45)
 	var squash := create_tween()
 	squash.tween_property(_ship, "scale", Vector2(1.18, 0.82), 0.08)
 	squash.tween_property(_ship, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK)

@@ -11,6 +11,7 @@ const SETTINGS_FILE := "user://settings.json"
 const GUARD_FILE := "load_guard.json"
 
 ## Tests setzen einen eigenen Ordner, damit sie nie den echten Spielstand berühren.
+var _shake_cache := -1   # -1 = noch nicht gelesen
 var save_dir := DEFAULT_SAVE_DIR
 var meta_file := DEFAULT_SAVE_DIR + "save_meta.json"
 
@@ -198,6 +199,20 @@ func _read_file(path: String) -> Dictionary:
 
 
 # --- Einstellungen ----------------------------------------------------------
+
+## Bildschirmwackeln an/aus (Pausenmenü, MS50), gespeichert in den Einstellungen.
+func screen_shake() -> bool:
+	if _shake_cache < 0:
+		_shake_cache = 1 if bool(load_settings().get("screen_shake", true)) else 0
+	return _shake_cache == 1
+
+
+func set_screen_shake(on: bool) -> void:
+	_shake_cache = 1 if on else 0
+	var s := load_settings()
+	s["screen_shake"] = on
+	save_settings(s)
+
 
 func load_settings() -> Dictionary:
 	return _read_file(SETTINGS_FILE)
