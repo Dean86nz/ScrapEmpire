@@ -59,7 +59,8 @@
       "cost_bolts": 500,
       "unlocks": [
         "helpers",
-        "collection"
+        "collection",
+        "helper_tools"
       ],
       "clean_radius": 7
     },
@@ -79,9 +80,7 @@
       "name_key": "SHIP_STAGE_4",
       "sprite": "res://assets/sprites/buildings/ship_4.svg",
       "cost_bolts": 8000,
-      "unlocks": [
-        "helper_tools"
-      ],
+      "unlocks": [],
       "clean_radius": 13
     },
     {

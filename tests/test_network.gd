@@ -65,25 +65,17 @@ func test_bot_delivers_to_point_of_its_zone() -> void:
 	assert_true(p.total() > 0, "Bot lädt an der Sammelstelle ab: %d" % p.total())
 
 
-func test_assign_bot_to_zone_and_auto() -> void:
+func test_bots_always_find_work_themselves() -> void:
 	var w := _world()
 	w.unlocked_features["helpers"] = true
 	w.bolts = 1000
+	w.add_pile("scrap_pile", Vector2i(45, 20), 5)
 	w.queue_command({"type": "buy_helper", "zone": Vector2i(5, 5)})
 	w.tick()
 	var h: Helper = w.helpers.values()[0]
-	assert_eq(h.zone_id, "a")
-	w.queue_command({"type": "assign_helper", "id": h.id, "zone": "b"})
-	w.tick()
-	assert_eq(h.zone_id, "b")
-	assert_true(h.in_zone(Vector2i(50, 20)), "ganze Zone B")
-	assert_false(h.in_zone(Vector2i(10, 10)))
-	w.add_pile("scrap_pile", Vector2i(10, 10), 5)
-	w.queue_command({"type": "assign_helper", "id": h.id, "auto": true})
-	w.tick()
-	assert_true(h.auto)
-	assert_eq(h.zone_id, "a", "Automatik findet die Zone mit Müll")
-	assert_eq(int(w.quests.counters.get("assigns", 0)), 2)
+	assert_true(h.auto, "Bots arbeiten immer automatisch")
+	TestWorlds.run(w, 20 * 10)
+	assert_eq(h.zone_id, "b", "leere Zone A: Bot zieht selbst in Zone B mit Müll")
 
 
 func test_courier_locked_then_picks_up_and_delivers() -> void:

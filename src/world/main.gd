@@ -128,6 +128,10 @@ func _ready() -> void:
 	_world.ship_delivered.connect(_on_ship_delivered)
 	_world.milestone_reached.connect(_on_milestone_reached)
 	_world.boss_defeated.connect(_on_boss_defeated)
+	_world.boss_rally.connect(_on_boss_rally)
+	_world.boss_blocked.connect(func(_b: ResourceNode, have: int, _need: int) -> void:
+		if have == 0 and BossSystem.helpers_at(_world, _b) == 0 and _world.helpers.is_empty():
+			EventBus.quip.emit("QUIP_RALLY_NOBODY"))
 	_end_screen.connect("closed", _on_credits_closed)
 	_world.courier_failed.connect(func(r: String) -> void:
 		if r == "empty":
@@ -415,6 +419,23 @@ func _refresh_chapter_hud() -> void:
 
 
 ## Boss geknackt: großes Schild, Fanfare, Konfetti; das Tor öffnet sich (Sim prüft es im Tick).
+## Rusty ruft Verstärkung: beim ersten Mal Erklärkarte, sonst Spruch; kurz wackeln.
+func _on_boss_rally(boss: ResourceNode, _called: int) -> void:
+	if not _world.flags.has("boss_help_seen"):
+		_world.flags["boss_help_seen"] = true
+		_hud.stage_banner.show_card(tr("BOSS_HELP_TITLE"), tr("BOSS_HELP_SUB"), "", str(ResourceNode.defs.get(boss.kind, {}).get("sprite", "")), 4.5)
+	EventBus.quip.emit("QUIP_RALLY")
+	Sfx.play("honk")
+	_shake(10.0, 0.35)
+
+
+func _shake(strength: float, seconds: float) -> void:
+	var cam: Camera2D = _player.get_node("Camera2D")
+	var tw := create_tween()
+	tw.tween_method(func(t: float) -> void:
+		cam.offset += Vector2(randf_range(-1, 1), randf_range(-1, 1)) * strength * (1.0 - t), 0.0, 1.0, seconds)
+
+
 func _on_boss_defeated(kind: String, _zone_id: String, reward: int) -> void:
 	_player.celebrate()
 	Sfx.play("repair")

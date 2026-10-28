@@ -129,13 +129,6 @@
       "xp": 40
     },
     {
-      "id": "q_assign",
-      "text_key": "QUEST_ASSIGN",
-      "type": "assigns",
-      "amount": 1,
-      "xp": 30
-    },
-    {
       "id": "q_suck2",
       "text_key": "QUEST_SUCK2",
       "type": "skill_level",

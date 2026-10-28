@@ -118,7 +118,12 @@ func test_upgrades_change_speed_capacity_tier() -> void:
 	assert_eq(h.speed_px_per_tick, 13, "224 × 1,2 / 20 = 13,4")
 	assert_eq(h.inventory.stack_size, 20)
 	assert_eq(h.hammer_tier, 2)
-	assert_eq(w.bolts, 10000 - 300 - 300 - 1500)
+	assert_eq(w.bolts, 10000 - 300 - 300 - 400)
+	w.bolts = 100000
+	for i in 3:
+		w.queue_command({"type": "buy_helper_upgrade", "id": "helper_tool"})
+		w.tick()
+	assert_eq(h.hammer_tier, 5, "Bot-Werkzeug bis T5: jeder normale Müll (MS42)")
 
 
 func test_upgrade_requires_feature_and_max() -> void:
@@ -126,7 +131,7 @@ func test_upgrade_requires_feature_and_max() -> void:
 	w.bolts = 100000
 	assert_eq(w.can_buy_helper_upgrade("helper_speed"), "locked")
 	_unlock(w)
-	assert_eq(w.can_buy_helper_upgrade("helper_tool"), "locked", "braucht Schiffsstufe 4")
+	assert_eq(w.can_buy_helper_upgrade("helper_tool"), "locked", "braucht das Feature helper_tools")
 	for i in 3:
 		w.queue_command({"type": "buy_helper_upgrade", "id": "helper_speed"})
 		w.tick()

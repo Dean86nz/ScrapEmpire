@@ -354,6 +354,11 @@ Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers �
 - Zonen in der Karte haben `site` (2×2, oben links); `ZoneTracker` speichert ihn. `NetworkSystem.site_near_player` findet einen freien Bauplatz in Reichweite, Befehl `build_point` baut dort über `BuildingSystem._cmd_place`. Auf Karten mit Bauplätzen lehnt `_cmd_place` andere Kacheln mit `site` ab.
 - `SiteView` zeichnet Platte, Rand, Schild; `Player` löst mit A `build_point` aus, wenn kein Gebäude in der Nähe ist.
 
+## 10l. Boss-Verstärkung (seit v2.2.0, MS42)
+
+- `BossSystem`: Rustys Hammer auf einen Boss → `rally` setzt `Helper.rally_id` aller Bots im Umkreis; `Helper._plan` plant dann nur den HAMMER-Schritt auf den Boss. `ToolSystem` zieht beim Boss nur Material ab, wenn `can_damage` (genug Bots in `reinforce_reach_px`). `NodeSystem._remove_node` ruft `release`.
+- Bots sind immer automatisch (`NetworkSystem._tick_auto`), kein Zuweisen mehr.
+
 ## 11. Neue Darstellung und UI
 
 - HUD: XP-Leiste (`src/ui/hud/xp_bar.tscn`), Level-Up-Konfetti (`CPUParticles2D` über Rusty), Funken-Partikel bei „Zu hart“.

@@ -51,7 +51,6 @@ var _refresh_timer := 0.0
 var _stage_track := StageTrack.new()
 var _goals_sig := ""                  # zuletzt gezeigter Ziele-Stand (nur bei Änderung neu bauen, sonst geht der Fokus verloren)
 var _goals_show_done := false
-var _assign_bot := -1   # Bot, der gerade über die Karte zugewiesen wird (-1 = keiner)
 var _journal_sig := ""
 
 
@@ -214,7 +213,6 @@ func open(tab: Tab = Tab.SHIP) -> void:
 
 
 func close() -> void:
-	_assign_bot = -1
 	_map_view.reset_zoom()
 	if visible:
 		Sfx.play("close")
@@ -234,12 +232,7 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
-	if _assign_bot >= 0 and MenuInput.back_pressed(event):
-		_assign_bot = -1
-		_tab = Tab.HELPERS
-		_show_tab()
-		get_viewport().set_input_as_handled()
-	elif MenuInput.back_pressed(event) or event.is_action_pressed("tech_tree"):
+	if MenuInput.back_pressed(event) or event.is_action_pressed("tech_tree"):
 		close()
 		get_viewport().set_input_as_handled()
 	elif MenuInput.accept_pressed(event) and _tab != Tab.MAP:
@@ -253,14 +246,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		Sfx.play("tab")
 		_next_tab(-1)
 		_show_tab()
-		get_viewport().set_input_as_handled()
-	elif _tab == Tab.MAP and _assign_bot >= 0 and (event.is_action_pressed("ui_accept") or MenuInput.accept_pressed(event)):
-		var zid := _map_view.selected_zone()
-		if zid != "" and _world.zones.is_unlocked(zid):
-			_finish_assign(zid, false)
-		get_viewport().set_input_as_handled()
-	elif _tab == Tab.MAP and _assign_bot >= 0 and event.is_action_pressed("build_menu"):
-		_finish_assign("", true)
 		get_viewport().set_input_as_handled()
 	elif _tab == Tab.MAP and _map_view.handle_input(event):
 		get_viewport().set_input_as_handled()
@@ -601,12 +586,10 @@ func _refresh_helpers() -> void:
 		(_part(card, "Icon") as TextureRect).custom_minimum_size = Vector2(60, 60)
 		card.custom_minimum_size = Vector2(740, 96)
 		card.set_meta("helper_id", h.id)
-		var hid := h.id
-		card.pressed.connect(func() -> void: _start_assign(hid))
 		var state := tr("HELPER_STATE_WAIT") if h.tasks.wait_ticks > 0 else (tr("HELPER_STATE_WORK") if h.tasks.active else tr("HELPER_STATE_IDLE"))
 		if h.bored != "" and h.inventory.total() == 0:
 			state = tr("HELPER_STATE_BORED_HARD") if h.bored == "too_hard" else tr("HELPER_STATE_BORED")
-		var zone_name: String = str(w.zones.zone_by_id(w.zones.zone_id_at(h.zone_tile)).get("name", "?"))
+		var zone_name: String = str(w.zones.zone_by_id(h.zone_id if h.zone_id != "" else w.zones.zone_id_at(h.zone_tile)).get("name", "?"))
 		_set_card(card, "%s · %s · %s %d/%d" % [state, zone_name, tr("HELPER_LOAD"), h.inventory.total(), h.inventory.slot_count * h.inventory.stack_size], Color.WHITE)
 		_helper_list.add_child(card)
 		_helper_cards.append(card)
@@ -618,30 +601,6 @@ func _refresh_helpers() -> void:
 
 
 ## Upgrade-Karte für Bots und Drohnen: Stufen-Punkte, kurzer Text, Kosten (oder Sperre).
-func _start_assign(helper_id: int) -> void:
-	_assign_bot = helper_id
-	_tab = Tab.MAP
-	_show_tab()
-	_refresh_assign_info()
-
-
-func _refresh_assign_info() -> void:
-	if _assign_bot < 0 or not _world.helpers.has(_assign_bot):
-		return
-	var h: Helper = _world.helpers[_assign_bot]
-	_footer.text = tr("ASSIGN_FOOTER") % h.display_name(_world.helper_cfg.get("names", []))
-
-
-func _finish_assign(zone_id: String, auto: bool) -> void:
-	if auto:
-		SimClock.world.queue_command({"type": "assign_helper", "id": _assign_bot, "auto": true})
-	else:
-		SimClock.world.queue_command({"type": "assign_helper", "id": _assign_bot, "zone": zone_id})
-	_assign_bot = -1
-	_tab = Tab.HELPERS
-	_show_tab()
-
-
 func _refresh_upgrade_card(btn: Button, u: Dictionary, level: int, reason: String) -> void:
 	_set_pips(btn, level, int(u["max_level"]))
 	_set_card(btn, tr(str(u["desc_key"])), TINT_DONE if reason == "max" else (TINT_OK if reason == "" else TINT_NO))
@@ -701,7 +660,6 @@ func _refresh_all() -> void:
 	match _tab:
 		Tab.MAP:
 			_footer.text = tr("MENU_PROGRESS_FOOTER_MAP")
-			_refresh_assign_info()
 			_map_view.queue_redraw()
 		Tab.HELPERS:
 			_footer.text = tr("MENU_PROGRESS_FOOTER_HELPERS")

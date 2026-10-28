@@ -33,8 +33,10 @@ signal helper_removed(id: int)
 signal helper_failed(reason: String)
 signal helper_quip(helper: Helper, key: String)
 signal helper_bored(helper: Helper)
-signal helper_assigned(helper: Helper)
 signal boss_defeated(kind: String, zone_id: String, reward: int)
+signal boss_rally(boss: ResourceNode, called: int)          # Rusty ruft Verstärkung
+signal boss_blocked(boss: ResourceNode, have: int, need: int)  # Schlag ohne genug Bots
+signal boss_swing(boss: ResourceNode)                      # Bot haut, aber noch zu wenige
 signal point_stored(point: Building, count: int)
 signal courier_added(courier: Courier)
 signal courier_removed(id: int)
@@ -281,8 +283,6 @@ func _apply(cmd: Dictionary) -> void:
 			HelperSystem._cmd_buy_helper_upgrade(self, cmd)
 		"remove_helper":
 			HelperSystem._cmd_remove_helper(self, cmd)
-		"assign_helper":
-			NetworkSystem._cmd_assign_helper(self, cmd)
 		"build_point":
 			NetworkSystem._cmd_build_point(self, cmd)
 		"call_courier":

@@ -71,7 +71,7 @@ func _setup_boss(node: ResourceNode) -> void:
 	_boss_bar.add_theme_stylebox_override("fill", fill)
 	add_child(_boss_bar)
 	var need := Label.new()
-	need.text = tr("BOSS_NEEDS") % [node.tier, node.bots_needed]
+	need.text = tr("BOSS_NEEDS") % node.bots_needed
 	need.add_theme_font_size_override("font_size", 22)
 	need.add_theme_color_override("font_color", Color.WHITE)
 	need.add_theme_color_override("font_outline_color", Color(0.165, 0.165, 0.2))

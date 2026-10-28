@@ -206,7 +206,7 @@ ZONE_Q_3,Zone sauber! Fast schon gemütlich.,Zone clean! Almost cozy.
 MENU_PROGRESS_FOOTER_MAP,D-Pad: Zone · RT/LT: Zoom · Y: ganze Karte · LB/RB: Tab · B: schließen,D-pad: zone · RT/LT: zoom · Y: whole map · LB/RB: tab · B: close
 HUD_MINIMAP_HINT,M / Select lang: Minimap,M / hold Select: minimap
 MENU_TAB_HELPERS,Helfer,Helpers
-MENU_PROGRESS_FOOTER_HELPERS,D-Pad: wählen · A: bauen / kaufen / Bot zuweisen · LT auf Bot: abbauen · B: schließen,D-pad: select · A: build / buy / assign bot · LT on bot: dismantle · B: close
+MENU_PROGRESS_FOOTER_HELPERS,D-Pad: wählen · A: bauen / kaufen · LT auf Bot: abbauen · B: schließen,D-pad: select · A: build / buy · LT on bot: dismantle · B: close
 HELPER_UPGRADES,Bot-Upgrades (für alle Bots),Bot upgrades (all bots)
 HELPER_BUY,Helfer kaufen,Buy helper
 HELPER_BUY_HINT,A: Zone und Lager wählen,A: pick zone and depot
@@ -535,9 +535,7 @@ COURIER_AUTO,Kurier-Automatik,Courier auto
 COURIER_AUTO_DESC,"Kommt von selbst, wenn die Taschen voll sind",Comes by itself when your bags are full
 COURIER_AUTO_ON,An  ·  A: aus,On  ·  A: off
 COURIER_AUTO_OFF,Aus  ·  A: an,Off  ·  A: on
-ASSIGN_FOOTER,%s zuweisen: D-Pad Zone wählen · A: hierher · Y: Automatisch · B: zurück,Assign %s: D-pad pick zone · A: here · Y: automatic · B: back
 QUEST_POINT,Bau eine Sammelstelle (Y) in einer Zone weit weg vom Schiff.,Build a collection point (Y) in a zone far from the ship.
-QUEST_ASSIGN,Weise einen Bot einer Zone zu (Select → Bots → A auf den Bot).,Assign a bot to a zone (Select → Bots → A on the bot).
 QUEST_COURIER,Lass dir die Taschen vom Kurier abholen (D-Pad ↓).,Let the courier pick up your bags (D-pad ↓).
 UNLOCK_COLLECTION,Sammelstellen,Collection points
 UNLOCK_COURIER,Kurier,Courier
@@ -572,7 +570,7 @@ OBJ_STAR_CRYSTAL,Sternenkristall,Star crystal
 OBJ_MYSTERY_CUBE,Rätselwürfel,Mystery cube
 OBJ_UR_HEAP,Der Ur-Müllberg,The Primordial Trash Heap
 BOSS_LABEL,BOSS,BOSS
-BOSS_NEEDS,T%d-Werkzeug oder %d Bots,T%d tool or %d bots
+BOSS_NEEDS,Nur gemeinsam! Bots nötig: %d,Only together! Bots needed: %d
 BOSS_DEFEATED_TITLE,Boss geknackt!,Boss cracked!
 BOSS_DEFEATED_SUB,%s ist Geschichte,%s is history
 BOSS_DEFEATED_REWARD,+%s Bolts Belohnung · das Tor ist frei,+%s bolts reward · the gate is open
@@ -617,3 +615,8 @@ HINT_SITE,A: Sammelstelle bauen (%s Bolts),A: build collection point (%s bolts)
 HINT_SITE_KB,E: Sammelstelle bauen (%s Bolts),E: build collection point (%s bolts)
 HINT_SITE_LOCKED,Bauplatz für eine Sammelstelle (ab Schiffsstufe 2),Site for a collection point (from ship stage 2)
 FAIL_SITE,Hier nicht. Die Sammelstelle kommt auf den Bauplatz.,Not here. The collection point goes on the site.
+BOSS_HELP_TITLE,Verstärkung!,Reinforcements!
+BOSS_HELP_SUB,"Bosse schafft keiner allein. Hau drauf: Alle Bots in der Nähe kommen angerannt und hauen mit.","Nobody beats a boss alone. Hit it: all nearby bots come running and join in."
+BOSS_WAIT,"%d/%d Bots da",%d/%d bots here
+QUIP_RALLY,Verstärkung! Alle Mann zum Haufen!,Reinforcements! Everybody to the heap!
+QUIP_RALLY_NOBODY,Hallo? Bots? Ich brauche Hilfe!,Hello? Bots? I need help!

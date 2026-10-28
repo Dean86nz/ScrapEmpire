@@ -23,7 +23,8 @@ var hammer_cooldown := 0
 var idle_quip_timer := 1200  # Ticks bis zum nächsten Leerlauf-Spruch
 var bored := ""               # "" = hat Arbeit; "empty" = nichts mehr da; "too_hard" = nur zu harter Müll
 var zone_id := ""             # zugewiesene Zone (seit MS34); "" = alter Kreis um zone_tile
-var auto := false             # sucht sich selbst die nächste Zone mit passendem Müll
+var auto := true              # seit MS42 immer: sucht sich selbst die nächste Zone mit passendem Müll
+var rally_id := -1            # Boss, zu dem Rusty gerufen hat (-1 = keiner)
 
 
 func _init() -> void:
@@ -87,13 +88,24 @@ func _plan(world: SimWorld) -> void:
 	tasks.index = 0
 	tasks.loops = 0
 	_last_loops = 0
+	# Verstärkung: zum Boss rennen und mithauen, alles andere wartet
+	if rally_id >= 0:
+		var boss: ResourceNode = world.nodes.get(rally_id, null)
+		if boss != null and not boss.is_depleted():
+			bored = ""
+			tasks.add_step(TaskList.Type.HAMMER, boss.tile)
+			tasks.start(self)
+			return
+		rally_id = -1
 	var best: ResourceNode = null
 	var best_d := INF
 	var too_hard := false
 	for n: ResourceNode in world.nodes.values():
 		if n.is_depleted() or not in_zone(n.tile):
 			continue
-		var tier_ok := n.tier <= (hammer_tier if n.uses_hammer() else suction_tier) or NetworkSystem.team_can_hit(world, n)
+		if n.boss:
+			continue  # Bosse nur auf Rustys Ruf
+		var tier_ok := n.tier <= (hammer_tier if n.uses_hammer() else suction_tier)
 		if not tier_ok:
 			too_hard = true
 			continue
@@ -137,7 +149,7 @@ func to_dict() -> Dictionary:
 		"name_index": name_index, "color_index": color_index,
 		"pos": [pos.x, pos.y], "zone": [zone_tile.x, zone_tile.y], "radius": radius_tiles,
 		"depot": [depot_tile.x, depot_tile.y], "inventory": inventory.to_dict(),
-		"stuck_timer": stuck_timer, "zone_id": zone_id, "auto": auto,
+		"stuck_timer": stuck_timer, "zone_id": zone_id, "rally": rally_id,
 	}
 
 
@@ -151,4 +163,4 @@ func from_dict(d: Dictionary) -> void:
 	inventory.from_dict(d.get("inventory", {}))
 	stuck_timer = int(d.get("stuck_timer", 0))
 	zone_id = str(d.get("zone_id", ""))
-	auto = bool(d.get("auto", false))
+	rally_id = int(d.get("rally", -1))
