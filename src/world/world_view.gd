@@ -262,6 +262,9 @@ func _on_ship_delivered(items: Dictionary, bolts: int, by_player: bool) -> void:
 		return
 	view.show_sale(bolts, by_player)
 	if not by_player:
+		var hud := get_tree().get_first_node_in_group("hud")
+		if hud != null:
+			hud.coin_stream(view.global_position, bolts)
 		return
 	var target := view.global_position
 	var start := _player.global_position

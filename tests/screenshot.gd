@@ -12,6 +12,10 @@ var _out_path := "user://screenshot.png"
 var _hold_actions: PackedStringArray = []
 var _sequence: Array = []  # [{frame, action, pressed}]
 var _cheat := ""
+var _measure := false
+var _m_frames := 0
+var _m_time := 0.0
+var _m_proc := 0.0
 
 
 func _initialize() -> void:
@@ -78,6 +82,8 @@ func _process(_delta: float) -> bool:
 				"event":  # event=tourists | meteors löst das Ereignis sofort aus
 					EventSystem.ensure_state(clock.world)
 					clock.world.events_state["next"][kv[1]] = clock.world.tick_count
+				"measure":  # measure=1: mittlere Bildzeit und FPS ab Frame 60 ausgeben
+					_measure = true
 				"counter":  # counter=wrecks;5 setzt einen Zähler (Meilensteine, Aufgaben)
 					var cv := kv[1].split(";")
 					clock.world.quests.counters[cv[0]] = int(cv[1])
@@ -133,6 +139,11 @@ func _process(_delta: float) -> bool:
 	for step in _sequence:
 		if step["frame"] == _frames:
 			_send_action(step["action"], step["pressed"])
+	if _measure and _frames > 60:
+		_m_frames += 1
+		_m_proc += Performance.get_monitor(Performance.TIME_PROCESS) + Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS)
+	if _frames == _target_frames and _measure and _m_frames > 0:
+		print("measure: frames %d, mittlere CPU-Zeit je Bild %.2f ms, FPS %d, Bots %d, Drohnen %d" % [_m_frames, _m_proc / _m_frames * 1000.0, Engine.get_frames_per_second(), root.get_node("/root/SimClock").world.helpers.size(), root.get_node("/root/SimClock").world.drones.size()])
 	if _frames == _target_frames:
 		for a in _hold_actions:
 			_send_action(a, false)

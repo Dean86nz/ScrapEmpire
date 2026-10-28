@@ -2,6 +2,28 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.24.0] – 2026-10-28 – MS35 Eskalation: vom Strahl zum Wirbel, Bot-Armee (Phase 2, Punkt 2)
+
+### Neu
+- **Der Sauger wächst zum Wirbel:** Saugtempo hat jetzt 5 große Stufen statt 8 kleiner. Jede Stufe: +25 % Tempo, mehr Teile je Zug (2, 3, 4, 6, 8) und ein breiterer Kegel (110°, 140°, 180°, 250°, 360°). Auf der letzten Stufe saugt Rusty rundherum, auch hinter sich, und putzt dabei eine große Fläche. Sichtbar als Kegel mit drehenden Spiralarmen, ganz oben als Wirbel
+- **Reichweite:** +1 Kachel je Stufe (vorher +½)
+- **Fahrtempo:** 5 Stufen à +15 % (vorher 8 à +8 %)
+- **Bot-Armee:** bis zu 40 Bots, jeder weitere nur noch ×1,12 teurer (vorher höchstens 10, ×1,5)
+- **Bolts-Strom:** Liefern Drohnen oder Bots am Schiff ab, fliegen Münzen sichtbar in die Bolts-Anzeige
+- Alte Spielstände: Stufen über der neuen Höchststufe werden gekappt, die Skillpunkte kommen zurück
+
+### Leistung
+- 40 Bots und 12 Drohnen kosten 0,88 ms je Sim-Tick (etwa 2 % eines Kerns). Neuer Test hält das unter 5 ms
+
+### Technik
+- Modifikatoren `suck_targets`, `suck_cone_deg`; `ToolSystem._suck_one`; `SkillState.from_dict` gibt Punkte zurück; Szenario „army“, Mess-Cheat `measure=1`
+- 203 Unit-Tests (neu: Wirbel saugt mehrere Teile von hinten, Punkte-Rückgabe, Leistung), 47 Gamepad-Prüfungen, 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Saugtempo Stufe für Stufe kaufen: Wird jeder Kauf deutlich spürbar?
+2. Auf Stufe 5: Rusty saugt rundherum, ganze Flächen auf einmal. Macht das Spaß?
+3. Viele Bots bauen und über die Zonen verteilen: Bleibt es flüssig? Kommen Münzen am Bolts-Zähler an?
+
 ## [1.23.0] – 2026-10-28 – MS34 Sammelstellen, Drohnen-Netz, Bots zuweisen, Kurier (Phase 2, Punkt 1)
 
 ### Neu

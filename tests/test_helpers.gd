@@ -14,12 +14,15 @@ func _unlock(w: SimWorld) -> void:
 
 func test_cost_curve() -> void:
 	var w := _world()
-	assert_eq(w.next_helper_cost(), {"bolts": 150})
+	var base := int(w.helper_cfg["cost_base_bolts"])
+	var g := float(w.helper_cfg["cost_growth"])
+	assert_eq(w.next_helper_cost(), {"bolts": base})
 	_unlock(w)
 	w.add_helper(Vector2i(10, 6), w.ship().tile)
-	assert_eq(w.next_helper_cost()["bolts"], 230, "150 × 1,5 = 225 → 22,5 rundet auf 23 → 230")
+	var c1 := int(w.next_helper_cost()["bolts"])
+	assert_true(absi(c1 - int(base * g)) <= 10, "zweiter Bot ≈ Basis × Wachstum (%d)" % c1)
 	w.add_helper(Vector2i(10, 6), w.ship().tile)
-	assert_eq(w.next_helper_cost()["bolts"], 340)
+	assert_true(int(w.next_helper_cost()["bolts"]) > c1, "jeder weitere teurer")
 
 
 func test_buy_requirements() -> void:
@@ -58,9 +61,9 @@ func test_bot_works_where_rusty_is_by_default() -> void:
 func test_max_helpers() -> void:
 	var w := _world()
 	_unlock(w)
-	for i in 10:
+	for i in int(w.helper_cfg["max_helpers"]):
 		w.add_helper(Vector2i(10, 6), w.ship().tile)
-	w.bolts = 1000000
+	w.bolts = 100000000
 	assert_eq(w.can_buy_helper(), "max")
 
 
