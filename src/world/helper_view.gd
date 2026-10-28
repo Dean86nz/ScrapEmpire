@@ -1,15 +1,12 @@
 class_name HelperView
 extends Node2D
-## Darstellung eines Helfer-Roboters: Rusty-Sprite in eigener Farbe, Namensschild, Sprechblase.
+## Darstellung eines Helfer-Roboters: Rusty-Sprite in eigener Farbe, Namensschild, kleine Symbole (seit MS44 kein Text).
 ## Folgt der Sim-Position weich.
-
-const SPEECH := preload("res://src/ui/hud/speech_bubble.tscn")
 
 var helper_id: int = -1
 var _helper: Helper
 var _sprite := Sprite2D.new()
 var _name := Label.new()
-var _bubble: Node2D
 var _names: Array = []
 var _colors: Array = []
 
@@ -35,15 +32,6 @@ func setup(h: Helper, names: Array, colors: Array) -> void:
 	_name.position = Vector2(-80, 28)
 	_name.size = Vector2(160, 28)
 	add_child(_name)
-	_bubble = SPEECH.instantiate()
-	_bubble.listen_global = false
-	_bubble.position = Vector2(0, -50)
-	add_child(_bubble)
-
-
-func say(text: String) -> void:
-	if _bubble:
-		_bubble.say(text)
 
 
 ## Kleines Symbol über dem Bot (z. B. „!“ bei Verstärkung): hüpft auf, verblasst.
