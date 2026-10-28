@@ -71,7 +71,9 @@ func _refresh_lang() -> void:
 func _toggle_lang() -> void:
 	var loc := TranslationServer.get_locale().substr(0, 2)
 	var next := "en" if loc == "de" else "de"
-	SaveManager.save_settings({"locale": next})
+	var st := SaveManager.load_settings()
+	st["locale"] = next
+	SaveManager.save_settings(st)
 	TranslationServer.set_locale(next)
 	get_tree().reload_current_scene()
 

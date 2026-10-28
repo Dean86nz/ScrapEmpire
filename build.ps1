@@ -10,14 +10,15 @@ New-Item -ItemType Directory -Force $outDir | Out-Null
 $projectFile = Join-Path $PSScriptRoot "project.godot"
 $versionLine = Get-Content $projectFile | Where-Object { $_ -match '^config/version="(.+)"$' } | Select-Object -First 1
 $version = if ($versionLine -match '"(.+)"') { $Matches[1] } else { "dev" }
-$exeName = "ScrapEmpire_v$version.exe"
-$exeRel = "export/windows/$exeName"
-
+# Seit MS55 zwei EXEs: Release (Steam, ohne Cheat-Menü) und Debug (mit Cheat-Menü, nur zum Testen).
 & $godot --headless --path $PSScriptRoot --import | Out-Null
-& $godot --headless --path $PSScriptRoot --export-release "Windows Desktop" $exeRel
-if ($LASTEXITCODE -ne 0) { throw "Export fehlgeschlagen (Exit $LASTEXITCODE)" }
-
-$exe = Join-Path $outDir $exeName
-if (-not (Test-Path $exe)) { throw "EXE wurde nicht erzeugt: $exe" }
-$size = [math]::Round((Get-Item $exe).Length / 1MB, 1)
-Write-Host "Build fertig: $exe ($size MB)"
+foreach ($kind in @("release", "debug")) {
+	$exeName = if ($kind -eq "release") { "ScrapEmpire_v$version.exe" } else { "ScrapEmpire_v${version}_DEBUG.exe" }
+	$exeRel = "export/windows/$exeName"
+	& $godot --headless --path $PSScriptRoot "--export-$kind" "Windows Desktop" $exeRel
+	if ($LASTEXITCODE -ne 0) { throw "Export ($kind) fehlgeschlagen (Exit $LASTEXITCODE)" }
+	$exe = Join-Path $outDir $exeName
+	if (-not (Test-Path $exe)) { throw "EXE wurde nicht erzeugt: $exe" }
+	$size = [math]::Round((Get-Item $exe).Length / 1MB, 1)
+	Write-Host "Build fertig ($kind): $exe ($size MB)"
+}

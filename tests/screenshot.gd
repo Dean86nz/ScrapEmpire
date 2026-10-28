@@ -83,6 +83,8 @@ func _process(_delta: float) -> bool:
 				"event":  # event=tourists | meteors löst das Ereignis sofort aus
 					EventSystem.ensure_state(clock.world)
 					clock.world.events_state["next"][kv[1]] = clock.world.tick_count
+				"cheats":  # cheats=1 öffnet das Cheat-Menü (nur Debug-Build)
+					current_scene.get_node("CheatMenu").open()
 				"measure":  # measure=1: mittlere Bildzeit und FPS ab Frame 60 ausgeben
 					_measure = true
 				"counter":  # counter=wrecks;5 setzt einen Zähler (Meilensteine, Aufgaben)

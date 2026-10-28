@@ -78,7 +78,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | MS | Inhalt | Version |
 |---|---|---|
 | **54** | Fehler: Laden bringt Müll zurück, Listen scrollen, Menüs fertig, Repo aufgeräumt | v2.13.0 |
-| 55 | Cheat-Menü nur in der Debug-EXE | v2.14.0 |
+| **55** | Cheat-Menü nur in der Debug-EXE | v2.14.0 |
 | 56 | Bots sichtbar arbeiten | v2.15.0 |
 | 57 | Tiefe Upgrades (20–50 Stufen), Bot-Fusion, Drohnen billiger | v2.16.0 |
 | 58 | Spiellänge 3–4 h (erst Übersicht) | v2.17.0 |

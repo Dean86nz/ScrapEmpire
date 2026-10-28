@@ -157,6 +157,13 @@ func _ready() -> void:
 	_pause_menu.opened.connect(save_game)
 	_pause_menu.save_quit_requested.connect(_on_save_quit)
 	_pause_menu.new_game_requested.connect(_on_new_game)
+	if OS.is_debug_build():
+		# Cheat-Menü existiert nur im Debug-Build, nie in der Release-EXE (MS55)
+		var cheats := CheatMenu.new()
+		cheats.name = "CheatMenu"
+		add_child(cheats)
+		cheats.setup(self)
+		cheats.new_game_requested.connect(_on_new_game)
 	_pause_menu.language_changed.connect(_on_language_changed)
 	get_tree().auto_accept_quit = false
 	_world.skill_bought.connect(func(_id: String, _lvl: int) -> void: Quips.say("skill_bought"))
@@ -250,7 +257,9 @@ func _on_new_game() -> void:
 
 func _on_language_changed(locale: String) -> void:
 	save_game()
-	SaveManager.save_settings({"locale": locale})
+	var st := SaveManager.load_settings()
+	st["locale"] = locale
+	SaveManager.save_settings(st)
 	TranslationServer.set_locale(locale)
 	get_tree().paused = false
 	SimClock.paused = false

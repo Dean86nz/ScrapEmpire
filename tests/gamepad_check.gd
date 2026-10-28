@@ -4,6 +4,7 @@ extends SceneTree
 ## Aufruf nur über tests/gamepad_check.sh (schützt den echten Spielstand).
 ## Exit-Code 1, wenn eine Prüfung fehlschlägt.
 
+var _bolts_before := 0
 var _shake_before := true
 var _frame := 0
 var _steps: Array[Dictionary] = []
@@ -236,6 +237,20 @@ func _build_steps() -> void:
 
 	# Y im Spiel: kein Baumenü mehr, nichts öffnet sich
 	_step("Y im Spiel öffnet nichts", func() -> void: _tap(JOY_BUTTON_Y), func() -> bool: return router.context == router.Context.GAME, 4)
+
+	# Cheat-Menü (nur Debug-Build; dieser Lauf ist einer): F12 öffnet, A gibt Bolts, B schließt
+	_step("F12 öffnet das Cheat-Menü", func() -> void:
+			var e := InputEventKey.new()
+			e.keycode = KEY_F12
+			e.pressed = true
+			Input.parse_input_event(e),
+		func() -> bool: return _main.has_node("CheatMenu") and _main.get_node("CheatMenu").visible and router.context == router.Context.MENU, 6)
+	_step("A: +100K Bolts", func() -> void:
+			_bolts_before = _world.bolts
+			_tap(JOY_BUTTON_A),
+		func() -> bool: return _world.bolts == _bolts_before + 100000, 6)
+	_step("B schließt das Cheat-Menü", func() -> void: _tap(JOY_BUTTON_B),
+		func() -> bool: return not _main.get_node("CheatMenu").visible and router.context == router.Context.GAME, 6)
 
 	# Pause
 	_step("Start öffnet Pause", func() -> void: _tap(JOY_BUTTON_START), func() -> bool: return pause.visible)
