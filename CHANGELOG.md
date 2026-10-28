@@ -2,6 +2,26 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.13.0] – 2026-10-28 – MS53/54 Menüs im Kenney-Stil, Fehler aus dem v2.12.0-Test (Phase 2.3)
+
+### Behoben
+- **Speichern/Laden brachte Müll und Bosse zurück:** Beim Laden füllte `fill_missing_zones` jede Zone ohne Objekte aus der Karte nach (gedacht für alte Spielstände). Eine ganz saubere Zone ist leer und kam deshalb komplett zurück. Jetzt kommen Objekte ausschließlich aus dem Spielstand (`MapLoader.load_save`). Hinweis: In deinem aktuellen Spielstand ist der Müll schon wieder drin; ein neues Spiel oder erneutes Aufräumen ist nötig
+- **Lange Listen scrollen:** Bot-, Drohnen- und Upgrade-Listen stecken jetzt in Scroll-Bereichen, die dem Gamepad-Fokus in beide Richtungen folgen (auch mit 20+ Bots)
+
+### Geändert
+- **Alle Menüs im Kenney-UI-Stil** (UI Pack 2.0, CC0): Pausenmenü, Schiff und Ziele (alle Tabs), Titel, Abspann-Knopf. Knöpfe grau mit Tiefe, Fokus gelb; große Karten hell, im Fokus mit gelbem Rahmen, nicht Leistbares grau
+- Spielordner `Scrap Empire/` (Spielstände, Shader-Cache, Logs) nicht mehr im Git-Repo (lag seit MS33 versehentlich drin; Dateien bleiben auf der Platte)
+- Alle bereits gemergten Branches gelöscht (lokal und auf GitHub)
+
+### Technik
+- `MapLoader.load_save`, `KenneySkin.card()` (Typ-Variante „Card“), `ProgressMenu._wrap_in_scroll`
+- 227 Unit-Tests (neu: abgebautes Objekt bleibt nach dem Laden weg, saubere Zonen bleiben sauber), 64 Gamepad-Prüfungen (neu: 20 Bots, Liste runter und wieder ganz hoch), Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Etwas abbauen, Speichern und Beenden, Weiterspielen: Bleibt alles weg (auch Bosse)?
+2. 20+ Bots: Bot-Liste ganz runter und wieder ganz hoch
+3. Gefallen dir die Menüs im neuen Stil (Pause, Schiff, Ziele, Titel)?
+
 ## [2.12.0] – 2026-10-28 – MS52 Musik beim Zonenwechsel (Phase 2.2)
 
 ### Geändert

@@ -57,16 +57,29 @@ func test_zone_unlocks_when_previous_half_clean() -> void:
 	assert_false(w.zones.is_unlocked("c"), "C erst nach B")
 
 
-func test_fill_missing_zones_after_load() -> void:
-	ResourceNode.load_defs("res://data/scrap_objects.json")
-	var w := SimWorld.new()
-	w.defs = BuildingDef.load_all("res://data/buildings.json")
+func test_removed_objects_stay_gone_after_load() -> void:
+	# Ally-Fehler v2.12.0: nach Speichern/Laden waren aller Müll und alle Bosse wieder da.
+	var w := _world()
+	w.setup_progression_data(TechState.load_defs("res://data/tech.json"), SkillState.load_file("res://data/skills.json"))
 	var data := _map()
-	MapLoader.apply(w, data, false)
-	w.add_object("toaster", Vector2i(5, 5))  # nur Zone A aus dem Spielstand
-	var added := MapLoader.fill_missing_zones(w, data)
-	assert_eq(added, 3, "Zonen B und C aufgefüllt, A unverändert")
-	assert_eq(w.nodes.size(), 4)
+	var before := w.nodes.size()
+	var gone: ResourceNode = w.nodes.values()[0]
+	w._remove_node(gone)
+	var save := SaveCodec.encode(w, "x", Vector2(320, 352), 0)
+	var w2 := SimWorld.new()
+	w2.defs = w.defs
+	w2.setup_progression_data(TechState.load_defs("res://data/tech.json"), SkillState.load_file("res://data/skills.json"))
+	MapLoader.load_save(w2, data, save)
+	assert_eq(w2.nodes.size(), before - 1, "abgebautes Objekt bleibt weg")
+	# ganz leer geräumt: auch nach dem Laden leer (kein Nachfüllen aus der Karte)
+	for n: ResourceNode in w2.nodes.values().duplicate():
+		w2._remove_node(n)
+	var save2 := SaveCodec.encode(w2, "x", Vector2(320, 352), 0)
+	var w3 := SimWorld.new()
+	w3.defs = w.defs
+	w3.setup_progression_data(TechState.load_defs("res://data/tech.json"), SkillState.load_file("res://data/skills.json"))
+	MapLoader.load_save(w3, data, save2)
+	assert_eq(w3.nodes.size(), 0, "saubere Zonen bleiben sauber")
 
 
 func test_save_keeps_unlocked_zones() -> void:

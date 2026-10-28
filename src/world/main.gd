@@ -56,14 +56,7 @@ func _ready() -> void:
 		SaveManager.begin_load(SaveManager.last_read_file)
 		SaveCodec.log_steps = true
 		SaveManager.log_step("Spielstand %s gelesen, Version %d" % [SaveManager.last_read_file, int(save_data.get("version", 0))])
-		MapLoader.apply(_world, _map_data, false)
-		start_px = SaveCodec.decode(save_data, _world)
-		SaveManager.log_step("Zonen auffüllen")
-		MapLoader.fill_missing_zones(_world, _map_data)
-		SaveManager.log_step("Schiff prüfen")
-		MapLoader.ensure_ship(_world, _map_data)
-		SaveManager.log_step("Schmutzkarte prüfen")
-		MapLoader.ensure_dirt(_world, _map_data)
+		start_px = MapLoader.load_save(_world, _map_data, save_data)
 		SaveManager.log_step("Aufgaben abgleichen")
 		_world.quests.fast_forward(_world, bool(_world.flags.get("tutorial_done", false)))
 		if not _world.flags.has("milestones_v1"):

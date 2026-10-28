@@ -71,7 +71,19 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **50** | Bildschirmwackeln schwächer, Option an/aus | v2.10.0 |
 | **51** | Sprechblasen klein (Vorgaben), Screenshot zur Abnahme | v2.11.0 |
 | **52** | Musik: echtes Überblenden, Zonen-Jingle | v2.12.0 |
-| 53 | Menüs mit Kenney UI Pack, erst Entwurf | v2.13.0 |
+| **53** | Menüs mit Kenney UI Pack, erst Entwurf | v2.13.0 |
+
+## Phase 2.3 nach dem Test von v2.12.0 (Go 2026-10-28)
+
+| MS | Inhalt | Version |
+|---|---|---|
+| **54** | Fehler: Laden bringt Müll zurück, Listen scrollen, Menüs fertig, Repo aufgeräumt | v2.13.0 |
+| 55 | Cheat-Menü nur in der Debug-EXE | v2.14.0 |
+| 56 | Bots sichtbar arbeiten | v2.15.0 |
+| 57 | Tiefe Upgrades (20–50 Stufen), Bot-Fusion, Drohnen billiger | v2.16.0 |
+| 58 | Spiellänge 3–4 h (erst Übersicht) | v2.17.0 |
+| 59 | Humor-Momente (alle 14 aus dem Plan) | v2.18.0 |
+| 60 | Secrets (alle 10 aus dem Plan, Steam-Erfolgs-IDs) | v2.19.0 |
 
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
 

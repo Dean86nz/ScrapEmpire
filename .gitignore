@@ -12,3 +12,6 @@ Thumbs.db
 
 # Vom Auftraggeber kopierte Ally-Logs und Spielstände (nicht ins Repo)
 logs/
+
+# Spielordner (use_directory: Spielstände, Shader-Cache, Logs) gehört nicht ins Repo
+Scrap Empire/

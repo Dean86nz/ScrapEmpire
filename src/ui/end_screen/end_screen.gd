@@ -67,6 +67,7 @@ func _build() -> void:
 	_close_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_close_btn.add_theme_font_size_override("font_size", 30)
 	_close_btn.pressed.connect(close)
+	_close_btn.theme = KenneySkin.theme()
 	_end_box.add_child(_close_btn)
 	_hint = _label(tr("CREDITS_HINT"), 22, SOFT)
 	_hint.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
