@@ -6,42 +6,32 @@
       "name_key": "UPG_YIELD",
       "desc_key": "UPG_YIELD_DESC",
       "icon": "res://assets/sprites/ui/upg_yield.svg",
-      "max_level": 6,
-      "cost_bolts": [
-        60,
-        150,
-        400,
-        1000,
-        2500,
-        5000
-      ],
+      "max_level": 50,
       "effects": [
         {
           "key": "sell_mult",
-          "op": "add",
-          "per_level": 0.15
+          "op": "mul",
+          "per_level": 0.08
         },
         {
           "key": "rare_mult",
           "op": "add",
-          "per_level": 0.05
+          "per_level": 0.02
         }
-      ]
+      ],
+      "cost_base": 60,
+      "cost_growth": 1.2935
     },
     {
       "id": "courier",
       "name_key": "UPG_COURIER",
       "desc_key": "UPG_COURIER_DESC",
       "icon": "res://assets/sprites/robot/courier.svg",
-      "max_level": 4,
-      "cost_bolts": [
-        1500,
-        4000,
-        9000,
-        18000
-      ],
+      "max_level": 19,
       "requires_feature": "courier",
-      "effects": []
+      "effects": [],
+      "cost_base": 1500,
+      "cost_growth": 1.5254
     }
   ],
   "stages": [
@@ -56,7 +46,7 @@
       "stage": 2,
       "name_key": "SHIP_STAGE_2",
       "sprite": "res://assets/sprites/buildings/ship_2.svg",
-      "cost_bolts": 500,
+      "cost_bolts": 2000,
       "unlocks": [
         "helpers",
         "collection",
@@ -68,7 +58,7 @@
       "stage": 3,
       "name_key": "SHIP_STAGE_3",
       "sprite": "res://assets/sprites/buildings/ship_3.svg",
-      "cost_bolts": 2500,
+      "cost_bolts": 50000,
       "unlocks": [
         "drones",
         "courier"
@@ -79,7 +69,7 @@
       "stage": 4,
       "name_key": "SHIP_STAGE_4",
       "sprite": "res://assets/sprites/buildings/ship_4.svg",
-      "cost_bolts": 8000,
+      "cost_bolts": 1500000,
       "unlocks": [],
       "clean_radius": 13
     },
@@ -87,7 +77,7 @@
       "stage": 5,
       "name_key": "SHIP_STAGE_5",
       "sprite": "res://assets/sprites/buildings/ship_5.svg",
-      "cost_bolts": 15000,
+      "cost_bolts": 20000000,
       "requires_planet": 0.8,
       "unlocks": [
         "launch"
@@ -107,28 +97,118 @@
         "speed": 360
       },
       {
-        "wait_s": 60,
+        "wait_s": 86,
         "load": 60,
         "count": 1,
-        "speed": 400
+        "speed": 388
       },
       {
-        "wait_s": 40,
+        "wait_s": 81,
+        "load": 80,
+        "count": 2,
+        "speed": 417
+      },
+      {
+        "wait_s": 77,
         "load": 100,
         "count": 2,
-        "speed": 440
+        "speed": 445
       },
       {
-        "wait_s": 25,
-        "load": 0,
+        "wait_s": 72,
+        "load": 120,
         "count": 2,
-        "speed": 480
+        "speed": 474
       },
       {
-        "wait_s": 15,
+        "wait_s": 68,
+        "load": 140,
+        "count": 2,
+        "speed": 502
+      },
+      {
+        "wait_s": 63,
+        "load": 160,
+        "count": 3,
+        "speed": 531
+      },
+      {
+        "wait_s": 59,
+        "load": 180,
+        "count": 3,
+        "speed": 559
+      },
+      {
+        "wait_s": 54,
         "load": 0,
         "count": 3,
-        "speed": 520
+        "speed": 587
+      },
+      {
+        "wait_s": 50,
+        "load": 0,
+        "count": 3,
+        "speed": 616
+      },
+      {
+        "wait_s": 45,
+        "load": 0,
+        "count": 4,
+        "speed": 644
+      },
+      {
+        "wait_s": 41,
+        "load": 0,
+        "count": 4,
+        "speed": 673
+      },
+      {
+        "wait_s": 36,
+        "load": 0,
+        "count": 4,
+        "speed": 701
+      },
+      {
+        "wait_s": 32,
+        "load": 0,
+        "count": 4,
+        "speed": 729
+      },
+      {
+        "wait_s": 27,
+        "load": 0,
+        "count": 5,
+        "speed": 758
+      },
+      {
+        "wait_s": 23,
+        "load": 0,
+        "count": 5,
+        "speed": 786
+      },
+      {
+        "wait_s": 18,
+        "load": 0,
+        "count": 5,
+        "speed": 815
+      },
+      {
+        "wait_s": 14,
+        "load": 0,
+        "count": 5,
+        "speed": 843
+      },
+      {
+        "wait_s": 9,
+        "load": 0,
+        "count": 6,
+        "speed": 872
+      },
+      {
+        "wait_s": 5,
+        "load": 0,
+        "count": 6,
+        "speed": 900
       }
     ]
   }

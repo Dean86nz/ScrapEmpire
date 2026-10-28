@@ -15,12 +15,12 @@ values = {i["id"]: i["sell_value"] for i in json.load(open(os.path.join(HERE, ".
 
 # (Spalte, Zeile) → id, Name-Schlüssel, Thema, Zielwert ohne Boss, Objekte (Gewicht), Haufen, Boss
 ZONES = [
-    ((0, 1), "ZONE_SCRAPYARD", "scrapyard", 1900, {"toaster": 3, "tv": 3, "tire_stack": 2, "pallet": 1}, {"scrap_pile": 4, "copper_tangle": 1}, "toaster_tower"),
-    ((1, 1), "ZONE_CABLES", "cables", 3600, {"radio": 3, "charger_nest": 3, "cart": 2, "concrete": 1}, {"copper_tangle": 4, "scrap_pile": 2}, "cable_monster"),
-    ((2, 1), "ZONE_BEACH", "beach", 5400, {"duck_pile": 3, "flipflop_heap": 3, "umbrella_wreck": 2, "sofa": 1}, {"plastic_crumbs": 4, "driftwood_pile": 2}, "plastic_whale"),
-    ((2, 0), "ZONE_FRIDGES", "fridges", 7200, {"fridge": 3, "freezer": 3, "pizza_tower": 2, "ruin_wall": 1}, {"scrap_pile": 2, "rubble_field": 2}, "freezer_king"),
-    ((1, 0), "ZONE_SATELLITES", "satellites", 8200, {"satellite": 3, "ship_part": 3, "robot_arm": 2}, {"copper_tangle": 2, "scrap_pile": 2}, "mega_dish"),
-    ((0, 0), "ZONE_MONOLITHS", "monoliths", 7400, {"monolith": 3, "stardust_crystal": 3, "mystery_cube": 2}, {"rubble_field": 2, "scrap_pile": 2}, "ur_heap"),
+    ((0, 1), "ZONE_SCRAPYARD", "scrapyard", 3000, {"toaster": 3, "tv": 3, "tire_stack": 2, "pallet": 1, "toaster_gold": 1, "tv_retro": 2}, {"scrap_pile": 4, "copper_tangle": 1}, "toaster_tower"),
+    ((1, 1), "ZONE_CABLES", "cables", 8000, {"radio": 3, "charger_nest": 3, "cart": 2, "concrete": 1, "cable_drum": 2, "radio_tower": 1}, {"copper_tangle": 4, "scrap_pile": 2}, "cable_monster"),
+    ((2, 1), "ZONE_BEACH", "beach", 25000, {"duck_pile": 3, "flipflop_heap": 3, "umbrella_wreck": 2, "sofa": 1, "duck_king": 1, "beach_chair": 2}, {"plastic_crumbs": 4, "driftwood_pile": 2}, "plastic_whale"),
+    ((2, 0), "ZONE_FRIDGES", "fridges", 80000, {"fridge": 3, "freezer": 3, "pizza_tower": 2, "ruin_wall": 1, "fridge_double": 1, "ice_block": 2}, {"scrap_pile": 2, "rubble_field": 2}, "freezer_king"),
+    ((1, 0), "ZONE_SATELLITES", "satellites", 400000, {"satellite": 3, "ship_part": 3, "robot_arm": 2, "satellite_big": 1, "solar_panel": 2}, {"copper_tangle": 2, "scrap_pile": 2}, "mega_dish"),
+    ((0, 0), "ZONE_MONOLITHS", "monoliths", 1100000, {"monolith": 3, "stardust_crystal": 3, "mystery_cube": 2, "monolith_dark": 1, "crystal_cluster": 2}, {"rubble_field": 2, "scrap_pile": 2}, "ur_heap"),
 ]
 SHIP = (16, 64)          # 3×3, Zone unten links
 START = (20, 66)
@@ -80,7 +80,7 @@ for (zx, zy), name_key, theme, target, table, piles, boss in ZONES:
     kinds = [k for k, wgt in table.items() for _ in range(wgt)]
     pile_kinds = [k for k, wgt in piles.items() for _ in range(wgt)]
     guard = 0
-    while total < target and guard < 2000:
+    while total < target and guard < 6000:
         guard += 1
         if rng.random() < 0.35:
             kind = rng.choice(pile_kinds)

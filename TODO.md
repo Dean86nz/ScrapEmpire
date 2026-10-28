@@ -33,6 +33,7 @@
 - [x] MS53/54 Menüs Kenney-Stil, Laden, Scrollen, Repo aufgeräumt (v2.13.0)
 - [x] MS55 Cheat-Menü, Debug-EXE (v2.14.0)
 - [x] MS56 Bots sichtbar arbeiten (v2.15.0)
+- [x] MS57/58 Tiefe Upgrades, Fusion, Spiellänge (v2.16.0)
 - [ ] Phase 2.3: MS57 Upgrades/Fusion → MS58 Spiellänge (Übersicht zuerst) → MS59 Humor (alle) → MS60 Secrets (alle)
 - [x] Phase 2.2: MS49 Bots sammeln alles (v2.9.0) ✓ → MS50 Wackeln (v2.10.0) ✓ → MS51 Sprechblasen (v2.11.0) ✓ → MS52 Musik (v2.12.0) ✓ → MS53 Menüs (Entwurf) Intro
 - [ ] Ally-Durchlauf mit Zeiten auswerten, Zahlen in JSON nachjustieren (siehe docs/OFFENE_PUNKTE.md)

@@ -91,12 +91,17 @@ func test_map_pays_for_the_launch() -> void:
 	var max_bonus := 0.0
 	for e: Dictionary in yield_def["effects"]:
 		if e["key"] == "sell_mult":
-			max_bonus = float(e["per_level"]) * int(yield_def["max_level"])
+			# "mul": ×(1 + Wert) je Stufe (MS57), sonst additiv
+			if str(e.get("op", "add")) == "mul":
+				max_bonus = pow(1.0 + float(e["per_level"]), int(yield_def["max_level"])) - 1.0
+			else:
+				max_bonus = float(e["per_level"]) * int(yield_def["max_level"])
 	var earnable := int(base * (1.0 + max_bonus * 0.5))
 	var required := 0
 	for st: Dictionary in ship["stages"]:
 		required += int(st.get("cost_bolts", 0))
-	for c in yield_def["cost_bolts"]:
-		required += int(c)
+	# Realistisch (MS58): alle Schiffsstufen plus Ertrag bis Stufe 40 (nicht jede Stufe ist Pflicht)
+	for lv in mini(40, int(yield_def["max_level"])):
+		required += Costs.upgrade(yield_def, lv)
 	print("   Wirtschaft: Kartenwert %d, verdienbar %d, nötig %d" % [base, earnable, required])
 	assert_true(earnable >= required, "Karte reicht bis zum Abflug: verdienbar %d, nötig %d" % [earnable, required])

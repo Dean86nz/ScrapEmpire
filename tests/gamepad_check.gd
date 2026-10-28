@@ -181,6 +181,9 @@ func _build_steps() -> void:
 		func() -> bool: return progress._tab == progress.Tab.HELPERS, 6)
 	_step("Bot-Karte erscheint in der Liste", func() -> void: pass,
 		func() -> bool: return progress._helper_cards.size() == 1, 8, 700)
+	# MS57: unter „Bot bauen“ sitzt jetzt der Knopf „Verschmelzen“
+	_step("D-Pad runter auf „Verschmelzen“", func() -> void: _tap(JOY_BUTTON_DPAD_DOWN),
+		func() -> bool: return progress.get_viewport().gui_get_focus_owner() == progress._fuse_btn)
 	_step("D-Pad runter auf den Bot", func() -> void: _tap(JOY_BUTTON_DPAD_DOWN),
 		func() -> bool: return progress._helper_cards.has(progress.get_viewport().gui_get_focus_owner()))
 	_step("LT auf dem Bot baut ihn ab", func() -> void:
@@ -206,6 +209,8 @@ func _build_steps() -> void:
 			for i in 25:
 				_tap(JOY_BUTTON_DPAD_DOWN),
 		func() -> bool: return (progress._helper_list.get_parent() as ScrollContainer).scroll_vertical > 300, 10, 300)
+	_step("Liste bleibt unten, auch wenn das Menü die Karten neu aufbaut", func() -> void: pass,
+		func() -> bool: return (progress._helper_list.get_parent() as ScrollContainer).scroll_vertical > 300, 10, 1200)
 	for k in 2:
 		_step("D-Pad hoch 12× (Teil %d)" % (k + 1), func() -> void:
 				for i in 12:

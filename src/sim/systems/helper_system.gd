@@ -9,7 +9,7 @@ static func helper_count(w: SimWorld) -> int:
 
 
 static func next_helper_cost(w: SimWorld) -> Dictionary:
-	var n := helper_count(w)
+	var n := army(w)  # nach Stärke, nicht Anzahl: Fusion macht Bots nicht billiger (MS57)
 	var base := float(w.helper_cfg.get("cost_base_bolts", 400))
 	var growth := float(w.helper_cfg.get("cost_growth", 1.5))
 	var bolts_cost := int(round(base * pow(growth, n) / 10.0)) * 10
@@ -107,7 +107,7 @@ static func can_buy_helper_upgrade(w: SimWorld, id: String) -> String:
 	var feature := str(u.get("requires_feature", ""))
 	if feature != "" and not w.unlocked_features.has(feature):
 		return "locked"
-	if w.bolts < int(u["cost_bolts"][level]):
+	if w.bolts < Costs.upgrade(u, level):
 		return "bolts"
 	return ""
 
@@ -120,7 +120,7 @@ static func _cmd_buy_helper_upgrade(w: SimWorld, cmd: Dictionary) -> void:
 		return
 	var u := helper_upgrade_def(w, id)
 	var level := int(w.helper_upgrades.get(id, 0))
-	w.bolts -= int(u["cost_bolts"][level])
+	w.bolts -= Costs.upgrade(u, level)
 	w.helper_upgrades[id] = level + 1
 	w.bolts_changed.emit(w.bolts)
 	w.recompute_modifiers()
@@ -149,3 +149,50 @@ static func _tick_helpers(w: SimWorld) -> void:
 			_schedule_stuck(w, h)
 		h.tick(w)
 		w.helper_work(h)
+
+
+# --- Fusion (MS57): 5 Bots → Super-Bot (×5), 5 Super-Bots → Mega-Bot (×25) ---------------
+
+const FUSE_COUNT := 5
+
+
+## Gesamtstärke der Armee (Bot 1, Super-Bot 5, Mega-Bot 25).
+static func army(w: SimWorld) -> int:
+	var n := 0
+	for h: Helper in w.helpers.values():
+		n += h.power
+	return n
+
+
+## Kann aus 5 Bots der Stärke `power` einer mit ×5 werden?
+static func can_fuse(w: SimWorld, power: int) -> bool:
+	if power >= 25:
+		return false
+	var n := 0
+	for h: Helper in w.helpers.values():
+		if h.power == power:
+			n += 1
+	return n >= FUSE_COUNT
+
+
+static func _cmd_fuse(w: SimWorld, cmd: Dictionary) -> void:
+	var p := int(cmd.get("power", 1))
+	if not can_fuse(w, p):
+		w.helper_failed.emit("fuse")
+		return
+	var picked: Array[Helper] = []
+	for h: Helper in w.helpers.values():
+		if h.power == p and picked.size() < FUSE_COUNT:
+			picked.append(h)
+	var first := picked[0]
+	var pos := first.pos
+	var zone := first.zone_id
+	for h in picked:
+		w.helpers.erase(h.id)
+		w.helper_removed.emit(h.id)
+	var big := add_helper(w, first.zone_tile, first.depot_tile, first.name_index, first.color_index)
+	big.power = p * FUSE_COUNT
+	big.pos = pos
+	big.zone_id = zone
+	_apply_helper_mods(w, big)
+	w.helper_fused.emit(big)

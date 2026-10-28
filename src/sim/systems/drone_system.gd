@@ -82,7 +82,7 @@ static func can_buy_drone_upgrade(w: SimWorld, id: String) -> String:
 		return "max"
 	if not w.unlocked_features.has(str(u.get("requires_feature", "drones"))):
 		return "locked"
-	if w.bolts < int(u["cost_bolts"][level]):
+	if w.bolts < Costs.upgrade(u, level):
 		return "bolts"
 	return ""
 
@@ -95,7 +95,7 @@ static func _cmd_buy_drone_upgrade(w: SimWorld, cmd: Dictionary) -> void:
 		return
 	var u := drone_upgrade_def(w, id)
 	var level := int(w.drone_upgrades.get(id, 0))
-	w.bolts -= int(u["cost_bolts"][level])
+	w.bolts -= Costs.upgrade(u, level)
 	w.bolts_changed.emit(w.bolts)
 	w.drone_upgrades[id] = level + 1
 	w.recompute_modifiers()

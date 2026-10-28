@@ -29,7 +29,7 @@ static func helpers_at(w: SimWorld, boss: ResourceNode) -> int:
 	var n := 0
 	for h: Helper in w.helpers.values():
 		if h.rally_id == boss.id and Vector2(h.pos).distance_to(center) <= reach:
-			n += 1
+			n += h.power  # Super-Bot zählt 5, Mega-Bot 25 (MS57)
 	return n
 
 
@@ -38,13 +38,13 @@ static func helpers_coming(w: SimWorld, boss: ResourceNode) -> int:
 	var n := 0
 	for h: Helper in w.helpers.values():
 		if h.rally_id == boss.id:
-			n += 1
+			n += h.power
 	return n - helpers_at(w, boss)
 
 
 ## So viele Bots fehlen insgesamt (0 = genug gebaut).
 static func helpers_missing(w: SimWorld, boss: ResourceNode) -> int:
-	return maxi(0, boss.bots_needed - w.helpers.size())
+	return maxi(0, boss.bots_needed - HelperSystem.army(w))
 
 
 ## Nur gemeinsam: Schaden erst, wenn genug Bots dabei sind.

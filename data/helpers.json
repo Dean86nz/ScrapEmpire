@@ -2,7 +2,7 @@
   "max_helpers": 40,
   "reinforce_reach_px": 260,
   "cost_base_bolts": 150,
-  "cost_growth": 1.12,
+  "cost_growth": 1.05,
   "cost_chrome": 0,
   "zone_radius_tiles": 8,
   "base_speed_px_per_s": 224,
@@ -47,49 +47,33 @@
       "id": "helper_speed",
       "name_key": "HELPER_UPG_SPEED",
       "desc_key": "HELPER_UPG_SPEED_DESC",
-      "max_level": 3,
-      "cost_bolts": [
-        300,
-        600,
-        1200
-      ],
-      "cost_chrome": [
-        0,
-        0,
-        0
-      ],
+      "max_level": 30,
       "requires_feature": "helpers",
       "effects": [
         {
           "key": "helper_speed_mult",
           "op": "add",
-          "per_level": 0.2
+          "per_level": 0.05
         }
-      ]
+      ],
+      "cost_base": 200,
+      "cost_growth": 1.4071
     },
     {
       "id": "helper_capacity",
       "name_key": "HELPER_UPG_CAPACITY",
       "desc_key": "HELPER_UPG_CAPACITY_DESC",
-      "max_level": 3,
-      "cost_bolts": [
-        300,
-        600,
-        1200
-      ],
-      "cost_chrome": [
-        0,
-        0,
-        0
-      ],
+      "max_level": 30,
       "requires_feature": "helpers",
       "effects": [
         {
           "key": "helper_capacity_add",
           "op": "add",
-          "per_level": 10
+          "per_level": 2
         }
-      ]
+      ],
+      "cost_base": 200,
+      "cost_growth": 1.4071
     },
     {
       "id": "helper_tool",
@@ -114,6 +98,22 @@
           "key": "helper_tier",
           "op": "add",
           "per_level": 1
+        }
+      ]
+    },
+    {
+      "id": "helper_power",
+      "name_key": "HELPER_UPG_POWER",
+      "desc_key": "HELPER_UPG_POWER_DESC",
+      "max_level": 30,
+      "cost_base": 300,
+      "cost_growth": 1.3875,
+      "requires_feature": "helpers",
+      "effects": [
+        {
+          "key": "helper_power",
+          "op": "add",
+          "per_level": 0.2
         }
       ]
     }

@@ -76,6 +76,7 @@ var _hammer: Label
 var _last_total := 0
 var _last_cd := 0
 var _t := 0.0
+var _swinging := false
 
 
 func _ensure_work_nodes() -> void:
@@ -134,6 +135,13 @@ func _update_work_look(delta: float) -> void:
 	# Leerlauf: grauer, langsam wippend; Arbeit: volle Farbe
 	var idle := _helper.bored != "" and total == 0 and not _helper.has_move_target()
 	var base := _base_modulate()
+	if _helper.power >= 25:
+		base = base.lerp(Color(1.0, 0.85, 0.3), 0.55)  # Mega-Bot golden
+	elif _helper.power >= 5:
+		base = base.lerp(Color(0.75, 0.9, 1.0), 0.35)  # Super-Bot glänzend
+	var bs := 0.85 * (1.8 if _helper.power >= 25 else (1.35 if _helper.power >= 5 else 1.0))
+	if not _swinging:
+		_sprite.scale = _sprite.scale.lerp(Vector2(bs, bs), minf(1.0, delta * 6.0))
 	_sprite.modulate = _sprite.modulate.lerp(base.lerp(Color(0.6, 0.6, 0.65), 0.6) if idle else base, minf(1.0, delta * 4.0))
 	_sprite.position.y = sin(_t * 1.6) * 3.0 if idle else 0.0
 
@@ -164,6 +172,9 @@ func _swing() -> void:
 	tw.tween_property(_hammer, "rotation", 0.6, 0.09)
 	tw.tween_property(_hammer, "rotation", -0.2, 0.12)
 	tw.tween_callback(func() -> void: _hammer.visible = false)
+	var bs := _sprite.scale
+	_swinging = true
 	var sq := create_tween()
-	sq.tween_property(_sprite, "scale", Vector2(0.95, 0.75), 0.06)
-	sq.tween_property(_sprite, "scale", Vector2(0.85, 0.85), 0.1)
+	sq.tween_property(_sprite, "scale", bs * Vector2(1.1, 0.88), 0.06)
+	sq.tween_property(_sprite, "scale", bs, 0.1)
+	sq.tween_callback(func() -> void: _swinging = false)

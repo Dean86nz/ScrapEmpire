@@ -130,7 +130,7 @@
       "type": "loot",
       "boss": true,
       "bots_needed": 1,
-      "reward_bolts": 150,
+      "reward_bolts": 300,
       "yield": {
         "scrap": 160,
         "copper": 60,
@@ -199,8 +199,8 @@
       "tool": "hammer",
       "type": "loot",
       "boss": true,
-      "bots_needed": 2,
-      "reward_bolts": 400,
+      "bots_needed": 3,
+      "reward_bolts": 2000,
       "yield": {
         "copper": 180,
         "chrome": 30,
@@ -216,8 +216,8 @@
       "tool": "suction",
       "type": "loot",
       "yield": {
-        "plastic": 40,
-        "chrome": 4
+        "plastic": 50,
+        "chrome": 5
       },
       "sprite": "res://assets/sprites/nodes/duck_pile.svg",
       "respawn_s": 0
@@ -229,8 +229,8 @@
       "tool": "suction",
       "type": "loot",
       "yield": {
-        "plastic": 32,
-        "scrap": 12
+        "plastic": 40,
+        "scrap": 15
       },
       "sprite": "res://assets/sprites/nodes/flipflop_heap.svg",
       "respawn_s": 0
@@ -242,9 +242,9 @@
       "tool": "hammer",
       "type": "loot",
       "yield": {
-        "plastic": 20,
-        "chrome": 8,
-        "scrap": 12
+        "plastic": 25,
+        "chrome": 10,
+        "scrap": 15
       },
       "sprite": "res://assets/sprites/nodes/umbrella_wreck.svg",
       "respawn_s": 0
@@ -256,9 +256,9 @@
       "tool": "hammer",
       "type": "loot",
       "yield": {
-        "wood": 16,
-        "plastic": 8,
-        "copper": 4
+        "wood": 20,
+        "plastic": 10,
+        "copper": 5
       },
       "sprite": "res://assets/sprites/nodes/sofa.svg",
       "respawn_s": 0
@@ -270,8 +270,8 @@
       "tool": "hammer",
       "type": "loot",
       "boss": true,
-      "bots_needed": 3,
-      "reward_bolts": 700,
+      "bots_needed": 8,
+      "reward_bolts": 15000,
       "yield": {
         "plastic": 300,
         "chrome": 45,
@@ -287,10 +287,10 @@
       "tool": "hammer",
       "type": "loot",
       "yield": {
-        "scrap": 30,
-        "copper": 12,
-        "plastic": 12,
-        "chrome": 6
+        "scrap": 54,
+        "copper": 22,
+        "plastic": 22,
+        "chrome": 11
       },
       "sprite": "res://assets/sprites/nodes/fridge.svg",
       "respawn_s": 0
@@ -302,9 +302,9 @@
       "tool": "hammer",
       "type": "loot",
       "yield": {
-        "scrap": 40,
-        "chrome": 10,
-        "copper": 12
+        "scrap": 72,
+        "chrome": 18,
+        "copper": 22
       },
       "sprite": "res://assets/sprites/nodes/freezer.svg",
       "respawn_s": 0
@@ -316,9 +316,9 @@
       "tool": "suction",
       "type": "loot",
       "yield": {
-        "plastic": 32,
-        "scrap": 20,
-        "titanium": 4
+        "plastic": 58,
+        "scrap": 36,
+        "titanium": 7
       },
       "sprite": "res://assets/sprites/nodes/pizza_tower.svg",
       "respawn_s": 0
@@ -330,8 +330,8 @@
       "tool": "hammer",
       "type": "loot",
       "yield": {
-        "stone": 20,
-        "scrap": 6
+        "stone": 36,
+        "scrap": 11
       },
       "sprite": "res://assets/sprites/nodes/ruin_wall.svg",
       "respawn_s": 0
@@ -343,8 +343,8 @@
       "tool": "hammer",
       "type": "loot",
       "boss": true,
-      "bots_needed": 4,
-      "reward_bolts": 1000,
+      "bots_needed": 20,
+      "reward_bolts": 100000,
       "yield": {
         "chrome": 90,
         "titanium": 35,
@@ -360,9 +360,9 @@
       "tool": "suction",
       "type": "loot",
       "yield": {
-        "copper": 12,
-        "plastic": 12,
-        "chrome": 12
+        "copper": 36,
+        "plastic": 36,
+        "chrome": 36
       },
       "sprite": "res://assets/sprites/nodes/satellite.svg",
       "respawn_s": 0
@@ -374,10 +374,10 @@
       "tool": "hammer",
       "type": "loot",
       "yield": {
-        "scrap": 20,
-        "copper": 12,
-        "chrome": 12,
-        "titanium": 4
+        "scrap": 60,
+        "copper": 36,
+        "chrome": 36,
+        "titanium": 12
       },
       "sprite": "res://assets/sprites/nodes/ship_part.svg",
       "respawn_s": 0
@@ -389,8 +389,8 @@
       "tool": "hammer",
       "type": "loot",
       "yield": {
-        "titanium": 12,
-        "chrome": 6
+        "titanium": 36,
+        "chrome": 18
       },
       "sprite": "res://assets/sprites/nodes/robot_arm.svg",
       "respawn_s": 0
@@ -402,8 +402,8 @@
       "tool": "hammer",
       "type": "loot",
       "boss": true,
-      "bots_needed": 5,
-      "reward_bolts": 1500,
+      "bots_needed": 45,
+      "reward_bolts": 600000,
       "yield": {
         "chrome": 120,
         "titanium": 60,
@@ -419,8 +419,8 @@
       "tool": "hammer",
       "type": "loot",
       "yield": {
-        "stardust": 6,
-        "titanium": 8
+        "stardust": 13,
+        "titanium": 17
       },
       "sprite": "res://assets/sprites/nodes/monolith.svg",
       "respawn_s": 0
@@ -432,8 +432,8 @@
       "tool": "suction",
       "type": "loot",
       "yield": {
-        "stardust": 8,
-        "chrome": 8
+        "stardust": 17,
+        "chrome": 17
       },
       "sprite": "res://assets/sprites/nodes/stardust_crystal.svg",
       "respawn_s": 0
@@ -445,8 +445,8 @@
       "tool": "hammer",
       "type": "loot",
       "yield": {
-        "titanium": 16,
-        "stardust": 4
+        "titanium": 34,
+        "stardust": 8
       },
       "sprite": "res://assets/sprites/nodes/mystery_cube.svg",
       "respawn_s": 0
@@ -458,8 +458,8 @@
       "tool": "hammer",
       "type": "loot",
       "boss": true,
-      "bots_needed": 6,
-      "reward_bolts": 2500,
+      "bots_needed": 100,
+      "reward_bolts": 3000000,
       "final": true,
       "yield": {
         "stardust": 45,
@@ -495,6 +495,188 @@
       },
       "sprite": "res://assets/sprites/nodes/meteor.svg",
       "respawn_s": 0
+    },
+    {
+      "id": "toaster_gold",
+      "name_key": "OBJ_TOASTER_GOLD",
+      "tier": 2,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "scrap": 20,
+        "copper": 8,
+        "chrome": 2
+      },
+      "sprite": "res://assets/sprites/nodes/toaster.svg",
+      "respawn_s": 0,
+      "tint": "#FFD24A"
+    },
+    {
+      "id": "tv_retro",
+      "name_key": "OBJ_TV_RETRO",
+      "tier": 1,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "scrap": 14,
+        "copper": 8,
+        "plastic": 6
+      },
+      "sprite": "res://assets/sprites/nodes/tv.svg",
+      "respawn_s": 0,
+      "tint": "#9BE38F",
+      "scale": 1.1
+    },
+    {
+      "id": "cable_drum",
+      "name_key": "OBJ_CABLE_DRUM",
+      "tier": 2,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "copper": 40,
+        "plastic": 6
+      },
+      "sprite": "res://assets/sprites/nodes/charger_nest.svg",
+      "respawn_s": 0,
+      "tint": "#E8A060",
+      "scale": 1.3
+    },
+    {
+      "id": "radio_tower",
+      "name_key": "OBJ_RADIO_TOWER",
+      "tier": 3,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "copper": 30,
+        "plastic": 12,
+        "chrome": 3
+      },
+      "sprite": "res://assets/sprites/nodes/radio.svg",
+      "respawn_s": 0,
+      "tint": "#B0C8FF",
+      "scale": 1.4
+    },
+    {
+      "id": "duck_king",
+      "name_key": "OBJ_DUCK_KING",
+      "tier": 3,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "plastic": 60,
+        "chrome": 8
+      },
+      "sprite": "res://assets/sprites/nodes/duck_pile.svg",
+      "respawn_s": 0,
+      "tint": "#FFC83C",
+      "scale": 1.35
+    },
+    {
+      "id": "beach_chair",
+      "name_key": "OBJ_BEACH_CHAIR",
+      "tier": 2,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "plastic": 30,
+        "wood": 10,
+        "chrome": 2
+      },
+      "sprite": "res://assets/sprites/nodes/umbrella_wreck.svg",
+      "respawn_s": 0,
+      "tint": "#7FC8FF",
+      "scale": 1.1
+    },
+    {
+      "id": "fridge_double",
+      "name_key": "OBJ_FRIDGE_DOUBLE",
+      "tier": 4,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "scrap": 60,
+        "copper": 24,
+        "chrome": 20
+      },
+      "sprite": "res://assets/sprites/nodes/fridge.svg",
+      "respawn_s": 0,
+      "tint": "#DDEBFF",
+      "scale": 1.35
+    },
+    {
+      "id": "ice_block",
+      "name_key": "OBJ_ICE_BLOCK",
+      "tier": 3,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "chrome": 14,
+        "plastic": 20
+      },
+      "sprite": "res://assets/sprites/nodes/freezer.svg",
+      "respawn_s": 0,
+      "tint": "#9FE6FF"
+    },
+    {
+      "id": "satellite_big",
+      "name_key": "OBJ_SATELLITE_BIG",
+      "tier": 5,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "copper": 40,
+        "chrome": 45,
+        "titanium": 14
+      },
+      "sprite": "res://assets/sprites/nodes/satellite.svg",
+      "respawn_s": 0,
+      "tint": "#FFF2A8",
+      "scale": 1.4
+    },
+    {
+      "id": "solar_panel",
+      "name_key": "OBJ_SOLAR_PANEL",
+      "tier": 4,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "chrome": 30,
+        "titanium": 8
+      },
+      "sprite": "res://assets/sprites/nodes/ship_part.svg",
+      "respawn_s": 0,
+      "tint": "#7FB8FF"
+    },
+    {
+      "id": "monolith_dark",
+      "name_key": "OBJ_MONOLITH_DARK",
+      "tier": 5,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "stardust": 16,
+        "titanium": 24
+      },
+      "sprite": "res://assets/sprites/nodes/monolith.svg",
+      "respawn_s": 0,
+      "tint": "#B88CFF",
+      "scale": 1.2
+    },
+    {
+      "id": "crystal_cluster",
+      "name_key": "OBJ_CRYSTAL_CLUSTER",
+      "tier": 5,
+      "tool": "hammer",
+      "type": "loot",
+      "yield": {
+        "stardust": 20,
+        "chrome": 10
+      },
+      "sprite": "res://assets/sprites/nature/crystal_cluster.svg",
+      "respawn_s": 0,
+      "scale": 1.2
     }
   ]
 }

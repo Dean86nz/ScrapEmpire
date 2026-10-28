@@ -125,8 +125,14 @@ func test_courier_upgrade_raises_load_and_count() -> void:
 	var w := _world()
 	w.unlocked_features["courier"] = true
 	assert_eq(int(NetworkSystem.courier_stats(w)["count"]), 1)
-	w.ship_upgrades["courier"] = 4
-	assert_eq(int(NetworkSystem.courier_stats(w)["count"]), 3)
+	var first_load := int(NetworkSystem.courier_stats(w)["load"])
+	w.ship_upgrades["courier"] = 1
+	assert_true(int(NetworkSystem.courier_stats(w)["load"]) > first_load, "Stufe 2 trägt mehr")
+	# Höchststufe aus ship.json: letzte Zeile der Kurier-Tabelle
+	var levels: Array = w.ship_cfg["courier"]["levels"]
+	w.ship_upgrades["courier"] = int(ShipSystem.upgrade_def(w, "courier")["max_level"])
+	assert_eq(int(NetworkSystem.courier_stats(w)["count"]), int(levels[-1]["count"]))
+	assert_true(int(NetworkSystem.courier_stats(w)["count"]) > 1, "mehrere Kuriere")
 	assert_eq(int(NetworkSystem.courier_stats(w)["load"]), 0, "alles")
 
 

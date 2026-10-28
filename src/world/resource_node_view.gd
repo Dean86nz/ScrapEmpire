@@ -14,6 +14,7 @@ const TIER_COLORS := {
 	4: Color(0.7, 0.4, 0.9), 5: Color(1.0, 0.7, 0.2),
 }
 
+var _sprite_base_scale := 1.0
 var _boss_need: Label
 var _boss_node: ResourceNode
 var _boss_tick := 0
@@ -30,6 +31,13 @@ func setup(node: ResourceNode) -> void:
 	var path := str(ResourceNode.defs.get(node.kind, {}).get("sprite", FALLBACK_TEXTURES.get(node.kind, "")))
 	if path != "" and ResourceLoader.exists(path):
 		_sprite.texture = load(path)
+	# Varianten (MS58): gleiches Bild, eigene Farbe und Größe
+	var vd: Dictionary = ResourceNode.defs.get(node.kind, {})
+	if vd.has("tint"):
+		_sprite.self_modulate = Color.html(str(vd["tint"]))
+	if vd.has("scale"):
+		_sprite_base_scale = float(vd["scale"])
+		_sprite.scale = Vector2.ONE * _sprite_base_scale
 	_sprite.position = Vector2(0, -6)
 	add_child(_sprite)
 	position = Vector2(node.center_px())
@@ -117,7 +125,7 @@ func refresh(node: ResourceNode) -> void:
 	if _boss_bar != null:
 		_boss_bar.value = float(node.amount) / float(maxi(node.max_amount, 1))
 	if not node.is_pile():
-		_sprite.scale = Vector2.ONE
+		_sprite.scale = Vector2.ONE * _sprite_base_scale
 		return
 	var t := float(node.amount) / float(maxi(node.max_amount, 1))
 	_sprite.scale = Vector2.ONE * (0.55 + 0.45 * t)

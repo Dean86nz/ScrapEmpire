@@ -98,7 +98,7 @@ static func upgrade_cost(w: SimWorld, id: String) -> int:
 	var level := upgrade_level(w, id)
 	if u.is_empty() or level >= int(u.get("max_level", 1)):
 		return -1
-	return int(u["cost_bolts"][level])
+	return Costs.upgrade(u, level)
 
 
 ## "" wenn kaufbar, sonst: unknown, locked, max, bolts

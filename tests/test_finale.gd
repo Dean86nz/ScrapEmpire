@@ -9,7 +9,7 @@ func _launched_world() -> SimWorld:
 	var s := TestWorlds.with_ship(w)
 	s.stage = 4
 	ShipSystem.apply_stage(w, s)
-	w.bolts = 40000
+	w.bolts = ShipSystem.next_stage_cost(w, s) + 40000
 	w.flags["final_boss"] = true
 	w.flags["boss_a"] = true
 	for n in w.nodes.values():

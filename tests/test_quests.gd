@@ -71,7 +71,9 @@ func test_upgrade_level_and_bolts_earned() -> void:
 	w.player.inventory.add("chrome", 10)
 	w.queue_command({"type": "deliver_all"})
 	w.tick()
-	assert_eq(w.quests.progress(w), [80, 300])
+	var goal := int(w.quests.progress(w)[1])
+	assert_true(goal > 0, "Ziel aus quests.json")
+	assert_eq(w.quests.progress(w), [mini(10 * int(w.item_values["chrome"]), goal), goal], "10 Chrom zum Wert aus items.json")
 
 
 func test_zone_gate_ship_stage_bots_and_planet() -> void:

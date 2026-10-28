@@ -111,14 +111,21 @@ func test_upgrades_change_speed_capacity_tier() -> void:
 	w.bolts = 10000
 	var fails := []
 	w.helper_failed.connect(func(r: String) -> void: fails.append(r))
+	var spent := 0
 	for id in ["helper_speed", "helper_capacity", "helper_tool"]:
+		spent += Costs.upgrade(HelperSystem.helper_upgrade_def(w, id), 0)
 		w.queue_command({"type": "buy_helper_upgrade", "id": id})
 		w.tick()
 	assert_eq(fails, [])
-	assert_eq(h.speed_px_per_tick, 13, "224 × 1,2 / 20 = 13,4")
-	assert_eq(h.inventory.stack_size, 20)
+	# Werte je Stufe aus helpers.json
+	var speed_per := float(HelperSystem.helper_upgrade_def(w, "helper_speed")["effects"][0]["per_level"])
+	var cap_per := int(HelperSystem.helper_upgrade_def(w, "helper_capacity")["effects"][0]["per_level"])
+	var base_speed := int(w.helper_cfg["base_speed_px_per_s"])
+	assert_eq(h.speed_px_per_tick, int(round(base_speed * (1.0 + speed_per) / 20.0)), "Basis × (1 + Stufe) / 20")
+	assert_true(h.speed_px_per_tick > 11, "schneller als vorher")
+	assert_eq(h.inventory.stack_size, 10 + cap_per)
 	assert_eq(h.hammer_tier, 2)
-	assert_eq(w.bolts, 10000 - 300 - 300 - 400)
+	assert_eq(w.bolts, 10000 - spent)
 	w.bolts = 100000
 	for i in 3:
 		w.queue_command({"type": "buy_helper_upgrade", "id": "helper_tool"})
@@ -132,9 +139,17 @@ func test_upgrade_requires_feature_and_max() -> void:
 	assert_eq(w.can_buy_helper_upgrade("helper_speed"), "locked")
 	_unlock(w)
 	assert_eq(w.can_buy_helper_upgrade("helper_tool"), "locked", "braucht das Feature helper_tools")
-	for i in 3:
+	# bis zur Höchststufe aus helpers.json kaufen
+	var u := HelperSystem.helper_upgrade_def(w, "helper_speed")
+	var max_level := int(u["max_level"])
+	w.bolts = 0
+	for i in max_level:
+		w.bolts += Costs.upgrade(u, i)
+	for i in max_level:
 		w.queue_command({"type": "buy_helper_upgrade", "id": "helper_speed"})
 		w.tick()
+	assert_eq(int(w.helper_upgrades.get("helper_speed", 0)), max_level)
+	assert_eq(w.bolts, 0, "genau die Summe aller Stufen bezahlt")
 	assert_eq(w.can_buy_helper_upgrade("helper_speed"), "max")
 
 

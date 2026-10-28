@@ -23,7 +23,7 @@ func test_buy_requires_blueprint_and_bolts() -> void:
 	w.queue_command({"type": "buy_drone"})
 	w.tick()
 	assert_eq(fails, ["locked", "bolts"])
-	w.bolts = 400
+	w.bolts = int(w.next_drone_cost()["bolts"])
 	w.queue_command({"type": "buy_drone"})
 	w.tick()
 	assert_eq(w.drones.size(), 1)
@@ -35,9 +35,13 @@ func test_buy_requires_blueprint_and_bolts() -> void:
 func test_cost_curve_and_max() -> void:
 	var w := _world()
 	_unlock(w)
-	assert_eq(w.next_drone_cost(), {"bolts": 400})
+	# Kosten = Basis × Wachstum^Anzahl, auf 10 gerundet (Zahlen aus drones.json)
+	var base := float(w.drone_cfg["cost_base_bolts"])
+	var growth := float(w.drone_cfg["cost_growth"])
+	assert_eq(w.next_drone_cost(), {"bolts": int(round(base / 10.0)) * 10})
 	w.add_drone()
-	assert_eq(w.next_drone_cost()["bolts"], 600)
+	assert_eq(w.next_drone_cost()["bolts"], int(round(base * growth / 10.0)) * 10)
+	assert_true(int(w.next_drone_cost()["bolts"]) > int(round(base / 10.0)) * 10, "die zweite Drohne kostet mehr")
 	for i in int(w.drone_cfg["max_drones"]) - 1:
 		w.add_drone()
 	w.bolts = 1000000
@@ -107,9 +111,11 @@ func test_upgrades_change_speed_and_capacity() -> void:
 	w.queue_command({"type": "buy_drone_upgrade", "id": "drone_speed"})
 	w.tick()
 	assert_eq(int(w.drone_upgrades.get("drone_capacity", 0)), 1)
-	assert_eq(d.capacity, int(w.drone_cfg["base_capacity"]) + 4)
+	var cap_def := DroneSystem.drone_upgrade_def(w, "drone_capacity")
+	var speed_def := DroneSystem.drone_upgrade_def(w, "drone_speed")
+	assert_eq(d.capacity, int(w.drone_cfg["base_capacity"]) + int(cap_def["effects"][0]["per_level"]))
 	assert_true(d.speed_px_per_tick > base_speed)
-	assert_eq(w.bolts, 10000 - 600 - 400)
+	assert_eq(w.bolts, 10000 - Costs.upgrade(cap_def, 0) - Costs.upgrade(speed_def, 0))
 
 
 func test_remove_drops_cargo() -> void:

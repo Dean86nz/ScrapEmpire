@@ -23,7 +23,7 @@ static func helper_work(w: SimWorld, h: Helper) -> void:
 					item_id = node.take_one()
 					NodeSystem.after_take(w, node)
 				h.inventory.add(item_id, 1)
-				h.suck_cooldown = PlayerState.BASE_SUCK_INTERVAL
+				h.suck_cooldown = maxi(1, int(PlayerState.BASE_SUCK_INTERVAL / h.work_mult))
 				w.progression.on_collect(1)
 	if h.hammer_pressed:
 		h.hammer_pressed = false
@@ -39,7 +39,7 @@ static func helper_work(w: SimWorld, h: Helper) -> void:
 					if n.boss and not BossSystem.can_damage(w, n):
 						w.boss_swing.emit(n)
 						break
-					for k in ResourceNode.items_per_hit(n, h.hammer_tier):
+					for k in ceili(ResourceNode.items_per_hit(n, h.hammer_tier) * h.work_mult):
 						var item_id := n.take_one()
 						if item_id == "":
 							break
@@ -258,7 +258,7 @@ static func _tick_hammer(w: SimWorld) -> void:
 	elif wreck.tier > w.player.hammer_tier:
 		w._emit_too_hard(wreck, "hammer")
 		return
-	var per_hit := ResourceNode.items_per_hit(wreck, w.player.hammer_tier)
+	var per_hit := ceili(ResourceNode.items_per_hit(wreck, w.player.hammer_tier) * (1.0 + w.player.hammer_power))
 	var one_hit := per_hit >= wreck.amount
 	w.hammer_impact.emit(wreck, w.player.hammer_tier, one_hit)
 	for i in per_hit:
