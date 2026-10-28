@@ -97,7 +97,6 @@ func _build_steps() -> void:
 	var cursor := _node("BuildCursor")
 	var build_menu := _node("BuildMenu")
 	var progress := _node("ProgressMenu")
-	var editor := _node("TaskEditor")
 	var pause := _node("PauseMenu")
 	var router: Node = root.get_node("/root/InputRouter")
 
@@ -119,14 +118,14 @@ func _build_steps() -> void:
 		func() -> void:
 			_world.player.inventory.add("wood", 20)
 			_world.bolts = 5000
-			for f in ["autopilot", "decor"]:
+			for f in ["collection"]:
 				_world.unlocked_features[f] = true,
 		func() -> bool: return _world.player.inventory.count_of("wood") >= 20 and _world.ship() != null)
 
-	# Baumenü (Deko)
+	# Baumenü (Sammelstelle)
 	_step("Y kurz öffnet das Baumenü", func() -> void: _tap(JOY_BUTTON_Y), func() -> bool: return build_menu.visible)
-	_step("A wählt das fokussierte Deko-Objekt (Baumodus startet)", func() -> void: _tap(JOY_BUTTON_A),
-		func() -> bool: return not build_menu.visible and cursor.mode == cursor.Mode.PLACE and cursor.def.category == "decor")
+	_step("A wählt die fokussierte Sammelstelle (Baumodus startet)", func() -> void: _tap(JOY_BUTTON_A),
+		func() -> bool: return not build_menu.visible and cursor.mode == cursor.Mode.PLACE and cursor.def.id == "collection_point")
 	_step("B bricht den Baumodus ab", func() -> void: _tap(JOY_BUTTON_B),
 		func() -> bool: return cursor.mode == cursor.Mode.OFF and router.context == router.Context.GAME)
 
@@ -199,12 +198,10 @@ func _build_steps() -> void:
 	_step("Drohne gebaut: Menü zu, nach dem Jubel Steuerung zurück", func() -> void: pass,
 		func() -> bool: return not progress.visible and router.context == router.Context.GAME, 4, 1000)
 
-	# Aufgaben-Editor (Y lang)
-	_step("Y lang (halten)", func() -> void: _btn(JOY_BUTTON_Y, true), func() -> bool: return true, 2, 700)
-	_step("Y loslassen: Aufgaben-Editor offen", func() -> void: _btn(JOY_BUTTON_Y, false), func() -> bool: return editor.visible, 6)
-	_step("A auf „Schritt hinzufügen“ zeigt Schritt-Typen", func() -> void: _tap(JOY_BUTTON_A), func() -> bool: return editor._choosing_type)
-	_step("B geht zurück zur Liste", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return editor.visible and not editor._choosing_type)
-	_step("B schließt den Editor", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return not editor.visible and router.context == router.Context.GAME)
+	# Y lang: kein Aufgaben-Editor mehr, Loslassen öffnet einfach das Baumenü
+	_step("Y lang (halten)", func() -> void: _btn(JOY_BUTTON_Y, true), func() -> bool: return not build_menu.visible, 2, 700)
+	_step("Y loslassen: Baumenü offen", func() -> void: _btn(JOY_BUTTON_Y, false), func() -> bool: return build_menu.visible, 6)
+	_step("B schließt das Baumenü", func() -> void: _tap(JOY_BUTTON_B), func() -> bool: return not build_menu.visible and router.context == router.Context.GAME)
 
 	# Pause
 	_step("Start öffnet Pause", func() -> void: _tap(JOY_BUTTON_START), func() -> bool: return pause.visible)

@@ -1,6 +1,6 @@
 class_name BuildingSystem
 extends RefCounted
-## Bauen (Deko, Museum) und Abreißen, Abliefern ans Schiff, Kosten, Reichweite.
+## Bauen (Sammelstellen) und Abreißen, Abliefern ans Schiff, Kosten, Reichweite.
 ## Teilsystem von SimWorld: statische Funktionen, `w` ist die Welt (Daten und Signale bleiben dort).
 
 

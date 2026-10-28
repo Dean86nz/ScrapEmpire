@@ -112,7 +112,7 @@ func _tab_enabled(t: int) -> bool:
 		Tab.SKILLS:
 			return _world.progression.level >= 2 or _world.progression.skill_points > 0
 		Tab.JOURNAL:
-			return not _world.collectibles_found.is_empty() or _world.building_count("museum") > 0
+			return not _world.collectibles_found.is_empty()
 	return true
 
 
@@ -1015,15 +1015,14 @@ func _first_focusable(n: Node) -> Control:
 
 ## Journal: Fundstücke mit Text, Unbekannte mit Kapitel-Hinweis.
 func _refresh_journal() -> void:
-	var sig := "%d|%s|%d" % [_world.building_count("museum"), ",".join(_world.collectibles_found.keys()), _world.zones.unlocked.size()]
+	var sig := "%s|%d" % [",".join(_world.collectibles_found.keys()), _world.zones.unlocked.size()]
 	if sig == _journal_sig and _journal_list.get_child_count() > 0:
 		return
 	_journal_sig = sig
 	var focus_idx := _clear_keep_focus(_journal_list)
 	var found := _world.collectibles_found.size()
 	var total := _world.collectible_total()
-	var has_museum := _world.building_count("museum") > 0
-	var head := _make_card("🏛 %s: %d / %d   ·   %s" % [tr("JOURNAL_HEADER"), found, total, tr("JOURNAL_MUSEUM_YES") if has_museum else tr("JOURNAL_MUSEUM_NO")])
+	var head := _make_card("📖 %s: %d / %d" % [tr("JOURNAL_HEADER"), found, total])
 	head.custom_minimum_size = Vector2(1360, 72)
 	_part(head, "Detail").visible = false
 	_journal_list.add_child(head)

@@ -24,7 +24,7 @@ func _ready() -> void:
 	_title.get_parent().move_child(_inventory_hint, _title.get_index() + 1)
 
 
-## Gibt es überhaupt etwas zu bauen? (zu Spielbeginn nicht: Deko kommt mit Schiffsstufe 3)
+## Gibt es überhaupt etwas zu bauen? (zu Spielbeginn nicht: Sammelstellen kommen mit Schiffsstufe 2)
 func has_entries() -> bool:
 	var w := SimClock.world
 	for def_id in DataRegistry.building_defs:

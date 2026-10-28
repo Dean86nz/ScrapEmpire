@@ -8,7 +8,6 @@ var _cone := Polygon2D.new()
 var _swirl := Node2D.new()
 var _shape_key := Vector2.ZERO
 var _time := 0.0
-var _was_auto := false
 
 
 func _ready() -> void:
@@ -43,14 +42,8 @@ func _physics_process(delta: float) -> void:
 			var a := -half + (2.0 * half) * float(i) / float(segs)
 			pts.append(Vector2.RIGHT.rotated(a) * range_px)
 		_cone.polygon = pts
-	var auto: bool = SimClock.world.tasks.active
-	if _was_auto and not auto:
-		# Autopilot gerade beendet oder abgebrochen: nichts darf „hängen“ bleiben.
-		SimClock.world.player.suck_held = false
-	_was_auto = auto
-	var held := (InputRouter.context == InputRouter.Context.GAME and Input.is_action_pressed("tool_primary")) 		or (auto and SimClock.world.player.suck_held)
-	if not auto:
-		SimClock.world.player.suck_held = held
+	var held := InputRouter.context == InputRouter.Context.GAME and Input.is_action_pressed("tool_primary")
+	SimClock.world.player.suck_held = held
 	_cone.visible = held
 	_swirl.visible = held
 	if held:

@@ -54,7 +54,6 @@ static var ACTIONS: Dictionary = {
 	"tool_secondary": [_axis(JOY_AXIS_TRIGGER_LEFT, 1.0), _mouse(MOUSE_BUTTON_RIGHT)],
 	"tool_swap": [_btn(JOY_BUTTON_X), _key(KEY_Q)],
 	"boost": [_btn(JOY_BUTTON_LEFT_STICK), _key(KEY_SHIFT)],
-	"task_menu": [_key(KEY_L)],
 	"minimap_toggle": [_key(KEY_M)],
 	# Interaktion und Menüs
 	"interact": [_btn(JOY_BUTTON_A), _key(KEY_E)],

@@ -239,7 +239,7 @@ static func _tick_clean_wave(w: SimWorld) -> void:
 				w.dirt.heal(t)
 
 
-# --- Kosten für Deko (Material aus Rustys Inventar) ---------------------------------
+# --- Baukosten (Bolts und Material aus Rustys Inventar) ----------------------------
 
 static func count_available(w: SimWorld, item: String) -> int:
 	return w.player.inventory.count_of(item)

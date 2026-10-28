@@ -14,7 +14,6 @@ const LONG_PRESS_SECONDS := 0.45
 @onready var _progress_menu: CanvasLayer = $ProgressMenu
 @onready var _cursor: BuildCursor = $BuildCursor
 @onready var _pause_menu: CanvasLayer = $PauseMenu
-@onready var _task_editor: CanvasLayer = $TaskEditor
 @onready var _end_screen: CanvasLayer = $EndScreen
 
 var _cam_focus: Node2D = null     # solange gesetzt, schaut die Kamera dorthin (Feier, Abflug)
@@ -31,7 +30,6 @@ var _rain: RainLayer
 var _chapter_timer := 0.0
 var _build_press_time := -1.0
 var _tech_press_time := -1.0
-var _pending_task_type := -1
 var _first_collected: Dictionary = {}
 var _autosave_timer := AUTOSAVE_SECONDS
 var _loaded_from_save := false
@@ -118,14 +116,6 @@ func _ready() -> void:
 		Quips.say("drone_bought", true))
 	_world.helper_failed.connect(func(reason: String) -> void: Quips.say("helper_fail_" + reason, true))
 	_world.helper_added.connect(func(_h: Helper) -> void: _player.celebrate())
-	_task_editor.bind(_world)
-	_task_editor.target_requested.connect(_on_task_target_requested)
-	_cursor.target_chosen.connect(_on_target_chosen)
-	_world.tasks.waiting.connect(func(reason: String) -> void: Quips.say("task_wait_" + reason, true))
-	_world.tasks.changed.connect(func() -> void: _hud.refresh_tasks(_world.tasks))
-	_world.tasks.state_changed.connect(func(_a: bool) -> void: _hud.refresh_tasks(_world.tasks))
-	_world.tasks.step_started.connect(func(_i: int) -> void: _hud.refresh_tasks(_world.tasks))
-	_hud.refresh_tasks(_world.tasks)
 	_hud.bind_minimap(_player)
 	_progress_menu.bind_player(_player)
 	_progress_menu.set_dirt_texture(_world_view.dirt_view.map_texture)
@@ -205,17 +195,11 @@ func _process(delta: float) -> void:
 		_chapter_timer = 1.0
 		_refresh_chapter_hud()
 		_hud.set_planet(_world.zones.planet_health(_world.nodes))
-	# Kurz/Lang-Erkennung per Zustandsabfrage (funktioniert auch mit simulierten Eingaben).
-	if _build_press_time >= 0.0:
-		_build_press_time += delta
-		if not Input.is_action_pressed("build_menu"):
-			var held := _build_press_time
-			_build_press_time = -1.0
-			if InputRouter.context == InputRouter.Context.GAME and held < LONG_PRESS_SECONDS:
-				_build_menu.open()
-		elif _build_press_time >= LONG_PRESS_SECONDS and InputRouter.context == InputRouter.Context.GAME:
-			_build_press_time = -1.0
-			_open_task_editor()
+	# Loslassen bzw. Kurz/Lang-Erkennung per Zustandsabfrage (funktioniert auch mit simulierten Eingaben).
+	if _build_press_time >= 0.0 and not Input.is_action_pressed("build_menu"):
+		_build_press_time = -1.0
+		if InputRouter.context == InputRouter.Context.GAME:
+			_build_menu.open()
 	if _tech_press_time >= 0.0:
 		_tech_press_time += delta
 		if not Input.is_action_pressed("tech_tree"):
@@ -280,11 +264,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_progress_menu.open(_progress_menu.Tab.SHIP)
 		get_viewport().set_input_as_handled()
 	elif InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("build_menu"):
-		# Y kurz: Baumenü (beim Loslassen, per Abfrage in _process); Y lang: Aufgaben-Editor.
+		# Y: Baumenü (beim Loslassen, per Abfrage in _process).
 		_build_press_time = 0.0
-		get_viewport().set_input_as_handled()
-	elif InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("task_menu"):
-		_open_task_editor()
 		get_viewport().set_input_as_handled()
 	elif InputRouter.context == InputRouter.Context.GAME and event.is_action_pressed("tech_tree"):
 		# Select kurz: Fortschritt; Select lang: Minimap ein/aus.
@@ -314,7 +295,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 ## Dev-Szenarien (nur Debug/Tests): "helpers" = zwei Bots, "drones" = zwei Drohnen mit losem Schrott,
-## "cozy" = Deko und Museum, "endgame" = viele Bolts für die Schiffsstufen.
+## "endgame" = viele Bolts für die Schiffsstufen.
 func debug_scenario(name: String) -> void:
 	match name:
 		"network":
@@ -361,19 +342,6 @@ func debug_scenario(name: String) -> void:
 			_world.bolts_changed.emit(_world.bolts)
 			_world.queue_command({"type": "buy_helper", "zone": _world.player_tile() + Vector2i(-4, -3)})
 			_world.queue_command({"type": "buy_helper", "zone": _world.player_tile() + Vector2i(5, 3)})
-		"cozy":
-			_world.unlocked_features["decor"] = true
-			_world.unlocked_features["museum"] = true
-			_world.player.inventory.add("wood", 30)
-			_world.player.inventory.add("stone", 30)
-			var c0 := _world.player_tile() + Vector2i(-5, 2)
-			_world.place_free("museum", c0, 0)
-			_world.place_free("lantern", c0 + Vector2i(3, 0), 0)
-			_world.place_free("bench", c0 + Vector2i(4, 1), 0)
-			_world.place_free("planter", c0 + Vector2i(7, 0), 0)
-			_world.place_free("sign", c0 + Vector2i(3, 2), 0)
-			_world.place_free("sculpture", c0 + Vector2i(8, 2), 0)
-			_world.place_free("stone_ring", c0 + Vector2i(6, 3), 0)
 		"drones":
 			_world.unlocked_features["drones"] = true
 			_world.bolts += 3000
@@ -403,26 +371,6 @@ func _on_zone_stage_changed(zone_id: String, stage: int) -> void:
 	EventBus.quip.emit(["ZONE_Q_0", "ZONE_Q_1", "ZONE_Q_2", "ZONE_Q_3"][stage])
 	_hud.set_tutorial(_hud.get_node("Tutorial/Label").text)  # unverändert lassen
 	print("Zone %s → Stufe %d" % [str(z.get("name", zone_id)), stage])
-
-
-func _open_task_editor() -> void:
-	if not _world.unlocked_features.has("autopilot"):
-		Quips.say("autopilot_locked", true)
-		return
-	_task_editor.open()
-
-
-func _on_task_target_requested(type: int) -> void:
-	_pending_task_type = type
-	_cursor.start_target()
-
-
-func _on_target_chosen(tile: Vector2i, ok: bool) -> void:
-	if _pending_task_type < 0:
-		return
-	var t := _pending_task_type
-	_pending_task_type = -1
-	_task_editor.on_target_result(t, tile, ok)
 
 
 func _on_collectible_found(_c: Collectible, def: Dictionary) -> void:
@@ -523,7 +471,7 @@ func _celebrate_purchase(jingle: bool = true) -> void:
 
 
 func _any_menu_open() -> bool:
-	return _progress_menu.visible or _build_menu.visible or _pause_menu.visible or _task_editor.visible or _end_screen.visible
+	return _progress_menu.visible or _build_menu.visible or _pause_menu.visible or _end_screen.visible
 
 
 ## Reparatur: Menü zu, Kamera zum Schiff, Konfetti, Putzring, Jubel-Schild. Auf der letzten Stufe
@@ -738,8 +686,6 @@ func _current_hint() -> String:
 		return ""
 	match InputRouter.context:
 		InputRouter.Context.BUILD:
-			if _cursor.mode == BuildCursor.Mode.TARGET:
-				return tr("HINT_TARGET" + kb)
 			return tr(("HINT_DEMOLISH" if _cursor.mode == BuildCursor.Mode.DEMOLISH else "HINT_PLACE") + kb)
 		InputRouter.Context.MENU:
 			# Das Fortschritts-Menü hat eine eigene Fußzeile: unten keine zweite
