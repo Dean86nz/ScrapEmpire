@@ -2,6 +2,31 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.22.0] – 2026-10-28 – MS33 Fehler aus dem Test, natürlicher Klang, Musik (Phase 2, Punkt 0)
+
+### Behoben
+- **Der letzte Müll war unzerstörbar:** Der Skill „Werkzeug“ hat jetzt 4 Stufen (T2 bis T5), damit knackt Rusty auch die Monolithen. Neuer Test: Jedes Objekt der Karte ist mit der höchsten Werkzeugstufe erreichbar, Ereignis-Müll schon mit dem Startwerkzeug
+- **Das Geld reichte nie:** Übergangs-Wirtschaft, bis die neuen Zonen kommen: Schiffsstufen 300 / 1.200 / 2.000 / 2.800 Bolts, Ertrag 6 Stufen (40 bis 300 Bolts, je +15 %). Neuer Test vergleicht den Wert aller Karten-Objekte plus Kleinschrott (mit halbem Ertrags-Bonus) mit den Pflichtkosten bis zum Abflug: 8.428 verdienbar, 7.200 nötig. Ereignisse sind Bonus
+- **Bots, die nichts tun, sagt man es jetzt an:** „Langweilig! Hier ist alles sauber.“ oder „Zu hart für mich! Ich brauch besseres Werkzeug.“ (alle 15 s), Rusty sagt einmal, was man tun kann, der Bots-Tab zeigt den Grund. Das eigentliche Umsetzen kommt mit MS34
+- Weiterspielen-Prüfung zählte Fehler aus dem ersten Durchlauf nicht mit; jetzt schon
+
+### Neu
+- **Natürlicher Klang statt Piepsen:** dumpfes Plopp beim Einsammeln, kräftiger Schlag bei jedem Hammerschlag (auch von Bots in Rustys Nähe), Münzen beim Abliefern, weiche Pizzicato- und Steeldrum-Jingles für Kauf, Aufgabe, Meilenstein und Reparatur, Saxofon-Hupe der Touristen. Klick-Töne nur noch leise in Menüs
+- **Fahrgeräusch:** sanftes Motorsummen mit leichtem Kettenrattern, Tonhöhe und Lautstärke folgen dem Tempo
+- **Musik:** „Apple Cider“ von Zane Little Music (CC0) läuft in Schleife; Lautstärke im Pause-Menü
+- `docs/CREDITS.md` aktualisiert
+
+### Technik
+- `Helper.bored`, Signal `helper_bored`, `Sfx.set_driving`; Preistests lesen ihre Zahlen jetzt aus den Daten
+- 192 Unit-Tests (3 neue: Erreichbarkeit, Ereignis-Müll, Wirtschaft; 1 neuer zur Bot-Langeweile), 44 Gamepad-Prüfungen, 16 Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Hören: Einsammeln, Hammer, Abliefern, Fahren. Klingt das weich und natürlich?
+2. Musik läuft, im Pause-Menü leiser/lauter stellbar
+3. Bot an einer sauberen Stelle bauen: Nach kurzer Zeit sagt er „Langweilig!“
+4. Mit Werkzeug 4 einen Monolithen zerlegen
+5. Reicht das Geld jetzt bis zum Abflug?
+
 ## [1.21.0] – 2026-10-26 – MS32 Echte Sounds, Lautstärke, Musik vorbereitet (Spielgefühl, Punkt 8)
 
 ### Neu

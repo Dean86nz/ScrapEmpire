@@ -16,6 +16,7 @@ var _i := -1
 var _wait := 0
 var _wait_until := 0
 var _fails: Array[String] = []
+var _cost := 0
 var _sm: Node
 
 
@@ -129,10 +130,12 @@ func _build_play() -> void:
 			w.bolts = 123
 			w.player.inventory.add("copper", 15)
 			w.queue_command({"type": "deliver_all"})
+			_cost = ShipSystem.upgrade_cost(w, "yield")
 			w.queue_command({"type": "buy_upgrade", "id": "yield"}),
 		func() -> bool:
 			_world().player.inventory.add("scrap", 7)  # etwas in der Tasche, das gespeichert werden muss
-			return _world().bolts == 123 - 60 + 51 and int(_world().ship_upgrades.get("yield", 0)) == 1, 6, 200)
+			var m: Dictionary = _world().mods  # Kauf zuerst, dann Abgabe mit Ertrag 1
+			return _world().bolts == 123 - _cost + int(round(3 * 15 * float(m["sell_mult"]) * float(m["rare_mult"]))) and int(_world().ship_upgrades.get("yield", 0)) == 1, 6, 1200)
 	_step("Fahren mit dem Stick", func() -> void: _axis(JOY_AXIS_LEFT_X, 1.0),
 		func() -> bool: return true, 30, 600)
 	_step("Stick loslassen", func() -> void: _axis(JOY_AXIS_LEFT_X, 0.0), func() -> bool: return true, 4, 100)

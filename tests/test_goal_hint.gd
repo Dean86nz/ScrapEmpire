@@ -5,10 +5,11 @@ extends TestCase
 func test_shows_cheapest_ship_goal_with_missing_bolts() -> void:
 	var w := TestWorlds.make()
 	TestWorlds.with_ship(w)
-	w.bolts = 20
+	var cost := ShipSystem.upgrade_cost(w, "yield")
+	w.bolts = cost - 13
 	var g := GoalHint.next_goal(w)
 	assert_false(g["ready"])
-	assert_true(str(g["text"]).contains("40"), "Ertrag 1 kostet 60, es fehlen 40: " + str(g["text"]))
+	assert_true(str(g["text"]).contains("13"), "es fehlen 13: " + str(g["text"]))
 
 
 func test_affordable_goal_first_then_skill_point() -> void:

@@ -159,3 +159,22 @@ func test_save_roundtrip_with_helpers() -> void:
 	assert_eq(h2.inventory.count_of("scrap"), 7)
 	assert_eq(int(w2.helper_upgrades["helper_speed"]), 2)
 	assert_eq(h2.speed_px_per_tick, h.speed_px_per_tick)
+
+
+func test_bored_bot_says_why() -> void:
+	var w := _world()
+	w.unlocked_features["helpers"] = true
+	w.bolts = 1000
+	w.queue_command({"type": "buy_helper", "zone": Vector2i(20, 20)})
+	w.tick()
+	var h: Helper = w.helpers.values()[0]
+	var bored := []
+	w.helper_bored.connect(func(b: Helper) -> void: bored.append(b.bored))
+	h.idle_quip_timer = 1
+	TestWorlds.run(w, 120)
+	assert_eq(h.bored, "empty", "nichts in der Nähe")
+	assert_true(bored.has("empty"), "meldet Langeweile")
+	w.add_object("monolith", Vector2i(21, 21))
+	h.idle_quip_timer = 1
+	TestWorlds.run(w, 120)
+	assert_eq(h.bored, "too_hard", "nur zu harter Müll")

@@ -140,6 +140,11 @@ func _ready() -> void:
 		Quips.say("upgrade_bought", true))
 	_world.ship_delivered.connect(_on_ship_delivered)
 	_world.milestone_reached.connect(_on_milestone_reached)
+	_world.helper_bored.connect(func(h: Helper) -> void:
+		var key := "bored_hint_%d" % h.id
+		if not _world.flags.has(key):
+			_world.flags[key] = true
+			EventBus.quip.emit("QUIP_BOT_BORED"))
 	# Jeder Kauf: Menü zu, Rusty jubelt ca. 1 s, dann Steuerung zurück
 	_world.ship_upgrade_bought.connect(func(_id: String, _l: int) -> void: _celebrate_purchase())
 	_world.skill_bought.connect(func(_id: String, _l: int) -> void: _celebrate_purchase())
@@ -186,6 +191,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_update_camera_focus(delta)
 	Sfx.set_sucking(_world.player.suck_held and InputRouter.context == InputRouter.Context.GAME)
+	Sfx.set_driving(_player.velocity.length() / maxf(GameConfig.PLAYER_SPEED_PX, 1.0))
 	_hud.set_hint(_current_hint())
 	_chapter_timer -= delta
 	if _chapter_timer <= 0.0:

@@ -174,6 +174,9 @@ func _on_node_removed(id: int) -> void:
 
 
 func _on_wreck_hit(node: ResourceNode) -> void:
+	# Hammerschlag hörbar, wenn er in Rustys Nähe passiert (Bots weit weg bleiben leise)
+	if Vector2(node.center_px()).distance_to(_player.global_position) < 900.0:
+		Sfx.play_throttled("hammer", 0.05, 0.08)
 	if _node_views.has(node.id):
 		_node_views[node.id].wobble()
 

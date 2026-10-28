@@ -1,5 +1,5 @@
 {
-  "_comment": "Musik (MS32): Pfad zu einer OGG-Datei unter assets/audio/music/. Leer bis der Auftraggeber ein Stück ausgewählt hat. music_db: Grundlautstärke.",
-  "music": "",
-  "music_db": -8.0
+  "_comment": "Musik: Pfad zu einer OGG-Datei unter assets/audio/music/ (läuft in Schleife). Gewählt vom Auftraggeber: Apple Cider (Zane Little Music, CC0). music_db: Grundlautstärke.",
+  "music": "res://assets/audio/music/apple_cider.ogg",
+  "music_db": -10.0
 }

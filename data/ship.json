@@ -6,29 +6,25 @@
       "name_key": "UPG_YIELD",
       "desc_key": "UPG_YIELD_DESC",
       "icon": "res://assets/sprites/ui/upg_yield.svg",
-      "max_level": 10,
+      "max_level": 6,
       "cost_bolts": [
-        60,
-        100,
-        175,
-        295,
-        500,
-        850,
-        1450,
-        2460,
-        4185,
-        7115
+        40,
+        70,
+        110,
+        160,
+        220,
+        300
       ],
       "effects": [
         {
           "key": "sell_mult",
           "op": "add",
-          "per_level": 0.1
+          "per_level": 0.15
         },
         {
           "key": "rare_mult",
           "op": "add",
-          "per_level": 0.03
+          "per_level": 0.05
         }
       ]
     }
@@ -45,7 +41,7 @@
       "stage": 2,
       "name_key": "SHIP_STAGE_2",
       "sprite": "res://assets/sprites/buildings/ship_2.svg",
-      "cost_bolts": 500,
+      "cost_bolts": 300,
       "unlocks": [
         "helpers"
       ],
@@ -55,7 +51,7 @@
       "stage": 3,
       "name_key": "SHIP_STAGE_3",
       "sprite": "res://assets/sprites/buildings/ship_3.svg",
-      "cost_bolts": 3000,
+      "cost_bolts": 1200,
       "unlocks": [
         "drones",
         "decor"
@@ -66,7 +62,7 @@
       "stage": 4,
       "name_key": "SHIP_STAGE_4",
       "sprite": "res://assets/sprites/buildings/ship_4.svg",
-      "cost_bolts": 12000,
+      "cost_bolts": 2000,
       "unlocks": [
         "helper_tools",
         "museum"
@@ -77,7 +73,7 @@
       "stage": 5,
       "name_key": "SHIP_STAGE_5",
       "sprite": "res://assets/sprites/buildings/ship_5.svg",
-      "cost_bolts": 40000,
+      "cost_bolts": 2800,
       "requires_planet": 0.8,
       "unlocks": [
         "launch"

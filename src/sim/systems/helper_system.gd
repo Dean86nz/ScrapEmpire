@@ -128,10 +128,16 @@ static func _tick_helpers(w: SimWorld) -> void:
 	for h: Helper in w.helpers.values():
 		h.idle_quip_timer -= 1
 		if h.idle_quip_timer <= 0:
-			h.idle_quip_timer = w.rng.randi_range(60 * 20, 120 * 20)
-			var idle: Array = w.helper_cfg.get("quips_idle", [])
-			if not idle.is_empty():
-				w.helper_quip.emit(h, str(idle[w.rng.randi_range(0, idle.size() - 1)]))
+			if h.bored != "" and h.inventory.total() == 0:
+				# Langweilt sich: alle 15 s sagen, warum
+				h.idle_quip_timer = 15 * 20
+				w.helper_quip.emit(h, "BOT_BORED_TOO_HARD" if h.bored == "too_hard" else "BOT_BORED")
+				w.helper_bored.emit(h)
+			else:
+				h.idle_quip_timer = w.rng.randi_range(60 * 20, 120 * 20)
+				var idle: Array = w.helper_cfg.get("quips_idle", [])
+				if not idle.is_empty():
+					w.helper_quip.emit(h, str(idle[w.rng.randi_range(0, idle.size() - 1)]))
 		if h.stuck_timer == 1:
 			h.pause_for_stuck(int(w.helper_cfg.get("stuck_pause_s", 5)) * 20)
 			var stuck: Array = w.helper_cfg.get("quips_stuck", [])

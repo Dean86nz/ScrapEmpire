@@ -1,7 +1,8 @@
 extends Node
-## Ton (MS32): Soundeffekte aus CC0-Dateien (Kenney, siehe docs/CREDITS.md) unter assets/audio/sfx/,
-## je Effekt mehrere Varianten und leichte Tonhöhen-Variation. Nur zwei Dinge sind selbst erzeugt:
-## das sanfte Rauschen beim Dauersaugen und das tiefe Grollen beim Abflug.
+## Ton: Soundeffekte aus CC0-Dateien (Kenney, siehe docs/CREDITS.md) unter assets/audio/sfx/,
+## je Effekt mehrere Varianten und leichte Tonhöhen-Variation. Spielaktionen klingen natürlich
+## (Aufprall, Münzen, Pizzicato-Jingles), Klick-Töne gibt es nur leise in Menüs. Selbst erzeugt:
+## das Saugrauschen, das Fahrsummen (Tonhöhe folgt dem Tempo) und das Grollen beim Abflug.
 ## Busse „Music“ und „SFX“ mit Lautstärke aus den Einstellungen (Pause-Menü). Rein kosmetisch.
 
 const SFX_DIR := "res://assets/audio/sfx/"
@@ -10,8 +11,8 @@ const VOICES := 8
 const BUS_SFX := "SFX"
 const BUS_MUSIC := "Music"
 ## Grundlautstärke je Effekt (dB), damit alles leise unter der Musik liegt.
-const LEVEL_DB := {"plop": -10.0, "deliver": -6.0, "quest": -6.0, "milestone": -5.0, "cheer": -5.0,
-	"repair": -8.0, "honk": -6.0, "thud": -6.0, "open": -10.0, "close": -10.0, "tab": -12.0, "buy": -8.0, "launch": -4.0}
+const LEVEL_DB := {"plop": -9.0, "deliver": -5.0, "quest": -6.0, "milestone": -5.0, "cheer": -6.0, "hammer": -7.0,
+	"repair": -6.0, "honk": -6.0, "thud": -6.0, "courier": -6.0, "open": -18.0, "close": -18.0, "tab": -20.0, "launch": -4.0}
 ## Standard-Tonhöhen-Variation je Effekt.
 const JITTER := 0.06
 
@@ -21,6 +22,8 @@ var _next := 0
 var _last_play: Dictionary = {}
 var _suck := AudioStreamPlayer.new()
 var _suck_target := -80.0
+var _drive := AudioStreamPlayer.new()
+var _drive_target := -80.0
 var music := AudioStreamPlayer.new()
 var volume := {"music": 0.6, "sfx": 0.8}
 
@@ -39,6 +42,9 @@ func _ready() -> void:
 	_suck.bus = BUS_SFX
 	_suck.volume_db = -80.0
 	add_child(_suck)
+	_drive.bus = BUS_SFX
+	_drive.volume_db = -80.0
+	add_child(_drive)
 	music.bus = BUS_MUSIC
 	add_child(music)
 	var s := SaveManager.load_settings()
@@ -98,7 +104,20 @@ func set_sucking(on: bool) -> void:
 		_suck.play()
 
 
+## Fahrsummen: 0 = steht (still), 1 = volles Tempo (höher und etwas lauter).
+func set_driving(speed_frac: float) -> void:
+	var f := clampf(speed_frac, 0.0, 1.5)
+	_drive_target = -80.0 if f < 0.05 else lerpf(-26.0, -18.0, minf(f, 1.0))
+	_drive.pitch_scale = lerpf(0.8, 1.25, minf(f, 1.0))
+	if f >= 0.05 and not _drive.playing:
+		_drive.play()
+
+
 func _process(delta: float) -> void:
+	if _drive.playing:
+		_drive.volume_db = move_toward(_drive.volume_db, _drive_target, delta * 80.0)
+		if _drive.volume_db <= -79.0 and _drive_target <= -80.0:
+			_drive.stop()
 	if _suck.playing:
 		_suck.volume_db = move_toward(_suck.volume_db, _suck_target, delta * (60.0 if _suck_target > _suck.volume_db else 90.0))
 		if _suck.volume_db <= -79.0 and _suck_target <= -80.0:
@@ -169,6 +188,20 @@ func _build_generated() -> void:
 	loop.loop_mode = AudioStreamWAV.LOOP_FORWARD
 	loop.loop_end = buf.size()
 	_suck.stream = loop
+	# Fahrsummen: tiefer, weicher Motor mit leichtem Kettenrattern, 1 s Schleife
+	buf = PackedFloat32Array()
+	buf.resize(RATE)
+	lp = 0.0
+	for i in buf.size():
+		var t := float(i) / RATE
+		var hum := sin(TAU * 62.0 * t) * 0.5 + sin(TAU * 124.0 * t) * 0.18
+		var rattle := (1.0 if fmod(t * 18.0, 1.0) < 0.12 else 0.0) * rng.randf_range(-0.3, 0.3)
+		lp += ((hum + rattle) - lp) * 0.3
+		buf[i] = lp * 0.6
+	var drive := _to_stream(buf)
+	drive.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	drive.loop_end = buf.size()
+	_drive.stream = drive
 	buf = PackedFloat32Array()
 	buf.resize(RATE * 3)
 	lp = 0.0
