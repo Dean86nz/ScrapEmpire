@@ -51,12 +51,25 @@ func test_start_inventory_is_small() -> void:
 	assert_eq(w.player.inventory.stack_size, 10)
 
 
+## Preise und Wirkung kommen aus data/ship.json (Balancing ändert nur die Daten).
+func _yield_def(w: SimWorld) -> Dictionary:
+	return ShipSystem.upgrade_defs(w)[0]
+
+
+func _per_level(w: SimWorld, key: String) -> float:
+	for e: Dictionary in _yield_def(w)["effects"]:
+		if e["key"] == key:
+			return float(e["per_level"])
+	return 0.0
+
+
 func test_upgrade_costs_follow_table() -> void:
 	var w := TestWorlds.make()
-	assert_eq(ShipSystem.upgrade_cost(w, "yield"), 60)
+	var table: Array = _yield_def(w)["cost_bolts"]
+	assert_eq(ShipSystem.upgrade_cost(w, "yield"), int(table[0]))
 	w.ship_upgrades["yield"] = 1
-	assert_eq(ShipSystem.upgrade_cost(w, "yield"), 100)
-	w.ship_upgrades["yield"] = 10
+	assert_eq(ShipSystem.upgrade_cost(w, "yield"), int(table[1]))
+	w.ship_upgrades["yield"] = int(_yield_def(w)["max_level"])
 	assert_eq(ShipSystem.upgrade_cost(w, "yield"), -1)
 	assert_eq(ShipSystem.can_buy_upgrade(w, "yield"), "max")
 
@@ -71,8 +84,9 @@ func test_buy_yield_upgrade() -> void:
 	w.queue_command({"type": "buy_upgrade", "id": "yield"})
 	w.tick()
 	assert_eq(bought, [["yield", 1], ["yield", 2]])
-	assert_true(absf(float(w.mods["sell_mult"]) - 1.2) < 0.001)
-	assert_eq(w.bolts, 1000 - 60 - 100)
+	assert_true(absf(float(w.mods["sell_mult"]) - (1.0 + 2 * _per_level(w, "sell_mult"))) < 0.001)
+	var table: Array = _yield_def(w)["cost_bolts"]
+	assert_eq(w.bolts, 1000 - int(table[0]) - int(table[1]))
 	assert_eq(ShipSystem.upgrades_total(w), 2)
 
 
@@ -84,7 +98,7 @@ func test_yield_upgrade_raises_delivery_value() -> void:
 	w.player.inventory.add("scrap", 10)
 	w.queue_command({"type": "deliver_all"})
 	w.tick()
-	assert_eq(w.bolts, 15, "10 × 1 × 1,5")
+	assert_eq(w.bolts, int(round(10.0 * (1.0 + 5 * _per_level(w, "sell_mult")))), "10 Schrott × Ertrag 5")
 
 
 func test_upgrade_without_bolts_fails() -> void:
@@ -101,14 +115,16 @@ func test_repair_stages_unlock_blueprints() -> void:
 	var w := TestWorlds.make()
 	var s := TestWorlds.with_ship(w)
 	assert_eq(ShipSystem.max_stage(w), 5)
-	assert_eq(ShipSystem.next_stage_cost(w, s), 500)
+	assert_eq(ShipSystem.next_stage_cost(w, s), int(ShipSystem.stage_def(w, 2)["cost_bolts"]))
 	assert_false(w.unlocked_features.has("helpers"))
 	var fails := []
 	w.ship_failed.connect(func(r: String) -> void: fails.append(r))
 	w.queue_command({"type": "upgrade_ship"})
 	w.tick()
 	assert_eq(fails, ["bolts"])
-	w.bolts = 15500
+	w.bolts = 0
+	for st in [2, 3, 4]:
+		w.bolts += int(ShipSystem.stage_def(w, st)["cost_bolts"])
 	var ups := []
 	w.ship_upgraded.connect(func(sh: Ship) -> void: ups.append(sh.stage))
 	for i in 3:
@@ -154,7 +170,7 @@ func test_save_roundtrip_keeps_stage_and_upgrades() -> void:
 	var s2 := w2.ship()
 	assert_eq(s2.stage, 3)
 	assert_true(w2.unlocked_features.has("drones"), "Freischaltungen aus der Stufe")
-	assert_true(absf(float(w2.mods["sell_mult"]) - 1.2) < 0.001, "Ertrag nach dem Laden")
+	assert_true(absf(float(w2.mods["sell_mult"]) - float(w.mods["sell_mult"])) < 0.001 and float(w2.mods["sell_mult"]) > 1.0, "Ertrag nach dem Laden")
 
 
 func test_ensure_ship_and_planet_health() -> void:

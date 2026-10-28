@@ -143,7 +143,7 @@
       "name_key": "SKILL_TOOL",
       "desc_key": "SKILL_TOOL_DESC",
       "icon": "res://assets/sprites/ui/upg_tool.svg",
-      "max_level": 3,
+      "max_level": 4,
       "cost_points": 3,
       "requires": {},
       "effects": [

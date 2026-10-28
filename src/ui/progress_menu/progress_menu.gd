@@ -569,6 +569,8 @@ func _refresh_helpers() -> void:
 		card.custom_minimum_size = Vector2(740, 96)
 		card.set_meta("helper_id", h.id)
 		var state := tr("HELPER_STATE_WAIT") if h.tasks.wait_ticks > 0 else (tr("HELPER_STATE_WORK") if h.tasks.active else tr("HELPER_STATE_IDLE"))
+		if h.bored != "" and h.inventory.total() == 0:
+			state = tr("HELPER_STATE_BORED_HARD") if h.bored == "too_hard" else tr("HELPER_STATE_BORED")
 		var zone_name: String = str(w.zones.zone_by_id(w.zones.zone_id_at(h.zone_tile)).get("name", "?"))
 		_set_card(card, "%s · %s · %s %d/%d" % [state, zone_name, tr("HELPER_LOAD"), h.inventory.total(), h.inventory.slot_count * h.inventory.stack_size], Color.WHITE)
 		_helper_list.add_child(card)

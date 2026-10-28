@@ -41,6 +41,18 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **30** | Spielgefühl 6: Müll endlich, Haufen als Müll gezeichnet, Touristen und Meteoriten als Nachschub | v1.19.0 |
 | **31** | Spielgefühl 7: Ziele-Tab mit Hauptaufgabe, Schiff-Tab 2×2, eine Hinweiszeile, runder und animiert | v1.20.0 |
 | **32** | Spielgefühl 8: echte CC0-Sounds, Saug-Rauschen, Lautstärke-Regler, Musik vorbereitet | v1.21.0 |
+| **33** | Phase 2, Punkt 0: Werkzeug bis T5, Wirtschafts- und Erreichbarkeits-Test, Bot-Langeweile, natürlicher Klang, Musik | v1.22.0 |
+
+## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
+
+Ziel: Steam-Release, 3 bis 4 Stunden mit klarem Ende, danach Content-Stopp. Beschlossen:
+- Sammelstellen (1 je Zone, ab Schiffsstufe 2): Bolts entstehen erst, wenn das Material am Schiff ankommt; jede Sammelstelle bringt 1 Drohne mit; Drohnen sind der Transport zwischen Sammelstellen und Schiff.
+- Kurier-Abholung aus Rustys Inventar ab Schiffsstufe 3: automatisch bei vollem Inventar, D-Pad runter ruft; Upgrade-Pfad 5 Stufen (Wartezeit 90 → 15 s, Ladung, bis 3 Kuriere).
+- Bots über die Karte einer Zone oder Sammelstelle zuweisen, oder „Automatisch“.
+- 6 Themen-Zonen mit Boss (Schrottplatz, Kabelsenke, Plastikbucht, Kühlschrank-Friedhof, Satellitenfeld, Monolith-Ebene); Boss: nächste Werkzeugstufe oder mindestens 3 Bots gemeinsam.
+- Entfernen: Aufgaben-Editor/Autopilot, Deko bauen, Museum, alte Reste. Alte Spielstände werden gesichert, neues Spiel.
+- Finale mit Szene, Abflug, Abspann mit Statistik, danach Weiterspielen.
+- Balancing per Headless-Simulation bis zum Abflug, 3 bis 4 Stunden.
 
 ## Runde „Spielgefühl“ nach dem dritten Praxistest (Go 2026-10-26)
 

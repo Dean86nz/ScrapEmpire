@@ -572,3 +572,8 @@ GOAL_DONE_SHOW,A: anzeigen,A: show
 GOAL_DONE_HIDE,A: einklappen,A: hide
 MENU_VOL_MUSIC,Musik  %s,Music  %s
 MENU_VOL_SFX,Effekte  %s,Effects  %s
+BOT_BORED,Langweilig! Hier ist alles sauber.,Boring! Everything here is clean.
+BOT_BORED_TOO_HARD,Zu hart für mich! Ich brauch besseres Werkzeug.,Too tough for me! I need better tools.
+QUIP_BOT_BORED,"Ein Bot langweilt sich. Im Bots-Tab mit LT abbauen und dort neu bauen, wo Müll liegt.",A bot is bored. Dismantle it in the Bots tab with LT and build it again where there is trash.
+HELPER_STATE_BORED,langweilt sich: hier ist nichts mehr · LT: abbauen,bored: nothing left here · LT: dismantle
+HELPER_STATE_BORED_HARD,Müll zu hart · Bot-Werkzeug kaufen oder LT: abbauen,trash too tough · buy bot tools or LT: dismantle

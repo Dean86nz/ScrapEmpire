@@ -15,7 +15,8 @@
 - [x] MS30 Müll endlich, Ereignisse (v1.19.0)
 - [x] MS31 Menüs schöner (v1.20.0)
 - [x] MS32 Echte Sounds, Lautstärke, Musik vorbereitet (v1.21.0)
-- [ ] Musikstück auswählen (Auftraggeber, Vorschläge im CHANGELOG 1.21.0), dann einbauen und in CREDITS eintragen
+- [x] MS33 Fehler aus dem Test, natürlicher Klang, Musik Apple Cider (v1.22.0)
+- [ ] Phase 2 (Go 2026-10-28): MS34 Sammelstellen, Netz und Kurier → MS35 Eskalation → MS36 Zonen neu (6 Themen-Zonen, Bosse) → MS37 Finale → MS38 Systeme aufräumen → MS39 Balancing per Simulation → MS40 Abschluss
 - [ ] Balancing nach der Runde „Spielgefühl“: Tempo bis Level 2, Ereignis-Abstände, Torschwelle mit Schiffswelle
 - [ ] MS26: Putzwelle des Schiffs (Radius 16 auf Stufe 5) gegen Tor-Schwelle abwägen
 - [ ] MS26: Prüfen, ob 50 % geputzte Fläche fürs Tor zu lang dauert

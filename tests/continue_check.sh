@@ -21,9 +21,13 @@ trap cleanup EXIT
 cd "$ROOT"
 fail=0
 run() {
-  timeout 120 "$GODOT" --path . --resolution 1280x720 -s tests/continue_check.gd -- "$1" 2>&1 \
-    | grep -E "^PASS|^FAIL|Prüfungen|   |SCRIPT ERROR|Parse Error|\[Laden"
-  return "${PIPESTATUS[0]}"
+  local out
+  out=$(timeout 120 "$GODOT" --path . --resolution 1280x720 -s tests/continue_check.gd -- "$1" 2>&1)
+  local ec=$?
+  echo "$out" | grep -E "^PASS|^FAIL|Prüfungen|   |SCRIPT ERROR|Parse Error|\[Laden"
+  # Ein FAIL zählt auch dann, wenn das Programm danach regulär beendet wird (Phase „play“)
+  if echo "$out" | grep -q "^FAIL"; then fail=1; fi
+  return $ec
 }
 echo "== 1. Spielen, Speichern und Beenden"
 run play

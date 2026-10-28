@@ -21,6 +21,7 @@ var _plan_cooldown := 0
 var suck_cooldown := 0
 var hammer_cooldown := 0
 var idle_quip_timer := 1200  # Ticks bis zum nächsten Leerlauf-Spruch
+var bored := ""               # "" = hat Arbeit; "empty" = nichts mehr da; "too_hard" = nur zu harter Müll
 
 
 func _init() -> void:
@@ -71,16 +72,19 @@ func _plan(world: SimWorld) -> void:
 	_last_loops = 0
 	var best: ResourceNode = null
 	var best_d := INF
+	var too_hard := false
 	for n: ResourceNode in world.nodes.values():
 		if n.is_depleted() or not in_zone(n.tile):
 			continue
 		var tier_ok := n.tier <= (hammer_tier if n.uses_hammer() else suction_tier)
 		if not tier_ok:
+			too_hard = true
 			continue
 		var d := Vector2(n.center_px() - pos).length()
 		if d < best_d:
 			best_d = d
 			best = n
+	bored = "" if best != null else ("too_hard" if too_hard else "empty")
 	if best != null and not inventory.is_full():
 		tasks.add_step(TaskList.Type.HAMMER if best.uses_hammer() else TaskList.Type.COLLECT, best.tile)
 	if inventory.total() > 0 or best == null:
