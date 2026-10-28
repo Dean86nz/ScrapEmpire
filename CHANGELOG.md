@@ -2,6 +2,22 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.5.0] – 2026-10-28 – MS45 Sound im Comic-Stil (Phase 2.1)
+
+### Geändert
+- **Neue Comic-Geräusche, im Spiel erzeugt (keine Fremdlizenz):** Plopp beim Einsammeln (5 Varianten, kurzer Bloop), Schlürfen beim Ansetzen des Saugers (4), Bonk beim Hämmern (4, holzig; je höher die Werkzeugstufe, desto tiefer und beim Ein-Schlag lauter), Boing bei jedem Kauf-Jubel (3), dazu weiter die Fanfaren-Jingles (Kenney, CC0)
+- **Gegen das Nerven:** Saug-Dauerrauschen viel leiser (−27 statt −16 dB) und mit langsamem Ein- und Ausblenden; Bonks der Bots nur noch etwa alle 0,35 s und leise, nie direkt nach Rustys eigenem Schlag; Plopp höchstens alle 60 ms; leichte Tonhöhen-Streuung bei allem
+- Kenney-Dateien für Plopp und Hammer entfernt, `docs/CREDITS.md` angepasst
+
+### Technik
+- `Sfx._build_comic` (`_bloop`, `_bonk`, `_boing`, `_slurp`), `Sfx.play(..., pitch)`, `Sfx.suppress`
+- 220 Unit-Tests (neu: Varianten, kein Knacken an den Enden, leises Saugen), 53 Gamepad-Prüfungen grün
+
+### Ally-Testliste
+1. 10 Minuten saugen und hämmern: Nervt noch etwas? Zu laut, zu leise?
+2. Passen Plopp, Schlürfen, Bonk und Boing zum Comic-Stil? Welches Geräusch würdest du ändern?
+3. Mit vielen Bots: Bleibt das Klopfen erträglich?
+
 ## [2.4.0] – 2026-10-28 – MS44 Sprechblasen dezenter (Phase 2.1)
 
 ### Geändert

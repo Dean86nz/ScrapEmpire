@@ -47,6 +47,8 @@ func bind(world: SimWorld, player: Node2D) -> void:
 		Sfx.play("courier", 0.08))
 	world.too_hard.connect(_on_too_hard)
 	world.hammer_impact.connect(func(n: ResourceNode, tier: int, one_hit: bool) -> void:
+		Sfx.play("hammer", 0.05, 2.0 if one_hit else 0.0, 1.15 - 0.07 * tier)
+		Sfx.suppress("hammer_bot")
 		if _node_views.has(n.id):
 			_node_views[n.id].impact(tier, one_hit))
 	world.boss_rally.connect(func(boss: ResourceNode, _c: int) -> void:
@@ -54,6 +56,7 @@ func bind(world: SimWorld, player: Node2D) -> void:
 			if h.rally_id == boss.id and _helper_views.has(h.id):
 				_helper_views[h.id].emote("!"))
 	world.boss_blocked.connect(func(boss: ResourceNode, have: int, need: int) -> void:
+		Sfx.play("hammer", 0.05, -2.0, 1.35)
 		if _node_views.has(boss.id):
 			_node_views[boss.id].sparks()
 		float_text(Vector2(boss.center_px()) + Vector2(0, -150), tr("BOSS_WAIT") % [have, need], Color(1.0, 0.85, 0.3)))
@@ -241,8 +244,9 @@ func _on_node_removed(id: int) -> void:
 
 func _on_wreck_hit(node: ResourceNode) -> void:
 	# Hammerschlag hörbar, wenn er in Rustys Nähe passiert (Bots weit weg bleiben leise)
+	# Bots: nur jeder dritte Schlag hörbar (gegen Dauerklopfen); Rustys Bonk kommt über hammer_impact
 	if Vector2(node.center_px()).distance_to(_player.global_position) < 900.0:
-		Sfx.play_throttled("hammer", 0.05, 0.08)
+		Sfx.play_throttled("hammer_bot", 0.35, 0.1)
 	if _node_views.has(node.id):
 		_node_views[node.id].wobble()
 

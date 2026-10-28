@@ -13,8 +13,6 @@ Alle Soundeffekte in `assets/audio/sfx/` stammen von **Kenney** (www.kenney.nl),
 
 | Datei im Spiel | Original | Paket |
 |---|---|---|
-| plop_1 bis plop_5 (Einsammeln) | impactSoft_medium_000 bis _004 | Impact Sounds 1.0 |
-| hammer_1 bis hammer_5 | impactPlate_medium_000 bis _004 | Impact Sounds 1.0 |
 | thud_1 bis thud_3 (Aufprall) | impactSoft_heavy_000, _002, _004 | Impact Sounds 1.0 |
 | deliver_1, deliver_2 (Münzen) | handleCoins, handleCoins2 | RPG Audio |
 | courier_1, courier_2 | cloth2, cloth4 | RPG Audio |
@@ -27,7 +25,7 @@ Alle Soundeffekte in `assets/audio/sfx/` stammen von **Kenney** (www.kenney.nl),
 
 Quellen: https://kenney.nl/assets/impact-sounds, https://kenney.nl/assets/rpg-audio, https://kenney.nl/assets/music-jingles, https://kenney.nl/assets/interface-sounds
 
-Selbst erzeugt (im Code, `src/autoload/sfx.gd`): Saugrauschen, Fahrsummen, Grollen beim Abflug.
+Selbst erzeugt (im Code, `src/autoload/sfx.gd`, keine fremde Lizenz): Saugrauschen, Fahrsummen, Grollen beim Abflug und seit v2.5.0 die Comic-Geräusche Plopp (5 Varianten), Bonk (4), Boing (3) und Schlürfen (4).
 
 ## Grafik und Schrift
 
