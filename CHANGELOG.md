@@ -2,6 +2,22 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.15.0] – 2026-10-28 – MS56 Bots sichtbar arbeiten (Phase 2.3)
+
+### Neu
+- **Man sieht, was ein Bot tut:** pulsierender Saugkegel in Blickrichtung beim Saugen, Hammerschwung (Hammer schlägt sichtbar zu, Bot staucht sich) bei jedem Schlag, Teile fliegen sichtbar in den Bot
+- **Ladebalken über jedem Bot**, der sich füllt (grün, voll orange); leer ausgeblendet
+- **Leerlauf sieht anders aus:** Bot ohne Arbeit wird grauer und wippt langsam (plus Zzz-Symbol)
+
+### Technik
+- `HelperView._update_work_look` (Kegel, Ladebalken, Flug-Teile, Hammer, Leerlauf-Look); nur Darstellung, Sim unverändert
+- 229 Unit-Tests, 69 Gamepad-Prüfungen grün
+
+### Ally-Testliste
+1. Bots vor einem Kühlschrank oder Haufen beobachten: Sieht man klar, dass sie arbeiten?
+2. Ladebalken verständlich? Leerlauf-Bots gut zu unterscheiden?
+3. Mit 20+ Bots: bleibt es flüssig?
+
 ## [2.14.0] – 2026-10-28 – MS55 Cheat-Menü nur in der Debug-EXE (Phase 2.3)
 
 ### Neu
