@@ -31,3 +31,21 @@ func test_suction_loop_is_very_quiet() -> void:
 	assert_true(float(s._suck_target) <= -25.0, "Saug-Dauergeräusch sehr leise")
 	s.set_sucking(false)
 	assert_eq(float(s._suck_target), -80.0)
+
+
+func test_music_per_zone_and_finale() -> void:
+	var s := _sfx()
+	s._start_music()
+	var cfg: Dictionary = s._music_cfg
+	assert_eq((cfg["zones"] as Dictionary).size(), 6, "ein Stück je Zone")
+	for p: String in (cfg["zones"] as Dictionary).values():
+		assert_true(ResourceLoader.exists(p), "Datei da: " + p)
+	assert_true(ResourceLoader.exists(str(cfg["finale"])))
+	s.music_zone("z21")
+	assert_eq(s._music_path, str(cfg["zones"]["z21"]))
+	s.music_finale(true)
+	s.music_zone("z11")
+	assert_eq(s._music_path, str(cfg["finale"]), "Finale hat Vorrang")
+	s.music_finale(false, "z11")
+	assert_eq(s._music_path, str(cfg["zones"]["z11"]))
+	assert_true(float(cfg["pause_min_s"]) >= 20.0 and float(cfg["pause_max_s"]) <= 40.0, "Pausen 20–40 s")

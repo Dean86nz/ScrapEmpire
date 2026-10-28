@@ -4,8 +4,17 @@ Alle fremden Inhalte im Spiel, mit Quelle und Lizenz.
 
 ## Musik
 
-**Apple Cider** von **Zane Little Music**, Lizenz **CC0 1.0** (Public Domain).
-Quelle: https://opengameart.org/content/apple-cider · Datei: `assets/audio/music/apple_cider.ogg`
+Alle Stücke: Lizenz **CC0 1.0** (Public Domain, kommerziell frei), geprüft am 2026-10-28 auf der jeweiligen Seite. Für das Spiel nach OGG umgewandelt.
+
+| Zone | Stück | Urheber | Quelle | Datei |
+|---|---|---|---|---|
+| Schrottplatz | Apple Cider | Zane Little Music | https://opengameart.org/content/apple-cider | `apple_cider.ogg` |
+| Kabelsenke | Wednesday Night (Funk Fusion) | Zane Little Music | https://opengameart.org/content/wednesday-night-funk-fusion | `wednesday_night.ogg` |
+| Plastikbucht | Happy Vibes | Ruskerdax | https://opengameart.org/node/160228 | `happy_vibes.ogg` |
+| Kühlschrank-Friedhof | Happy Clappy Loop | OwlishMedia | https://opengameart.org/content/happy-clappy-loop | `happy_clappy.ogg` |
+| Satellitenfeld | Shine Blitz | zesona (Nennung erbeten: Chris Murphy) | https://opengameart.org/content/shine-blitz | `shine_blitz.ogg` |
+| Monolith-Ebene | Happy Beat | burabotti | https://opengameart.org/content/happy-beat | `happy_beat.ogg` |
+| Finale | Course 5 (aus „Apple Cider Juiced!“) | Zane Little Music | https://opengameart.org/content/apple-cider-juiced | `finale_course5.ogg` |
 
 ## Soundeffekte
 

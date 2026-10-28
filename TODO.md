@@ -27,7 +27,8 @@
 - [x] MS43 Hammer spürbar stärker (v2.3.0)
 - [x] MS44 Sprechblasen dezenter (v2.4.0)
 - [x] MS45 Sound im Comic-Stil (v2.5.0)
-- [ ] Phase 2.1: MS46 Musik → MS47 Intro
+- [x] MS46 Musik je Zone und Finale (v2.6.0)
+- [ ] Phase 2.1: MS47 Intro
 - [ ] Ally-Durchlauf mit Zeiten auswerten, Zahlen in JSON nachjustieren (siehe docs/OFFENE_PUNKTE.md)
 - [ ] Balancing nach der Runde „Spielgefühl“: Tempo bis Level 2, Ereignis-Abstände, Torschwelle mit Schiffswelle
 - [ ] MS26: Putzwelle des Schiffs (Radius 16 auf Stufe 5) gegen Tor-Schwelle abwägen

@@ -1,5 +1,18 @@
 {
-  "_comment": "Musik: Pfad zu einer OGG-Datei unter assets/audio/music/ (läuft in Schleife). Gewählt vom Auftraggeber: Apple Cider (Zane Little Music, CC0). music_db: Grundlautstärke.",
-  "music": "res://assets/audio/music/apple_cider.ogg",
-  "music_db": -10.0
+  "_comment": "MS46: Musik je Zone (OGG unter assets/audio/music/, alle CC0, siehe docs/CREDITS.md). Ein Stück läuft mindestens min_play_s (kurze Stücke wiederholen sich), dann blendet es aus, Pause pause_min_s–pause_max_s, dann wieder. Zonenwechsel: Überblenden fade_s. finale: Rundflug, Abflug, Abspann (ohne Pause).",
+  "music_db": -10.0,
+  "fade_s": 2.5,
+  "min_play_s": 110.0,
+  "pause_min_s": 20.0,
+  "pause_max_s": 40.0,
+  "zones": {
+    "z01": "res://assets/audio/music/apple_cider.ogg",
+    "z11": "res://assets/audio/music/wednesday_night.ogg",
+    "z21": "res://assets/audio/music/happy_vibes.ogg",
+    "z20": "res://assets/audio/music/happy_clappy.ogg",
+    "z10": "res://assets/audio/music/shine_blitz.ogg",
+    "z00": "res://assets/audio/music/happy_beat.ogg"
+  },
+  "default": "res://assets/audio/music/apple_cider.ogg",
+  "finale": "res://assets/audio/music/finale_course5.ogg"
 }
