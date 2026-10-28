@@ -176,12 +176,6 @@ func _build_steps() -> void:
 		func() -> bool: return progress._helper_cards.size() == 1, 8, 700)
 	_step("D-Pad runter auf den Bot", func() -> void: _tap(JOY_BUTTON_DPAD_DOWN),
 		func() -> bool: return progress._helper_cards.has(progress.get_viewport().gui_get_focus_owner()))
-	_step("A auf dem Bot öffnet die Zuweisung auf der Karte", func() -> void: _tap(JOY_BUTTON_A),
-		func() -> bool: return progress._tab == progress.Tab.MAP and progress._assign_bot >= 0, 6)
-	_step("A weist die gewählte Zone zu, zurück im Bots-Tab", func() -> void: _tap(JOY_BUTTON_A),
-		func() -> bool: return progress._tab == progress.Tab.HELPERS and progress._assign_bot < 0 and int(_world.quests.counters.get("assigns", 0)) == 1, 8, 300)
-	_step("Bot-Karte wieder da, D-Pad runter auf den Bot", func() -> void: _tap(JOY_BUTTON_DPAD_DOWN),
-		func() -> bool: return progress._helper_cards.has(progress.get_viewport().gui_get_focus_owner()), 8, 700)
 	_step("LT auf dem Bot baut ihn ab", func() -> void:
 			_axis(JOY_AXIS_TRIGGER_LEFT, 1.0)
 			_axis(JOY_AXIS_TRIGGER_LEFT, 0.0),

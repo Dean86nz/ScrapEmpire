@@ -121,7 +121,7 @@
       "tool": "hammer",
       "type": "loot",
       "boss": true,
-      "bots_needed": 3,
+      "bots_needed": 1,
       "reward_bolts": 150,
       "yield": {
         "scrap": 160,
@@ -191,7 +191,7 @@
       "tool": "hammer",
       "type": "loot",
       "boss": true,
-      "bots_needed": 3,
+      "bots_needed": 2,
       "reward_bolts": 400,
       "yield": {
         "copper": 180,
@@ -335,7 +335,7 @@
       "tool": "hammer",
       "type": "loot",
       "boss": true,
-      "bots_needed": 3,
+      "bots_needed": 4,
       "reward_bolts": 1000,
       "yield": {
         "chrome": 90,
@@ -394,7 +394,7 @@
       "tool": "hammer",
       "type": "loot",
       "boss": true,
-      "bots_needed": 3,
+      "bots_needed": 5,
       "reward_bolts": 1500,
       "yield": {
         "chrome": 120,
@@ -450,7 +450,7 @@
       "tool": "hammer",
       "type": "loot",
       "boss": true,
-      "bots_needed": 3,
+      "bots_needed": 6,
       "reward_bolts": 2500,
       "final": true,
       "yield": {

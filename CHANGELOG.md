@@ -2,6 +2,28 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.2.0] – 2026-10-28 – MS42 Bots automatisch, Boss-Verstärkung (Phase 2.1)
+
+### Neu
+- **Verstärkung:** Haut Rusty auf einen Boss, ruft er „Verstärkung!“. Alle Bots im Umkreis von 30 Kacheln lassen alles fallen, zeigen ein „!“, rennen hin und hauen mit. Der Boss nimmt nur Schaden, solange genug Bots bei ihm stehen (Toaster-Turm 1, Kabelmonster 2, Plastik-Wal 3, Kühlschrank-König 4, Mega-Schüssel 5, Ur-Haufen 6). Fehlen Bots, zeigt der Boss „1/3 Bots da“. Kamera wackelt, Hupe
+- Beim ersten Boss erklärt eine Karte das Prinzip
+- Werkzeugstufe spielt bei Bossen keine Rolle mehr, nur das Team
+
+### Geändert
+- **Bots arbeiten immer automatisch:** Sie suchen selbst die nächste Zone mit Müll, den sie schaffen. Zuweisen über die Karte, Befehl und Aufgabe „Bot zuweisen“ entfernt
+- **Bot-Werkzeug bis T5** (4 Stufen: 400 / 1 200 / 3 000 / 6 000 Bolts), freigeschaltet schon mit Schiffsstufe 2. Damit schaffen Bots jeden normalen Müll
+- Bots greifen Bosse nie von selbst an, nur auf Rustys Ruf
+
+### Technik
+- `BossSystem` (rally, helpers_at, can_damage, release); `Helper.rally_id`; Signale `boss_rally`, `boss_blocked`, `boss_swing`; `HelperView.emote`; `WorldView.float_text`; Werte `reinforce_radius_tiles`, `reinforce_reach_px` in helpers.json, `bots_needed` je Boss
+- 214 Unit-Tests, 53 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Mit 1–2 Bots zum Toaster-Turm, draufhauen: Kommen die Bots angerannt (mit „!“)? Erscheint die Erklärkarte?
+2. Zu wenige Bots: Ist „x/y Bots da“ klar? Macht der Moment Spaß?
+3. Bot-Werkzeug ab Schiffsstufe 2 kaufen: Arbeiten Bots auch in späteren Zonen?
+4. Bots ohne Zuweisen: Verteilen sie sich sinnvoll auf Zonen mit Müll?
+
 ## [2.1.0] – 2026-10-28 – MS41 Fehler aus dem v2.0.0-Test (Phase 2.1)
 
 ### Behoben

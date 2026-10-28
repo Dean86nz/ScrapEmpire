@@ -93,45 +93,7 @@ static func on_point_built(w: SimWorld, _p: CollectionPoint) -> void:
 			DroneSystem.add_drone(w)
 
 
-## Bots, die gerade dieser Zone zugeteilt sind.
-static func bots_in_zone(w: SimWorld, zone_id: String) -> int:
-	var n := 0
-	for h: Helper in w.helpers.values():
-		if h.zone_id == zone_id:
-			n += 1
-	return n
-
-
-## Ein Boss lässt sich von Bots knacken, wenn genug Bots in seiner Zone arbeiten.
-static func team_can_hit(w: SimWorld, node: ResourceNode) -> bool:
-	return node.boss and node.bots_needed > 0 and bots_in_zone(w, w.zones.zone_id_at(node.tile)) >= node.bots_needed
-
-
-# --- Bots zuweisen -------------------------------------------------------------------
-
-## Bot einer Zone zuweisen ("" + auto = sucht selbst). Nur freigeschaltete Zonen.
-static func _cmd_assign_helper(w: SimWorld, cmd: Dictionary) -> void:
-	var id := int(cmd.get("id", -1))
-	if not w.helpers.has(id):
-		return
-	var h: Helper = w.helpers[id]
-	if bool(cmd.get("auto", false)):
-		h.auto = true
-		h.bored = ""
-		_auto_pick(w, h)
-	else:
-		var zid := str(cmd.get("zone", ""))
-		if zid == "" or not w.zones.is_unlocked(zid):
-			return
-		h.auto = false
-		h.zone_id = zid
-		h.bored = ""
-	h.tasks.stop(h)
-	h.tasks.steps.clear()
-	h.request_replan()
-	w.quests.on_assign()
-	w.helper_assigned.emit(h)
-
+# --- Bots: immer automatisch (seit MS42) -------------------------------------------
 
 ## Automatik: nächste freigeschaltete Zone mit Müll, den der Bot schafft.
 static func _auto_pick(w: SimWorld, h: Helper) -> void:
@@ -145,7 +107,7 @@ static func _auto_pick(w: SimWorld, h: Helper) -> void:
 		for n: ResourceNode in w.nodes.values():
 			if n.is_depleted() or w.zones.zone_id_at(n.tile) != zid:
 				continue
-			if n.tier <= (h.hammer_tier if n.uses_hammer() else h.suction_tier):
+			if not n.boss and n.tier <= (h.hammer_tier if n.uses_hammer() else h.suction_tier):
 				has_work = true
 				break
 		if not has_work:
@@ -165,7 +127,7 @@ static func _tick_auto(w: SimWorld) -> void:
 	if w.tick_count % 20 != 7:
 		return
 	for h: Helper in w.helpers.values():
-		if h.auto and h.bored != "" and h.inventory.total() == 0:
+		if h.bored != "" and h.inventory.total() == 0 and h.rally_id < 0:
 			_auto_pick(w, h)
 
 

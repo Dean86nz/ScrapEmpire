@@ -32,7 +32,11 @@ func test_every_map_object_is_reachable() -> void:
 		var d: Dictionary = ResourceNode.defs.get(str(n["kind"]), {})
 		if int(d.get("tier", 1)) <= max_tier:
 			continue
-		# Auch Bosse: Rusty muss sie mit seiner höchsten Werkzeugstufe erreichen (Ally-Fehler v2.0.0: Endboss T6)
+		# Bosse: nur gemeinsam, Stufe egal; aber so viele Bots muss man bauen können (MS42)
+		if bool(d.get("boss", false)):
+			var max_bots := int(JSON.parse_string(FileAccess.get_file_as_string("res://data/helpers.json"))["max_helpers"])
+			if int(d.get("bots_needed", 0)) >= 1 and int(d["bots_needed"]) <= max_bots:
+				continue
 		bad.append("%s (T%d)" % [n["kind"], int(d["tier"])])
 	assert_eq(bad, [], "zu harte Objekte auf der Karte")
 

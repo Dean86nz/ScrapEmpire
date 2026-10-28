@@ -23,7 +23,8 @@
 - [x] MS38 Systeme aufräumen: Autopilot, Deko, Museum entfernt (v1.27.0)
 - [x] MS40 Abschluss Phase 2 (v2.0.0); MS39-Simulation entfällt
 - [x] MS41 Fehler: Endboss, Sauger nach Pause, Karte, Bauplatz (v2.1.0)
-- [ ] Phase 2.1: MS42 Bots/Verstärkung → MS43 Hammer → MS44 Sprechblasen → MS45 Sound → MS46 Musik → MS47 Intro
+- [x] MS42 Bots automatisch, Boss-Verstärkung (v2.2.0)
+- [ ] Phase 2.1: MS43 Hammer → MS44 Sprechblasen → MS45 Sound → MS46 Musik → MS47 Intro
 - [ ] Ally-Durchlauf mit Zeiten auswerten, Zahlen in JSON nachjustieren (siehe docs/OFFENE_PUNKTE.md)
 - [ ] Balancing nach der Runde „Spielgefühl“: Tempo bis Level 2, Ereignis-Abstände, Torschwelle mit Schiffswelle
 - [ ] MS26: Putzwelle des Schiffs (Radius 16 auf Stufe 5) gegen Tor-Schwelle abwägen

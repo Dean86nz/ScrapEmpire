@@ -46,6 +46,14 @@ func bind(world: SimWorld, player: Node2D) -> void:
 			_building_views[p.id].show_sale(n, true)
 		Sfx.play("courier", 0.08))
 	world.too_hard.connect(_on_too_hard)
+	world.boss_rally.connect(func(boss: ResourceNode, _c: int) -> void:
+		for h: Helper in world.helpers.values():
+			if h.rally_id == boss.id and _helper_views.has(h.id):
+				_helper_views[h.id].emote("!"))
+	world.boss_blocked.connect(func(boss: ResourceNode, have: int, need: int) -> void:
+		if _node_views.has(boss.id):
+			_node_views[boss.id].sparks()
+		float_text(Vector2(boss.center_px()) + Vector2(0, -150), tr("BOSS_WAIT") % [have, need], Color(1.0, 0.85, 0.3)))
 	world.node_respawned.connect(_on_node_respawned)
 	for h: Helper in world.helpers.values():
 		_on_helper_added(h)
@@ -159,6 +167,25 @@ func _on_helper_removed(id: int) -> void:
 func _on_helper_quip(h: Helper, key: String) -> void:
 	if _helper_views.has(h.id):
 		_helper_views[h.id].say(tr(key))
+
+
+## Kurzer schwebender Text in der Welt (steigt auf, verblasst).
+func float_text(at: Vector2, text: String, color: Color) -> void:
+	var l := Label.new()
+	l.text = text
+	l.add_theme_font_size_override("font_size", 30)
+	l.add_theme_color_override("font_color", color)
+	l.add_theme_color_override("font_outline_color", Color(0.165, 0.165, 0.2))
+	l.add_theme_constant_override("outline_size", 8)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.size = Vector2(320, 40)
+	l.position = at - Vector2(160, 20)
+	l.z_index = 30
+	add_child(l)
+	var tw := create_tween()
+	tw.tween_property(l, "position:y", l.position.y - 50, 1.1)
+	tw.parallel().tween_property(l, "modulate:a", 0.0, 1.1).set_delay(0.5)
+	tw.tween_callback(l.queue_free)
 
 
 func _on_too_hard(node: ResourceNode, _tool: String) -> void:

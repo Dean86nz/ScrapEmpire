@@ -32,10 +32,13 @@ static func helper_work(w: SimWorld, h: Helper) -> void:
 		else:
 			var hit_point := Vector2(h.pos) + h.aim * PlayerState.HAMMER_REACH_PX
 			for n: ResourceNode in w.nodes.values():
-				if not n.uses_hammer() or (n.tier > h.hammer_tier and not NetworkSystem.team_can_hit(w, n)):
+				if not n.uses_hammer() or (n.tier > h.hammer_tier and not n.boss):
 					continue
 				if hit_point.distance_to(Vector2(n.center_px())) <= float(h.hammer_range_px):
 					h.hammer_cooldown = PlayerState.BASE_HAMMER_INTERVAL
+					if n.boss and not BossSystem.can_damage(w, n):
+						w.boss_swing.emit(n)
+						break
 					var item_id := n.take_one()
 					if item_id != "":
 						w.add_loose(item_id, n.center_px() + w._scatter(), n.tier)
@@ -244,7 +247,13 @@ static func _tick_hammer(w: SimWorld) -> void:
 	if wreck == null:
 		return
 	w.player.hammer_cooldown = w.player.hammer_interval
-	if wreck.tier > w.player.hammer_tier:
+	if wreck.boss:
+		# Verstärkung rufen; Schaden nur gemeinsam
+		BossSystem.rally(w, wreck)
+		if not BossSystem.can_damage(w, wreck):
+			w.boss_blocked.emit(wreck, BossSystem.helpers_at(w, wreck), wreck.bots_needed)
+			return
+	elif wreck.tier > w.player.hammer_tier:
 		w._emit_too_hard(wreck, "hammer")
 		return
 	for i in w.player.hammer_items:

@@ -1,5 +1,7 @@
 {
   "max_helpers": 40,
+  "reinforce_radius_tiles": 30,
+  "reinforce_reach_px": 260,
   "cost_base_bolts": 150,
   "cost_growth": 1.12,
   "cost_chrome": 0,
@@ -94,12 +96,16 @@
       "id": "helper_tool",
       "name_key": "HELPER_UPG_TOOL",
       "desc_key": "HELPER_UPG_TOOL_DESC",
-      "max_level": 2,
+      "max_level": 4,
       "cost_bolts": [
-        1500,
-        3000
+        400,
+        1200,
+        3000,
+        6000
       ],
       "cost_chrome": [
+        0,
+        0,
         0,
         0
       ],

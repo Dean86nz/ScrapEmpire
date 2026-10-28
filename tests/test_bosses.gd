@@ -27,38 +27,72 @@ func test_boss_keeps_the_gate_closed() -> void:
 	assert_true(w.zones.is_unlocked("b"), "Boss weg: Tor auf")
 
 
-func test_rusty_needs_the_next_tier() -> void:
+func test_rusty_alone_does_no_damage() -> void:
 	var w := _world()
 	var b := _boss(w)
-	assert_eq(b.tier, 2)
+	b.bots_needed = 3
 	w.player.pos = b.center_px() + Vector2i(-40, 0)
 	w.player.aim = Vector2.RIGHT
-	var hard := []
-	w.too_hard.connect(func(n: ResourceNode, _t: String) -> void: hard.append(n.kind))
-	w.player.hammer_pressed = true
-	TestWorlds.run(w, 12)
-	assert_eq(hard, ["toaster_tower"], "Startwerkzeug reicht nicht")
+	var blocked := []
+	w.boss_blocked.connect(func(_n: ResourceNode, have: int, need: int) -> void: blocked.append([have, need]))
 	var before := b.amount
-	w.player.hammer_tier = 2
 	w.player.hammer_pressed = true
-	TestWorlds.run(w, 12)
-	assert_true(b.amount < before, "mit T2 geht es")
+	TestWorlds.run(w, 4)
+	assert_eq(blocked, [[0, 3]], "allein: kein Schaden, Hinweis 0/3")
+	assert_eq(b.amount, before)
 
 
-func test_three_bots_crack_the_boss_together() -> void:
+func test_rally_calls_bots_in_radius() -> void:
 	var w := _world()
-	w.unlocked_features["helpers"] = true
 	var b := _boss(w)
-	var h1 := w.add_helper(Vector2i(14, 14), w.ship().tile)
-	h1.zone_id = "a"
-	assert_false(NetworkSystem.team_can_hit(w, b), "ein Bot reicht nicht")
+	var near := w.add_helper(Vector2i(12, 12), w.ship().tile)
+	near.pos = b.center_px() + Vector2i(600, 0)
+	var far := w.add_helper(Vector2i(12, 12), w.ship().tile)
+	far.pos = b.center_px() + Vector2i(64 * 40, 0)
+	var calls := []
+	w.boss_rally.connect(func(_n: ResourceNode, c: int) -> void: calls.append(c))
+	assert_eq(BossSystem.rally(w, b), 1)
+	assert_eq(near.rally_id, b.id)
+	assert_eq(far.rally_id, -1, "zu weit weg")
+	assert_eq(calls, [1])
+
+
+func test_bots_come_and_boss_falls_together() -> void:
+	var w := _world()
+	var b := _boss(w)
 	for i in 2:
-		var h := w.add_helper(Vector2i(16, 16), w.ship().tile)
-		h.zone_id = "a"
-	assert_true(NetworkSystem.team_can_hit(w, b), "drei Bots schaffen es")
+		var h := w.add_helper(Vector2i(12, 12), w.ship().tile)
+		h.pos = b.center_px() + Vector2i(500, 100 * i)
+	b.bots_needed = 2
+	w.player.pos = b.center_px() + Vector2i(-40, 0)
+	w.player.aim = Vector2.RIGHT
 	var before := b.amount
-	TestWorlds.run(w, 20 * 20)
-	assert_true(not w.nodes.has(b.id) or b.amount < before, "Bots hämmern am Boss")
+	for k in 60:
+		w.player.hammer_pressed = true
+		TestWorlds.run(w, 10)
+	assert_true(BossSystem.helpers_at(w, b) >= 2 or not w.nodes.has(b.id), "Bots stehen beim Boss")
+	assert_true(not w.nodes.has(b.id) or b.amount < before, "gemeinsam nimmt der Boss Schaden")
+
+
+func test_bots_never_pick_bosses_on_their_own() -> void:
+	var w := _world()
+	var b := _boss(w)
+	var h := w.add_helper(Vector2i(15, 15), w.ship().tile)
+	h.pos = b.center_px() + Vector2i(100, 0)
+	h.hammer_tier = 5
+	TestWorlds.run(w, 200)
+	assert_eq(h.rally_id, -1)
+	assert_true(b.amount > 0 and w.nodes.has(b.id), "ohne Ruf lassen Bots den Boss in Ruhe")
+
+
+func test_defeat_releases_bots() -> void:
+	var w := _world()
+	var b := _boss(w)
+	var h := w.add_helper(Vector2i(12, 12), w.ship().tile)
+	h.pos = b.center_px()
+	BossSystem.rally(w, b)
+	w._remove_node(b)
+	assert_eq(h.rally_id, -1)
 
 
 func test_defeat_pays_reward_and_sets_flags() -> void:

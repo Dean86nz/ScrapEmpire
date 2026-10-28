@@ -62,8 +62,6 @@ func on_delivery() -> void:
 	_add("deliveries", 1)
 
 
-func on_assign() -> void:
-	_add("assigns", 1)
 
 
 func on_courier() -> void:
@@ -95,8 +93,6 @@ func progress(w: SimWorld) -> Array:
 			return [mini(int(counters.get("ship_delivered", 0)), amount), amount]
 		"deliveries":
 			return [mini(int(counters.get("deliveries", 0)), amount), amount]
-		"assigns":
-			return [mini(int(counters.get("assigns", 0)), amount), amount]
 		"courier_pickups":
 			return [mini(int(counters.get("courier_pickups", 0)), amount), amount]
 		"cleaned":

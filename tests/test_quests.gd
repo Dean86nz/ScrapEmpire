@@ -32,7 +32,7 @@ func test_chain_starts_simple_and_ends_with_launch() -> void:
 	assert_eq(ids[-1], "q_launch")
 	for q in w.quests.defs:
 		assert_true(["moved", "collect", "ship_delivered", "upgrades_bought", "wrecks", "upgrade_level", "bolts_earned",
-			"zone_gate", "ship_stage", "helpers", "drones", "collectibles", "planet", "cleaned", "deliveries", "skills_bought", "skill_level", "build", "assigns", "courier_pickups", "bosses", "flag"].has(str(q["type"])), "bekannter Typ: " + str(q["type"]))
+			"zone_gate", "ship_stage", "helpers", "drones", "collectibles", "planet", "cleaned", "deliveries", "skills_bought", "skill_level", "build", "courier_pickups", "bosses", "flag"].has(str(q["type"])), "bekannter Typ: " + str(q["type"]))
 
 
 func test_first_minutes_move_collect_deliver_upgrade() -> void:

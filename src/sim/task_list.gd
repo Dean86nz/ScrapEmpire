@@ -204,7 +204,7 @@ func _tick_hammer(world: SimWorld, body: WorkerBody, step: Dictionary, center: V
 			return
 		_next_step(body)
 		return
-	if node.tier > body.hammer_tier and not NetworkSystem.team_can_hit(world, node):
+	if node.tier > body.hammer_tier and not node.boss:
 		_fail(body, "too_hard")
 		return
 	# Nah heran (Schlagpunkt 48 px vor dem Körper, Reichweite hammer_range)
