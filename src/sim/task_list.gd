@@ -1,13 +1,10 @@
 class_name TaskList
 extends RefCounted
-## Aufgabenliste des Autopiloten (GDD Kap. 9) und Arbeiter-Logik („WorkerBrain“), die auch
-## Helfer-Roboter nutzen. Schritte: GOTO, COLLECT, HAMMER, DEPOSIT, WITHDRAW mit Ziel-Kachel.
+## Arbeiter-Logik („WorkerBrain“) der Helfer-Roboter (Rustys Autopilot entfiel in MS38).
+## Schritte: GOTO, COLLECT, HAMMER, DEPOSIT, WITHDRAW mit Ziel-Kachel.
 ## Das Gehirn setzt pro Tick nur Eingaben am WorkerBody (move_target, aim, suck_held,
 ## hammer_pressed) und nutzt die normalen Welt-Regeln; der Node bewegt den Körper.
 
-signal changed
-signal state_changed(active: bool)
-signal step_started(index: int)
 signal waiting(reason: String)
 
 enum Type { GOTO, COLLECT, HAMMER, DEPOSIT, WITHDRAW }
@@ -38,33 +35,7 @@ func add_step(type: Type, tile: Vector2i, item: String = "") -> bool:
 	if steps.size() >= MAX_STEPS:
 		return false
 	steps.append({"type": type, "tile": tile, "item": item})
-	changed.emit()
 	return true
-
-
-func remove_step(i: int) -> void:
-	if i < 0 or i >= steps.size():
-		return
-	steps.remove_at(i)
-	if index >= steps.size():
-		index = 0
-	changed.emit()
-
-
-func move_step(i: int, delta: int) -> void:
-	var j := i + delta
-	if i < 0 or i >= steps.size() or j < 0 or j >= steps.size():
-		return
-	var tmp := steps[i]
-	steps[i] = steps[j]
-	steps[j] = tmp
-	changed.emit()
-
-
-func clear() -> void:
-	steps.clear()
-	stop()
-	changed.emit()
 
 
 # --- Steuern ----------------------------------------------------------------
@@ -74,7 +45,6 @@ func start(body: WorkerBody) -> bool:
 		return false
 	active = true
 	_enter_step(index, body)
-	state_changed.emit(true)
 	return true
 
 
@@ -84,13 +54,6 @@ func stop(body: WorkerBody = null) -> void:
 	if body != null:
 		_release(body)
 	active = false
-	state_changed.emit(false)
-
-
-## Vom Spieler unterbrochen (Stick): bleibt beim aktuellen Schritt stehen.
-func interrupt(body: WorkerBody) -> void:
-	_release(body)
-	stop()
 
 
 func _release(body: WorkerBody) -> void:
@@ -107,7 +70,6 @@ func _enter_step(i: int, body: WorkerBody) -> void:
 	_last_progress_marker = body.inventory.total()
 	_start_total = body.inventory.total()
 	_release(body)
-	step_started.emit(index)
 
 
 func _next_step(body: WorkerBody) -> void:
@@ -313,29 +275,3 @@ func _has_depositable(body: WorkerBody, filter: String) -> bool:
 			return true
 	return false
 
-
-# --- Speichern --------------------------------------------------------------
-
-func to_dict() -> Dictionary:
-	var arr: Array = []
-	for s in steps:
-		arr.append({"type": int(s["type"]), "tile": [s["tile"].x, s["tile"].y], "item": s["item"]})
-	return {"steps": arr, "active": active, "index": index}
-
-
-func from_dict(d: Dictionary) -> void:
-	steps.clear()
-	for s: Dictionary in d.get("steps", []):
-		var t: Array = s.get("tile", [0, 0])
-		steps.append({"type": int(s.get("type", 0)), "tile": Vector2i(int(t[0]), int(t[1])), "item": str(s.get("item", ""))})
-	index = clampi(int(d.get("index", 0)), 0, maxi(steps.size() - 1, 0))
-	active = bool(d.get("active", false)) and not steps.is_empty()
-	changed.emit()
-
-
-static func type_name(t: int) -> String:
-	return ["TASK_GOTO", "TASK_COLLECT", "TASK_HAMMER", "TASK_DEPOSIT", "TASK_WITHDRAW"][clampi(t, 0, 4)]
-
-
-static func type_icon(t: int) -> String:
-	return ["➡", "🧲", "🔨", "📥", "📤"][clampi(t, 0, 4)]

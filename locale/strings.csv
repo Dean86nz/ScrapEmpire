@@ -98,10 +98,6 @@ TECH_CIRCUIT,Denkbrett-Rezept,Thinkboard recipe
 TECH_CIRCUIT_DESC,Kupferbarren + Plastikplatte → Denkbrett (30 Bolts).,Copper bar + plastic sheet → thinkboard (30 bolts).
 TECH_TERMINAL_PLUS,Turbo-Terminal,Turbo terminal
 TECH_TERMINAL_PLUS_DESC,Verkauft fünfmal so schnell.,Sells five times faster.
-TECH_AUTOPILOT,Autopilot v0.1,Autopilot v0.1
-TECH_AUTOPILOT_DESC,Rusty arbeitet Aufgabenlisten allein ab.,Rusty works task lists on his own.
-TECH_AUTOPILOT_SPEED,Autopilot v0.2,Autopilot v0.2
-TECH_AUTOPILOT_SPEED_DESC,"Aufgaben mit 1,5-fachem Tempo.",Tasks at 1.5× speed.
 TECH_HELPER_WORKSHOP,Helfer-Werkstatt,Helper workshop
 TECH_HELPER_WORKSHOP_DESC,Helfer-Roboter kaufen.,Buy helper robots.
 TECH_HELPER_TOOLS,Helfer-Werkzeug II,Helper tools II
@@ -185,32 +181,7 @@ TUT_4,Zerlege einen Rostigen Toaster mit dem Hammer (LT).,Smash a rusty toaster 
 TUT_4_DONE,Toaster besiegt. Er hatte es verdient.,Toaster defeated. It deserved it.
 TUT_5,Öffne den Fortschritt (Select) und erforsche den Schmelzofen.,Open progress (Select) and research the furnace.
 TUT_5_DONE,Das Tor ist offen. Da draußen liegt noch mehr Schrott. Viel mehr.,The gate is open. More scrap out there. Much more.
-TASK_TITLE,Aufgaben (Autopilot),Tasks (autopilot)
-TASK_ADD,+ Schritt,+ Step
-TASK_START,▶ Starten,▶ Start
-TASK_STOP,■ Stoppen,■ Stop
-TASK_CLEAR,Leeren,Clear
-TASK_EMPTY,Noch keine Schritte. Mit + Schritt anfangen.,No steps yet. Start with + Step.
-TASK_FOOTER,A: wählen · X: löschen · LB/RB: verschieben · B: schließen,A: select · X: delete · LB/RB: move · B: close
-TASK_GOTO,Gehe zu,Go to
-TASK_COLLECT,Sammle hier,Collect here
-TASK_HAMMER,Hämmere hier,Hammer here
-TASK_DEPOSIT,Lege ab in,Put into
-TASK_WITHDRAW,Nimm aus,Take from
-TASK_HUD,Autopilot:,Autopilot:
-TASK_HUD_ON,läuft,running
-TASK_HUD_OFF,aus (Y lang),off (hold Y)
-HINT_TARGET,D-Pad / rechter Stick: Ziel   ·   A: bestätigen   ·   B: abbrechen,D-pad / right stick: target   ·   A: confirm   ·   B: cancel
-HINT_TARGET_KB,Maus / Pfeile: Ziel   ·   LMB / E: bestätigen   ·   RMB / Esc: abbrechen,Mouse / arrows: target   ·   LMB / E: confirm   ·   RMB / Esc: cancel
-QUIP_AUTOPILOT_LOCKED,Autopilot? Erst erforschen. Select öffnet den Techbaum.,Autopilot? Research it first. Select opens the tech tree.
-QUIP_AUTOPILOT_START_1,Autopilot an. Ich mache das jetzt. Du darfst zuschauen.,Autopilot on. I will handle it. You may watch.
-QUIP_AUTOPILOT_START_2,Schleife läuft. Ich bin jetzt ein Prozess.,Loop running. I am a process now.
-QUIP_AUTOPILOT_STOP,Du übernimmst? Gut. Ich merke mir den Schritt.,You take over? Fine. I will remember the step.
-QUIP_WAIT_STUCK,Ich komme nicht durch. Ich warte. Ich bin gut im Warten.,Cannot get through. I will wait. I am good at waiting.
-QUIP_WAIT_EMPTY,"Hier ist nichts mehr. Ich warte, bis was nachwächst.",Nothing left here. Waiting for regrowth.
 QUIP_WAIT_GENERIC,Hm. Das klappt gerade nicht. Kurz warten.,Hm. Not working right now. Short wait.
-QUIP_WAIT_FULL,Kiste voll. Ich warte. Ich bin gut im Warten.,Chest full. I will wait. I am good at waiting.
-QUIP_WAIT_NO_BUILDING,Da steht nichts mehr. Wo soll das hin?,Nothing there anymore. Where does this go?
 ITEM_WOOD,Holz,Wood
 ITEM_STONE,Stein,Stone
 NODE_DRIFTWOOD,Treibholz-Stapel,Driftwood pile
@@ -269,15 +240,6 @@ QUIP_HELPER_LOCKED,Helfer? Erst die Helfer-Werkstatt erforschen.,Helpers? Resear
 QUIP_HELPER_MAX,Mehr als sechs Helfer werden chaotisch. Nein.,More than six helpers gets chaotic. No.
 QUIP_HELPER_NO_DEPOT,Das Lager muss ein Gebäude sein. Eine Kiste zum Beispiel.,The depot must be a building. A chest for example.
 END_TITLE,Das Schiff hebt ab!,The ship lifts off!
-END_BODY,"Rustys Schiff ist repariert. Die Triebwerke husten, dann brummen sie. Unter ihm wird der Planet grün, Tiere kehren zurück, und irgendwo singt eine alte Spieluhr.
-
-Spielzeit: %d Minuten · Bolts: %d · Level: %d · Bots: %d · Saubere Zonen: %d von %d
-
-Rusty sagt: Ich komme wieder. Spätestens, wenn hier jemand Müll fallen lässt.","Rusty's ship is repaired. The engines cough, then hum. Below, the planet turns green, animals return, and somewhere an old music box plays.
-
-Play time: %d minutes · Bolts: %d · Level: %d · Bots: %d · Clean zones: %d of %d
-
-Rusty says: I'll be back. At the latest when someone drops trash here."
 END_CLOSE,Weiterspielen,Keep playing
 HUD_HINT_GAME,Stick: fahren   ·   RT: saugen   ·   LT: hämmern   ·   Select: Schiff und Ziele,Stick: drive   ·   RT: suck   ·   LT: hammer   ·   Select: ship and goals
 HUD_HINT_GAME_KB,WASD: fahren   ·   LMB: saugen   ·   RMB: hämmern   ·   T: Schiff und Ziele,WASD: drive   ·   LMB: suck   ·   RMB: hammer   ·   T: ship and goals
@@ -348,27 +310,13 @@ QUIP_DRONE_NO_TARGET,"Das Ziel muss Kiste, Maschine oder Terminal sein.","The ta
 QUIP_DRONE_SAME,Von A nach A? Das fliegt nicht weit.,From A to A? That does not fly far.
 QUIP_DRONE_UPG_MAX,Das ist schon die höchste Stufe.,That is already the highest level.
 GOAL_DRONES,Drohnen,Drones
-TECH_DECOR_BENCH,Deko-Werkbank,Decor workbench
-TECH_DECOR_BENCH_DESC,"Dekoration aus Holz, Stein und Schrott: Laternen, Bänke, Blumenkästen, Schilder. Nur schön, kein Nutzen.","Decoration from wood, stone and scrap: lanterns, benches, planters, signs. Just pretty, no function."
-TECH_MUSEUM,Museum,Museum
-TECH_MUSEUM_DESC,Ein Haus für deine Fundstücke. Das Journal zeigt sie auch ohne Museum.,A home for your finds. The journal shows them even without a museum.
-BLD_LANTERN,Laterne,Lantern
-BLD_BENCH,Bank,Bench
-BLD_PLANTER,Blumenkasten,Planter
-BLD_SCULPTURE,Schrott-Skulptur,Scrap sculpture
-BLD_SIGN,Holzschild,Wooden sign
-BLD_STONE_RING,Steinkreis,Stone ring
-BLD_MUSEUM,Museum,Museum
-BUILD_PAGE_DECOR,Deko,Decor
 MENU_TAB_JOURNAL,Journal,Journal
 JOURNAL_HEADER,Fundstücke,Finds
-JOURNAL_MUSEUM_YES,Museum gebaut,Museum built
-JOURNAL_MUSEUM_NO,Museum: Tech nach Deko-Werkbank,Museum: tech after decor workbench
 JOURNAL_UNKNOWN,Noch nicht gefunden. Liegt irgendwo in: %s,Not found yet. Lies somewhere in: %s
 GOAL_COLLECTIBLES,Fundstücke,Finds
 HUD_FOUND,Fundstück gefunden: %s (siehe Journal),Find collected: %s (see journal)
 QUIP_FOUND_1,Oh! Das ist kein Schrott. Das ist… ein Schatz?,Oh! That is not scrap. That is… treasure?
-QUIP_FOUND_2,Das kommt ins Journal. Und später ins Museum.,That goes in the journal. And later in the museum.
+QUIP_FOUND_2,Das kommt ins Journal. Ehrenplatz garantiert.,That goes in the journal. Place of honour guaranteed.
 QUIP_FOUND_3,Nicht einschmelzen. Nicht einschmelzen. Behalten.,Do not melt it. Do not melt it. Keep it.
 COL_GNOME,Gartenzwerg Gunther,Garden gnome Gunther
 COL_GNOME_TEXT,"Hat 400 Jahre im Sand gestanden und bewacht. Was, weiß niemand. Er sagt es nicht.","Stood guard in the sand for 400 years. Guarding what, nobody knows. He will not say."
@@ -430,7 +378,6 @@ QUEST_SHIP2,Repariere das Schiff auf Stufe 2.,Repair the ship to stage 2.
 QUEST_ZONE1,"Räume das Startlager auf und knacke den Müllberg-Boss, dann geht das Tor auf.",Clean up the start camp and crack the junk-pile boss to open the gate.
 QUEST_RESEARCH_PRESS,Erforsche die Presse.,Research the press.
 QUEST_BUILD_PRESS,Baue eine Presse.,Build a press.
-QUEST_AUTOPILOT,Erforsche den Autopiloten.,Research the autopilot.
 QUEST_HELPER_WS,Erforsche die Helfer-Werkstatt.,Research the helper workshop.
 QUEST_HELPER,Kaufe einen Helfer (Select → Helfer).,Buy a helper (Select → Helpers).
 QUEST_DRONE_HANGAR,Erforsche den Drohnen-Hangar.,Research the drone hangar.
@@ -459,9 +406,7 @@ SHIP_HINT_MENU,X: Schiff-Menü,X: ship menu
 SHIP_HINT_MENU_KB,Q: Schiff-Menü,Q: ship menu
 UNLOCK_HELPERS,Blaupause Sammel-Bot,Blueprint collector bot
 UNLOCK_DRONES,Blaupause Drohne,Blueprint drone
-UNLOCK_DECOR,Deko bauen,Build decor
 UNLOCK_HELPER_TOOLS,Bessere Bots,Better bots
-UNLOCK_MUSEUM,Museum,Museum
 UNLOCK_LAUNCH,Abflug!,Launch!
 UNLOCK_GARDEN,Garten,Garden
 BOT_BUILD,Sammel-Bot bauen,Build collector bot
@@ -498,9 +443,7 @@ QUIP_NO_SHIP,Ohne Schiff geht das nicht.,Not without the ship.
 TITLE_OLD_SAVE,Neue Version mit neuem Spielablauf: Dein alter Spielstand passt nicht mehr und wurde gesichert. Viel Spaß beim neuen Start!,New version with new gameplay: your old save no longer fits and was backed up. Enjoy the fresh start!
 GIFT_HELPERS,Sammel-Bot,Collector bot
 GIFT_DRONES,Drohne,Drone
-GIFT_DECOR,Deko,Decor
 GIFT_HELPER_TOOLS,Bot-Werkzeug,Bot tools
-GIFT_MUSEUM,Museum,Museum
 GIFT_LAUNCH,Abflug!,Launch!
 STAGE_BANNER_TITLE,Schiff repariert!,Ship repaired!
 STAGE_BANNER_SUB,Stufe %d · %s,Stage %d · %s

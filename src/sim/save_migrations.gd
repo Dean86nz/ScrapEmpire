@@ -94,7 +94,6 @@ static func v1_to_v2(data: Dictionary) -> Dictionary:
 			p["pos"] = [float(p["pos"][0]) + SHIFT_PX.x, float(p["pos"][1]) + SHIFT_PX.y]
 		data["map"] = "main"
 	data["tutorial"] = {"step": 5, "done": true}
-	data["tasks"] = {"steps": [], "active": false, "index": 0}
 	data["flags"] = {"gate_open": true}
 	data["version"] = 2
 	return data

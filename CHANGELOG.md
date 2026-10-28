@@ -2,6 +2,23 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.27.0] – 2026-10-28 – MS38 Systeme aufräumen (Phase 2, Punkt 6)
+
+### Entfernt
+- **Aufgaben-Editor und Rustys Autopilot** (Y lang, Taste L, Aufgaben-Zeile im HUD). Bots arbeiten weiter selbstständig in ihrer Zone
+- **Deko-Gebäude** (Laterne, Bank, Pflanzkübel, Schild, Skulptur, Steinkreis) und das **Museum**. Fundstücke und Journal bleiben; das Journal erscheint mit dem ersten Fundstück
+- Zielmodus des Bau-Cursors, Szenario „cozy“, 48 nicht mehr genutzte Texte, Deko- und Museums-Grafiken
+- Baumenü (Y) enthält jetzt nur noch die Sammelstelle; Schiffsstufe 3 und 4 schenken kein Deko/Museum mehr
+
+### Technik
+- `TaskList` bleibt nur als Arbeitslogik der Bots; alte Spielstände mit `tasks` laden weiter ohne Meldung
+- 208 Unit-Tests, 45 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Y kurz und lang: Öffnet sich nur das Baumenü (Sammelstelle), nichts anderes?
+2. Schiffsstufen 3 und 4: Stimmen die Geschenk-Schilder (kein Deko, kein Museum)?
+3. Erstes Fundstück: Erscheint der Journal-Tab?
+
 ## [1.26.0] – 2026-10-28 – MS37 Finale: Rundflug, Abflug, Abspann mit Bilanz (Phase 2, Punkt 5)
 
 ### Neu

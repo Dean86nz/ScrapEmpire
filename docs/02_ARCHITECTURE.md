@@ -341,6 +341,14 @@ Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers �
 - `main.gd`: `_launch_sequence` → `_finale_tour` (Kamera-Marker je Zone, Schild) → `ShipFx.launch` → `EndScreen.show_stats` → Signal `closed` → `_on_credits_closed`.
 - `EndScreen` (`src/ui/end_screen/`): Sterne, Schiff, rollender `VBoxContainer`; Zahlen aus `FinaleStats.rows(w)` (`src/sim/finale_stats.gd`).
 
+## 10j. Aufgeräumt (MS38)
+
+- Aufgaben-Editor und Rustys Autopilot entfernt: `src/ui/task_editor/`, `SimWorld.tasks`, Autopilot-Bewegung in `player.gd`/`suction_tool.gd`, Modifikator `autopilot_speed_mult`, HUD-Zeile `TaskRow`/`refresh_tasks`, Eingabe `task_menu` (L), Zielwahl-Modus des `BuildCursor` (`start_target`, `target_chosen`). Y öffnet beim Loslassen immer das Baumenü (kein Y lang mehr).
+- `TaskList` (WorkerBrain) bleibt für die Helfer, ohne Bearbeiten-/Speicher-API (`remove_step`, `move_step`, `clear`, `interrupt`, `to_dict`/`from_dict`, Signale außer `waiting`).
+- Spielstand: Schlüssel `tasks` wird nicht mehr geschrieben; alte Stände mit `tasks` laden ohne Meldung (Schlüssel wird ignoriert).
+- Deko-Gebäude (Laterne, Bank, Blumenkasten, Skulptur, Schild, Steinkreis) und Museum entfernt: `buildings.json`, Features `decor`/`museum` in `ship.json`, Sprites, Dev-Szenario `cozy`, `BuildingDef.category`. Gebaut wird nur noch die Sammelstelle (`requires_feature: "collection"`).
+- Journal der Fundstücke bleibt; der Tab erscheint, sobald ein Fundstück gefunden ist (ohne Museums-Hinweis). Dekor der Natur (`nature.json`, `zone_themes.json`) bleibt unberührt.
+
 ## 11. Neue Darstellung und UI
 
 - HUD: XP-Leiste (`src/ui/hud/xp_bar.tscn`), Level-Up-Konfetti (`CPUParticles2D` über Rusty), Funken-Partikel bei „Zu hart“.

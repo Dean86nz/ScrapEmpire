@@ -132,7 +132,7 @@ func test_repair_stages_unlock_blueprints() -> void:
 		w.tick()
 	assert_eq(ups, [2, 3, 4])
 	assert_eq(w.bolts, 0)
-	for f in ["helpers", "drones", "decor", "helper_tools", "museum"]:
+	for f in ["helpers", "collection", "drones", "courier", "helper_tools"]:
 		assert_true(w.unlocked_features.has(f), "frei: " + f)
 	assert_true(s.sprite_path.ends_with("ship_4.svg"))
 

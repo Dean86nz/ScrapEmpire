@@ -154,6 +154,8 @@ Gesamtkosten: 11.630 Bolts, Gesamtforschungszeit ca. 17 min. Bei durchschnittlic
 
 ## 9. Selbst-Automatisierung: Aufgabenliste („Autopilot v0.1“)
 
+> **Entfernt in MS38 (v1.27.0):** Aufgaben-Editor und Rustys Autopilot gibt es nicht mehr; Automatisierung läuft über Bots, Drohnen und Kurier. Ebenso entfernt: Deko-Gebäude und Museum (Fundstücke und Journal bleiben). Der Text unten ist historisch.
+
 Der Spieler stellt Rusty eine Aufgabenliste zusammen, die Rusty dann endlos wiederholt:
 
 1. **Aufgaben-Menü** (Y lang drücken, nach Tech 14): eine Liste mit max. 12 Schritten, per Gamepad bedienbar. „Schritt hinzufügen“ öffnet die Auswahl des Schritttyps: **Gehe zu**, **Sammle hier** (saugen bis Inventar voll oder nichts mehr da), **Hämmere hier**, **Lege ab in** (Kiste/Maschine/Terminal), **Nimm aus** (Kiste/Maschine).

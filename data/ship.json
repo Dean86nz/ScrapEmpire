@@ -70,7 +70,6 @@
       "cost_bolts": 2500,
       "unlocks": [
         "drones",
-        "decor",
         "courier"
       ],
       "clean_radius": 10
@@ -81,8 +80,7 @@
       "sprite": "res://assets/sprites/buildings/ship_4.svg",
       "cost_bolts": 8000,
       "unlocks": [
-        "helper_tools",
-        "museum"
+        "helper_tools"
       ],
       "clean_radius": 13
     },

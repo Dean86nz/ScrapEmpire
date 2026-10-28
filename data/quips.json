@@ -83,34 +83,6 @@
     "QUIP_LOADED_1",
     "QUIP_LOADED_2"
   ],
-  "autopilot_locked": [
-    "QUIP_AUTOPILOT_LOCKED"
-  ],
-  "autopilot_start": [
-    "QUIP_AUTOPILOT_START_1",
-    "QUIP_AUTOPILOT_START_2"
-  ],
-  "autopilot_interrupt": [
-    "QUIP_AUTOPILOT_STOP"
-  ],
-  "task_wait_stuck": [
-    "QUIP_WAIT_STUCK"
-  ],
-  "task_wait_empty": [
-    "QUIP_WAIT_EMPTY"
-  ],
-  "task_wait_too_hard": [
-    "QUIP_TOO_HARD_1"
-  ],
-  "task_wait_no_progress": [
-    "QUIP_WAIT_GENERIC"
-  ],
-  "task_wait_full": [
-    "QUIP_WAIT_FULL"
-  ],
-  "task_wait_no_building": [
-    "QUIP_WAIT_NO_BUILDING"
-  ],
   "helper_fail_locked": [
     "QUIP_HELPER_LOCKED"
   ],

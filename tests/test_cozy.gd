@@ -1,4 +1,5 @@
 extends TestCase
+## Fundstücke und Journal (Deko und Museum entfielen in MS38).
 
 
 func _map() -> Dictionary:
@@ -29,34 +30,6 @@ func _world() -> SimWorld:
 	MapLoader.apply(w, _map())
 	w.player.pos = Vector2i(320, 352)
 	return w
-
-
-func test_decor_requires_feature_and_costs_wood() -> void:
-	var w := _world()
-	assert_true(not w.is_building_unlocked("lantern"), "Deko gesperrt ohne Feature")
-	w.player.inventory.add("wood", 20)
-	w.player.inventory.add("copper", 5)
-	w.queue_command({"type": "place", "def_id": "lantern", "tile": Vector2i(8, 8)})
-	w.tick()
-	assert_eq(w.building_count("lantern"), 0)
-	w.unlocked_features["decor"] = true
-	assert_true(w.is_building_unlocked("lantern"))
-	var cost := w.next_cost(w.defs["lantern"])
-	assert_true(int(cost.get("wood", 0)) > 0, "Laterne kostet Holz")
-	w.queue_command({"type": "place", "def_id": "lantern", "tile": Vector2i(8, 8)})
-	w.tick()
-	assert_eq(w.building_count("lantern"), 1)
-	assert_eq(w.player.inventory.count_of("wood"), 20 - int(cost.get("wood", 0)))
-	assert_eq(w.player.inventory.count_of("copper"), 5 - int(cost.get("copper", 0)))
-	var def: BuildingDef = w.defs["lantern"]
-	assert_eq(def.category, "decor")
-
-
-func test_museum_unlocks_via_ship_feature() -> void:
-	var w := _world()
-	assert_true(not w.is_building_unlocked("museum"))
-	w.unlocked_features["museum"] = true
-	assert_true(w.is_building_unlocked("museum"))
 
 
 func test_collectibles_spawn_deterministically_in_their_zone() -> void:

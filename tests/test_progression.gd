@@ -64,6 +64,8 @@ func test_sources() -> void:
 
 func test_world_grants_xp_for_collect_build_deliver() -> void:
 	var w := TestWorlds.make()
+	# eine Zone, damit die Sammelstelle (max. 1 je Zone) gebaut werden darf
+	MapLoader.apply(w, {"width": 40, "height": 30, "zones": [{"id": "a", "name": "A", "x": 0, "y": 0, "w": 40, "h": 30}], "nodes": []})
 	w.player.pos = Vector2i(320, 320)
 	w.player.aim = Vector2.RIGHT
 	w.add_pile("scrap_pile", Vector2i(6, 5), 10)
@@ -71,9 +73,9 @@ func test_world_grants_xp_for_collect_build_deliver() -> void:
 	w.tick()
 	w.player.suck_held = false
 	assert_eq(w.progression.total_xp, 1)
-	w.unlocked_features["decor"] = true
-	w.player.inventory.add("wood", 10)
-	w.queue_command({"type": "place", "def_id": "bench", "tile": Vector2i(7, 7)})
+	w.unlocked_features["collection"] = true
+	w.bolts = int(w.next_cost(w.defs["collection_point"]).get("bolts", 0))
+	w.queue_command({"type": "place", "def_id": "collection_point", "tile": Vector2i(7, 7)})
 	w.tick()
 	assert_eq(w.progression.total_xp, 6, "Bauen gibt 5 XP")
 	TestWorlds.with_ship(w, Vector2i(10, 2))

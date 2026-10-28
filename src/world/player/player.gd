@@ -140,16 +140,6 @@ func _physics_process(delta: float) -> void:
 	if not in_menu:
 		move = Input.get_vector("move_left", "move_right", "move_up", "move_down", InputMapSetup.DEADZONE)
 	var mods: Dictionary = SimClock.world.mods
-	var world := SimClock.world
-	var auto := world.tasks.active
-	if auto and move.length_squared() > 0.0:
-		# Jede Stick-Eingabe gibt die Kontrolle zurück.
-		world.tasks.interrupt(world.player)
-		Quips.say("autopilot_interrupt", true)
-		auto = false
-	if auto and world.player.has_move_target():
-		var to_target := Vector2(world.player.move_target) - global_position
-		move = to_target.normalized() if to_target.length() > 4.0 else Vector2.ZERO
 	# Turbo-Boost (Skill): L3 / Shift, 2 s schnell, dann Abklingzeit.
 	_boost_cooldown = maxf(_boost_cooldown - delta, 0.0)
 	if _boost_time > 0.0:
@@ -160,8 +150,6 @@ func _physics_process(delta: float) -> void:
 	var speed := GameConfig.PLAYER_SPEED_PX * float(mods["speed_mult"])
 	if _boost_time > 0.0:
 		speed *= float(mods["boost_mult"])
-	if auto:
-		speed *= float(mods["autopilot_speed_mult"])
 	_sprite.modulate = Color(1.0, 1.0, 0.75) if _boost_time > 0.0 else Color.WHITE
 	if _look != null:
 		_look.boosting = _boost_time > 0.0
@@ -169,9 +157,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 	var aim := Vector2.ZERO
-	if auto:
-		aim = world.player.aim  # das Gehirn zielt
-	elif InputRouter.context == InputRouter.Context.GAME:
+	if InputRouter.context == InputRouter.Context.GAME:
 		aim = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down", GameConfig.AIM_DEADZONE)
 		if not InputRouter.is_gamepad:
 			aim = get_global_mouse_position() - global_position
@@ -205,8 +191,7 @@ func _physics_process(delta: float) -> void:
 
 	var state: PlayerState = SimClock.world.player
 	state.pos = Vector2i(global_position.round())
-	if not auto:
-		state.aim = aim_dir
+	state.aim = aim_dir
 
 
 ## Gebäude in Reichweite für A (einlegen/entnehmen), sonst null.

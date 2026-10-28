@@ -1,6 +1,6 @@
 class_name WorkerBody
 extends RefCounted
-## Gemeinsame Sim-Sicht auf einen arbeitenden Roboter (Rusty im Autopilot, später Helfer):
+## Gemeinsame Sim-Sicht auf einen arbeitenden Roboter (Helfer; Rusty teilt die Werkzeugwerte):
 ## Position und Eingaben, die eine WorkerBrain setzt, plus Werkzeugwerte.
 
 const TILE := 64

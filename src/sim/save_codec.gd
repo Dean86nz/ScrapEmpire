@@ -65,7 +65,6 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		"loose": loose,
 		"buildings": buildings,
 		"respawns": respawns,
-		"tasks": world.tasks.to_dict(),
 		"helpers": _helpers(world),
 		"helper_upgrades": world.helper_upgrades.duplicate(),
 		"drones": _drones(world),
@@ -194,8 +193,8 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 	for rd: Dictionary in data.get("respawns", []):
 		world.respawns.append({"kind": str(rd.get("kind", "")), "tile": to_v2(rd.get("tile")), "ticks_left": int(rd.get("ticks_left", 100))})
 
-	_log("Aufgabenliste, Helfer: %d, Drohnen: %d" % [data.get("helpers", []).size(), data.get("drones", []).size()])
-	world.tasks.from_dict(data.get("tasks", {}))
+	# Rustys alte Aufgabenliste ("tasks", bis MS37) wird still ignoriert.
+	_log("Helfer: %d, Drohnen: %d" % [data.get("helpers", []).size(), data.get("drones", []).size()])
 	for k in data.get("helper_upgrades", {}):
 		world.helper_upgrades[str(k)] = int(data["helper_upgrades"][k])
 	for hd: Dictionary in data.get("helpers", []):

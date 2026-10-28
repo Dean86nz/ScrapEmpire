@@ -139,17 +139,6 @@ theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 24
 text = "10 s"
 
-[node name="TaskRow" type="Label" parent="."]
-offset_left = 32.0
-offset_top = 136.0
-offset_right = 900.0
-offset_bottom = 172.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0.165, 0.165, 0.2, 1)
-theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 24
-text = ""
-
 [node name="Tutorial" type="PanelContainer" parent="."]
 anchors_preset = 5
 anchor_left = 0.5

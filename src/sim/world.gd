@@ -79,7 +79,6 @@ var item_values: Dictionary = {}  # item_id → Bolts (von außen gesetzt)
 var unlocked_tech: Dictionary = {}  # tech_id → true (Spiegel von tech.unlocked)
 var tech := TechState.new()
 var skills := SkillState.new()
-var tasks := TaskList.new()
 var flags: Dictionary = {}  # launched, mvp_done …
 var zones := ZoneTracker.new()
 var helpers: Dictionary = {}          # id → Helper (Sammel-Bots)
@@ -87,7 +86,7 @@ var helper_cfg: Dictionary = {}       # data/helpers.json
 var helper_upgrades: Dictionary = {}  # upgrade id → Stufe
 var mods: Dictionary = Modifiers.DEFAULTS.duplicate()
 var unlocked_buildings: Dictionary = {}  # def_id → true
-var unlocked_features: Dictionary = {}   # helpers, drones, decor, museum, helper_tools, launch
+var unlocked_features: Dictionary = {}   # helpers, collection, drones, courier, helper_tools, launch
 var rare_items: Dictionary = {}          # item_id → true (von außen gesetzt)
 var gate_buildings := false              # true sobald Fortschrittsdaten geladen sind
 var bolts: int = 0
@@ -230,7 +229,6 @@ func tick() -> void:
 	if _too_hard_cooldown > 0:
 		_too_hard_cooldown -= 1
 
-	tasks.tick(self, player)
 	HelperSystem._tick_helpers(self)
 	DroneSystem._tick_drones(self)
 	CollectibleSystem._tick_collectibles(self)
