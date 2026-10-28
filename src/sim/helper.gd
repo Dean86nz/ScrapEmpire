@@ -99,6 +99,24 @@ func _plan(world: SimWorld) -> void:
 			tasks.start(self)
 			return
 		rally_id = -1
+	# Lose Teile in der Zone (Hammer-Reste, Touristensäcke, Meteoritenreste) haben Vorrang (MS49)
+	if not inventory.is_full():
+		var loose_best: LooseItem = null
+		var loose_d := INF
+		for item: LooseItem in world.loose.values():
+			if not in_zone(Vector2i(item.pos.x / SimWorld.TILE, item.pos.y / SimWorld.TILE)):
+				continue
+			var ld := Vector2(item.pos - pos).length()
+			if ld < loose_d:
+				loose_d = ld
+				loose_best = item
+		if loose_best != null:
+			bored = ""
+			tasks.add_step(TaskList.Type.COLLECT, Vector2i(loose_best.pos.x / SimWorld.TILE, loose_best.pos.y / SimWorld.TILE))
+			if inventory.total() * 2 >= inventory.slot_count * inventory.stack_size:
+				tasks.add_step(TaskList.Type.DEPOSIT, depot_tile)  # erst halb voll zurück, nicht je Einzelteil
+			tasks.start(self)
+			return
 	var best: ResourceNode = null
 	var best_d := INF
 	var too_hard := false

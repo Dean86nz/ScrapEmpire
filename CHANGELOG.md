@@ -2,6 +2,20 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.9.0] – 2026-10-28 – MS49 Bots sammeln alles (Phase 2.2)
+
+### Geändert
+- **Bots sammeln alles, was in ihrer Zone herumliegt:** Reste vom Hämmern (auch Rustys), Touristensäcke, Meteoritenreste. Lose Teile haben Vorrang vor neuem Abbau. Zurück zur Sammelstelle geht es erst, wenn die Taschen mindestens halb voll sind, nicht für jedes Einzelteil
+
+### Technik
+- `Helper._plan`: COLLECT-Schritt auf das nächste lose Teil in der Zone
+- 225 Unit-Tests (neu: Bot sammelt ein loses Teil ein), 55 Gamepad-Prüfungen grün; Leistung 0,76 ms je Tick mit 40 Bots
+
+### Ally-Testliste
+1. Nach einem Touristen- oder Meteoriten-Ereignis: Räumen die Bots die Reste ab?
+2. Rusty hämmert, ohne selbst aufzusaugen: Holen die Bots die Teile?
+3. Fahren Bots sinnlos hin und her (z. B. für einzelne Teile)?
+
 ## [2.8.0] – 2026-10-28 – MS48 Fehler aus dem v2.7.0-Test (Phase 2.2)
 
 ### Behoben
