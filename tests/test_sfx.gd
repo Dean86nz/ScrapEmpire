@@ -60,6 +60,7 @@ func test_zone_change_crossfades() -> void:
 	s.music.volume_db = -10.0
 	s._music_state = "play"
 	s.music_zone("z21")
+	s._music_tick(0.016)
 	s._music_tick(0.5)
 	assert_eq(s._music_playing_path, str(s._music_cfg["zones"]["z21"]), "neues Stück läuft")
 	assert_true(s._music_old.stream != null and s._music_old.volume_db > -60.0, "altes Stück klingt noch aus")

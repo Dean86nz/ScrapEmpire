@@ -2,6 +2,20 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.12.0] – 2026-10-28 – MS52 Musik beim Zonenwechsel (Phase 2.2)
+
+### Geändert
+- **Echtes Überblenden:** Beim Betreten einer neuen Zone wird das alte Stück leiser, während das neue gleichzeitig lauter wird (zwei Abspieler, 2,5 s, `fade_s` in `data/audio.json`). Vorher lief Aus- und Einblenden nacheinander
+- **Zonen-Jingle:** Beim ersten Betreten einer Zone ein kurzer, heller Glocken-Akkord (im Spiel erzeugt, keine Fremdlizenz); die Musik wird dafür kurz leiser
+
+### Technik
+- `Sfx._music_old`, `Sfx.duck`, Jingle `zone_jingle`; Flag `zone_seen_<zone>`
+- 227 Unit-Tests (neu: Überblenden mit zwei Stücken, Jingle ohne Knacken), 57 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Zwischen zwei Zonen hin und her fahren: Ist der Wechsel jetzt weich?
+2. Erste Fahrt in eine neue Zone: Gefällt der Jingle? Zu laut, zu leise?
+
 ## [2.11.0] – 2026-10-28 – MS51 Sprechblasen klein (Phase 2.2)
 
 ### Behoben

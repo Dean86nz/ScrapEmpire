@@ -183,12 +183,13 @@ func _music_tick(delta: float) -> void:
 	_duck_db = move_toward(_duck_db, 0.0, delta * 8.0) if _duck_timer <= 0.0 else _duck_db
 	_duck_timer -= delta
 	# Altes Stück (Überblenden) ausklingen lassen
-	if _music_old.playing:
+	if _music_old.stream != null and _music_old.volume_db > -60.0:
 		_music_old.volume_db = move_toward(_music_old.volume_db, -60.0, step)
 		if _music_old.volume_db <= -59.0:
 			_music_old.stop()
+			_music_old.volume_db = -60.0
 	if _music_path != _music_playing_path and _music_path != "":
-		if music.playing and _music_state != "pause":
+		if _music_state in ["fade_in", "play", "fade_out"]:
 			# Überblenden: aktuelles Stück wandert auf den zweiten Abspieler
 			var tmp := _music_old
 			_music_old = music
