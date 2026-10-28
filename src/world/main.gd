@@ -131,8 +131,8 @@ func _ready() -> void:
 	_world.boss_defeated.connect(_on_boss_defeated)
 	_world.boss_rally.connect(_on_boss_rally)
 	_world.hammer_impact.connect(func(_n: ResourceNode, tier: int, one_hit: bool) -> void:
-		if tier >= 4 or one_hit:
-			_shake(3.0 + 1.5 * tier, 0.16)
+		if one_hit and tier >= 4:
+			_shake(2.5, 0.12)  # nur große Treffer, sanft (MS50)
 		if one_hit:
 			_hit_stop(0.06))
 	_world.boss_blocked.connect(func(_b: ResourceNode, have: int, _need: int) -> void:
@@ -439,7 +439,7 @@ func _on_boss_rally(boss: ResourceNode, _called: int) -> void:
 		_hud.stage_banner.show_card(tr("BOSS_HELP_TITLE"), tr("BOSS_HELP_SUB"), "", str(ResourceNode.defs.get(boss.kind, {}).get("sprite", "")), 4.5)
 	EventBus.quip.emit("QUIP_RALLY")
 	Sfx.play("honk")
-	_shake(10.0, 0.35)
+	_shake(5.0, 0.3)
 
 
 ## Kurzer Trefferstopp beim Ein-Schlag: Zeit fast anhalten, dann weiter (Echtzeit-Timer).
@@ -452,6 +452,8 @@ func _hit_stop(seconds: float) -> void:
 
 
 func _shake(strength: float, seconds: float) -> void:
+	if not SaveManager.screen_shake():
+		return
 	var cam: Camera2D = _player.get_node("Camera2D")
 	var tw := create_tween()
 	tw.tween_method(func(t: float) -> void:

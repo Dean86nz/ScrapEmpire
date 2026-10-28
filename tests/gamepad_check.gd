@@ -4,6 +4,7 @@ extends SceneTree
 ## Aufruf nur über tests/gamepad_check.sh (schützt den echten Spielstand).
 ## Exit-Code 1, wenn eine Prüfung fehlschlägt.
 
+var _shake_before := true
 var _frame := 0
 var _steps: Array[Dictionary] = []
 var _i := -1
@@ -212,6 +213,17 @@ func _build_steps() -> void:
 		func() -> bool: return absf(float(root.get_node("/root/Sfx").volume["music"]) - (_vol_before - 0.1)) < 0.01 and pause.get_viewport().gui_get_focus_owner() == pause._music_btn)
 	_step("D-Pad rechts: zurück", func() -> void: _tap(JOY_BUTTON_DPAD_RIGHT),
 		func() -> bool: return absf(float(root.get_node("/root/Sfx").volume["music"]) - _vol_before) < 0.01)
+	_step("D-Pad runter 2×: Wackeln-Schalter, A schaltet um", func() -> void:
+			_shake_before = root.get_node("/root/SaveManager").screen_shake()
+			_tap(JOY_BUTTON_DPAD_DOWN)
+			_tap(JOY_BUTTON_DPAD_DOWN)
+			_tap(JOY_BUTTON_A),
+		func() -> bool: return root.get_node("/root/SaveManager").screen_shake() != _shake_before and pause.get_viewport().gui_get_focus_owner() == pause._shake_btn, 6)
+	_step("A schaltet zurück, D-Pad hoch 2× zum Musik-Regler", func() -> void:
+			_tap(JOY_BUTTON_A)
+			_tap(JOY_BUTTON_DPAD_UP)
+			_tap(JOY_BUTTON_DPAD_UP),
+		func() -> bool: return root.get_node("/root/SaveManager").screen_shake() == _shake_before and pause.get_viewport().gui_get_focus_owner() == pause._music_btn, 6)
 	_step("D-Pad hoch, A auf „Fortsetzen“ schließt Pause", func() -> void:
 			_tap(JOY_BUTTON_DPAD_UP)
 			_tap(JOY_BUTTON_A),
