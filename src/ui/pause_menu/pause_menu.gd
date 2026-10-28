@@ -48,6 +48,7 @@ func _ready() -> void:
 		SaveManager.set_screen_shake(not SaveManager.screen_shake())
 		_refresh_volume_labels())
 	_refresh_volume_labels()
+	KenneySkin.apply($Dim/Center/Panel)  # einheitlicher Menü-Stil (MS53-Entwurf)
 	# Reihenfolge für D-Pad hoch/runter (im Kreis), auch über die neuen Regler
 	var order: Array[Button] = [_resume_btn, _music_btn, _sfx_btn, _shake_btn, _language_btn, _new_game_btn, _quit_btn]
 	for i in order.size():
