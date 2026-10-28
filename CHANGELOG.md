@@ -2,6 +2,32 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.7.0] – 2026-10-28 – MS47 Absturz-Intro (Phase 2.1 abgeschlossen)
+
+### Neu
+- **Absturz-Intro bei neuem Spiel (ca. 6 s):** Das Schiff trudelt drehend mit Rauchfahne vom Himmel, schlägt auf (Staubwolke, Bildschirmwackeln, tiefer Bonk, Schiff staucht sich), Rusty plumpst mit Boing heraus, landet federnd, schüttelt sich und sagt: „Aua. Okay. Räder ja, Plan nein. Erst mal aufräumen!“
+- **B (oder Start) überspringt**, die Hinweiszeile zeigt „B: überspringen“. Gespeicherte Spiele starten ohne Intro
+- Während des Intros zählt nichts für Aufgaben (nur das Bild bewegt sich)
+
+### Technik
+- `IntroCrash` (`src/world/intro_crash.gd`), Start in `main.gd`; automatische Läufe schalten es über `Engine.set_meta("skip_intro")` ab (Screenshot-Cheat `intro=1` zeigt es)
+- 221 Unit-Tests, 55 Gamepad-Prüfungen (neu: Intro sperrt die Steuerung, B überspringt), Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Neues Spiel: Ist der Absturz lustig und nicht zu lang? Passt der erste Spruch?
+2. Nochmal neues Spiel, sofort B: Geht es direkt los, ohne Hänger?
+3. Weiterspielen eines Spielstands: kein Intro?
+
+## Phase 2.1: Gesamt-Testliste für den nächsten Durchlauf (v2.7.0)
+Bitte wieder bis zum Abflug spielen und die Spielzeit notieren bei: jedem Tor, jedem Boss, jeder Schiffsstufe, Abflug.
+1. Absturz-Intro, danach die ersten 30 Minuten: Kommt alle 2–3 Minuten etwas Neues?
+2. Sammelstelle je Zone per A auf dem Bauplatz; Bots verteilen sich selbst
+3. Jeder Boss mit Verstärkung: Kommen die Bots, ist „x/y Bots da“ klar, macht es Spaß? Endboss (6 Bots) schaffbar?
+4. Hammer nach Upgrades spürbar schneller, Effekte angenehm?
+5. Sprechblasen ruhig genug? Geräusche angenehm? Musik je Zone passend?
+6. Pause mit gehaltenem RT, Karte zoomen/schließen: alles in Ordnung?
+7. Log-Datei wieder in den Ordner „Scrap Empire“ legen
+
 ## [2.6.0] – 2026-10-28 – MS46 Musik je Zone (Phase 2.1)
 
 ### Neu

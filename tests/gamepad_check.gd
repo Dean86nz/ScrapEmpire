@@ -100,6 +100,11 @@ func _build_steps() -> void:
 
 	var player: Node2D = _node("Player")
 
+	# Absturz-Intro (MS47): B überspringt sofort
+	_step("Intro läuft: Steuerung gesperrt", func() -> void: pass,
+		func() -> bool: return _main.has_node("IntroCrash") and router.context == router.Context.MENU, 4, 300)
+	_step("B überspringt das Absturz-Intro", func() -> void: _tap(JOY_BUTTON_B),
+		func() -> bool: return not _main.has_node("IntroCrash") and router.context == router.Context.GAME and player.get_node("Sprite2D").visible, 6)
 	_step("Select am Anfang: nur drei Tabs (Schiff, Ziele, Karte)", func() -> void: _tap(JOY_BUTTON_BACK),
 		func() -> bool:
 			var n := 0

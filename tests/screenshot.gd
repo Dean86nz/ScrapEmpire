@@ -39,6 +39,7 @@ func _initialize() -> void:
 	var scene := "res://src/world/main.tscn"
 	if args.size() >= 6:
 		scene = args[5]  # z. B. res://src/ui/title/title.tscn
+	Engine.set_meta("skip_intro", not _cheat.contains("intro=1"))  # Absturz-Intro nur auf Wunsch
 	change_scene_to_file(scene)
 
 
