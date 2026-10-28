@@ -81,3 +81,16 @@ func test_pause_resets_stuck_suction() -> void:
 	router.reset_tools()
 	assert_false(Input.is_action_pressed("tool_primary"), "RT nach Pause nicht mehr gedrückt")
 	assert_false(SimClock.world.player.suck_held, "Sim saugt nicht mehr")
+
+
+func test_every_context_change_stops_suction() -> void:
+	# Ally-Fehler v2.7.0: nach dem Kauf-Jubel saugte Rusty weiter. Zentral: jeder Kontextwechsel.
+	InputMapSetup.apply()
+	var router: Node = Engine.get_main_loop().root.get_node("InputRouter")
+	var ctx := [router.Context.MENU, router.Context.GAME, router.Context.BUILD, router.Context.GAME]
+	for c: int in ctx:
+		Input.action_press("tool_primary", 1.0)
+		SimClock.world.player.suck_held = true
+		router.context = c
+		assert_false(Input.is_action_pressed("tool_primary"), "RT nicht mehr gedrückt nach Wechsel zu %d" % c)
+		assert_false(SimClock.world.player.suck_held, "Sim saugt nicht nach Wechsel zu %d" % c)

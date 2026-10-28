@@ -2,6 +2,23 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.8.0] – 2026-10-28 – MS48 Fehler aus dem v2.7.0-Test (Phase 2.2)
+
+### Behoben
+- **Endboss besiegbar:** Ein Boss ruft jetzt **alle Bots des Planeten**, nicht nur die im Umkreis von 30 Feldern. Über dem Boss steht laufend „3/6 Bots da · 2 unterwegs“ (grün, sobald genug da sind). Gibt es insgesamt zu wenige Bots: „Es fehlen 2 Bots (braucht 6): Schiff → Bots, X am Schiff“
+- **Sauger hängt (zentral gelöst):** Jeder Wechsel des Eingabe-Kontexts (Menü, Pause, Kauf-Jubel, Karte, Intro, Abspann, Boss-Moment) setzt Saugen und Hammer zurück und liest sie neu vom Controller. Die Einzel-Korrekturen aus MS41 sind dadurch ersetzt
+- **Bots fahren nicht mehr durch Zäune:** Wegfindung mit AStarGrid2D um Zäune herum, Tore sind offen, sobald beide Zonen frei sind. Bei freier Sicht fährt ein Bot weiter direkt (kostet fast nichts); Leistung mit 40 Bots unverändert ca. 0,75 ms je Tick
+
+### Technik
+- `BossSystem.rally` ohne Umkreis, `helpers_coming`, `helpers_missing`; `InputRouter.context` als Eigenschaft mit `reset_tools()`; `NavGrid` (`src/sim/nav_grid.gd`), `SimWorld.blocked_version`
+- 224 Unit-Tests (neu: ferne Bots kommen an, fehlende Bots, jeder Kontextwechsel stoppt das Saugen, Weg um eine Wand), 55 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Endboss mit 6+ Bots, die in anderen Zonen arbeiten: Kommen alle? Stimmt die Anzeige „x/6 Bots da · y unterwegs“?
+2. Mit weniger als 6 Bots: Ist der Hinweis „Es fehlen …“ klar?
+3. RT halten und dabei etwas kaufen (Jubel), Karte öffnen, Pause: Saugt Rusty danach nie von allein weiter?
+4. Bots an Zonengrenzen beobachten: Fahren sie durchs Tor statt durch den Zaun?
+
 ## [2.7.0] – 2026-10-28 – MS47 Absturz-Intro (Phase 2.1 abgeschlossen)
 
 ### Neu

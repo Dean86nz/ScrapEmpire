@@ -42,21 +42,6 @@ func test_rusty_alone_does_no_damage() -> void:
 	assert_eq(b.amount, before)
 
 
-func test_rally_calls_bots_in_radius() -> void:
-	var w := _world()
-	var b := _boss(w)
-	var near := w.add_helper(Vector2i(12, 12), w.ship().tile)
-	near.pos = b.center_px() + Vector2i(600, 0)
-	var far := w.add_helper(Vector2i(12, 12), w.ship().tile)
-	far.pos = b.center_px() + Vector2i(64 * 40, 0)
-	var calls := []
-	w.boss_rally.connect(func(_n: ResourceNode, c: int) -> void: calls.append(c))
-	assert_eq(BossSystem.rally(w, b), 1)
-	assert_eq(near.rally_id, b.id)
-	assert_eq(far.rally_id, -1, "zu weit weg")
-	assert_eq(calls, [1])
-
-
 func test_bots_come_and_boss_falls_together() -> void:
 	var w := _world()
 	var b := _boss(w)
@@ -123,3 +108,28 @@ func test_gate_quest_waits_for_the_boss() -> void:
 	assert_true(q.is_satisfied(w))
 	q.index = 1
 	assert_true(q.is_satisfied(w), "ein Boss geknackt")
+
+
+func test_boss_calls_bots_from_far_zones() -> void:
+	# Ally-Fehler v2.7.0: Endboss rief nur Bots im Umkreis, die anderen saßen in fernen Zonen.
+	var w := _world()
+	var b := _boss(w)
+	var far := w.add_helper(Vector2i(55, 25), w.ship().tile)
+	far.pos = Vector2i(58, 28) * 64
+	assert_eq(BossSystem.rally(w, b), 1, "auch weit entfernte Bots kommen")
+	assert_eq(BossSystem.helpers_coming(w, b), 1)
+	var arrived := false
+	for i in 20 * 40:
+		w.tick()
+		if not w.nodes.has(b.id) or BossSystem.helpers_at(w, b) >= 1:
+			arrived = true
+			break
+	assert_true(arrived, "Bot ist am Boss angekommen")
+
+
+func test_boss_reports_missing_bots() -> void:
+	var w := _world()
+	var b := _boss(w)
+	b.bots_needed = 6
+	w.add_helper(Vector2i(12, 12), w.ship().tile)
+	assert_eq(BossSystem.helpers_missing(w, b), 5)

@@ -62,6 +62,17 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **46** | Musik je Zone und Finale | v2.6.0 |
 | **47** | Absturz-Intro | v2.7.0 |
 
+## Phase 2.2 nach dem Test von v2.7.0 (Go 2026-10-28)
+
+| MS | Inhalt | Version |
+|---|---|---|
+| **48** | Fehler: Endboss ruft alle Bots, Sauger zentral, Bot-Wegfindung | v2.8.0 |
+| 49 | Bots sammeln alles Lose | v2.9.0 |
+| 50 | Bildschirmwackeln schwächer, Option an/aus | v2.10.0 |
+| 51 | Sprechblasen klein (Vorgaben), Screenshot zur Abnahme | v2.11.0 |
+| 52 | Musik: echtes Überblenden, Zonen-Jingle | v2.12.0 |
+| 53 | Menüs mit Kenney UI Pack, erst Entwurf | v2.13.0 |
+
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
 
 Ziel: Steam-Release, 3 bis 4 Stunden mit klarem Ende, danach Content-Stopp. Beschlossen:

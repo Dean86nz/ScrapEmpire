@@ -4,7 +4,13 @@ extends Node
 
 enum Context { GAME, BUILD, MENU }
 
-var context: Context = Context.GAME
+## Jeder Wechsel (Menü, Pause, Jubel, Karte, Intro, Abspann, Boss-Moment) setzt Saugen und
+## Hammer zurück und liest sie neu vom Controller (MS48: zentral statt je Stelle).
+var context: Context = Context.GAME:
+	set(value):
+		if value != context:
+			context = value
+			reset_tools()
 var is_gamepad := true
 
 const TOOL_AXES := {"tool_primary": JOY_AXIS_TRIGGER_RIGHT, "tool_secondary": JOY_AXIS_TRIGGER_LEFT}

@@ -86,7 +86,6 @@ func open() -> void:
 	get_tree().paused = true
 	SimClock.paused = true
 	InputRouter.context = InputRouter.Context.MENU
-	InputRouter.reset_tools()
 	_resume_btn.grab_focus()
 	opened.emit()
 
@@ -96,7 +95,6 @@ func close() -> void:
 	get_tree().paused = false
 	SimClock.paused = false
 	InputRouter.context = InputRouter.Context.GAME
-	InputRouter.reset_tools()
 
 
 ## A springt im Kreis (100 % → 0 %), links/rechts geht schrittweise.
