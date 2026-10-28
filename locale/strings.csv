@@ -624,6 +624,6 @@ INTRO_Q,"Aua. Okay. Räder ja, Plan nein. Erst mal aufräumen!","Ouch. Okay. Whe
 INTRO_SKIP,B: überspringen,B: skip
 BOSS_COUNT,%d/%d Bots da,%d/%d bots here
 BOSS_COMING,%d unterwegs,%d on the way
-BOSS_MISSING,"Es fehlen %d Bots (braucht %d): Schiff → Bots, X am Schiff","%d bots missing (needs %d): ship → bots, X at the ship"
+BOSS_MISSING,Noch %d Bot(s) bauen: Schiff → Bots,Build %d more bot(s): ship → bots
 MENU_SHAKE_ON,Bildschirmwackeln: an,Screen shake: on
 MENU_SHAKE_OFF,Bildschirmwackeln: aus,Screen shake: off
