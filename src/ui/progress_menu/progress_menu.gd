@@ -505,7 +505,9 @@ func _refresh_ship() -> void:
 			for f in ShipSystem.next_stage_unlocks(w, s):
 				gifts.append("+ " + tr("GIFT_" + str(f).to_upper()))
 			_set_card(repair, "  ".join(gifts), TINT_OK if reason == "" else TINT_NO)
-			if reason == "planet":
+			if reason == "boss":
+				_set_cost(repair, tr("SHIP_NEEDS_BOSS"), COST_NO, false)
+			elif reason == "planet":
 				_set_cost(repair, tr("SHIP_NEEDS_PLANET") % int(round(float(ShipSystem.stage_def(w, s.stage + 1).get("requires_planet", 0.0)) * 100.0)), COST_NO, false)
 			else:
 				_set_cost(repair, Fmt.int_str(ShipSystem.next_stage_cost(w, s)), COST_OK if reason == "" else COST_NO, true)
@@ -840,7 +842,7 @@ func _quest_icon(qd: Dictionary) -> String:
 			return "res://assets/sprites/ui/tab_skills.svg"
 		"skill_level":
 			return str(_world.skills.by_id.get(str(qd.get("skill", "")), {}).get("icon", "res://assets/sprites/ui/tab_skills.svg"))
-		"wrecks":
+		"wrecks", "bosses", "flag":
 			return "res://assets/sprites/ui/ms_hammer.svg"
 		"bolts_earned":
 			return "res://assets/sprites/ui/bolt.svg"

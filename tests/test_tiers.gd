@@ -2,7 +2,7 @@ extends TestCase
 
 
 func _world() -> SimWorld:
-	ResourceNode.load_defs("res://data/scrap_objects.json")
+	ResourceNode.load_defs("res://tests/data/scrap_objects_test.json")  # feste Test-Objekte (Mechanik, nicht Balancing)
 	var w := SimWorld.new()
 	w.set_size(40, 30)
 	w.player.pos = Vector2i(320, 352)
@@ -11,7 +11,7 @@ func _world() -> SimWorld:
 
 
 func test_defs_loaded() -> void:
-	ResourceNode.load_defs("res://data/scrap_objects.json")
+	ResourceNode.load_defs("res://tests/data/scrap_objects_test.json")  # feste Test-Objekte (Mechanik, nicht Balancing)
 	assert_true(ResourceNode.has_kind("toaster"))
 	assert_true(ResourceNode.has_kind("monolith"))
 	assert_eq(ResourceNode.defs.size(), 19, "16 Objekte + Müllsack + Meteor + eingebautes Wrack")

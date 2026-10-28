@@ -145,6 +145,8 @@ func test_final_stage_needs_healed_planet_and_launches() -> void:
 	s.stage = 4
 	ShipSystem.apply_stage(w, s)
 	w.bolts = 40000
+	assert_eq(ShipSystem.can_upgrade(w, s), "boss", "erst den Endboss knacken")
+	w.flags["final_boss"] = true
 	assert_eq(ShipSystem.can_upgrade(w, s), "planet")
 	for n in w.nodes.values():
 		w._remove_node(n)

@@ -86,12 +86,19 @@ func _build_zone_tints() -> void:
 	_refresh_zone_tints(false)
 
 
+## Bodenfarbe des Zonen-Themas (data/zone_themes.json), über dem Sand.
+func _theme_ground(zone_id: String) -> Color:
+	var theme := str(_world.zones.zone_by_id(zone_id).get("theme", ""))
+	var g: Array = DataRegistry.zone_theme(theme).get("ground", [0, 0, 0, 0])
+	return Color(float(g[0]), float(g[1]), float(g[2]), float(g[3]))
+
+
 func _refresh_zone_tints(animate: bool = true) -> void:
 	for z in _world.zones.summary(_world.nodes):
 		var poly: Polygon2D = _zone_tints.get(z["id"])
 		if poly == null:
 			continue
-		var target: Color = ZONE_TINTS[int(z["stage"])] if _world.zones.is_unlocked(str(z["id"])) else LOCKED_TINT
+		var target: Color = _theme_ground(str(z["id"])) if _world.zones.is_unlocked(str(z["id"])) else LOCKED_TINT
 		if animate:
 			create_tween().tween_property(poly, "color", target, 1.2)
 		else:

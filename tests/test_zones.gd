@@ -16,7 +16,7 @@ func _map() -> Dictionary:
 
 
 func _world() -> SimWorld:
-	ResourceNode.load_defs("res://data/scrap_objects.json")
+	ResourceNode.load_defs("res://tests/data/scrap_objects_test.json")  # feste Test-Objekte (Mechanik, nicht Balancing)
 	var w := SimWorld.new()
 	w.defs = BuildingDef.load_all("res://data/buildings.json")
 	MapLoader.apply(w, _map())
@@ -26,7 +26,7 @@ func _world() -> SimWorld:
 
 
 func test_new_objects_and_items_exist() -> void:
-	ResourceNode.load_defs("res://data/scrap_objects.json")
+	ResourceNode.load_defs("res://tests/data/scrap_objects_test.json")  # feste Test-Objekte (Mechanik, nicht Balancing)
 	for k in ["pallet", "concrete", "sofa", "ruin_wall", "driftwood_pile", "rubble_field"]:
 		assert_true(ResourceNode.has_kind(k), "fehlt: " + k)
 	var values := Economy.load_item_values("res://data/items.json")

@@ -63,6 +63,20 @@ static func on_point_built(w: SimWorld, _p: CollectionPoint) -> void:
 			DroneSystem.add_drone(w)
 
 
+## Bots, die gerade dieser Zone zugeteilt sind.
+static func bots_in_zone(w: SimWorld, zone_id: String) -> int:
+	var n := 0
+	for h: Helper in w.helpers.values():
+		if h.zone_id == zone_id:
+			n += 1
+	return n
+
+
+## Ein Boss lässt sich von Bots knacken, wenn genug Bots in seiner Zone arbeiten.
+static func team_can_hit(w: SimWorld, node: ResourceNode) -> bool:
+	return node.boss and node.bots_needed > 0 and bots_in_zone(w, w.zones.zone_id_at(node.tile)) >= node.bots_needed
+
+
 # --- Bots zuweisen -------------------------------------------------------------------
 
 ## Bot einer Zone zuweisen ("" + auto = sucht selbst). Nur freigeschaltete Zonen.

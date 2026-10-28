@@ -49,13 +49,33 @@ func on_tiles_changed(tiles: Array) -> void:
 
 
 ## Deterministisch je Kachel: ob und was wächst, Versatz und Verzögerung kommen aus einem Hash.
+## Einstellungen einer Zone: Grundwerte aus nature.json, Pflanzen/Deko/Tiere aus dem Thema.
+func _zone_cfg(zone_id: String) -> Dictionary:
+	var th := DataRegistry.zone_theme(str(_world.zones.zone_by_id(zone_id).get("theme", "")))
+	if th.is_empty():
+		return _cfg
+	var c := _cfg.duplicate()
+	if th.has("plants"):
+		var pt: Dictionary = th["plants"].duplicate()
+		pt["delay_s"] = _cfg.get("per_tile", {}).get("delay_s", [0.6, 2.4])
+		c["per_tile"] = pt
+	for k in ["decor", "animals"]:
+		if th.has(k):
+			c[k] = th[k]
+	return c
+
+
 func _grow(t: Vector2i, animate: bool) -> void:
-	var pt: Dictionary = _cfg.get("per_tile", {})
+	var pt: Dictionary = _zone_cfg(_world.zones.zone_id_at(t)).get("per_tile", {})
 	var h := absi(hash(t))
 	var roll := float(h % 10000) / 10000.0
 	var kind := ""
 	var acc := 0.0
-	for k in ["grass", "grass_tall", "flower_yellow", "flower_pink", "flower_blue"]:
+	var plant_kinds := pt.keys()
+	plant_kinds.sort()
+	for k in plant_kinds:
+		if str(k) == "delay_s":
+			continue
 		acc += float(pt.get(k, 0.0))
 		if roll < acc:
 			kind = k
@@ -121,7 +141,8 @@ func _refresh_zone(zone_id: String, stage: int, animate: bool) -> void:
 	if z.is_empty():
 		return
 	var rect: Rect2i = z["rect"]
-	var plan := NaturePlanner.plan(rect, stage, NaturePlanner.zone_seed(zone_id), _cfg, _occupied())
+	var zcfg := _zone_cfg(zone_id)
+	var plan := NaturePlanner.plan(rect, stage, NaturePlanner.zone_seed(zone_id), zcfg, _occupied())
 	if not _decor.has(zone_id):
 		_decor[zone_id] = {}
 	var existing: Dictionary = _decor[zone_id]
@@ -157,11 +178,11 @@ func _refresh_zone(zone_id: String, stage: int, animate: bool) -> void:
 				tw.tween_callback(s.queue_free)
 			else:
 				s.queue_free()
-	_refresh_critters(zone_id, stage, rect, animate)
+	_refresh_critters(zone_id, stage, rect, animate, zcfg)
 
 
-func _refresh_critters(zone_id: String, stage: int, rect: Rect2i, animate: bool) -> void:
-	var wanted: Dictionary = _cfg.get("animals", {}).get(str(stage), {})
+func _refresh_critters(zone_id: String, stage: int, rect: Rect2i, animate: bool, zcfg: Dictionary = {}) -> void:
+	var wanted: Dictionary = (zcfg if not zcfg.is_empty() else _cfg).get("animals", {}).get(str(stage), {})
 	var speeds: Dictionary = _cfg.get("animal_speed", {})
 	if not _critters.has(zone_id):
 		_critters[zone_id] = []

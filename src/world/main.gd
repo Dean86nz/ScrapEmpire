@@ -140,6 +140,7 @@ func _ready() -> void:
 		Quips.say("upgrade_bought", true))
 	_world.ship_delivered.connect(_on_ship_delivered)
 	_world.milestone_reached.connect(_on_milestone_reached)
+	_world.boss_defeated.connect(_on_boss_defeated)
 	_world.courier_failed.connect(func(r: String) -> void:
 		if r == "empty":
 			EventBus.quip.emit("QUIP_COURIER_EMPTY")
@@ -478,6 +479,16 @@ func _refresh_chapter_hud() -> void:
 	_hud.set_tutorial(text)
 
 
+## Boss geknackt: großes Schild, Fanfare, Konfetti; das Tor öffnet sich (Sim prüft es im Tick).
+func _on_boss_defeated(kind: String, _zone_id: String, reward: int) -> void:
+	_player.celebrate()
+	Sfx.play("repair")
+	var def: Dictionary = ResourceNode.defs.get(kind, {})
+	var final := bool(def.get("final", false))
+	_hud.stage_banner.show_card(tr("BOSS_DEFEATED_TITLE"), tr("BOSS_DEFEATED_SUB") % tr(str(def.get("name_key", kind))),
+		(tr("BOSS_FINAL_REWARD") if final else tr("BOSS_DEFEATED_REWARD")) % Fmt.int_str(reward), str(def.get("sprite", "")), 3.2)
+
+
 ## Meilenstein: Pokal-Schild mit Zahl und Belohnung, Arpeggio, Konfetti.
 func _on_milestone_reached(def: Dictionary, _step: int, value: int, bolts: int) -> void:
 	_player.celebrate()
@@ -606,7 +617,7 @@ func _on_zone_unlocked(zone_id: String) -> void:
 	_open_unlocked_gates()
 	_player.celebrate()
 	var z := _world.zones.zone_by_id(zone_id)
-	EventBus.quip.emit("ZONE_UNLOCKED")
+	EventBus.quip.emit("QUIP_BOSS_SPOTTED" if _world.zones.boss_alive(zone_id, _world.nodes) else "ZONE_UNLOCKED")
 	_hud.set_tutorial(tr("CH_UNLOCKED") % str(z.get("name", zone_id)))
 	_chapter_timer = 4.0
 

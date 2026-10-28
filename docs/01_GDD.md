@@ -365,6 +365,8 @@ Das Spiel ist cozy und entspannt: Der Spieler räumt einen vermüllten Planeten 
 
 **Seit MS30 (v1.19.0): Müll ist endlich.** Nichts wächst nach, leere Haufen verschwinden. Nachschub über Ereignisse (`data/events.json`): Touristen (Müllsäcke, ab 4 min, alle 4–6 min) und Meteoritenschauer (ab Schiffsstufe 2, alle 7–10 min, 20 s Vorwarnung). Bonus-Müll verschmutzt nicht, enthält 1,5× bzw. 2× so viele Teile, höchstens 40 gleichzeitig. Ersetzt den Grundsatz „nie keine Ressourcen“ vom 2026-10-25.
 
+**Seit MS36 (v1.25.0): Themen-Zonen und Bosse.** Karte 120 × 90, sechs Zonen à 40 × 45 in fester Reihenfolge: Schrottplatz → Kabelsenke → Plastikbucht → Kühlschrank-Friedhof → Satellitenfeld → Monolith-Ebene. Thema je Zone in `data/zone_themes.json` (Bodenfarbe, Wiese, Pflanzen, Deko, Tiere). Jede Zone hat genau einen Müllberg-Boss (`boss: true`); er braucht die nächste Werkzeugstufe oder `bots_needed` (3) Bots in der Zone. Solange er steht, bleibt das Tor zu. Belohnung `reward_bolts`, Flag `boss_<zone>`. Der Ur-Haufen (T6, `final: true`) setzt `final_boss`; Schiffsstufe 5 verlangt dieses Flag.
+
 ### 23a. Kapitel und Tore (MS12, umgesetzt)
 
 - Die Zonen einer Karte haben eine feste Reihenfolge (`zone_order` in der Karten-JSON); jede Zone ist ein **Kapitel**. Nur die erste Zone ist zu Beginn freigeschaltet.

@@ -2,6 +2,35 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [1.25.0] – 2026-10-28 – MS36 Zonen neu: sechs Themen-Zonen mit Müllberg-Bossen (Phase 2, Punkt 4)
+
+### Neu
+- **Neue Karte, 120 × 90 Kacheln, sechs Zonen mit eigenem Thema:** Schrottplatz (Start) → Kabelsenke → Plastikbucht → Kühlschrank-Friedhof → Satellitenfeld → Monolith-Ebene. Jede Zone hat eigene Müll-Objekte, eigenen Boden, eigene Wiese (Monolith-Ebene: Regenbogen), eigene Pflanzen, Deko und Tiere (Schmetterlinge, Libellen, Krebse, Pinguine, Leuchtkäfer)
+- **Müllberg-Boss in jeder Zone:** Toaster-Turm, Kabelmonster, Plastik-Wal, Kühlschrank-König, Mega-Schüssel, Ur-Haufen. Großes Objekt mit Namensschild und Lebensbalken. Knacken geht mit der nächsten Werkzeugstufe oder mit mindestens 3 Bots, die der Zone zugewiesen sind. Belohnung: Bolts, Banner, Jubel. **Das Tor zur nächsten Zone öffnet sich erst, wenn der Boss weg ist**
+- **Der Ur-Haufen ist der Endboss** (T6, nur mit Bots): Ohne ihn lässt sich das Schiff nicht auf Stufe 5 bringen (Hinweis im Schiff-Tab)
+- Schiffsstufen kosten jetzt 500 / 2 500 / 8 000 / 15 000 Bolts, Ertrag 60 bis 5 000
+- Neue Aufgaben: „Knacke 4 Müllberg-Bosse“ und „Knacke den Ur-Haufen“; die Tor-Aufgabe nennt den Boss
+- Rusty kommentiert neue Bosse beim Betreten einer Zone und gibt Laut, wenn ein Boss fällt
+- 31 neue Grafiken (Objekte, Bosse, Pflanzen, Deko, Tiere)
+
+### Behoben
+- Bots brachen den Hammer-Auftrag bei Bossen sofort mit „zu hart“ ab, obwohl das Team stark genug war
+
+### Technik
+- `tools/gen_main_map.py` erzeugt die Karte aus Zielwerten je Zone (412 Objekte, Kartenwert 44 686 Bolts, verdienbar 64 794, nötig 35 110)
+- `data/zone_themes.json`; `ResourceNode.boss/bots_needed/final`; `NetworkSystem.bots_in_zone/team_can_hit`; `ZoneTracker.boss_alive/boss_of`; Signal `boss_defeated`; Flags `boss_<zone>` und `final_boss`; Aufgabentypen `bosses` und `flag`
+- Spielstand-Version 10: alte Spielstände werden archiviert, es beginnt ein neues Spiel
+- Alte Test-Objekte liegen in `tests/data/scrap_objects_test.json`
+- 210 Unit-Tests (neu: Boss hält das Tor, Werkzeugstufe, 3 Bots knacken gemeinsam, Belohnung und Flags, Endboss, Tor-Aufgabe wartet, je Zone genau ein Boss), 47 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Neues Spiel (der alte Stand wird archiviert): Fühlt sich der Schrottplatz als Start gut an? Findest du den Toaster-Turm?
+2. Toaster-Turm mit dem Startwerkzeug anhämmern: Ist der Hinweis „T2-Werkzeug oder 3 Bots“ klar?
+3. Boss knacken: Kommen Banner, Bolts und Jubel? Geht danach das Tor auf?
+4. In jeder neuen Zone: Wirkt das Thema (Boden, Wiese nach dem Putzen, Pflanzen, Tiere)?
+5. Drei Bots einer Boss-Zone zuweisen: Hämmern sie den Boss gemeinsam?
+6. Spät im Spiel: Lässt sich das Schiff ohne den Ur-Haufen nicht auf Stufe 5 bringen, und ist klar, warum?
+
 ## [1.24.0] – 2026-10-28 – MS35 Eskalation: vom Strahl zum Wirbel, Bot-Armee (Phase 2, Punkt 2)
 
 ### Neu

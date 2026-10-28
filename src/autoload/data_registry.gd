@@ -86,6 +86,18 @@ func item_color(item_id: String) -> Color:
 	return Color.WHITE
 
 
+var _themes: Dictionary = {}
+
+
+## Thema einer Zone aus data/zone_themes.json ({} wenn unbekannt).
+func zone_theme(theme: String) -> Dictionary:
+	if _themes.is_empty():
+		var text := FileAccess.get_file_as_string("res://data/zone_themes.json")
+		var parsed: Variant = JSON.parse_string(text) if text != "" else null
+		_themes = parsed if parsed is Dictionary else {"_": {}}
+	return _themes.get(theme, {})
+
+
 func item_icon(item_id: String) -> Texture2D:
 	if _icon_cache.has(item_id):
 		return _icon_cache[item_id]

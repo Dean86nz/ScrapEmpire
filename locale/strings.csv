@@ -427,7 +427,7 @@ QUEST_BELT,Verbinde den Schmelzofen per Förderband mit dem Schiff.,Connect the 
 QUEST_RESEARCH_EXTRACTOR,Erforsche die Saugstation.,Research the suction station.
 QUEST_EXTRACTOR,Baue eine Saugstation neben einen Schrotthaufen.,Build a suction station next to a scrap pile.
 QUEST_SHIP2,Repariere das Schiff auf Stufe 2.,Repair the ship to stage 2.
-QUEST_ZONE1,"Räume das Startlager auf, bis sich das Tor öffnet.",Clean up the start camp until the gate opens.
+QUEST_ZONE1,"Räume das Startlager auf und knacke den Müllberg-Boss, dann geht das Tor auf.",Clean up the start camp and crack the junk-pile boss to open the gate.
 QUEST_RESEARCH_PRESS,Erforsche die Presse.,Research the press.
 QUEST_BUILD_PRESS,Baue eine Presse.,Build a press.
 QUEST_AUTOPILOT,Erforsche den Autopiloten.,Research the autopilot.
@@ -600,3 +600,43 @@ UNLOCK_COLLECTION,Sammelstellen,Collection points
 UNLOCK_COURIER,Kurier,Courier
 GIFT_COLLECTION,Sammelstelle,Collection point
 GIFT_COURIER,Kurier,Courier
+ZONE_SCRAPYARD,Schrottplatz,Scrapyard
+ZONE_CABLES,Kabelsenke,Cable Valley
+ZONE_BEACH,Plastikbucht,Plastic Bay
+ZONE_FRIDGES,Kühlschrank-Friedhof,Fridge Graveyard
+ZONE_SATELLITES,Satellitenfeld,Satellite Field
+ZONE_MONOLITHS,Monolith-Ebene,Monolith Plain
+OBJ_SCRAP_PILE,Schrotthaufen,Scrap heap
+OBJ_COPPER_TANGLE,Kabelsalat,Cable spaghetti
+OBJ_PLASTIC_CRUMBS,Plastikkrümel,Plastic crumbs
+OBJ_DRIFTWOOD,Treibholz,Driftwood
+OBJ_RUBBLE,Geröll,Rubble
+OBJ_TV,Flimmerkiste,Flicker box
+OBJ_TIRES,Reifenstapel,Tire tower
+OBJ_TOASTER_TOWER,Toaster-Turm,Toaster Tower
+OBJ_RADIO,Röhrenradio,Tube radio
+OBJ_CHARGERS,Ladegerät-Nest,Charger nest
+OBJ_CABLE_MONSTER,Kabelknäuel-Monster,Cable Knot Monster
+OBJ_DUCKS,Badeenten-Haufen,Rubber duck pile
+OBJ_FLIPFLOPS,Flip-Flop-Berg,Flip-flop mountain
+OBJ_UMBRELLA,Sonnenschirm-Wrack,Parasol wreck
+OBJ_PLASTIC_WHALE,Plastik-Wal,Plastic Whale
+OBJ_FREEZER,Gefriertruhe,Chest freezer
+OBJ_PIZZA,Tiefkühl-Pizza-Turm,Frozen pizza tower
+OBJ_FREEZER_KING,Der Gefrierkönig,The Freezer King
+OBJ_MEGA_DISH,Satellitenschüssel XXL,Satellite Dish XXL
+OBJ_STAR_CRYSTAL,Sternenkristall,Star crystal
+OBJ_MYSTERY_CUBE,Rätselwürfel,Mystery cube
+OBJ_UR_HEAP,Der Ur-Müllberg,The Primordial Trash Heap
+BOSS_LABEL,BOSS,BOSS
+BOSS_NEEDS,T%d-Werkzeug oder %d Bots,T%d tool or %d bots
+BOSS_DEFEATED_TITLE,Boss geknackt!,Boss cracked!
+BOSS_DEFEATED_SUB,%s ist Geschichte,%s is history
+BOSS_DEFEATED_REWARD,+%s Bolts Belohnung · das Tor ist frei,+%s bolts reward · the gate is open
+BOSS_FINAL_REWARD,+%s Bolts · das Schiff kann jetzt starten!,+%s bolts · the ship can launch now!
+QUIP_BOSS_SPOTTED,Das da ist groß. Und hässlich. Und es schaut mich an.,That thing is big. And ugly. And it is looking at me.
+QUIP_BOSS_TEAM,Allein schaff ich den nicht. Holen wir die Bots!,I can't do this alone. Let's get the bots!
+SHIP_NEEDS_BOSS,Erst den Ur-Müllberg knacken,Crack the Primordial Trash Heap first
+CH_GOAL_BOSS,Boss knacken: %s,Crack the boss: %s
+QUEST_BOSSES,"Knacke 4 Müllberg-Bosse (Werkzeugstufe oder 3 Bots).",Crack 4 junk-pile bosses (tool tier or 3 bots).
+QUEST_FINAL,"Knacke den Ur-Haufen im Monolithen-Feld.",Crack the Ur-Heap in the monolith field.
