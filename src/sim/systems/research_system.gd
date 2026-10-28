@@ -23,6 +23,7 @@ static func recompute_modifiers(w: SimWorld) -> void:
 	upgrade_levels.merge(w.drone_upgrades)
 	upgrade_levels.merge(w.ship_upgrades)
 	w.mods = Modifiers.compute(w.skills.defs, w.skills.levels, w.tech.defs, w.tech.unlocked, upgrade_defs, upgrade_levels)
+	w.mods["sell_mult"] = float(w.mods["sell_mult"]) * SecretSystem.sell_bonus(w)  # Secrets (MS60)
 	if w.player.apply_modifiers(w.mods):
 		w.inventory_resized.emit()
 	for h: Helper in w.helpers.values():

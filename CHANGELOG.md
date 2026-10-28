@@ -2,6 +2,39 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.18.0] – 2026-10-28 – MS60 Secrets und Easter Eggs (Phase 2.3 abgeschlossen)
+
+### Neu (alle 10 aus dem Plan; jedes gefundene Secret: +2 % Bolts für immer, teils Kosmetik; nichts davon ist für den Abschluss nötig)
+1. **Hinter den Rissen:** 6 rissige Wände (eine je Zone) mit dem Hammer aufbrechen
+2. **Entenfamilie:** 12 Gummienten (zwei je Zone), Fortschritt „Gummiente 5/12“; alle gefunden: Rusty trägt eine Ente auf dem Kopf
+3. **Katzen-Bot:** Aus dem goldenen Haufen in der Plastikbucht schlüpft ein Katzen-Bot, der Rusty folgt
+4. **Disco-Schrott:** D-Pad ↑↑↓↓←→←→ im Spiel – der Planet leuchtet in Disco-Farben (nochmal = aus)
+5. **Weise Toilette** in der Kabelsenke: jeder Schlag eine Weisheit
+6. **Hier war der Entwickler:** Wand in der Ecke der Monolith-Ebene
+7. **Goldene Statue:** Planet 100 % sauber – goldener Rusty neben dem Schiff
+8. **Glühwürmchen-Tanz:** 20 s still stehen in der Monolith-Ebene
+9. **Kaltholz-Rezept:** brauner Kühlschrank im Kühlschrank-Friedhof
+10. **Turbo-Abflug:** Abflug in unter 2 Stunden – Medaille am Schiff
+- Fund: Banner „Geheimnis gefunden!“ mit Jingle; das Journal zeigt „Geheimnisse: n / 10“
+- **Steam-Erfolge vorbereitet:** jede Secret hat eine feste ID in `data/secrets.json` (z. B. `ACH_SECRET_RUBBER_DUCKS`)
+
+### Technik
+- `SecretSystem` (Fortschritt in `flags`, damit gespeichert; Bonus über `sell_mult`), `SecretsView`, Befehl `secret`; Secret-Objekte mit Feld `secret` in `scrap_objects.json`, werden in `gen_main_map.py` vor dem Müll platziert
+- 232 Unit-Tests (neu: Enten-Zähler und Bonus, Secret beim Abbau, Steam-IDs eindeutig und alle Objekte auf der Karte), 71 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Ein paar Secrets suchen (ohne Hinweise!): Macht das Finden Spaß? Sind sie zu leicht, zu schwer?
+2. Disco-Code eingeben, Toilette anhämmern, in der Monolith-Ebene 20 s stillstehen
+3. Debug-EXE: Cheat „Zur nächsten Zone springen“ hilft beim Suchen
+
+## Phase 2.3: Gesamt-Testliste (v2.18.0, neues Spiel empfohlen)
+Bitte wieder Zeiten notieren (jedes Tor, jeder Boss, jede Schiffsstufe, Abflug; Ziel 3–4 h) und das Log in „Scrap Empire“ legen.
+1. Speichern/Laden: Abgebautes bleibt weg
+2. Bots sichtbar arbeitend, Fusion zu Super-/Mega-Bot, Bosse mit Armee-Stärke
+3. Tiefe Upgrades bis in die Millionen, gegen Ende „crazy“
+4. Humor-Momente und Secrets
+5. Release-EXE ohne Cheats, Debug-EXE mit L3+R3 / F12
+
 ## [2.17.0] – 2026-10-28 – MS59 Humor-Momente (Phase 2.3)
 
 ### Neu (alle 14 aus dem Plan, reine Darstellung, Spiel und Balance unverändert)

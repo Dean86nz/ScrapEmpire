@@ -83,7 +83,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **57** | Tiefe Upgrades (20–50 Stufen), Bot-Fusion, Drohnen billiger | v2.16.0 |
 | **58** | Spiellänge 3–4 h (mit MS57 zusammen ausgeliefert) | v2.16.0 |
 | **59** | Humor-Momente (alle 14 aus dem Plan) | v2.17.0 |
-| 60 | Secrets (alle 10 aus dem Plan, Steam-Erfolgs-IDs) | v2.18.0 |
+| **60** | Secrets (alle 10 aus dem Plan, Steam-Erfolgs-IDs) | v2.18.0 |
 
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
 

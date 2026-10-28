@@ -54,6 +54,14 @@ for sx in range(SHIP[0] - 3, SHIP[0] + 7):
     for sy in range(SHIP[1] - 3, SHIP[1] + 7):
         occupied.add((sx, sy))
 
+# Secrets (MS60): rissige Wand je Zone, 2 Gummienten je Zone, goldener Haufen, Toilette,
+# Kaltholz-Kühlschrank, Entwicklerwand in der Ecke der Monolith-Ebene
+srng = random.Random(6060)
+def place_secret(kind, x0, y0):
+    for _ in range(400):
+        x, y = srng.randint(x0 + 3, x0 + ZW - 4), srng.randint(y0 + 3, y0 + ZH - 4)
+        if place(kind, x, y):
+            return
 zone_list = []
 order = []
 for (zx, zy), name_key, theme, target, table, piles, boss in ZONES:
@@ -76,6 +84,19 @@ for (zx, zy), name_key, theme, target, table, piles, boss in ZONES:
         bx, by = x0 + ZW // 2 + rng.randint(-6, 6), y0 + ZH // 2 + rng.randint(-6, 6)
         if place(boss, bx, by):
             break
+    place_secret("cracked_wall", x0, y0)
+    place_secret("rubber_duck", x0, y0)
+    place_secret("rubber_duck", x0, y0)
+    if theme == "beach":
+        place_secret("golden_heap", x0, y0)
+    if theme == "cables":
+        place_secret("toilet", x0, y0)
+    if theme == "fridges":
+        place_secret("kaltholz_fridge", x0, y0)
+    if theme == "monoliths":
+        for dx, dy in [(2, 2), (3, 2), (2, 3), (4, 4)]:
+            if place("dev_wall", x0 + dx, y0 + dy):
+                break
     total = 0
     kinds = [k for k, wgt in table.items() for _ in range(wgt)]
     pile_kinds = [k for k, wgt in piles.items() for _ in range(wgt)]

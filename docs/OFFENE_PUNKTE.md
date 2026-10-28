@@ -12,6 +12,7 @@
 - GDD-Kapitel 9 (Autopilot) ist nur noch historisch markiert, nicht umgeschrieben.
 
 ## Für Steam (nicht Teil von Phase 2)
+- Steam-Erfolge: IDs stehen in `data/secrets.json` (`steam_id`); Anbindung an Steamworks fehlt noch.
 - Lizenztexte (Godot MIT, Kenney/Musik CC0) als Datei neben die EXE legen.
 - Steam-Seite, Kapsel-Grafiken, Steamworks (Erfolge, Cloud-Speicher) fehlen.
 - Weitere Sprachen außer Deutsch/Englisch: keine.
