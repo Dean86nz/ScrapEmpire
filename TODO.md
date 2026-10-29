@@ -44,7 +44,7 @@
 - [x] MS64 Bündel und Leistung (v2.22.0)
 - [x] MS65/66 Optik, Sounds, Erklärungen, Mega-Bots (v2.23.0)
 - [x] MS67 Noch crazier (v2.24.0); Phase 2.4 abgeschlossen
-- [ ] Offen aus Phase 2.4: Müll-Objekte und Schiffsstufen grafisch überarbeiten (Stil-Leitfaden)
+- [x] Müll-Look und Schiffsstufen (v2.25.0)
 - [ ] Danach: Steam-Technik
 - [ ] (alt) Phase 2.4: MS63 Sounds → MS64 Bündel/Leistung → MS65 Optik → MS66 Erklärungen → MS67 crazier → Steam-Technik
  MS57 Upgrades/Fusion → MS58 Spiellänge (Übersicht zuerst) → MS59 Humor (alle) → MS60 Secrets (alle)
