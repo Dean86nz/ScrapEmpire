@@ -9,6 +9,7 @@ static func add_object(w: SimWorld, kind: String, tile: Vector2i, amount_overrid
 	var n := ResourceNode.from_kind(w.next_id(), kind, tile, amount_override)
 	w.nodes[n.id] = n
 	w._node_tiles[tile] = n.id
+	w.nav_changes.append(tile)
 	w.node_added.emit(n)
 	return n
 
@@ -22,6 +23,7 @@ static func add_wreck(w: SimWorld, tile: Vector2i, loot: Dictionary, kind: Strin
 	var n := ResourceNode.make_wreck(w.next_id(), tile, loot, kind)
 	w.nodes[n.id] = n
 	w._node_tiles[tile] = n.id
+	w.nav_changes.append(tile)
 	w.node_added.emit(n)
 	return n
 
@@ -71,6 +73,7 @@ static func _remove_node(w: SimWorld, n: ResourceNode) -> void:
 	SecretSystem.on_node_removed(w, n)
 	w.nodes.erase(n.id)
 	w._node_tiles.erase(n.tile)
+	w.nav_changes.append(n.tile)
 	w.node_removed.emit(n.id)
 	if w.dirt.is_active() and not n.is_resource() and not n.bonus:
 		var r := int(w.dirt_cfg.get("removed_trash_clean_radius", 1))

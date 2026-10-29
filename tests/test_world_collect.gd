@@ -173,3 +173,20 @@ func test_empty_pile_vanishes_without_counting_as_wreck() -> void:
 	assert_eq(removed, [pile.id], "leerer Haufen verschwindet")
 	assert_eq(wrecks, [], "zählt nicht als zerlegtes Müllteil")
 	assert_false(w.nodes.has(pile.id))
+
+
+func test_hammer_range_ignores_suction_reach() -> void:
+	# Ally-Fehler v2.18.0: mit maximaler Saug-Reichweite traf der Hammer weit entfernte Objekte.
+	var w := _world()
+	var m := w.mods.duplicate()
+	m["range_add"] = 25 * 0.25   # Kacheln
+	w.player.apply_modifiers(m)
+	assert_true(w.player.suck_range_px > 400, "Saug-Reichweite wächst")
+	assert_eq(w.player.hammer_range_px, PlayerState.BASE_HAMMER_RANGE_PX, "Hammer bleibt bei seiner Reichweite")
+	w.player.pos = Vector2i(100, 352)
+	var far := w.add_wreck(Vector2i(6, 5), {"scrap": 5})   # ca. 320 px entfernt
+	w.player.aim = Vector2.RIGHT
+	w.player.suck_held = true
+	w.player.hammer_pressed = true
+	w.tick()
+	assert_eq(far.amount, 5, "kein Hammertreffer aus Saug-Reichweite")

@@ -28,7 +28,10 @@ var rally_id := -1
 var power := 1               # Fusion (MS57): 1 = Bot, 5 = Super-Bot, 25 = Mega-Bot
 var work_mult := 1.0         # power × (1 + Bot-Kraft)
 var _nav_goal := Vector2i(-999999, -999999)
-var _nav_path: Array[Vector2i] = []            # Boss, zu dem Rusty gerufen hat (-1 = keiner)
+var _nav_path: Array[Vector2i] = []
+var _stuck_ticks := 0
+var _stuck_anchor := Vector2i.ZERO
+var _avoid: Dictionary = {}   # Kachel → Tick, bis zu dem dieses Ziel gemieden wird            # Boss, zu dem Rusty gerufen hat (-1 = keiner)
 
 
 func _init() -> void:
@@ -128,6 +131,8 @@ func _plan(world: SimWorld) -> void:
 			continue
 		if n.boss:
 			continue  # Bosse nur auf Rustys Ruf
+		if int(_avoid.get(n.tile, 0)) > world.tick_count:
+			continue  # dort steckte der Bot fest
 		var tier_ok := n.tier <= (hammer_tier if n.uses_hammer() else suction_tier)
 		if not tier_ok:
 			too_hard = true
@@ -152,12 +157,28 @@ func _plan(world: SimWorld) -> void:
 func _move(world: SimWorld) -> void:
 	if not has_move_target():
 		return
-	# Wegfindung um Zäune (MS48): bei neuem Ziel ohne freie Sichtlinie A*-Wegpunkte holen
+	# Wegfindung um alle Hindernisse (MS48/61): bei neuem Ziel ohne freie Sichtlinie A*-Wegpunkte holen
 	if move_target != _nav_goal:
 		_nav_goal = move_target
 		_nav_path.clear()
+		_stuck_ticks = 0
+		_stuck_anchor = pos
 		if not world.nav.line_clear(world, pos, move_target):
 			_nav_path = world.nav.path(world, pos, move_target)
+	# Steht seit 3 s fast still (unter 16 px bewegt): dieses Ziel 30 s meiden, neu planen (MS61).
+	# Umwege sind erlaubt, gemessen wird nur, ob sich der Bot überhaupt bewegt.
+	if pos == move_target or Vector2(pos - _stuck_anchor).length() > 16.0:
+		_stuck_anchor = pos
+		_stuck_ticks = 0
+	else:
+		_stuck_ticks += 1
+		if _stuck_ticks > 60:
+			_avoid[Vector2i(move_target.x / TILE, move_target.y / TILE)] = world.tick_count + 600
+			_stuck_ticks = 0
+			move_target = NONE_TARGET
+			tasks.stop(self)
+			request_replan()
+			return
 	var next := _nav_path[0] if not _nav_path.is_empty() else move_target
 	var d := Vector2(next - pos)
 	if d.length() <= speed_px_per_tick:

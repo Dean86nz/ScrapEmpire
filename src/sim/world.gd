@@ -108,6 +108,7 @@ const TOO_HARD_INTERVAL := 20
 var blocked_tiles: Dictionary = {}  # Zaun-Kacheln (nicht bebaubar, Bots fahren drumherum)
 var blocked_version := 0            # +1 bei jeder Änderung an blocked_tiles (NavGrid baut neu)
 var nav := NavGrid.new()
+var nav_changes: Array[Vector2i] = []   # Kacheln mit neuen/entfernten Objekten (Wegfindung, MS61)
 var drones: Dictionary = {}          # id → Drone
 var drone_cfg: Dictionary = {}
 var drone_upgrades: Dictionary = {}  # id → level

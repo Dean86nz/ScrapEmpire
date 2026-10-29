@@ -38,7 +38,7 @@ func apply_modifiers(m: Dictionary) -> bool:
 	hammer_tier = int(m["hammer_tier"])
 	var range_add: int = int(round(float(m["range_add"]) * TILE))
 	suck_range_px = BASE_SUCK_RANGE_PX + range_add
-	hammer_range_px = BASE_HAMMER_RANGE_PX + range_add
+	hammer_range_px = BASE_HAMMER_RANGE_PX  # Reichweite-Skill gilt nur für den Sauger (MS61)
 	var mine_mult: float = float(m["mine_speed_mult"])
 	suck_interval = maxi(int(round(BASE_SUCK_INTERVAL * float(m["suck_interval_mult"]) / (mine_mult * float(m["suck_speed_mult"])))), 1)
 	hammer_interval = maxi(int(round(BASE_HAMMER_INTERVAL / mine_mult)), 2)

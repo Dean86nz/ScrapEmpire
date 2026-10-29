@@ -42,15 +42,20 @@ func can_place(tile: Vector2i, size: Vector2i, blocked: Callable = Callable()) -
 	return true
 
 
+var changed: Array[Vector2i] = []   # für die Wegfindung (MS61), NavGrid leert die Liste
+
+
 func place(building: Building) -> void:
 	for c in building.cells():
 		_cells[c] = building
+		changed.append(c)
 
 
 func remove(building: Building) -> void:
 	for c in building.cells():
 		if _cells.get(c) == building:
 			_cells.erase(c)
+			changed.append(c)
 
 
 func occupied_count() -> int:
