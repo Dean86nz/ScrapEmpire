@@ -11,7 +11,7 @@ const VOICES := 8
 const BUS_SFX := "SFX"
 const BUS_MUSIC := "Music"
 ## Grundlautstärke je Effekt (dB), damit alles leise unter der Musik liegt.
-const LEVEL_DB := {"zone_jingle": -7.0, "hammer_bot": -16.0, "slurp": -14.0, "boing": -8.0, "plop": -11.0, "deliver": -5.0, "quest": -6.0, "milestone": -5.0, "cheer": -6.0, "hammer": -7.0,
+const LEVEL_DB := {"zone_jingle": -7.0, "hammer_bot": -16.0, "slurp": -14.0, "boing": -8.0, "plop": -15.0, "deliver": -5.0, "quest": -6.0, "milestone": -5.0, "cheer": -6.0, "hammer": -7.0,
 	"repair": -6.0, "honk": -6.0, "thud": -6.0, "courier": -6.0, "open": -18.0, "close": -18.0, "tab": -20.0, "launch": -4.0}
 ## Standard-Tonhöhen-Variation je Effekt.
 const JITTER := 0.06
@@ -26,7 +26,7 @@ var _sucking := false
 var _drive := AudioStreamPlayer.new()
 var _drive_target := -80.0
 var music := AudioStreamPlayer.new()
-var volume := {"music": 0.6, "sfx": 0.8}
+var volume := {"music": 0.6, "sfx": 0.45}   # Effekte standardmäßig leiser als die Musik (MS63)
 
 
 func _ready() -> void:
@@ -108,12 +108,9 @@ func play_throttled(id: String, min_gap: float, pitch_jitter: float = JITTER, vo
 ## Sanftes Rauschen, solange Rusty saugt (sehr leise, weich ein- und ausgeblendet). Beim
 ## Ansetzen ein kurzes Comic-Schlürfen (MS45).
 func set_sucking(on: bool) -> void:
-	_suck_target = -27.0 if on else -80.0
-	if on and not _sucking:
-		play_throttled("slurp", 0.6, 0.1)
+	# MS63: kein Dauerrauschen und kein Schlürfen mehr, nur das Plopp beim Einsammeln
+	_suck_target = -80.0
 	_sucking = on
-	if on and not _suck.playing:
-		_suck.play()
 
 
 ## Fahrsummen: 0 = steht (still), 1 = volles Tempo (höher und etwas lauter).

@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.21.0] – 2026-10-29 – MS63 Weniger Sounds, Kandidaten zur Auswahl (Phase 2.4)
+
+### Geändert
+- **Weniger Ton:** Saug-Dauerrauschen und Schlürfen entfernt; beim Einsammeln nur noch ein weiches, leiseres Plopp (höchstens alle 0,12 s). Der Hammer ist still und klingt nur noch, wenn ein Objekt zerbricht (auch bei Bots, in Rustys Nähe). Effekte stehen standardmäßig auf 45 % (Musik 60 %); wer die Lautstärke schon eingestellt hat, behält seine Einstellung
+- **Neuer Ordner `sound_kandidaten/`** mit je 5 Varianten für Saugen, Einsammeln, Hammer/Zerbrechen, Abliefern, Upgrade-Kauf und Bots (Kenney und OwlishMedia, alle CC0, plus selbst erzeugte Comic-Klänge). Nicht im Spiel und nicht in der EXE. **Bitte am PC anhören und sagen, welche Nummer je Ordner rein soll**
+
+### Ally-Testliste
+1. Ist das Spiel jetzt angenehm ruhig? Fehlt dir ein Geräusch?
+2. Kandidaten am PC anhören (`sound_kandidaten/`) und Auswahl melden
+
 ## [2.20.0] – 2026-10-29 – MS62 Upgrade-Fluss: Menü bleibt offen (Phase 2.4)
 
 ### Geändert

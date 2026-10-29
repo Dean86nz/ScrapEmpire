@@ -39,3 +39,12 @@ Selbst erzeugt (im Code, `src/autoload/sfx.gd`, keine fremde Lizenz): Saugrausch
 ## Grafik und Schrift
 
 Alle Grafiken (SVG) sind für dieses Projekt selbst gezeichnet. Schrift: die in Godot eingebaute Standardschrift.
+
+## Sound-Kandidaten zur Auswahl (`sound_kandidaten/`, nicht im Spiel)
+
+Alle **CC0 1.0** (kommerziell frei), geprüft am 2026-10-29 auf OpenGameArt, oder selbst erzeugt (`*_selbst.wav`):
+- Kenney „Interface Sounds“: https://opengameart.org/content/interface-sounds
+- Kenney „50 RPG sound effects“: https://opengameart.org/content/50-rpg-sound-effects
+- Kenney „54 Casino sound effects“: https://opengameart.org/content/54-casino-sound-effects-cards-dice-chips
+- „63 Digital sound effects“ (Kenney): https://opengameart.org/content/63-digital-sound-effects-lasers-phasers-space-etc
+- OwlishMedia „Sound Effects Pack“: https://opengameart.org/content/sound-effects-pack
