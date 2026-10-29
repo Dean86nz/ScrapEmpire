@@ -14,6 +14,30 @@ const TIER_COLORS := {
 	4: Color(0.7, 0.4, 0.9), 5: Color(1.0, 0.7, 0.2),
 }
 
+const JUNK_SHADER := """
+shader_type canvas_item;
+varying vec2 wpos;
+float h(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float n(vec2 p) {
+	vec2 i = floor(p); vec2 f = fract(p); f = f * f * (3.0 - 2.0 * f);
+	return mix(mix(h(i), h(i + vec2(1, 0)), f.x), mix(h(i + vec2(0, 1)), h(i + vec2(1, 1)), f.x), f.y);
+}
+void vertex() {
+	wpos = (MODEL_MATRIX * vec4(0.0, 0.0, 0.0, 1.0)).xy;   // Objektmitte: jedes Objekt rostet anders
+}
+void fragment() {
+	float seed = fract(sin(dot(wpos, vec2(12.9898, 78.233))) * 437.585) * 20.0;
+	vec4 c = texture(TEXTURE, UV);
+	float g = dot(c.rgb, vec3(0.3, 0.59, 0.11));
+	vec3 col = mix(c.rgb, vec3(g), 0.15);
+	float rust = smoothstep(0.66, 0.82, n(UV * 13.0 + seed)) * 0.7 + smoothstep(0.7, 0.9, n(UV * 31.0 - seed)) * 0.3;
+	col = mix(col, vec3(0.55, 0.33, 0.18), rust * 0.42);
+	float grime = smoothstep(0.55, 1.0, UV.y) * 0.35;
+	col *= 1.0 - grime;
+	COLOR = vec4(col, c.a);
+}
+"""
+static var _junk_mat: ShaderMaterial
 var _sprite_base_scale := 1.0
 var _boss_need: Label
 var _boss_node: ResourceNode
@@ -31,6 +55,15 @@ func setup(node: ResourceNode) -> void:
 	var path := str(ResourceNode.defs.get(node.kind, {}).get("sprite", FALLBACK_TEXTURES.get(node.kind, "")))
 	if path != "" and ResourceLoader.exists(path):
 		_sprite.texture = load(path)
+	# MS68: Müll-Look – Rostflecken, Schmutzrand unten, leicht entsättigt (nicht bei Bossen,
+	# Haufen und Bonus-Müll), damit Objekte eindeutig nach Müll aussehen.
+	if not node.boss and not node.is_pile() and not node.bonus:
+		if _junk_mat == null:
+			_junk_mat = ShaderMaterial.new()   # ein Material für alle Objekte (Leistung)
+			var sh := Shader.new()
+			sh.code = JUNK_SHADER
+			_junk_mat.shader = sh
+		_sprite.material = _junk_mat
 	# Varianten (MS58): gleiches Bild, eigene Farbe und Größe
 	var vd: Dictionary = ResourceNode.defs.get(node.kind, {})
 	if vd.has("tint"):

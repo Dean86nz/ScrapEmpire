@@ -96,6 +96,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **65** | Optik: Rusty, Bots, Kontrast, Stil-Leitfaden; Sounds; Objektgrößen | v2.23.0 |
 | **66** | Mega-Bots und Secrets verständlich, Erklärungen (mit MS65 ausgeliefert) | v2.23.0 |
 | **67** | Noch crazier: Giga-Bot, Riesen-Wirbel, Druckwelle | v2.24.0 |
+| **68** | Optik-Rest: Schiffsstufen neu, Müll-Look | v2.25.0 |
 
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
 

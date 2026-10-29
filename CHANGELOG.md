@@ -2,6 +2,20 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.25.0] – 2026-10-29 – MS68 Optik: Schiffsstufen und Müll (Phase 2.4, Rest)
+
+### Optik
+- **Schiffsstufen neu gezeichnet** (`docs/screens/ms68_schiffsstufen.png`), jede sichtbar eindrucksvoller: 1 schiefes Wrack mit Rost und gesprungener Kuppel → 2 notdürftig geflickt (Planken, Klebeband, Notbeine) → 3 funktioniert (heller Rumpf, oranger Streifen, leuchtende Kuppel, Lichter, Antenne) → 4 glänzend (Chrom, Doppelstreifen, blaue Flossen, 5 Lichter) → 5 startklar (Goldrand, Stern, goldene Flossen, glühende Triebwerke, Fahne)
+- **Müll sieht nach Müll aus** (`docs/screens/ms68_muell.png`): alle Müll-Objekte mit feinen Rostflecken, dunklem Schmutzrand unten und leicht entsättigt; jedes Objekt rostet anders. Bosse, Haufen und Bonus-Müll bleiben unverändert. Ein gemeinsames Material für alle (Leistung)
+
+### Leistung
+- Spätester Spielstand mit voller Armee am PC ca. 188 FPS ohne Begrenzung (der Rost-Look kostet ca. 12 %)
+
+### Ally-Testliste
+1. Schiff über alle Stufen: wirkt jede Stufe eindrucksvoller?
+2. Müll in jeder Zone: sieht er eindeutig nach Müll aus, passt er zur Zone?
+3. Bildrate im späten Spiel mit voller Armee: stabile 60 FPS? (Falls nicht: bitte melden, ich baue dann eine Einstellung „einfache Grafik“)
+
 ## [2.24.0] – 2026-10-29 – MS67 Noch crazier (Phase 2.4 abgeschlossen)
 
 ### Neu
