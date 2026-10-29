@@ -44,3 +44,13 @@ func test_credits_data_is_valid() -> void:
 	assert_true(d is Dictionary)
 	for sec: Dictionary in d["sections"]:
 		assert_true(TranslationServer.translate(str(sec["title_key"])) != str(sec["title_key"]), "Text fehlt: " + str(sec["title_key"]))
+
+
+func test_boss_count_ignores_other_boss_flags() -> void:
+	# Ally-Fehler v2.22.0: Abspann zeigte „Bosse geknackt 7 / 6“ (Flag boss_help_seen mitgezählt).
+	var w := _launched_world()
+	w.flags["boss_help_seen"] = true
+	var rows := {}
+	for r: Array in FinaleStats.rows(w):
+		rows[r[0]] = r[1]
+	assert_eq(rows["STAT_BOSSES"], "1 / 1")

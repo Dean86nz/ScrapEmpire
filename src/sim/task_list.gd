@@ -206,7 +206,7 @@ func _tick_hammer(world: SimWorld, body: WorkerBody, step: Dictionary, center: V
 		_fail(body, "too_hard")
 		return
 	# Nah heran (Schlagpunkt 48 px vor dem Körper, Reichweite hammer_range)
-	if not _go_to(body, center, body.hammer_range_px + 40 - 8):
+	if not _go_to(body, center, body.hammer_range_px + 40 - 8 + node.hit_radius_px()):
 		return
 	body.aim = Vector2(center - body.pos).normalized() if center != body.pos else Vector2.RIGHT
 	body.hammer_pressed = true

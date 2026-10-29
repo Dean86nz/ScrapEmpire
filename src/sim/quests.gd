@@ -123,7 +123,7 @@ func progress(w: SimWorld) -> Array:
 		"bosses":
 			var beaten := 0
 			for k: String in w.flags:
-				if k.begins_with("boss_"):
+				if k.begins_with("boss_") and not w.zones.zone_by_id(k.substr(5)).is_empty():  # nur Zonen-Bosse
 					beaten += 1
 			return [mini(beaten, amount), amount]
 		"flag":

@@ -3,7 +3,10 @@ extends Node2D
 ## Darstellung eines Helfer-Roboters: Rusty-Sprite in eigener Farbe, Namensschild, kleine Symbole (seit MS44 kein Text).
 ## Folgt der Sim-Position weich.
 
+const TEX := ["res://assets/sprites/robot/bot.svg", "res://assets/sprites/robot/bot_super.svg", "res://assets/sprites/robot/bot_mega.svg"]
+
 var helper_id: int = -1
+var _shown_power := 1
 var _helper: Helper
 var _sprite := Sprite2D.new()
 var _name := Label.new()
@@ -18,7 +21,7 @@ func setup(h: Helper, names: Array, colors: Array) -> void:
 	_colors = colors
 	position = Vector2(h.pos)
 	z_index = 4
-	_sprite.texture = load("res://assets/sprites/robot/rusty.svg")
+	_sprite.texture = load(TEX[0])
 	_sprite.scale = Vector2(0.85, 0.85)
 	var col := Color.html(str(colors[h.color_index % colors.size()])) if not colors.is_empty() else Color.WHITE
 	_sprite.modulate = col.lerp(Color.WHITE, 0.25)
@@ -31,6 +34,7 @@ func setup(h: Helper, names: Array, colors: Array) -> void:
 	_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_name.position = Vector2(-80, 28)
 	_name.size = Vector2(160, 28)
+	_name.visible = false   # MS65: keine Namensschilder über Bots (überlappten sich), Name steht im Bots-Menü
 	add_child(_name)
 
 
@@ -134,12 +138,12 @@ func _update_work_look(delta: float) -> void:
 	_last_cd = _helper.hammer_cooldown
 	# Leerlauf: grauer, langsam wippend; Arbeit: volle Farbe
 	var idle := _helper.bored != "" and total == 0 and not _helper.has_move_target()
-	var base := _base_modulate()
-	if _helper.power >= 25:
-		base = base.lerp(Color(1.0, 0.85, 0.3), 0.55)  # Mega-Bot golden
-	elif _helper.power >= 5:
-		base = base.lerp(Color(0.75, 0.9, 1.0), 0.35)  # Super-Bot glänzend
-	var bs := 0.85 * (1.8 if _helper.power >= 25 else (1.35 if _helper.power >= 5 else 1.0))
+	# Eigene Figuren je Stufe (MS65): Bot, Super-Bot, Mega-Bot; nur der normale Bot trägt seine Farbe
+	if _helper.power != _shown_power:
+		_shown_power = _helper.power
+		_sprite.texture = load(TEX[2 if _helper.power >= 25 else (1 if _helper.power >= 5 else 0)])
+	var base := _base_modulate() if _helper.power < 5 else Color.WHITE
+	var bs := 0.8 if _helper.power < 5 else (0.95 if _helper.power < 25 else 1.15)
 	if not _swinging:
 		_sprite.scale = _sprite.scale.lerp(Vector2(bs, bs), minf(1.0, delta * 6.0))
 	_sprite.modulate = _sprite.modulate.lerp(base.lerp(Color(0.6, 0.6, 0.65), 0.6) if idle else base, minf(1.0, delta * 4.0))
@@ -148,7 +152,7 @@ func _update_work_look(delta: float) -> void:
 
 func _base_modulate() -> Color:
 	var col := Color.html(str(_colors[_helper.color_index % _colors.size()])) if not _colors.is_empty() else Color.WHITE
-	return col.lerp(Color.WHITE, 0.25)
+	return col.lerp(Color.WHITE, 0.65)   # leichte Eigenfarbe, die Figur bleibt erkennbar
 
 
 func _fly_in(n: int) -> void:

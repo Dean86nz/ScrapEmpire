@@ -110,6 +110,7 @@ var blocked_tiles: Dictionary = {}  # Zaun-Kacheln (nicht bebaubar, Bots fahren 
 var blocked_version := 0            # +1 bei jeder Änderung an blocked_tiles (NavGrid baut neu)
 var nav := NavGrid.new()
 var nav_changes: Array[Vector2i] = []
+var _node_block: Dictionary = {}           # Kachel → Anzahl Objekte, deren Grundfläche sie belegt
 var _zone_nodes_cache: Dictionary = {}    # Zonen-ID → Array[ResourceNode] (Leistung, MS64)
 var _zone_nodes_dirty := true   # Kacheln mit neuen/entfernten Objekten (Wegfindung, MS61)
 var drones: Dictionary = {}          # id → Drone

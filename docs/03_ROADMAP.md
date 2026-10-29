@@ -93,8 +93,8 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **62** | Upgrade-Fluss: Menü bleibt offen | v2.20.0 |
 | **63** | Sounds: weniger, Kandidaten-Ordner zur Auswahl | v2.21.0 |
 | **64** | Beute als Bündel, Leistung 60 FPS | v2.22.0 |
-| 65 | Optik: eigener Stil weiterentwickelt (erst Muster) | v2.23.0 |
-| 66 | Mega-Bots und Secrets verständlich | v2.24.0 |
+| **65** | Optik: Rusty, Bots, Kontrast, Stil-Leitfaden; Sounds; Objektgrößen | v2.23.0 |
+| **66** | Mega-Bots und Secrets verständlich, Erklärungen (mit MS65 ausgeliefert) | v2.23.0 |
 | 67 | Noch crazier | v2.25.0 |
 
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)

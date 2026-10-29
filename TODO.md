@@ -40,8 +40,9 @@
 - [x] MS61 Bot-Wegfindung, Hammer-Reichweite (v2.19.0)
 - [x] MS62 Upgrade-Fluss (v2.20.0)
 - [x] MS63 Weniger Sounds, Kandidaten-Ordner (v2.21.0)
-- [ ] Sound-Auswahl des Auftraggebers aus `sound_kandidaten/` einbauen
+- [x] Sound-Auswahl eingebaut (v2.23.0)
 - [x] MS64 Bündel und Leistung (v2.22.0)
+- [x] MS65/66 Optik, Sounds, Erklärungen, Mega-Bots (v2.23.0)
 - [ ] Phase 2.4: MS63 Sounds → MS64 Bündel/Leistung → MS65 Optik → MS66 Erklärungen → MS67 crazier → Steam-Technik
  MS57 Upgrades/Fusion → MS58 Spiellänge (Übersicht zuerst) → MS59 Humor (alle) → MS60 Secrets (alle)
 - [x] Phase 2.2: MS49 Bots sammeln alles (v2.9.0) ✓ → MS50 Wackeln (v2.10.0) ✓ → MS51 Sprechblasen (v2.11.0) ✓ → MS52 Musik (v2.12.0) ✓ → MS53 Menüs (Entwurf) Intro

@@ -19,7 +19,9 @@ void fragment() {
 	float m = texture(mask, world_pos / map_size).r;
 	float edge = (pat.r - 0.45) * 0.35;
 	float a = smoothstep(0.04, 0.30, m + edge);
-	COLOR = vec4(pat.rgb, a * 0.93);
+	// MS65: Schmutz gedeckter und dunkler, damit saubere Flächen kräftig dagegen leuchten
+	vec3 grey = vec3(dot(pat.rgb, vec3(0.3, 0.59, 0.11)));
+	COLOR = vec4(mix(pat.rgb, grey, 0.35) * 0.78, a * 0.95);
 }
 """
 const UPDATE_SECONDS := 1.0 / 15.0

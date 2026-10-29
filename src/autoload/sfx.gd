@@ -11,7 +11,7 @@ const VOICES := 8
 const BUS_SFX := "SFX"
 const BUS_MUSIC := "Music"
 ## Grundlautstärke je Effekt (dB), damit alles leise unter der Musik liegt.
-const LEVEL_DB := {"zone_jingle": -7.0, "hammer_bot": -16.0, "slurp": -14.0, "boing": -8.0, "plop": -15.0, "deliver": -5.0, "quest": -6.0, "milestone": -5.0, "cheer": -6.0, "hammer": -7.0,
+const LEVEL_DB := {"buy": -8.0, "bot": -14.0, "slurp": -12.0, "plop": -14.0, "deliver": -5.0, "quest": -6.0, "milestone": -5.0, "cheer": -6.0, "hammer": -7.0,
 	"repair": -6.0, "honk": -6.0, "thud": -6.0, "courier": -6.0, "open": -18.0, "close": -18.0, "tab": -20.0, "launch": -4.0}
 ## Standard-Tonhöhen-Variation je Effekt.
 const JITTER := 0.06
@@ -20,11 +20,7 @@ var _streams: Dictionary = {}   # id → Array[AudioStream]
 var _players: Array[AudioStreamPlayer] = []
 var _next := 0
 var _last_play: Dictionary = {}
-var _suck := AudioStreamPlayer.new()
-var _suck_target := -80.0
 var _sucking := false
-var _drive := AudioStreamPlayer.new()
-var _drive_target := -80.0
 var music := AudioStreamPlayer.new()
 var volume := {"music": 0.6, "sfx": 0.45}   # Effekte standardmäßig leiser als die Musik (MS63)
 
@@ -39,13 +35,6 @@ func _ready() -> void:
 		add_child(p)
 		_players.append(p)
 	_load_files()
-	_build_generated()
-	_suck.bus = BUS_SFX
-	_suck.volume_db = -80.0
-	add_child(_suck)
-	_drive.bus = BUS_SFX
-	_drive.volume_db = -80.0
-	add_child(_drive)
 	music.bus = BUS_MUSIC
 	add_child(music)
 	_music_old.bus = BUS_MUSIC
@@ -105,33 +94,22 @@ func play_throttled(id: String, min_gap: float, pitch_jitter: float = JITTER, vo
 	play(id, pitch_jitter, volume_db)
 
 
-## Sanftes Rauschen, solange Rusty saugt (sehr leise, weich ein- und ausgeblendet). Beim
-## Ansetzen ein kurzes Comic-Schlürfen (MS45).
+
+## Saugen (MS65, Auswahl des Auftraggebers): kurzes Schlürfen beim Ansetzen, kein Dauerton.
+## Alle im Code erzeugten Geräusche sind entfernt; es klingen nur noch echte Sounddateien.
 func set_sucking(on: bool) -> void:
-	# MS63: kein Dauerrauschen und kein Schlürfen mehr, nur das Plopp beim Einsammeln
-	_suck_target = -80.0
+	if on and not _sucking:
+		play_throttled("slurp", 1.2, 0.08)
 	_sucking = on
 
 
-## Fahrsummen: 0 = steht (still), 1 = volles Tempo (höher und etwas lauter).
-func set_driving(speed_frac: float) -> void:
-	var f := clampf(speed_frac, 0.0, 1.5)
-	_drive_target = -80.0 if f < 0.05 else lerpf(-26.0, -18.0, minf(f, 1.0))
-	_drive.pitch_scale = lerpf(0.8, 1.25, minf(f, 1.0))
-	if f >= 0.05 and not _drive.playing:
-		_drive.play()
+## Fahrgeräusch entfernt (nervte); bleibt als leere Funktion für bestehende Aufrufe.
+func set_driving(_speed_frac: float) -> void:
+	pass
 
 
 func _process(delta: float) -> void:
 	_music_tick(delta)
-	if _drive.playing:
-		_drive.volume_db = move_toward(_drive.volume_db, _drive_target, delta * 80.0)
-		if _drive.volume_db <= -79.0 and _drive_target <= -80.0:
-			_drive.stop()
-	if _suck.playing:
-		_suck.volume_db = move_toward(_suck.volume_db, _suck_target, delta * (25.0 if _suck_target > _suck.volume_db else 60.0))
-		if _suck.volume_db <= -79.0 and _suck_target <= -80.0:
-			_suck.stop()
 
 
 # --- Musik je Zone (MS46) --------------------------------------------------------
@@ -263,170 +241,3 @@ func _load_files() -> void:
 			_streams[id] = []
 		if not (_streams[id] as Array).has(stream):
 			_streams[id].append(stream)
-
-
-# --- selbst erzeugt: Saug-Rauschen und Abflug-Grollen --------------------------
-
-func _build_generated() -> void:
-	var buf := PackedFloat32Array()
-	buf.resize(RATE)  # 1 s Schleife, gefiltertes Rauschen
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 3
-	var lp := 0.0
-	var lp2 := 0.0
-	for i in buf.size():
-		lp += (rng.randf_range(-1.0, 1.0) - lp) * 0.08
-		lp2 += (lp - lp2) * 0.2
-		buf[i] = lp2 * 2.2
-	# Anfang und Ende überblenden, damit die Schleife nicht knackt
-	var fade := 600
-	for i in fade:
-		var k := float(i) / fade
-		buf[i] = buf[i] * k + buf[buf.size() - fade + i] * (1.0 - k)
-	buf.resize(buf.size() - fade)
-	var loop := _to_stream(buf)
-	loop.loop_mode = AudioStreamWAV.LOOP_FORWARD
-	loop.loop_end = buf.size()
-	_suck.stream = loop
-	# Fahrsummen: tiefer, weicher Motor mit leichtem Kettenrattern, 1 s Schleife
-	buf = PackedFloat32Array()
-	buf.resize(RATE)
-	lp = 0.0
-	for i in buf.size():
-		var t := float(i) / RATE
-		var hum := sin(TAU * 62.0 * t) * 0.5 + sin(TAU * 124.0 * t) * 0.18
-		var rattle := (1.0 if fmod(t * 18.0, 1.0) < 0.12 else 0.0) * rng.randf_range(-0.3, 0.3)
-		lp += ((hum + rattle) - lp) * 0.3
-		buf[i] = lp * 0.6
-	var drive := _to_stream(buf)
-	drive.loop_mode = AudioStreamWAV.LOOP_FORWARD
-	drive.loop_end = buf.size()
-	_drive.stream = drive
-	buf = PackedFloat32Array()
-	buf.resize(RATE * 3)
-	lp = 0.0
-	for i in buf.size():
-		var k := float(i) / buf.size()
-		lp += (rng.randf_range(-1.0, 1.0) - lp) * 0.04
-		var env := minf(k * 2.5, 1.0) * clampf((1.0 - k) * 6.0, 0.0, 1.0)
-		buf[i] = (lp * 3.0 + sin(TAU * 55.0 * i / RATE) * 0.4) * 0.5 * env
-	_streams["launch"] = [_to_stream(buf)]
-	_build_comic()
-
-
-# --- Comic-Geräusche (MS45), je mehrere Varianten --------------------------------
-
-func _build_comic() -> void:
-	var plops: Array = []
-	for v in 5:
-		plops.append(_to_stream(_bloop(380.0 + 45.0 * v, 2.3, 0.07)))
-	_streams["plop"] = plops
-	var bonks: Array = []
-	for v in 4:
-		bonks.append(_to_stream(_bonk(330.0 + 25.0 * v)))
-	_streams["hammer"] = bonks
-	_streams["hammer_bot"] = bonks
-	var boings: Array = []
-	for v in 3:
-		boings.append(_to_stream(_boing(180.0 + 30.0 * v)))
-	_streams["boing"] = boings
-	var slurps: Array = []
-	for v in 4:
-		slurps.append(_to_stream(_slurp(v)))
-	_streams["slurp"] = slurps
-	_streams["zone_jingle"] = [_to_stream(_jingle())]
-
-
-## Zonen-Jingle: helles Glocken-Arpeggio (C–E–G–C), ca. 1 s, selbst erzeugt.
-func _jingle() -> PackedFloat32Array:
-	var notes := [523.25, 659.25, 783.99, 1046.5]
-	var n := int(RATE * 1.1)
-	var buf := PackedFloat32Array()
-	buf.resize(n)
-	for k in notes.size():
-		var start := int(RATE * 0.11 * k)
-		var f: float = notes[k]
-		for i in range(start, n):
-			var t := float(i - start) / RATE
-			var env := minf(t * 300.0, 1.0) * exp(-t * (5.0 if k < 3 else 3.0))
-			buf[i] += (sin(TAU * f * t) * 0.6 + sin(TAU * f * 2.0 * t) * 0.2 + sin(TAU * f * 3.0 * t) * 0.08) * env * 0.4
-	var tail := int(RATE * 0.05)
-	for i in tail:
-		buf[n - 1 - i] *= float(i) / tail
-	return buf
-
-
-## Bloop: Sinus, Tonhöhe steigt schnell, kurzes Ausklingen (Plopp beim Einsammeln).
-func _bloop(f0: float, rise: float, dur: float) -> PackedFloat32Array:
-	var n := int(RATE * dur)
-	var buf := PackedFloat32Array()
-	buf.resize(n)
-	var ph := 0.0
-	for i in n:
-		var k := float(i) / n
-		ph += TAU * f0 * (1.0 + (rise - 1.0) * sqrt(k)) / RATE
-		var env := minf(k * 40.0, 1.0) * pow(1.0 - k, 2.0)
-		buf[i] = sin(ph) * env * 0.8
-	return buf
-
-
-## Bonk: Holzklotz-Schlag, Tonhöhe fällt, dazu ein kurzer Klick.
-func _bonk(f0: float) -> PackedFloat32Array:
-	var n := int(RATE * 0.16)
-	var buf := PackedFloat32Array()
-	buf.resize(n)
-	var ph := 0.0
-	var rng := RandomNumberGenerator.new()
-	rng.seed = int(f0)
-	for i in n:
-		var k := float(i) / n
-		ph += TAU * f0 * (1.0 - 0.45 * k) / RATE
-		var tri := 2.0 * absf(2.0 * fmod(ph / TAU, 1.0) - 1.0) - 1.0
-		var click := rng.randf_range(-1.0, 1.0) * maxf(0.0, 1.0 - k * 25.0)
-		buf[i] = (tri * 0.75 + sin(ph * 2.0) * 0.2 + click * 0.5) * pow(1.0 - k, 3.0) * minf(k * 120.0, 1.0)
-	return buf
-
-
-## Boing: Feder mit Vibrato, Tonhöhe schwingt nach oben.
-func _boing(f0: float) -> PackedFloat32Array:
-	var n := int(RATE * 0.45)
-	var buf := PackedFloat32Array()
-	buf.resize(n)
-	var ph := 0.0
-	for i in n:
-		var k := float(i) / n
-		var f := f0 * (1.0 + 1.2 * k) * (1.0 + 0.18 * sin(TAU * 14.0 * k * 0.45 * 2.2) * (1.0 - k))
-		ph += TAU * f / RATE
-		buf[i] = sin(ph) * minf(k * 30.0, 1.0) * pow(1.0 - k, 1.4) * 0.7
-	return buf
-
-
-## Schlürfen: gefiltertes Rauschen mit Tonhöhen-Glissando nach oben, 0,25 s.
-func _slurp(seed_value: int) -> PackedFloat32Array:
-	var n := int(RATE * 0.25)
-	var buf := PackedFloat32Array()
-	buf.resize(n)
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 40 + seed_value
-	var lp := 0.0
-	var ph := 0.0
-	for i in n:
-		var k := float(i) / n
-		lp += (rng.randf_range(-1.0, 1.0) - lp) * (0.05 + 0.25 * k)
-		ph += TAU * (220.0 + 520.0 * k + 30.0 * seed_value) / RATE
-		var env := sin(PI * k) * (0.8 + 0.2 * sin(TAU * 18.0 * k))
-		buf[i] = (lp * 1.6 + sin(ph) * 0.25) * env * 0.7
-	return buf
-
-
-func _to_stream(buf: PackedFloat32Array) -> AudioStreamWAV:
-	var data := PackedByteArray()
-	data.resize(buf.size() * 2)
-	for i in buf.size():
-		data.encode_s16(i * 2, int(clampf(buf[i], -1.0, 1.0) * 32000.0))
-	var s := AudioStreamWAV.new()
-	s.format = AudioStreamWAV.FORMAT_16_BITS
-	s.mix_rate = RATE
-	s.stereo = false
-	s.data = data
-	return s

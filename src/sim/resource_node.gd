@@ -35,6 +35,7 @@ var bonus: bool = false     # aus einem Ereignis (Touristen, Meteoriten), liegt 
 var boss := false           # Müllberg-Boss der Zone (MS36): nächste Werkzeugstufe oder Bot-Team
 var bots_needed := 0        # so viele Bots der Zone knacken ihn auch ohne passende Stufe
 var final := false          # Endboss: nötig für den Abflug
+var nav_size := 1           # sichtbare Größe für Wegfindung (MS65): 1 = Kachel, 2 = Kreuz, 3 = 3×3
 var _pile_item: String = ""
 var regen_counter: int = 0
 
@@ -53,6 +54,23 @@ static func load_defs(path: String) -> void:
 	hammer_cfg = parsed.get("hammer", {})
 	for entry: Dictionary in parsed.get("objects", []):
 		defs[str(entry["id"])] = entry
+
+
+## Belegte Kacheln (sichtbare Größe): 1 = nur die Kachel, 2 = Kreuz, 3 = 3×3.
+func footprint() -> Array[Vector2i]:
+	var out: Array[Vector2i] = [tile]
+	if nav_size >= 2:
+		for d in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+			out.append(tile + d)
+	if nav_size >= 3:
+		for d in [Vector2i(1, 1), Vector2i(-1, 1), Vector2i(1, -1), Vector2i(-1, -1)]:
+			out.append(tile + d)
+	return out
+
+
+## Zusätzliche Treffer-Reichweite für große Objekte (man trifft sie schon an ihrem Rand).
+func hit_radius_px() -> int:
+	return 0 if nav_size <= 1 else (40 if nav_size == 2 else 80)
 
 
 ## Hammer-Formel (MS43): Schläge bis das Objekt leer ist, abhängig von der Werkzeugstufe.
@@ -96,6 +114,7 @@ static func from_kind(p_id: int, p_kind: String, p_tile: Vector2i, amount_overri
 	n.boss = bool(d.get("boss", false))
 	n.bots_needed = int(d.get("bots_needed", 0))
 	n.final = bool(d.get("final", false))
+	n.nav_size = int(d.get("nav_size", 3 if n.boss else 1))
 	if str(d.get("type", "pile")) == "pile":
 		n._pile_item = str(d.get("item", "scrap"))
 		n.max_amount = int(d.get("max", PILE_MAX))
