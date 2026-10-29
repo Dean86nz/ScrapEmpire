@@ -8,7 +8,7 @@ static func rows(w: SimWorld) -> Array:
 	var minutes := ticks / 20 / 60
 	var bosses := 0
 	for k: String in w.flags:
-		if k.begins_with("boss_"):
+		if k.begins_with("boss_") and not w.zones.zone_by_id(k.substr(5)).is_empty():  # nur Zonen-Bosse
 			bosses += 1
 	var clean := 0
 	for z in w.zones.summary(w.nodes):
@@ -24,7 +24,7 @@ static func rows(w: SimWorld) -> Array:
 		["STAT_ZONES", "%d / %d" % [clean, w.zones.zones.size()]],
 		["STAT_PLANET", "%d %%" % int(round(w.zones.planet_health(w.nodes) * 100.0))],
 		["STAT_LEVEL", str(w.progression.level)],
-		["STAT_BOTS", str(w.helpers.size())],
+		["STAT_BOTS", str(HelperSystem.army(w))],
 		["STAT_DRONES", str(w.drones.size())],
 		["STAT_FINDS", str(w.collectibles_found.size())],
 	]

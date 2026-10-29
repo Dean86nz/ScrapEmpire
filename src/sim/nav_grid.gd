@@ -13,7 +13,7 @@ var _size := Vector2i.ZERO
 
 
 static func is_obstacle(w: SimWorld, t: Vector2i) -> bool:
-	return w.blocked_tiles.has(t) or w._node_tiles.has(t) or w.grid.at(t) != null
+	return w.blocked_tiles.has(t) or w._node_block.has(t) or w.grid.at(t) != null
 
 
 func _ensure(w: SimWorld) -> void:
@@ -55,9 +55,14 @@ func line_clear(w: SimWorld, a: Vector2i, b: Vector2i) -> bool:
 	for i in steps + 1:
 		var p := Vector2(a) + d * (float(i) / steps)
 		var t := Vector2i(floori(p.x / TILE), floori(p.y / TILE))
-		if t != ta and t != tb and is_obstacle(w, t):
+		if t != ta and t != tb and is_obstacle(w, t) and not _is_target_footprint(w, t, tb):
 			return false
 	return true
+
+
+static func _is_target_footprint(w: SimWorld, t: Vector2i, target_tile: Vector2i) -> bool:
+	var id: int = w._node_tiles.get(target_tile, -1)
+	return id >= 0 and w.nodes.has(id) and (w.nodes[id] as ResourceNode).footprint().has(t)
 
 
 ## Wegpunkte (Pixel, Kachelmitten) von a nach b um Hindernisse herum; letzter Punkt ist b selbst.
@@ -67,13 +72,21 @@ func path(w: SimWorld, a: Vector2i, b: Vector2i) -> Array[Vector2i]:
 	var out: Array[Vector2i] = []
 	var from := Vector2i(clampi(a.x / TILE, 0, _size.x - 1), clampi(a.y / TILE, 0, _size.y - 1))
 	var to := Vector2i(clampi(b.x / TILE, 0, _size.x - 1), clampi(b.y / TILE, 0, _size.y - 1))
-	var from_solid := _astar.is_point_solid(from)
-	var to_solid := _astar.is_point_solid(to)
-	_astar.set_point_solid(from, false)
-	_astar.set_point_solid(to, false)
+	# Start und Ziel (samt Grundfläche des Ziel-Objekts) kurz freigeben
+	var opened: Array[Vector2i] = [from, to]
+	var target_id: int = w._node_tiles.get(to, -1)
+	if target_id >= 0 and w.nodes.has(target_id):
+		opened.append_array((w.nodes[target_id] as ResourceNode).footprint())
+	var was: Array[bool] = []
+	for t in opened:
+		var inside := _astar.is_in_boundsv(t)
+		was.append(inside and _astar.is_point_solid(t))
+		if inside:
+			_astar.set_point_solid(t, false)
 	var ids := _astar.get_id_path(from, to)
-	_astar.set_point_solid(from, from_solid)
-	_astar.set_point_solid(to, to_solid)
+	for k in opened.size():
+		if _astar.is_in_boundsv(opened[k]):
+			_astar.set_point_solid(opened[k], was[k])
 	for i in range(1, ids.size()):
 		out.append(ids[i] * TILE + Vector2i(TILE / 2, TILE / 2))
 	if not out.is_empty():

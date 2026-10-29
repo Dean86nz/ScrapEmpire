@@ -190,6 +190,8 @@ func _on_helper_quip(h: Helper, key: String) -> void:
 		sym = "♥"
 		col = Color(1.0, 0.45, 0.55)
 	_helper_views[h.id].emote(sym, col)
+	if (_helper_views[h.id] as Node2D).position.distance_to(_player.global_position) < 800.0:
+		Sfx.play_throttled("bot", 0.8, 0.08)   # Bot-Geräusch (Auswahl des Auftraggebers)
 
 
 ## Kurzer schwebender Text in der Welt (steigt auf, verblasst).

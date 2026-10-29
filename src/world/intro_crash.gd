@@ -87,7 +87,7 @@ func _pop_rusty() -> void:
 	_body.visible = true
 	_body.position = _ship.global_position - _player.global_position
 	_body.scale = Vector2(0.3, 0.3)
-	Sfx.play("boing", 0.0)
+	Sfx.play("buy", 0.0)
 	var t := create_tween()
 	t.tween_property(_body, "position", Vector2.ZERO, 0.55).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	t.parallel().tween_property(_body, "scale", _body_scale, 0.55).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)

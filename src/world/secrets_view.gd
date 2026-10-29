@@ -41,11 +41,33 @@ func _on_found(id: String) -> void:
 	var d := SecretSystem.def_of(id)
 	_hud.stage_banner.show_card(tr("SECRET_FOUND"), tr(str(d.get("name_key", id))), tr(str(d.get("desc_key", ""))) + "  ·  " + tr("SECRET_BONUS"), "res://assets/sprites/ui/trophy.svg", 4.0)
 	Sfx.play("milestone")
+	_sparkle(_player.global_position)
 	match id:
 		"kaltholz":
 			_float(_player.global_position + Vector2(0, -140), tr("KALTHOLZ_RECIPE"), Color(1, 0.85, 0.6), 4.0)
 		"dev_room":
 			_float(_player.global_position + Vector2(0, -140), tr("DEV_ROOM"), Color(0.85, 0.75, 1.0), 5.0)
+
+
+## Funkeln beim Fund (MS66): goldene Sterne sprühen um Rusty.
+func _sparkle(at: Vector2) -> void:
+	var p := CPUParticles2D.new()
+	p.one_shot = true
+	p.explosiveness = 0.9
+	p.amount = 40
+	p.lifetime = 1.4
+	p.spread = 180.0
+	p.initial_velocity_min = 120.0
+	p.initial_velocity_max = 320.0
+	p.gravity = Vector2(0, 120)
+	p.texture = load("res://assets/sprites/ui/star.svg")
+	p.scale_amount_min = 0.25
+	p.scale_amount_max = 0.5
+	p.color = Color(1.0, 0.86, 0.3)
+	p.position = at
+	add_child(p)
+	p.emitting = true
+	get_tree().create_timer(1.8).timeout.connect(p.queue_free)
 
 
 func _unhandled_input(event: InputEvent) -> void:

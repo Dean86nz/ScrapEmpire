@@ -2,6 +2,45 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.23.0] – 2026-10-29 – MS65/66 Optik, Sounds, Erklärungen, Mega-Bots (Phase 2.4)
+
+### Optik
+- **Rusty neu gezeichnet** (Screenshot `docs/screens/ms65_rusty_voll.png`): Ausbau ruhig und stimmig statt überladen – schmale Ketten mit Goldrand, kompakter Rucksack in Körperbreite, kurzer Saugtrichter mit Ring in der Stufenfarbe, zwei Scheinwerfer, Stufenplakette (5 Stufen). Kein riesiger Schulterhammer mehr
+- **Kein „langer Rüssel“ mehr:** Der Saugkegel bleibt kurz; die echte Reichweite zeigt ein weicher, gestrichelter Ring um Rusty
+- **Eigene Figuren für Bots:** Bot (rund, türkis, ein Auge), Super-Bot (blau, Kuppel, Visier, Düsen), Mega-Bot (golden, Krone, zwei Augen). Namensschilder über Bots entfernt (überlappten sich)
+- **Kontrast:** Schmutz gedeckter und dunkler, geputzte Flächen leuchten dagegen
+- Stil-Leitfaden `docs/STIL.md` (Palette, Umrisse, Formen, Schatten)
+- **Versionsnummer** unten rechts im Titelbildschirm (Debug-EXE mit „· DEBUG“)
+
+### Sounds
+- **Deine Auswahl eingebaut:** Einsammeln (2), Zerbrechen (3), Abliefern (4), Saugen (2, nur kurz beim Ansetzen), Upgrade-Kauf (4), Bots (5, gedrosselt bei Bot-Symbolen) – jeweils als Varianten
+- **Alle im Code erzeugten Geräusche entfernt**, auch das Fahr-Brummen; Zonen-Jingle und Abflug nutzen jetzt Jingle-Dateien
+
+### Fehler
+- **Bots fahren nicht mehr durch große Objekte:** Objekte belegen ihre sichtbare Größe (Kreuz für große Objekte wie Kühlschrank, Sofa, Satellit, Wände; 3×3 für Bosse). Treffer und Anfahrt rechnen den Rand mit
+- Abspann zählte „Bosse geknackt 7 / 6“ (ein anderes Flag wurde mitgezählt); „Bots“ zeigt jetzt die Armee-Stärke
+- Ziele-Menü: „Nächstes Objekt … Werkzeugstufe nötig“ zeigte auch Bosse (die brauchen Bots)
+
+### Mega-Bots und Erklärungen
+- **Mega-Bots sicher erreichbar:** Die Fusion verschmolz bisher immer zuerst normale Bots, solange 5 da waren. Jetzt hat die Mega-Fusion Vorrang, sobald 5 Super-Bots da sind
+- **Hinweis beim ersten Auftauchen:** Bots, Sammelstellen, Drohnen, Kurier, Fusion möglich, erster Super-Bot, erster Mega-Bot, Geheimnisse (Boss-Verstärkung hatte schon eine Karte). Mehrere warten nacheinander
+- **Geheimnisse:** beim Fund goldenes Funkeln plus Fanfare; im Ziele-Menü je Zone „Kabelsenke: 1 von 4“ plus „Ohne festen Ort“
+
+### Entfernt
+- Die 14 Humor-Momente (kaum bemerkbar). Secrets bleiben
+
+### Technik
+- `RustyLook` neu, `SuctionTool` Reichweitenring, `ResourceNode.nav_size/footprint/hit_radius_px`, `SimWorld._node_block`; `main.hint()`; `SecretSystem.zone_counts/global_counts`
+- 234 Unit-Tests (neu: Bot umfährt die sichtbare Fläche großer Objekte, Boss-Zählung im Abspann, Sounds nur aus Dateien), 73 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Titelbild: steht „v2.23.0“ unten rechts?
+2. Rusty voll ausgebaut: sieht er jetzt gut aus? Kein langer Rüssel?
+3. Bots um Kühlschränke, Wände und Bosse: fahren sie außen herum?
+4. Gefallen dir die Sounds? Fehlt etwas?
+5. Fusion: 25 Bots kaufen, 5× Fusion → 5 Super-Bots → Mega-Bot; kommen die Erklär-Karten?
+6. Ziele-Menü unten: Geheimnisse je Zone
+
 ## [2.22.0] – 2026-10-29 – MS64 Beute als Bündel, Leistung (Phase 2.4)
 
 ### Geändert

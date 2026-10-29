@@ -79,3 +79,42 @@ static func tick(w: SimWorld) -> void:
 		progress(w, "statue")
 	if not is_found(w, "speedrun") and w.flags.has("launch_tick") and int(w.flags["launch_tick"]) < 20 * 3600 * 2:
 		progress(w, "speedrun")
+
+
+# --- Übersicht je Zone (MS66) -----------------------------------------------------------
+
+static var _map_totals: Dictionary = {}   # Zonen-ID → Anzahl Secret-Objekte auf der Karte
+
+
+static func _ensure_totals(w: SimWorld) -> void:
+	if not _map_totals.is_empty():
+		return
+	var m: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/maps/main.json"))
+	if not (m is Dictionary):
+		return
+	for nd: Dictionary in (m as Dictionary).get("nodes", []):
+		if str(ResourceNode.defs.get(str(nd.get("kind", "")), {}).get("secret", "")) == "":
+			continue
+		var zid := w.zones.zone_id_at(Vector2i(int(nd["x"]), int(nd["y"])))
+		_map_totals[zid] = int(_map_totals.get(zid, 0)) + 1
+
+
+## [gefunden, gesamt] der Secret-Objekte einer Zone (gefunden = abgebaut).
+static func zone_counts(w: SimWorld, zid: String) -> Array:
+	_ensure_totals(w)
+	var total := int(_map_totals.get(zid, 0))
+	var left := 0
+	for n: ResourceNode in w.zone_nodes(zid):
+		if str(ResourceNode.defs.get(n.kind, {}).get("secret", "")) != "":
+			left += 1
+	return [maxi(total - left, 0), total]
+
+
+## [gefunden, gesamt] der Geheimnisse ohne festen Ort (Disco, Glühwürmchen, Statue, Turbo-Abflug).
+static func global_counts(w: SimWorld) -> Array:
+	var ids := ["disco", "fireflies", "statue", "speedrun"]
+	var n := 0
+	for id in ids:
+		if is_found(w, id):
+			n += 1
+	return [n, ids.size()]

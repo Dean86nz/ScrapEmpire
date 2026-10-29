@@ -9,10 +9,21 @@ static func add_object(w: SimWorld, kind: String, tile: Vector2i, amount_overrid
 	var n := ResourceNode.from_kind(w.next_id(), kind, tile, amount_override)
 	w.nodes[n.id] = n
 	w._node_tiles[tile] = n.id
-	w.nav_changes.append(tile)
+	_block(w, n, 1)
 	w._zone_nodes_dirty = true
 	w.node_added.emit(n)
 	return n
+
+
+## Grundfläche eines Objekts für die Wegfindung belegen (+1) oder freigeben (-1).
+static func _block(w: SimWorld, n: ResourceNode, delta: int) -> void:
+	for t in n.footprint():
+		var c := int(w._node_block.get(t, 0)) + delta
+		if c <= 0:
+			w._node_block.erase(t)
+		else:
+			w._node_block[t] = c
+		w.nav_changes.append(t)
 
 
 static func add_pile(w: SimWorld, kind: String, tile: Vector2i, amount: int) -> ResourceNode:
@@ -24,7 +35,7 @@ static func add_wreck(w: SimWorld, tile: Vector2i, loot: Dictionary, kind: Strin
 	var n := ResourceNode.make_wreck(w.next_id(), tile, loot, kind)
 	w.nodes[n.id] = n
 	w._node_tiles[tile] = n.id
-	w.nav_changes.append(tile)
+	_block(w, n, 1)
 	w._zone_nodes_dirty = true
 	w.node_added.emit(n)
 	return n
@@ -106,7 +117,7 @@ static func _remove_node(w: SimWorld, n: ResourceNode) -> void:
 	SecretSystem.on_node_removed(w, n)
 	w.nodes.erase(n.id)
 	w._node_tiles.erase(n.tile)
-	w.nav_changes.append(n.tile)
+	_block(w, n, -1)
 	w._zone_nodes_dirty = true
 	w.node_removed.emit(n.id)
 	if w.dirt.is_active() and not n.is_resource() and not n.bonus:

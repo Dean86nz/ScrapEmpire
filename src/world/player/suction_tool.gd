@@ -38,9 +38,11 @@ func _physics_process(delta: float) -> void:
 		var segs := SEGMENTS * 3 if half >= PI - 0.01 else SEGMENTS + int(half * 8.0)
 		if half < PI - 0.01:
 			pts.append(Vector2.ZERO)
+		# MS65: kein langer „Rüssel“ mehr – der Kegel bleibt kurz, die Reichweite zeigt ein Ring
+		var vis := _visual_len(range_px)
 		for i in segs + 1:
 			var a := -half + (2.0 * half) * float(i) / float(segs)
-			pts.append(Vector2.RIGHT.rotated(a) * range_px)
+			pts.append(Vector2.RIGHT.rotated(a) * vis)
 		_cone.polygon = pts
 	var held := InputRouter.context == InputRouter.Context.GAME and Input.is_action_pressed("tool_primary")
 	SimClock.world.player.suck_held = held
@@ -52,10 +54,24 @@ func _physics_process(delta: float) -> void:
 		_swirl.queue_redraw()
 
 
+func _visual_len(range_px: float) -> float:
+	return minf(range_px, 150.0 + range_px * 0.12)
+
+
 ## Spiralarme, die sich zur Mitte drehen: je größer der Kegel, desto mehr Arme (Wirbel).
+## Die echte Reichweite zeigt ein weicher, gestrichelter Ring (statt eines langen Kegels).
 func _draw_swirl() -> void:
 	var p := SimClock.world.player
-	var range_px := float(p.suck_range_px)
+	var full := float(p.suck_range_px)
+	var range_px := _visual_len(full)
+	if full > range_px + 10.0:
+		var h := minf(p.suck_half_angle, PI)
+		var n := 28
+		for k in n:
+			if k % 2 == 1:
+				continue
+			var a0 := -h + 2.0 * h * float(k) / n + _time * 0.6
+			_swirl.draw_arc(Vector2.ZERO, full, a0, a0 + 2.0 * h / n, 4, Color(0.6, 0.85, 1.0, 0.35), 3.0, true)
 	var half := minf(p.suck_half_angle, PI)
 	var arms := 2 + int(half / PI * 4.0)
 	for k in arms:

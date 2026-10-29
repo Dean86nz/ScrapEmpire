@@ -104,7 +104,7 @@ func bind(world: SimWorld) -> void:
 	_buy_btn.get_parent().add_child(_fuse_btn)
 	_buy_btn.get_parent().move_child(_fuse_btn, _buy_btn.get_index() + 1)
 	_fuse_btn.pressed.connect(func() -> void:
-		var p := 1 if HelperSystem.can_fuse(SimClock.world, 1) else 5
+		var p := 5 if HelperSystem.can_fuse(SimClock.world, 5) else 1   # Mega-Fusion hat Vorrang (MS66)
 		SimClock.world.queue_command({"type": "fuse_helpers", "power": p}))
 	_upgrade_title.text = tr("HELPER_UPGRADES")
 	for u: Dictionary in _world.helper_cfg.get("upgrades", []):
@@ -639,7 +639,7 @@ func _refresh_helpers() -> void:
 	var fuse5 := HelperSystem.can_fuse(w, 5)
 	_fuse_btn.visible = w.unlocked_features.has("helpers")
 	_fuse_btn.disabled = not (fuse1 or fuse5)
-	_fuse_btn.text = tr("BOT_FUSE_MEGA") if (fuse5 and not fuse1) else tr("BOT_FUSE") 
+	_fuse_btn.text = tr("BOT_FUSE_MEGA") if fuse5 else tr("BOT_FUSE")
 	_fuse_btn.text += "  ·  " + tr("BOT_ARMY") % HelperSystem.army(w)
 	var focused_bot := -1
 	var fb := get_viewport().gui_get_focus_owner()
@@ -771,7 +771,7 @@ func _refresh_goals() -> void:
 	var w := _world
 	var q := w.quests
 	var sig := "%d|%s|%d|%d|%d|%s|%d" % [q.index, str(q.progress(w)), w.bolts, int(round(w.zones.planet_health(w.nodes) * 100.0)),
-		w.ship().stage if w.ship() != null else 0, str(w.milestones.done), int(_goals_show_done)]
+		w.ship().stage if w.ship() != null else 0, str(w.milestones.done), int(_goals_show_done)] + "|%d|%d" % [SecretSystem.found_count(w), w.nodes.size()]
 	if sig == _goals_sig and _goals_list.get_child_count() > 0:
 		return
 	_goals_sig = sig
@@ -860,6 +860,30 @@ func _refresh_goals() -> void:
 		mc.custom_minimum_size = Vector2(673, 112)
 		grid.add_child(mc)
 	_goals_list.add_child(grid)
+	# 4) Geheimnisse je Zone (MS66): anwählbare Karten wie die Meilensteine, „Kabelsenke: 1 von 3“
+	var sec_head := Label.new()
+	sec_head.text = tr("SECRETS_HEADER") % [SecretSystem.found_count(w), SecretSystem.defs.size()]
+	sec_head.add_theme_font_size_override("font_size", 30)
+	sec_head.add_theme_color_override("font_color", Color(0.95, 0.55, 0.16))
+	_goals_list.add_child(sec_head)
+	var sgrid := GridContainer.new()
+	sgrid.columns = 2
+	sgrid.add_theme_constant_override("h_separation", 16)
+	sgrid.add_theme_constant_override("v_separation", 12)
+	var rows: Array = []
+	for z in w.zones.zones:
+		var zid := str(z["id"])
+		var c := SecretSystem.zone_counts(w, zid)
+		if int(c[1]) > 0:
+			rows.append([str(z["name"]) if w.zones.is_unlocked(zid) else "???", c])
+	rows.append([tr("SECRETS_OTHER"), SecretSystem.global_counts(w)])
+	for r: Array in rows:
+		var c: Array = r[1]
+		var sc := _mini_card("res://assets/sprites/ui/trophy.svg", str(r[0]), tr("SECRETS_ZONE") % [int(c[0]), int(c[1])],
+			float(c[0]) / float(maxi(int(c[1]), 1)))
+		sc.custom_minimum_size = Vector2(673, 96)
+		sgrid.add_child(sc)
+	_goals_list.add_child(sgrid)
 	_restore_focus(_goals_list, focus_idx)
 
 
@@ -1082,8 +1106,8 @@ func _next_locked_object() -> Dictionary:
 	var best: Dictionary = {}
 	for n: ResourceNode in _world.nodes.values():
 		var tool_tier := _world.player.hammer_tier if n.uses_hammer() else _world.player.suction_tier
-		if n.tier <= tool_tier:
-			continue
+		if n.tier <= tool_tier or n.boss:
+			continue  # Bosse brauchen Bots statt Werkzeugstufe (MS66)
 		if best.is_empty() or n.tier < int(best["tier"]):
 			var d: Dictionary = ResourceNode.defs.get(n.kind, {})
 			best = {"tier": n.tier, "tool": n.tool, "name_key": d.get("name_key", n.kind)}

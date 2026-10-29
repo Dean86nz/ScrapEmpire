@@ -107,7 +107,8 @@
         "scrap": 8
       },
       "sprite": "res://assets/sprites/nodes/tire_stack.svg",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "pallet",
@@ -177,7 +178,8 @@
         "copper": 16
       },
       "sprite": "res://assets/sprites/nodes/cart.svg",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "concrete",
@@ -261,7 +263,8 @@
         "copper": 5
       },
       "sprite": "res://assets/sprites/nodes/sofa.svg",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "plastic_whale",
@@ -293,7 +296,8 @@
         "chrome": 11
       },
       "sprite": "res://assets/sprites/nodes/fridge.svg",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "freezer",
@@ -307,7 +311,8 @@
         "copper": 22
       },
       "sprite": "res://assets/sprites/nodes/freezer.svg",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "pizza_tower",
@@ -321,7 +326,8 @@
         "titanium": 7
       },
       "sprite": "res://assets/sprites/nodes/pizza_tower.svg",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "ruin_wall",
@@ -334,7 +340,8 @@
         "scrap": 11
       },
       "sprite": "res://assets/sprites/nodes/ruin_wall.svg",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "freezer_king",
@@ -365,7 +372,8 @@
         "chrome": 36
       },
       "sprite": "res://assets/sprites/nodes/satellite.svg",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "ship_part",
@@ -380,7 +388,8 @@
         "titanium": 12
       },
       "sprite": "res://assets/sprites/nodes/ship_part.svg",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "robot_arm",
@@ -393,7 +402,8 @@
         "chrome": 18
       },
       "sprite": "res://assets/sprites/nodes/robot_arm.svg",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "mega_dish",
@@ -423,7 +433,8 @@
         "titanium": 17
       },
       "sprite": "res://assets/sprites/nodes/monolith.svg",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "stardust_crystal",
@@ -556,7 +567,8 @@
       "sprite": "res://assets/sprites/nodes/radio.svg",
       "respawn_s": 0,
       "tint": "#B0C8FF",
-      "scale": 1.4
+      "scale": 1.4,
+      "nav_size": 2
     },
     {
       "id": "duck_king",
@@ -571,7 +583,8 @@
       "sprite": "res://assets/sprites/nodes/duck_pile.svg",
       "respawn_s": 0,
       "tint": "#FFC83C",
-      "scale": 1.35
+      "scale": 1.35,
+      "nav_size": 2
     },
     {
       "id": "beach_chair",
@@ -603,7 +616,8 @@
       "sprite": "res://assets/sprites/nodes/fridge.svg",
       "respawn_s": 0,
       "tint": "#DDEBFF",
-      "scale": 1.35
+      "scale": 1.35,
+      "nav_size": 2
     },
     {
       "id": "ice_block",
@@ -633,7 +647,8 @@
       "sprite": "res://assets/sprites/nodes/satellite.svg",
       "respawn_s": 0,
       "tint": "#FFF2A8",
-      "scale": 1.4
+      "scale": 1.4,
+      "nav_size": 2
     },
     {
       "id": "solar_panel",
@@ -647,7 +662,8 @@
       },
       "sprite": "res://assets/sprites/nodes/ship_part.svg",
       "respawn_s": 0,
-      "tint": "#7FB8FF"
+      "tint": "#7FB8FF",
+      "nav_size": 2
     },
     {
       "id": "monolith_dark",
@@ -662,7 +678,8 @@
       "sprite": "res://assets/sprites/nodes/monolith.svg",
       "respawn_s": 0,
       "tint": "#B88CFF",
-      "scale": 1.2
+      "scale": 1.2,
+      "nav_size": 2
     },
     {
       "id": "crystal_cluster",
@@ -691,7 +708,8 @@
       "sprite": "res://assets/sprites/nodes/ruin_wall.svg",
       "tint": "#8A8A9A",
       "secret": "walls",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "dev_wall",
@@ -706,7 +724,8 @@
       "tint": "#6E6488",
       "scale": 1.2,
       "secret": "dev_room",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "rubber_duck",
@@ -736,7 +755,8 @@
       "tint": "#FFD24A",
       "scale": 1.2,
       "secret": "golden_heap",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     },
     {
       "id": "toilet",
@@ -766,7 +786,8 @@
       "sprite": "res://assets/sprites/nodes/fridge.svg",
       "tint": "#B07A4A",
       "secret": "kaltholz",
-      "respawn_s": 0
+      "respawn_s": 0,
+      "nav_size": 2
     }
   ]
 }

@@ -22,6 +22,21 @@ func _ready() -> void:
 	InputRouter.context = InputRouter.Context.MENU
 	_title.text = "Scrap Empire"
 	_tagline.text = tr("TITLE_TAGLINE")
+	# Versionsnummer unten rechts, damit beim Testen klar ist, welche EXE läuft
+	var ver := Label.new()
+	ver.text = "v" + str(ProjectSettings.get_setting("application/config/version", "?")) + (" · DEBUG" if OS.is_debug_build() else "")
+	ver.add_theme_font_size_override("font_size", 22)
+	ver.add_theme_color_override("font_color", Color(1, 1, 1, 0.75))
+	ver.anchor_left = 1.0
+	ver.anchor_top = 1.0
+	ver.anchor_right = 1.0
+	ver.anchor_bottom = 1.0
+	ver.offset_left = -360
+	ver.offset_top = -52
+	ver.offset_right = -24
+	ver.offset_bottom = -16
+	ver.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	add_child(ver)
 	_continue_btn.text = tr("TITLE_CONTINUE")
 	_new_btn.text = tr("TITLE_NEW")
 	_quit_btn.text = tr("TITLE_QUIT")

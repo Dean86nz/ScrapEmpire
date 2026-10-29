@@ -30,10 +30,10 @@ static func helper_work(w: SimWorld, h: Helper) -> void:
 			pass
 		else:
 			var hit_point := Vector2(h.pos) + h.aim * PlayerState.HAMMER_REACH_PX
-			for n: ResourceNode in nodes_near(w, Vector2i(hit_point), h.hammer_range_px):
+			for n: ResourceNode in nodes_near(w, Vector2i(hit_point), h.hammer_range_px + 80):
 				if not n.uses_hammer() or (n.tier > h.hammer_tier and not n.boss):
 					continue
-				if hit_point.distance_to(Vector2(n.center_px())) <= float(h.hammer_range_px):
+				if hit_point.distance_to(Vector2(n.center_px())) <= float(h.hammer_range_px + n.hit_radius_px()):
 					h.hammer_cooldown = PlayerState.BASE_HAMMER_INTERVAL
 					if n.boss and not BossSystem.can_damage(w, n):
 						w.boss_swing.emit(n)
@@ -283,12 +283,12 @@ static func _tick_hammer(w: SimWorld) -> void:
 static func _find_wreck_target(w: SimWorld) -> ResourceNode:
 	var hit_point := Vector2(w.player.pos) + w.player.aim * PlayerState.HAMMER_REACH_PX
 	var best: ResourceNode = null
-	var best_d := float(w.player.hammer_range_px)
-	for n: ResourceNode in w.nodes.values():
+	var best_d := INF
+	for n: ResourceNode in nodes_near(w, Vector2i(hit_point), w.player.hammer_range_px + 80):
 		if not n.uses_hammer():
 			continue
-		var d := hit_point.distance_to(Vector2(n.center_px()))
-		if d <= best_d:
+		var d := hit_point.distance_to(Vector2(n.center_px())) - n.hit_radius_px()
+		if d <= float(w.player.hammer_range_px) and d < best_d:
 			best_d = d
 			best = n
 	return best

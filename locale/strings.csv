@@ -682,3 +682,21 @@ TOILET_4,„Sitz nicht rum. Räum auf.“,"""Don’t just sit there. Tidy up."""
 TOILET_5,„Ich habe viel gesehen. Zu viel.“,"""I have seen a lot. Too much."""
 KALTHOLZ_RECIPE,"Rezept: Schrottsuppe – 1 Schraube, 2 Kabel, viel Liebe","Recipe: junk soup – 1 bolt, 2 cables, lots of love"
 DEV_ROOM,Hier war der Entwickler. Danke fürs Spielen!,The developer was here. Thanks for playing!
+HINT_T_BOTS,Neu: Sammel-Bots,New: collector bots
+HINT_D_BOTS,"Bots arbeiten von selbst in Zonen mit Müll. Bauen: Schiff-Menü → Bots.","Bots work on their own in zones with junk. Build: ship menu → bots."
+HINT_T_COLLECTION,Neu: Sammelstellen,New: collection points
+HINT_D_COLLECTION,"Jede Zone hat einen Bauplatz. Hinfahren, A: Bots und du liefern dort ab.","Each zone has a site. Drive there, press A: bots and you deliver there."
+HINT_T_DRONES,Neu: Drohnen,New: drones
+HINT_D_DRONES,"Drohnen bringen Material von den Sammelstellen zum Schiff. Erst dort gibt es Bolts.","Drones carry material from collection points to the ship. Bolts only come there."
+HINT_T_COURIER,Neu: Kurier,New: courier
+HINT_D_COURIER,"Volle Taschen? D-Pad runter ruft den Kurier, er holt deine Ladung ab.","Full bags? D-pad down calls the courier to pick up your load."
+HINT_T_FUSION,Bot-Fusion möglich,Bot fusion available
+HINT_D_FUSION,"Schiff-Menü → Bots → Fusion: 5 Bots werden ein Super-Bot (×5).","Ship menu → bots → fuse: 5 bots become one Super-Bot (×5)."
+HINT_T_SUPER,Dein erster Super-Bot!,Your first Super-Bot!
+HINT_D_SUPER,"Arbeitet für 5 und zählt bei Bossen als 5. Aus 5 Super-Bots wird ein Mega-Bot.","Works like 5 and counts as 5 for bosses. 5 Super-Bots make a Mega-Bot."
+HINT_T_MEGA,Mega-Bot!,Mega-Bot!
+HINT_D_MEGA,"Arbeitet für 25 und zählt bei Bossen als 25. Mehr Mega-Bots = riesige Armee.","Works like 25 and counts as 25 for bosses. More Mega-Bots = huge army."
+HINT_T_SECRETS,Geheimnisse,Secrets
+HINT_D_SECRETS,"Auf dem Planeten sind Geheimnisse versteckt: rissige Wände, Gummienten und mehr.","Secrets are hidden on the planet: cracked walls, rubber ducks and more."
+SECRETS_ZONE,%d von %d,%d of %d
+SECRETS_OTHER,Ohne festen Ort,Anywhere
