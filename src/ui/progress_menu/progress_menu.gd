@@ -244,6 +244,32 @@ func open(tab: Tab = Tab.SHIP) -> void:
 	_show_tab()
 
 
+## Kauf-Feedback im Menü (MS62): fokussierte Karte pulsiert und leuchtet kurz, „+1“ steigt auf.
+func purchase_feedback() -> void:
+	var f := get_viewport().gui_get_focus_owner()
+	if f == null or not is_ancestor_of(f):
+		return
+	f.pivot_offset = f.size * 0.5
+	var tw := create_tween()
+	tw.tween_property(f, "scale", Vector2(1.05, 1.05), 0.07)
+	tw.tween_property(f, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_BACK)
+	var glow := create_tween()
+	glow.tween_property(f, "modulate", Color(1.25, 1.2, 0.9), 0.07)
+	glow.tween_property(f, "modulate", Color.WHITE, 0.3)
+	var l := Label.new()
+	l.text = "+1"
+	l.add_theme_font_size_override("font_size", 34)
+	l.add_theme_color_override("font_color", Color(0.25, 0.7, 0.3))
+	l.add_theme_color_override("font_outline_color", Color.WHITE)
+	l.add_theme_constant_override("outline_size", 8)
+	add_child(l)
+	l.global_position = f.global_position + Vector2(f.size.x - 70, 4)
+	var up := create_tween()
+	up.tween_property(l, "global_position:y", l.global_position.y - 40, 0.6)
+	up.parallel().tween_property(l, "modulate:a", 0.0, 0.6).set_delay(0.25)
+	up.tween_callback(l.queue_free)
+
+
 func close() -> void:
 	_map_view.reset_zoom()
 	if visible:

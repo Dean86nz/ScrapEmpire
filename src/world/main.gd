@@ -151,12 +151,18 @@ func _ready() -> void:
 			_world.flags[key] = true
 			EventBus.quip.emit("QUIP_BOT_BORED"))
 	# Jeder Kauf: Menü zu, Rusty jubelt ca. 1 s, dann Steuerung zurück
-	_world.ship_upgrade_bought.connect(func(_id: String, _l: int) -> void: _celebrate_purchase())
-	_world.skill_bought.connect(func(_id: String, _l: int) -> void: _celebrate_purchase())
-	_world.helper_upgrade_bought.connect(func(_id: String, _l: int) -> void: _celebrate_purchase())
-	_world.drone_upgrade_bought.connect(func(_id: String, _l: int) -> void: _celebrate_purchase())
-	_world.helper_added.connect(func(_h: Helper) -> void: _celebrate_purchase())
-	_world.drone_added.connect(func(_d: Drone) -> void: _celebrate_purchase())
+	# Upgrade-Fluss (MS62): normale Käufe lassen das Menü offen (kurzes Feedback im Menü, Rusty
+	# freut sich klein im Hintergrund); nur neue Werkzeugstufe und neue Schiffsstufe = großer Jubel.
+	_world.ship_upgrade_bought.connect(func(_id: String, _l: int) -> void: _small_purchase())
+	_world.skill_bought.connect(func(id: String, _l: int) -> void:
+		if id == "tool":
+			_celebrate_purchase()
+		else:
+			_small_purchase())
+	_world.helper_upgrade_bought.connect(func(_id: String, _l: int) -> void: _small_purchase())
+	_world.drone_upgrade_bought.connect(func(_id: String, _l: int) -> void: _small_purchase())
+	_world.helper_added.connect(func(_h: Helper) -> void: _small_purchase())
+	_world.drone_added.connect(func(_d: Drone) -> void: _small_purchase())
 	_world.zone_unlocked.connect(_on_zone_unlocked)
 	_world.collectible_found.connect(_on_collectible_found)
 	_setup_nature()
@@ -514,6 +520,16 @@ func _celebrate_purchase(jingle: bool = true) -> void:
 	get_tree().create_timer(Player.CHEER_SECONDS).timeout.connect(func() -> void:
 		if not _launching and InputRouter.context == InputRouter.Context.MENU and not _any_menu_open():
 			InputRouter.context = InputRouter.Context.GAME)
+
+
+## Kleiner Kauf: Menü bleibt offen, Karte pulsiert, kurzer Ton, Rusty freut sich im Hintergrund.
+func _small_purchase() -> void:
+	if _launching:
+		return
+	if _progress_menu.visible:
+		_progress_menu.purchase_feedback()
+	Sfx.play("cheer", 0.05, -6.0)
+	_player.celebrate()
 
 
 func _any_menu_open() -> bool:

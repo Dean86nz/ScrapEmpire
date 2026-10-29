@@ -38,7 +38,8 @@
 - [x] MS60 Secrets (v2.18.0); Phase 2.3 abgeschlossen
 - [x] Ally-Durchlauf v2.18.0: 34 min, Spiellänge bleibt vorerst
 - [x] MS61 Bot-Wegfindung, Hammer-Reichweite (v2.19.0)
-- [ ] Phase 2.4: MS62 Upgrade-Fluss → MS63 Sounds → MS64 Bündel/Leistung → MS65 Optik → MS66 Erklärungen → MS67 crazier → Steam-Technik
+- [x] MS62 Upgrade-Fluss (v2.20.0)
+- [ ] Phase 2.4: MS63 Sounds → MS64 Bündel/Leistung → MS65 Optik → MS66 Erklärungen → MS67 crazier → Steam-Technik
  MS57 Upgrades/Fusion → MS58 Spiellänge (Übersicht zuerst) → MS59 Humor (alle) → MS60 Secrets (alle)
 - [x] Phase 2.2: MS49 Bots sammeln alles (v2.9.0) ✓ → MS50 Wackeln (v2.10.0) ✓ → MS51 Sprechblasen (v2.11.0) ✓ → MS52 Musik (v2.12.0) ✓ → MS53 Menüs (Entwurf) Intro
 - [ ] Ally-Durchlauf mit Zeiten auswerten, Zahlen in JSON nachjustieren (siehe docs/OFFENE_PUNKTE.md)
