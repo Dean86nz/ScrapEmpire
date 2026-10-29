@@ -91,7 +91,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 |---|---|---|
 | **61** | Fehler: Bot-Wegfindung mit allen Hindernissen, Hammer-Reichweite getrennt | v2.19.0 |
 | **62** | Upgrade-Fluss: Menü bleibt offen | v2.20.0 |
-| 63 | Sounds: weniger, Kandidaten-Ordner zur Auswahl | v2.21.0 |
+| **63** | Sounds: weniger, Kandidaten-Ordner zur Auswahl | v2.21.0 |
 | 64 | Beute als Bündel, Leistung 60 FPS | v2.22.0 |
 | 65 | Optik: eigener Stil weiterentwickelt (erst Muster) | v2.23.0 |
 | 66 | Mega-Bots und Secrets verständlich | v2.24.0 |

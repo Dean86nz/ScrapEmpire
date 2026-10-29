@@ -28,7 +28,7 @@ func test_generated_sounds_start_and_end_quiet() -> void:
 func test_suction_loop_is_very_quiet() -> void:
 	var s := _sfx()
 	s.set_sucking(true)
-	assert_true(float(s._suck_target) <= -25.0, "Saug-Dauergeräusch sehr leise")
+	assert_eq(float(s._suck_target), -80.0, "kein Saug-Dauergeräusch mehr (MS63)")
 	s.set_sucking(false)
 	assert_eq(float(s._suck_target), -80.0)
 
