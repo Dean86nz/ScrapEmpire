@@ -2,6 +2,20 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.20.0] – 2026-10-29 – MS62 Upgrade-Fluss: Menü bleibt offen (Phase 2.4)
+
+### Geändert
+- **Kaufen ohne Unterbrechung:** Upgrades, Skills, Bots und Drohnen kaufen schließt das Menü nicht mehr. Die gekaufte Karte pulsiert und leuchtet kurz, „+1“ steigt auf, ein kurzer leiser Ton. Rusty freut sich klein im Hintergrund (Konfetti), ohne dass sich etwas schließt
+- **Großer Jubel nur bei großen Momenten:** neue Werkzeugstufe (Skill „Werkzeug“) und neue Schiffsstufe schließen das Menü wie bisher
+
+### Technik
+- `main._small_purchase`, `ProgressMenu.purchase_feedback`
+- 234 Unit-Tests, 73 Gamepad-Prüfungen (neu: drei Käufe hintereinander bei offenem Menü), Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Im Schiff-Menü mehrmals schnell hintereinander A: fühlt sich das flüssig an? Ist das Feedback gut sichtbar?
+2. Werkzeugstufe und Schiffsstufe: kommt dort weiterhin der große Jubel?
+
 ## [2.19.0] – 2026-10-29 – MS61 Fehler aus dem v2.18.0-Test (Phase 2.4)
 
 ### Behoben

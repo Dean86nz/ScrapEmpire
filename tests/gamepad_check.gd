@@ -160,8 +160,13 @@ func _build_steps() -> void:
 			_tap(JOY_BUTTON_DPAD_RIGHT)
 			_tap(JOY_BUTTON_A),
 		func() -> bool: return int(_world.ship_upgrades.get("yield", 0)) == 1, 8, 200)
-	_step("Kauf schließt das Menü, Rusty jubelt, danach Steuerung zurück", func() -> void: pass,
-		func() -> bool: return not progress.visible and router.context == router.Context.GAME, 4, 1000)
+	# MS62: Menü bleibt beim Kaufen offen, mehrere Käufe hintereinander
+	_step("Menü bleibt offen, A kauft gleich nochmal", func() -> void: _tap(JOY_BUTTON_A),
+		func() -> bool: return progress.visible and int(_world.ship_upgrades.get("yield", 0)) == 2, 8, 200)
+	_step("Dritter Kauf hintereinander, Menü immer noch offen", func() -> void: _tap(JOY_BUTTON_A),
+		func() -> bool: return progress.visible and int(_world.ship_upgrades.get("yield", 0)) == 3, 8, 200)
+	_step("B schließt, Steuerung zurück", func() -> void: _tap(JOY_BUTTON_B),
+		func() -> bool: return not progress.visible and router.context == router.Context.GAME, 6)
 
 	# Bots-Tab
 	_step("Select öffnet Schiff und Ziele", func() -> void: _tap(JOY_BUTTON_BACK),
@@ -172,8 +177,8 @@ func _build_steps() -> void:
 		func() -> bool: return progress._tab == progress.Tab.HELPERS, 6)
 	_step("A auf „Sammel-Bot bauen“ baut einen Bot", func() -> void: _tap(JOY_BUTTON_A),
 		func() -> bool: return _world.helpers.size() == 1, 8, 200)
-	_step("Bot gebaut: Menü zu, Jubel, Steuerung zurück", func() -> void: pass,
-		func() -> bool: return not progress.visible and router.context == router.Context.GAME, 4, 1000)
+	_step("Bot gebaut: Menü bleibt offen, B schließt", func() -> void: _tap(JOY_BUTTON_B),
+		func() -> bool: return not progress.visible and router.context == router.Context.GAME, 6)
 	_step("Select öffnet das Menü wieder", func() -> void: _tap(JOY_BUTTON_BACK), func() -> bool: return progress.visible)
 	_step("RB x4: wieder im Bots-Tab", func() -> void:
 			for n in 4:
@@ -237,8 +242,8 @@ func _build_steps() -> void:
 		func() -> bool: return progress._tab == progress.Tab.DRONES, 6)
 	_step("A auf „Drohne bauen“ baut eine Drohne", func() -> void: _tap(JOY_BUTTON_A),
 		func() -> bool: return _world.drones.size() == 2, 8, 200)  # 1 kam mit der Sammelstelle
-	_step("Drohne gebaut: Menü zu, nach dem Jubel Steuerung zurück", func() -> void: pass,
-		func() -> bool: return not progress.visible and router.context == router.Context.GAME, 4, 1000)
+	_step("Drohne gebaut: Menü bleibt offen, B schließt", func() -> void: _tap(JOY_BUTTON_B),
+		func() -> bool: return not progress.visible and router.context == router.Context.GAME, 6)
 
 	# Y im Spiel: kein Baumenü mehr, nichts öffnet sich
 	_step("Y im Spiel öffnet nichts", func() -> void: _tap(JOY_BUTTON_Y), func() -> bool: return router.context == router.Context.GAME, 4)
