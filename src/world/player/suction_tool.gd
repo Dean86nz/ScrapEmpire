@@ -73,7 +73,7 @@ func _draw_swirl() -> void:
 			var a0 := -h + 2.0 * h * float(k) / n + _time * 0.6
 			_swirl.draw_arc(Vector2.ZERO, full, a0, a0 + 2.0 * h / n, 4, Color(0.6, 0.85, 1.0, 0.35), 3.0, true)
 	var half := minf(p.suck_half_angle, PI)
-	var arms := 2 + int(half / PI * 4.0)
+	var arms := 2 + int(half / PI * 4.0) + (4 if half >= PI - 0.01 and full > 400.0 else 0)   # MS67: Riesen-Wirbel
 	for k in arms:
 		var base := -half + (2.0 * half) * (float(k) + 0.5) / float(arms)
 		var pts := PackedVector2Array()

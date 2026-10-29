@@ -9,7 +9,8 @@ static func helper_count(w: SimWorld) -> int:
 
 
 static func next_helper_cost(w: SimWorld) -> Dictionary:
-	var n := army(w)  # nach Stärke, nicht Anzahl: Fusion macht Bots nicht billiger (MS57)
+	var a := army(w)  # nach Stärke, nicht Anzahl: Fusion macht Bots nicht billiger (MS57)
+	var n := float(a) if a <= 120 else 120.0 + (a - 120) * 0.2   # MS67: große Armeen bleiben bezahlbar
 	var base := float(w.helper_cfg.get("cost_base_bolts", 400))
 	var growth := float(w.helper_cfg.get("cost_growth", 1.5))
 	var bolts_cost := int(round(base * pow(growth, n) / 10.0)) * 10
@@ -166,8 +167,8 @@ static func army(w: SimWorld) -> int:
 
 ## Kann aus 5 Bots der Stärke `power` einer mit ×5 werden?
 static func can_fuse(w: SimWorld, power: int) -> bool:
-	if power >= 25:
-		return false
+	if power >= 125:
+		return false  # Giga-Bot (×125) ist die höchste Stufe (MS67)
 	var n := 0
 	for h: Helper in w.helpers.values():
 		if h.power == power:

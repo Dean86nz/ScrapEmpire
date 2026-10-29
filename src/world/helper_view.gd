@@ -143,7 +143,9 @@ func _update_work_look(delta: float) -> void:
 		_shown_power = _helper.power
 		_sprite.texture = load(TEX[2 if _helper.power >= 25 else (1 if _helper.power >= 5 else 0)])
 	var base := _base_modulate() if _helper.power < 5 else Color.WHITE
-	var bs := 0.8 if _helper.power < 5 else (0.95 if _helper.power < 25 else 1.15)
+	if _helper.power >= 125:
+		base = Color.from_hsv(fmod(_t * 0.25, 1.0), 0.35, 1.0)   # Giga-Bot: Regenbogen-Glanz (MS67)
+	var bs := 0.8 if _helper.power < 5 else (0.95 if _helper.power < 25 else (1.15 if _helper.power < 125 else 1.5))
 	if not _swinging:
 		_sprite.scale = _sprite.scale.lerp(Vector2(bs, bs), minf(1.0, delta * 6.0))
 	_sprite.modulate = _sprite.modulate.lerp(base.lerp(Color(0.6, 0.6, 0.65), 0.6) if idle else base, minf(1.0, delta * 4.0))

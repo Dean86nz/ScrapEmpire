@@ -95,7 +95,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **64** | Beute als Bündel, Leistung 60 FPS | v2.22.0 |
 | **65** | Optik: Rusty, Bots, Kontrast, Stil-Leitfaden; Sounds; Objektgrößen | v2.23.0 |
 | **66** | Mega-Bots und Secrets verständlich, Erklärungen (mit MS65 ausgeliefert) | v2.23.0 |
-| 67 | Noch crazier | v2.25.0 |
+| **67** | Noch crazier: Giga-Bot, Riesen-Wirbel, Druckwelle | v2.24.0 |
 
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
 

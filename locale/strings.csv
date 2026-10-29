@@ -700,3 +700,6 @@ HINT_T_SECRETS,Geheimnisse,Secrets
 HINT_D_SECRETS,"Auf dem Planeten sind Geheimnisse versteckt: rissige Wände, Gummienten und mehr.","Secrets are hidden on the planet: cracked walls, rubber ducks and more."
 SECRETS_ZONE,%d von %d,%d of %d
 SECRETS_OTHER,Ohne festen Ort,Anywhere
+BOT_FUSE_GIGA,Fusion: 5 Mega-Bots → Giga-Bot (×125),Fuse: 5 Mega-Bots → Giga-Bot (×125)
+HINT_T_GIGA,GIGA-BOT!,GIGA-BOT!
+HINT_D_GIGA,"Arbeitet für 125, zählt bei Bossen als 125 und schillert in allen Farben.","Works like 125, counts as 125 for bosses and shimmers in every colour."

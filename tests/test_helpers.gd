@@ -212,3 +212,18 @@ func test_bots_pick_up_loose_items_first() -> void:
 	var id := item.id
 	TestWorlds.run(w, 20 * 15)
 	assert_false(w.loose.has(id), "loses Teil wurde eingesammelt")
+
+
+func test_fusion_reaches_mega_and_giga() -> void:
+	# MS66/67: Mega-Bots sicher erreichbar, darüber Giga-Bot (×125) als höchste Stufe.
+	var w := _world()
+	for i in 125:
+		var h := w.add_helper(Vector2i(10, 6), w.ship().tile)
+	for p in [1, 5, 25]:
+		while HelperSystem.can_fuse(w, p):
+			w.queue_command({"type": "fuse_helpers", "power": p})
+			w.tick()
+	assert_eq(w.helpers.size(), 1, "125 Bots → 1 Giga-Bot")
+	assert_eq((w.helpers.values()[0] as Helper).power, 125)
+	assert_eq(HelperSystem.army(w), 125)
+	assert_false(HelperSystem.can_fuse(w, 125), "Giga ist die höchste Stufe")

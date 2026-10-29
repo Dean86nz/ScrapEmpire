@@ -2,6 +2,26 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.24.0] – 2026-10-29 – MS67 Noch crazier (Phase 2.4 abgeschlossen)
+
+### Neu
+- **Giga-Bot:** 5 Mega-Bots verschmelzen zu einem Giga-Bot (×125 Arbeit, zählt 125 für Bosse), noch größer und in Regenbogenfarben schillernd, mit eigener Erklär-Karte. Die Fusion nimmt immer die höchste mögliche Stufe zuerst
+- **Große Armeen bleiben bezahlbar:** Ab Armee-Stärke 120 steigt der Bot-Preis nur noch langsam
+- **Riesen-Wirbel:** Bei vollem Wirbel und großer Reichweite mehr Spiralarme
+- **Höchste Werkzeugstufe:** Ein-Schlag mit T5 löst eine zweite, große Druckwelle aus; Mega- und Giga-Fusion lassen die Kamera kurz wackeln (abschaltbar)
+
+### Technik
+- `HelperSystem.can_fuse` bis Stufe 125, weicherer Kostenanstieg in `next_helper_cost`
+- 235 Unit-Tests (neu: 125 Bots → Super → Mega → Giga), 73 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün
+
+### Ally-Testliste (Phase 2.4 gesamt, Debug-EXE mit Cheats hilft beim Vorspulen)
+1. Titelbild zeigt „v2.24.0“
+2. Rusty voll ausgebaut, Bots/Super/Mega/Giga gut unterscheidbar?
+3. Bots fahren um alle Objekte, Wände und Bosse herum?
+4. Sounds deiner Auswahl, kein Fahr-Brummen mehr
+5. Erklär-Karten bei Bots, Sammelstelle, Drohnen, Kurier, Fusion, Super/Mega/Giga, Geheimnissen
+6. Spätes Spiel mit großer Armee: 60 FPS, fühlt es sich crazy an?
+
 ## [2.23.0] – 2026-10-29 – MS65/66 Optik, Sounds, Erklärungen, Mega-Bots (Phase 2.4)
 
 ### Optik
