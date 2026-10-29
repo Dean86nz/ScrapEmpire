@@ -2,6 +2,20 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.19.0] – 2026-10-29 – MS61 Fehler aus dem v2.18.0-Test (Phase 2.4)
+
+### Behoben
+- **Bots fahren nicht mehr durch Hindernisse:** Die Wegfindung kennt jetzt alle Hindernisse (Müllobjekte, Gebäude, Schiff, Sammelstellen, Zäune, Wände), nicht nur Zäune. Geänderte Kacheln (Objekt abgebaut, Sammelstelle gebaut) werden einzeln nachgeführt, kein teurer Neuaufbau. Steht ein Bot 3 s fast still, meidet er dieses Ziel 30 s und sucht sich ein neues
+- **Hammer-Reichweite getrennt:** Der Reichweite-Skill vergrößert nur noch den Sauger; der Hammer behält seine eigene Reichweite, auch beim gleichzeitigen Saugen
+
+### Technik
+- `NavGrid.is_obstacle`, `Grid.changed`, `SimWorld.nav_changes`, Stillstand-Erkennung in `Helper._move`
+- 234 Unit-Tests (neu: Bot fährt um eine Müllreihe herum, Hammer-Reichweite unabhängig vom Saugen), 71 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün; Leistung 0,79 ms je Tick mit 40 Bots
+
+### Ally-Testliste
+1. Bots in dichten Zonen (Kühlschrank-Friedhof) beobachten: fahren sie um Objekte herum, bleiben sie nicht mehr hängen?
+2. Saugen und Reichweite voll, gleichzeitig saugen und hämmern: trifft der Hammer nur direkt vor Rusty?
+
 ## [2.18.0] – 2026-10-28 – MS60 Secrets und Easter Eggs (Phase 2.3 abgeschlossen)
 
 ### Neu (alle 10 aus dem Plan; jedes gefundene Secret: +2 % Bolts für immer, teils Kosmetik; nichts davon ist für den Abschluss nötig)

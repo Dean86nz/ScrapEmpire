@@ -85,6 +85,18 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **59** | Humor-Momente (alle 14 aus dem Plan) | v2.17.0 |
 | **60** | Secrets (alle 10 aus dem Plan, Steam-Erfolgs-IDs) | v2.18.0 |
 
+## Phase 2.4 nach dem Test von v2.18.0 (Go 2026-10-29)
+
+| MS | Inhalt | Version |
+|---|---|---|
+| **61** | Fehler: Bot-Wegfindung mit allen Hindernissen, Hammer-Reichweite getrennt | v2.19.0 |
+| 62 | Upgrade-Fluss: Menü bleibt offen | v2.20.0 |
+| 63 | Sounds: weniger, Kandidaten-Ordner zur Auswahl | v2.21.0 |
+| 64 | Beute als Bündel, Leistung 60 FPS | v2.22.0 |
+| 65 | Optik: eigener Stil weiterentwickelt (erst Muster) | v2.23.0 |
+| 66 | Mega-Bots und Secrets verständlich | v2.24.0 |
+| 67 | Noch crazier | v2.25.0 |
+
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
 
 Ziel: Steam-Release, 3 bis 4 Stunden mit klarem Ende, danach Content-Stopp. Beschlossen:
