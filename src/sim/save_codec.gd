@@ -36,7 +36,7 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		})
 	var loose: Array = []
 	for item: LooseItem in world.loose.values():
-		loose.append({"item": item.item_id, "pos": v2(item.pos), "tier": item.tier})
+		loose.append({"item": item.item_id, "pos": v2(item.pos), "tier": item.tier, "count": item.count})
 	var buildings: Array = []
 	for b: Building in world.buildings.values():
 		buildings.append({
@@ -60,7 +60,7 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		"progression": world.progression.to_dict(),
 		"skills": world.skills.to_dict(),
 		"tech": world.tech.to_dict(),
-		"rng_state": world.rng.get_state(),
+		"rng_state": str(world.rng.get_state()),   # als Text: JSON-Zahlen verlieren bei 64 Bit Stellen
 		"nodes": nodes,
 		"loose": loose,
 		"buildings": buildings,
@@ -160,7 +160,6 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 	_log("Version %d, Fortschritt" % int(data.get("version", 0)))
 	world.tick_count = int(data.get("tick_count", 0))
 	world.bolts = int(data.get("bolts", 0))
-	world.rng.set_state(int(data.get("rng_state", 0)))
 	world.progression.from_dict(data.get("progression", {}))
 	world.progression.skill_points += world.skills.from_dict(data.get("skills", {}))
 	world.tech.from_dict(data.get("tech", {}))
@@ -178,7 +177,7 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 			n.loot = _int_dict(nd["loot"])
 		n.regen_counter = int(nd.get("regen_counter", 0))
 	for ld: Dictionary in data.get("loose", []):
-		world.add_loose(str(ld.get("item", "scrap")), to_v2(ld.get("pos")), int(ld.get("tier", 1)))
+		world.add_loose(str(ld.get("item", "scrap")), to_v2(ld.get("pos")), int(ld.get("tier", 1)), int(ld.get("count", 1)))
 	_log("lose Items: %d, Gebäude: %d" % [data.get("loose", []).size(), data.get("buildings", []).size()])
 	for bd: Dictionary in data.get("buildings", []):
 		var def_id := str(bd.get("def", ""))
@@ -244,6 +243,9 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 	var pos := Vector2(float(pos_arr[0]), float(pos_arr[1]))
 	world.player.pos = Vector2i(pos.round())
 	world.bolts_changed.emit(world.bolts)
+	# Zufall erst ganz am Ende setzen: Bots/Objekte anlegen verbraucht sonst Zufallszahlen
+	var rs: Variant = data.get("rng_state", 0)
+	world.rng.set_state(str(rs).to_int() if rs is String else int(rs))
 	return pos
 
 

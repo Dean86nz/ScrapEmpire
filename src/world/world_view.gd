@@ -32,6 +32,9 @@ func bind(world: SimWorld, player: Node2D) -> void:
 	world.node_removed.connect(_on_node_removed)
 	world.loose_added.connect(_on_loose_added)
 	world.loose_removed.connect(_on_loose_removed)
+	world.loose_changed.connect(func(item: LooseItem) -> void:
+		if _loose_views.has(item.id):
+			_loose_views[item.id].set_count(item.count))
 	world.item_collected.connect(_on_item_collected)
 	world.wreck_hit.connect(_on_wreck_hit)
 	world.building_placed.connect(_on_building_placed)

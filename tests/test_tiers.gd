@@ -43,7 +43,12 @@ func test_hammer_works_with_tier2_tool() -> void:
 	var per := ResourceNode.items_per_hit(fridge, 2)
 	assert_true(per > 1, "Hammer-Formel: mehrere Teile je Schlag (MS43)")
 	assert_eq(fridge.amount, fridge.max_amount - per)
-	assert_eq(w.loose.size(), per)
+	# MS64: Beute als Bündel – je Item-Sorte ein Haufen, zusammen genau `per` Teile
+	var total := 0
+	for li: LooseItem in w.loose.values():
+		total += li.count
+	assert_eq(total, per)
+	assert_true(w.loose.size() < per, "weniger Einzelteile als Teile")
 	var item: LooseItem = w.loose.values()[0]
 	assert_eq(item.tier, 2)
 

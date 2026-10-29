@@ -2,6 +2,28 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.22.0] – 2026-10-29 – MS64 Beute als Bündel, Leistung (Phase 2.4)
+
+### Geändert
+- **Beute als Bündel:** Ein Hammerschlag wirft je Item-Sorte ein Bündel mit Zahl („×12“) statt vieler Einzelteile. Bündel in Rustys Nähe (2,3 Kacheln, mit Magnet-Skill mehr) fliegen von selbst zu ihm; Bots sammeln Bündel ganz ein. Passt nicht alles in die Taschen, bleibt ein kleineres Bündel liegen
+
+### Leistung (gemessen: volle Armee mit 40 Bots und 40 Drohnen im Kühlschrank-Friedhof)
+- **Minimap war der größte Bremser:** Sie zeichnete alle 1 100 Objekte jedes Bild neu. Jetzt nur noch alle 0,5 s, Rustys Pfeil auf eigener Ebene. Bildzeit dort von ca. 48 auf ca. 25 ms (mit V-Sync 31 → 60 FPS)
+- **Bots suchten Ziele über alle Objekte der Karte:** jetzt nur in der Umgebung bzw. in der eigenen Zone (gecachte Zonen-Listen, Objekt-Suche über die Kachel). Bot-Kosten je Tick von 3,2 auf 0,29 ms, ganzer Sim-Tick von 2,8 auf 1,5 ms
+- Ohne Bildrate-Begrenzung am PC: ca. 305 FPS im spätesten Spielstand
+
+### Behoben
+- **Speichern/Laden war nicht deterministisch:** Der Zufallszustand ging als JSON-Zahl ungenau verloren und wurde beim Laden zu früh gesetzt. Jetzt als Text gespeichert und erst am Ende des Ladens gesetzt
+
+### Technik
+- `LooseItem.count`, `NodeSystem.take_loose/drop_bundles`, Signal `loose_changed`; `ToolSystem.nodes_near`, `SimWorld.zone_nodes`; Screenshot-Werkzeug: `perfoff=Klasse`, Messung mit Sim-Zeit
+- 235 Unit-Tests (neu: Bündel und Anziehen), 73 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Spätes Spiel mit voller Bot-Armee (Debug-EXE, Cheats): Läuft es jetzt mit stabilen 60 FPS?
+2. Hämmern: Bündel mit Zahl statt Teile-Teppich? Fliegen nahe Bündel zu Rusty?
+3. Sieht man die Bot-Animationen jetzt besser?
+
 ## [2.21.0] – 2026-10-29 – MS63 Weniger Sounds, Kandidaten zur Auswahl (Phase 2.4)
 
 ### Geändert

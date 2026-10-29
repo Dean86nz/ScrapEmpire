@@ -35,6 +35,7 @@ signal helper_quip(helper: Helper, key: String)
 signal helper_bored(helper: Helper)
 signal boss_defeated(kind: String, zone_id: String, reward: int)
 signal hammer_impact(node: ResourceNode, tool_tier: int, one_hit: bool)  # Rustys Schlag (Effekte je Stufe)
+signal loose_changed(item: LooseItem)                       # Bündel kleiner geworden (MS64)
 signal secret_found(id: String)                            # Secret entdeckt (MS60)
 signal secret_progress(id: String, n: int, total: int)      # z. B. Ente 5/12
 signal helper_fused(helper: Helper)                        # Fusion zu Super-/Mega-Bot (MS57)
@@ -108,7 +109,9 @@ const TOO_HARD_INTERVAL := 20
 var blocked_tiles: Dictionary = {}  # Zaun-Kacheln (nicht bebaubar, Bots fahren drumherum)
 var blocked_version := 0            # +1 bei jeder Änderung an blocked_tiles (NavGrid baut neu)
 var nav := NavGrid.new()
-var nav_changes: Array[Vector2i] = []   # Kacheln mit neuen/entfernten Objekten (Wegfindung, MS61)
+var nav_changes: Array[Vector2i] = []
+var _zone_nodes_cache: Dictionary = {}    # Zonen-ID → Array[ResourceNode] (Leistung, MS64)
+var _zone_nodes_dirty := true   # Kacheln mit neuen/entfernten Objekten (Wegfindung, MS61)
 var drones: Dictionary = {}          # id → Drone
 var drone_cfg: Dictionary = {}
 var drone_upgrades: Dictionary = {}  # id → level
@@ -348,6 +351,19 @@ func _apply_tech_effects(id: String) -> void:
 
 # NodeSystem
 
+## Objekte einer Zone (gecacht, wird bei jeder Objekt-Änderung neu aufgebaut).
+func zone_nodes(zid: String) -> Array:
+	if _zone_nodes_dirty:
+		_zone_nodes_dirty = false
+		_zone_nodes_cache.clear()
+		for n: ResourceNode in nodes.values():
+			var z := zones.zone_id_at(n.tile)
+			if not _zone_nodes_cache.has(z):
+				_zone_nodes_cache[z] = []
+			_zone_nodes_cache[z].append(n)
+	return _zone_nodes_cache.get(zid, [])
+
+
 func add_object(kind: String, tile: Vector2i, amount_override: int = -1) -> ResourceNode:
 	return NodeSystem.add_object(self, kind, tile, amount_override)
 
@@ -360,8 +376,8 @@ func add_wreck(tile: Vector2i, loot: Dictionary, kind: String = ResourceNode.KIN
 	return NodeSystem.add_wreck(self, tile, loot, kind)
 
 
-func add_loose(item_id: String, pos: Vector2i, tier: int = 1) -> LooseItem:
-	return NodeSystem.add_loose(self, item_id, pos, tier)
+func add_loose(item_id: String, pos: Vector2i, tier: int = 1, count: int = 1) -> LooseItem:
+	return NodeSystem.add_loose(self, item_id, pos, tier, count)
 
 
 func _remove_node(n: ResourceNode) -> void:

@@ -190,3 +190,13 @@ func test_hammer_range_ignores_suction_reach() -> void:
 	w.player.hammer_pressed = true
 	w.tick()
 	assert_eq(far.amount, 5, "kein Hammertreffer aus Saug-Reichweite")
+
+
+func test_loot_drops_as_bundle_and_is_pulled_in() -> void:
+	# MS64: ein Bündel „×N“ statt vieler Einzelteile; nahe Bündel fliegen zu Rusty.
+	var w := _world()
+	var b := w.add_loose("scrap", w.player.pos + Vector2i(60, 0), 1, 7)
+	assert_eq(b.count, 7)
+	w.tick()
+	assert_false(w.loose.has(b.id), "nahes Bündel automatisch eingesammelt")
+	assert_true(w.player.inventory.count_of("scrap") >= 7)
