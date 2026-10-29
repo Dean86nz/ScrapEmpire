@@ -104,7 +104,7 @@ func bind(world: SimWorld) -> void:
 	_buy_btn.get_parent().add_child(_fuse_btn)
 	_buy_btn.get_parent().move_child(_fuse_btn, _buy_btn.get_index() + 1)
 	_fuse_btn.pressed.connect(func() -> void:
-		var p := 5 if HelperSystem.can_fuse(SimClock.world, 5) else 1   # Mega-Fusion hat Vorrang (MS66)
+		var p := 25 if HelperSystem.can_fuse(SimClock.world, 25) else (5 if HelperSystem.can_fuse(SimClock.world, 5) else 1)  # höchste Fusion zuerst
 		SimClock.world.queue_command({"type": "fuse_helpers", "power": p}))
 	_upgrade_title.text = tr("HELPER_UPGRADES")
 	for u: Dictionary in _world.helper_cfg.get("upgrades", []):
@@ -637,9 +637,10 @@ func _refresh_helpers() -> void:
 	_buy_btn.disabled = reason != ""
 	var fuse1 := HelperSystem.can_fuse(w, 1)
 	var fuse5 := HelperSystem.can_fuse(w, 5)
+	var fuse25 := HelperSystem.can_fuse(w, 25)
 	_fuse_btn.visible = w.unlocked_features.has("helpers")
-	_fuse_btn.disabled = not (fuse1 or fuse5)
-	_fuse_btn.text = tr("BOT_FUSE_MEGA") if fuse5 else tr("BOT_FUSE")
+	_fuse_btn.disabled = not (fuse1 or fuse5 or fuse25)
+	_fuse_btn.text = tr("BOT_FUSE_GIGA") if fuse25 else (tr("BOT_FUSE_MEGA") if fuse5 else tr("BOT_FUSE"))
 	_fuse_btn.text += "  ·  " + tr("BOT_ARMY") % HelperSystem.army(w)
 	var focused_bot := -1
 	var fb := get_viewport().gui_get_focus_owner()

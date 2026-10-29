@@ -154,6 +154,13 @@ func impact(power: int, one_hit: bool) -> void:
 	ring.width = 4.0 + 1.5 * power
 	ring.z_index = 11
 	add_child(ring)
+	if one_hit and power >= 5:
+		# MS67: Höchststufe – zweiter, großer Ring als Druckwelle
+		var ring2 := ImpactRing.new()
+		ring2.radius_to = ring.radius_to * 1.8
+		ring2.width = ring.width * 1.3
+		ring2.z_index = 11
+		add_child(ring2)
 	if _tween and _tween.is_valid():
 		_tween.kill()
 	_tween = create_tween()
