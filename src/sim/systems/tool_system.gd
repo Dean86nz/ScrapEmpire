@@ -15,14 +15,13 @@ static func helper_work(w: SimWorld, h: Helper) -> void:
 			if target != null and h.inventory.can_add(target.item_id if target is LooseItem else _peek_suck_item(w, target)):
 				var item_id: String
 				if target is LooseItem:
-					item_id = target.item_id
-					w.loose.erase(target.id)
-					w.loose_removed.emit(target.id)
+					var got := NodeSystem.take_loose(w, target as LooseItem, h.inventory)
+					w.progression.on_collect(maxi(got - 1, 0))
 				else:
 					var node := target as ResourceNode
 					item_id = node.take_one()
 					NodeSystem.after_take(w, node)
-				h.inventory.add(item_id, 1)
+					h.inventory.add(item_id, 1)
 				h.suck_cooldown = maxi(1, int(PlayerState.BASE_SUCK_INTERVAL / h.work_mult))
 				w.progression.on_collect(1)
 	if h.hammer_pressed:
@@ -31,7 +30,7 @@ static func helper_work(w: SimWorld, h: Helper) -> void:
 			pass
 		else:
 			var hit_point := Vector2(h.pos) + h.aim * PlayerState.HAMMER_REACH_PX
-			for n: ResourceNode in w.nodes.values():
+			for n: ResourceNode in nodes_near(w, Vector2i(hit_point), h.hammer_range_px):
 				if not n.uses_hammer() or (n.tier > h.hammer_tier and not n.boss):
 					continue
 				if hit_point.distance_to(Vector2(n.center_px())) <= float(h.hammer_range_px):
@@ -39,16 +38,26 @@ static func helper_work(w: SimWorld, h: Helper) -> void:
 					if n.boss and not BossSystem.can_damage(w, n):
 						w.boss_swing.emit(n)
 						break
-					for k in ceili(ResourceNode.items_per_hit(n, h.hammer_tier) * h.work_mult):
-						var item_id := n.take_one()
-						if item_id == "":
-							break
-						w.add_loose(item_id, n.center_px() + w._scatter(), n.tier)
+					NodeSystem.drop_bundles(w, n, ceili(ResourceNode.items_per_hit(n, h.hammer_tier) * h.work_mult))
 					w.wreck_hit.emit(n)
 					NodeSystem.after_take(w, n)
 					break
 	if h.hammer_cooldown > 0:
 		h.hammer_cooldown -= 1
+
+
+## Objekte im Umkreis über die Kachel-Tabelle statt über alle Objekte der Karte (MS64:
+## 40 Bots × 1 100 Objekte je Tick waren der größte Sim-Kostenblock).
+static func nodes_near(w: SimWorld, pos: Vector2i, radius_px: int) -> Array[ResourceNode]:
+	var out: Array[ResourceNode] = []
+	var c := Vector2i(floori(pos.x / float(SimWorld.TILE)), floori(pos.y / float(SimWorld.TILE)))
+	var r := int(ceil(radius_px / float(SimWorld.TILE))) + 1
+	for dy in range(-r, r + 1):
+		for dx in range(-r, r + 1):
+			var id: int = w._node_tiles.get(c + Vector2i(dx, dy), -1)
+			if id >= 0 and w.nodes.has(id):
+				out.append(w.nodes[id])
+	return out
 
 
 static func _find_suck_target_for(w: SimWorld, h: Helper) -> Variant:
@@ -61,7 +70,7 @@ static func _find_suck_target_for(w: SimWorld, h: Helper) -> Variant:
 			best = item
 	if best != null:
 		return best
-	for n: ResourceNode in w.nodes.values():
+	for n: ResourceNode in nodes_near(w, h.pos, h.suck_range_px):
 		if n.uses_hammer() or n.is_depleted() or n.tier > h.suction_tier:
 			continue
 		var d := Vector2(n.center_px() - h.pos).length()
@@ -72,20 +81,24 @@ static func _find_suck_target_for(w: SimWorld, h: Helper) -> Variant:
 
 
 ## Magnet-Skill: lose Items im Radius werden ohne Zielen eingesammelt (1 je Tick).
+const AUTO_PULL_PX := 150   # Bündel so nah an Rusty fliegen von selbst zu ihm (MS64)
+
+
 static func _tick_magnet(w: SimWorld) -> void:
-	if w.player.magnet_radius_px <= 0:
-		return
-	var r2 := w.player.magnet_radius_px * w.player.magnet_radius_px
+	# Bündel in Rustys Nähe werden immer angezogen (MS64), der Magnet-Skill vergrößert den Radius
+	var r := maxi(w.player.magnet_radius_px, AUTO_PULL_PX)
+	var r2 := r * r
 	for item: LooseItem in w.loose.values():
 		if Vector2(item.pos - w.player.pos).length_squared() > r2:
 			continue
 		if not w.player.inventory.can_add(item.item_id):
-			return
-		w.loose.erase(item.id)
-		w.loose_removed.emit(item.id)
-		w.player.inventory.add(item.item_id, 1)
-		w.progression.on_collect(item.tier)
-		w.item_collected.emit(item.item_id, item.pos)
+			continue
+		var id := item.item_id
+		var at := item.pos
+		var got := NodeSystem.take_loose(w, item, w.player.inventory)
+		for k in got:
+			w.progression.on_collect(item.tier)
+		w.item_collected.emit(id, at)
 		return
 
 
@@ -119,15 +132,16 @@ static func _suck_one(w: SimWorld, first: bool) -> bool:
 	if target is LooseItem:
 		from_pos = target.pos
 		tier = target.tier
-		w.loose.erase(target.id)
-		w.loose_removed.emit(target.id)
+		var got := NodeSystem.take_loose(w, target as LooseItem, w.player.inventory)
+		for k in maxi(got - 1, 0):
+			w.progression.on_collect(tier)
 	else:
 		var node := target as ResourceNode
 		from_pos = node.center_px()
 		tier = node.tier
 		node.take_one()
 		NodeSystem.after_take(w, node)
-	w.player.inventory.add(item_id, 1)
+		w.player.inventory.add(item_id, 1)
 	w.progression.on_collect(tier)
 	w.item_collected.emit(item_id, from_pos)
 	return true
@@ -261,11 +275,7 @@ static func _tick_hammer(w: SimWorld) -> void:
 	var per_hit := ceili(ResourceNode.items_per_hit(wreck, w.player.hammer_tier) * (1.0 + w.player.hammer_power))
 	var one_hit := per_hit >= wreck.amount
 	w.hammer_impact.emit(wreck, w.player.hammer_tier, one_hit)
-	for i in per_hit:
-		var item_id := wreck.take_one()
-		if item_id == "":
-			break
-		w.add_loose(item_id, wreck.center_px() + w._scatter(), wreck.tier)
+	NodeSystem.drop_bundles(w, wreck, per_hit)
 	w.wreck_hit.emit(wreck)
 	NodeSystem.after_take(w, wreck)
 

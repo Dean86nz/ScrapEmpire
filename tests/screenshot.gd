@@ -13,6 +13,8 @@ var _hold_actions: PackedStringArray = []
 var _sequence: Array = []  # [{frame, action, pressed}]
 var _cheat := ""
 var _measure := false
+var _m_sim := 0.0
+var _m_nodes := 0
 var _m_frames := 0
 var _m_time := 0.0
 var _m_proc := 0.0
@@ -85,6 +87,14 @@ func _process(_delta: float) -> bool:
 					clock.world.events_state["next"][kv[1]] = clock.world.tick_count
 				"cheats":  # cheats=1 öffnet das Cheat-Menü (nur Debug-Build)
 					current_scene.get_node("CheatMenu").open()
+				"perfoff":  # perfoff=Klasse schaltet _process aller Nodes dieser Klasse ab (Leistungssuche)
+					var hid := 0
+					for n in current_scene.find_children("*", "", true, false):
+						var sc: Script = n.get_script()
+						if sc != null and sc.get_global_name() == kv[1]:
+							n.process_mode = Node.PROCESS_MODE_DISABLED
+							hid += 1
+					print("measure: aus %s (%d)" % [kv[1], hid])
 				"measure":  # measure=1: mittlere Bildzeit und FPS ab Frame 60 ausgeben
 					_measure = true
 				"counter":  # counter=wrecks;5 setzt einen Zähler (Meilensteine, Aufgaben)
@@ -145,7 +155,10 @@ func _process(_delta: float) -> bool:
 	if _measure and _frames > 60:
 		_m_frames += 1
 		_m_proc += Performance.get_monitor(Performance.TIME_PROCESS) + Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS)
+		_m_sim += float(root.get_node("/root/SimClock").last_tick_ms)
+		_m_nodes = Performance.get_monitor(Performance.OBJECT_NODE_COUNT)
 	if _frames == _target_frames and _measure and _m_frames > 0:
+		print("measure: Sim-Tick %.2f ms, Nodes %d" % [_m_sim / _m_frames, _m_nodes])
 		print("measure: frames %d, mittlere CPU-Zeit je Bild %.2f ms, FPS %d, Bots %d, Drohnen %d" % [_m_frames, _m_proc / _m_frames * 1000.0, Engine.get_frames_per_second(), root.get_node("/root/SimClock").world.helpers.size(), root.get_node("/root/SimClock").world.drones.size()])
 	if _frames == _target_frames:
 		for a in _hold_actions:

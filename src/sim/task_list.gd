@@ -135,10 +135,8 @@ func _go_to(body: WorkerBody, target: Vector2i, within_px: int) -> bool:
 
 
 func _node_at(world: SimWorld, tile: Vector2i) -> ResourceNode:
-	for n: ResourceNode in world.nodes.values():
-		if n.tile == tile:
-			return n
-	return null
+	var id: int = world._node_tiles.get(tile, -1)   # direkt über die Kachel (MS64)
+	return world.nodes.get(id, null) if id >= 0 else null
 
 
 func _tick_collect(world: SimWorld, body: WorkerBody, step: Dictionary, center: Vector2i) -> void:

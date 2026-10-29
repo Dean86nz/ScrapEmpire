@@ -10,6 +10,7 @@ static func add_object(w: SimWorld, kind: String, tile: Vector2i, amount_overrid
 	w.nodes[n.id] = n
 	w._node_tiles[tile] = n.id
 	w.nav_changes.append(tile)
+	w._zone_nodes_dirty = true
 	w.node_added.emit(n)
 	return n
 
@@ -24,15 +25,47 @@ static func add_wreck(w: SimWorld, tile: Vector2i, loot: Dictionary, kind: Strin
 	w.nodes[n.id] = n
 	w._node_tiles[tile] = n.id
 	w.nav_changes.append(tile)
+	w._zone_nodes_dirty = true
 	w.node_added.emit(n)
 	return n
 
 
-static func add_loose(w: SimWorld, item_id: String, pos: Vector2i, tier: int = 1) -> LooseItem:
-	var item := LooseItem.new(w.next_id(), item_id, pos, tier)
+static func add_loose(w: SimWorld, item_id: String, pos: Vector2i, tier: int = 1, count: int = 1) -> LooseItem:
+	var item := LooseItem.new(w.next_id(), item_id, pos, tier, count)
 	w.loose[item.id] = item
 	w.loose_added.emit(item)
 	return item
+
+
+## Aus einem Bündel so viel nehmen, wie ins Inventar passt (MS64). Liefert die genommene Menge;
+## leeres Bündel verschwindet, sonst wird es kleiner.
+static func take_loose(w: SimWorld, item: LooseItem, inv: Inventory) -> int:
+	var left := inv.add(item.item_id, item.count)
+	var taken := item.count - left
+	if taken <= 0:
+		return 0
+	item.count = left
+	if item.count <= 0:
+		w.loose.erase(item.id)
+		w.loose_removed.emit(item.id)
+	else:
+		w.loose_changed.emit(item)
+	return taken
+
+
+## Hammer-Ausbeute als Bündel: je Item-Sorte ein Haufen mit Anzahl statt vieler Einzelteile.
+static func drop_bundles(w: SimWorld, n: ResourceNode, amount: int) -> int:
+	var counts := {}
+	var got := 0
+	for k in amount:
+		var item_id := n.take_one()
+		if item_id == "":
+			break
+		counts[item_id] = int(counts.get(item_id, 0)) + 1
+		got += 1
+	for item_id: String in counts:
+		add_loose(w, item_id, n.center_px() + w._scatter(), n.tier, int(counts[item_id]))
+	return got
 
 
 static func _tick_respawns(w: SimWorld) -> void:
@@ -74,6 +107,7 @@ static func _remove_node(w: SimWorld, n: ResourceNode) -> void:
 	w.nodes.erase(n.id)
 	w._node_tiles.erase(n.tile)
 	w.nav_changes.append(n.tile)
+	w._zone_nodes_dirty = true
 	w.node_removed.emit(n.id)
 	if w.dirt.is_active() and not n.is_resource() and not n.bonus:
 		var r := int(w.dirt_cfg.get("removed_trash_clean_radius", 1))

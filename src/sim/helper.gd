@@ -126,8 +126,9 @@ func _plan(world: SimWorld) -> void:
 	var best: ResourceNode = null
 	var best_d := INF
 	var too_hard := false
-	for n: ResourceNode in world.nodes.values():
-		if n.is_depleted() or not in_zone(n.tile):
+	var candidates: Array = world.zone_nodes(zone_id) if zone_id != "" else world.nodes.values()
+	for n: ResourceNode in candidates:
+		if n.is_depleted() or (zone_id == "" and not in_zone(n.tile)):
 			continue
 		if n.boss:
 			continue  # Bosse nur auf Rustys Ruf
