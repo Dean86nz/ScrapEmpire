@@ -22,7 +22,7 @@ cd "$ROOT"
 fail=0
 run() {
   local out
-  out=$(timeout 120 "$GODOT" --path . --resolution 1280x720 -s tests/continue_check.gd -- "$1" 2>&1)
+  out=$(timeout 120 "$GODOT" --audio-driver Dummy --path . --resolution 1280x720 -s tests/continue_check.gd -- "$1" 2>&1)
   local ec=$?
   echo "$out" | grep -E "^PASS|^FAIL|Prüfungen|   |SCRIPT ERROR|Parse Error|\[Laden"
   # Ein FAIL zählt auch dann, wenn das Programm danach regulär beendet wird (Phase „play“)

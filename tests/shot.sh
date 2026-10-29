@@ -17,4 +17,4 @@ cleanup() {
   fi
 }
 trap cleanup EXIT
-cd "$ROOT" && timeout 180 "$GODOT" --path . --resolution 1920x1080 ${GODOT_EXTRA:-} -s tests/screenshot.gd -- "$@" 2>&1 | grep -iE "screenshot|SCRIPT ERROR|Parse|quip@|measure" | grep -v "quip@3:" | head -12
+cd "$ROOT" && timeout 180 "$GODOT" --audio-driver Dummy --path . --resolution 1920x1080 ${GODOT_EXTRA:-} -s tests/screenshot.gd -- "$@" 2>&1 | grep -iE "screenshot|SCRIPT ERROR|Parse|quip@|measure" | grep -v "quip@3:" | head -12
