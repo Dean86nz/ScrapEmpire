@@ -98,6 +98,17 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **67** | Noch crazier: Giga-Bot, Riesen-Wirbel, Druckwelle | v2.24.0 |
 | **68** | Optik-Rest: Schiffsstufen neu, Müll-Look | v2.25.0 |
 
+## Phase 2.5 (Go 2026-10-31): Werkzeuge, Gewusel, Übersicht
+
+| MS | Inhalt | Version |
+|---|---|---|
+| **70** | Bots: Zäune zwischen Gebieten, Fahrtrichtung | v2.26.0 |
+| 71 | Gebietsanzeige „Kabelsenke · 64 %“ | v2.27.0 |
+| 72 | Secrets vorerst entfernen | v2.28.0 |
+| 73 | Gewusel: kleine Bots, kein Verschmelzen, viele Bots | v2.29.0 |
+| 74 | Werkzeug-Leiter statt Hammer (erst Skizzen) | v2.30.0 |
+| 75 | Rusty trägt Sauger und Werkzeug passend | v2.31.0 |
+
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
 
 Ziel: Steam-Release, 3 bis 4 Stunden mit klarem Ende, danach Content-Stopp. Beschlossen:

@@ -101,7 +101,7 @@ static func _auto_pick(w: SimWorld, h: Helper) -> void:
 	var best_d := INF
 	for z: Dictionary in w.zones.zones:
 		var zid := str(z["id"])
-		if not w.zones.is_unlocked(zid):
+		if not w.zones.is_unlocked(zid) or int(h.zone_avoid.get(zid, 0)) > w.tick_count:
 			continue
 		var has_work := false
 		for n: ResourceNode in w.nodes.values():

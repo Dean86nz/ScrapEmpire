@@ -61,3 +61,32 @@ func test_bot_respects_visible_size_of_big_objects() -> void:
 				touched = true
 		assert_false(touched, "nie durch die sichtbare Fläche eines großen Objekts")
 		assert_eq(h.pos, h.move_target, "Ziel erreicht")
+
+
+func test_bot_never_crosses_closed_zone_fence() -> void:
+	# Ally-Fehler (dritter Bericht): Bots fuhren durch die Zäune zwischen den Gebieten, wenn kein
+	# Weg existierte (Tor zu) – dann ging es einfach geradeaus.
+	var w := TestWorlds.make(30, 20)
+	MapLoader.apply(w, {"width": 30, "height": 20, "zones": [{"id": "a", "name": "A", "x": 0, "y": 0, "w": 15, "h": 20}, {"id": "b", "name": "B", "x": 15, "y": 0, "w": 15, "h": 20}], "nodes": []})
+	for y in 20:
+		w.blocked_tiles[Vector2i(15, y)] = true   # geschlossener Zaun ohne Tor
+	w.blocked_version += 1
+	var h := w.add_helper(Vector2i(5, 5), Vector2i(5, 5))
+	h.pos = Vector2i(10, 8) * 64 + Vector2i(32, 32)
+	h.move_target = Vector2i(20, 8) * 64 + Vector2i(32, 32)
+	for i in 300:
+		h._move(w)
+		assert_false(w.blocked_tiles.has(Vector2i(h.pos.x / 64, h.pos.y / 64)), "nie auf dem Zaun")
+	assert_true(h.pos.x < 15 * 64, "bleibt auf seiner Seite")
+
+
+func test_bot_faces_where_it_drives() -> void:
+	# Ally-Fehler: Bots fuhren seitwärts. Blick (und Ketten) folgen der Fahrtrichtung.
+	var w := TestWorlds.make(30, 20)
+	MapLoader.apply(w, {"width": 30, "height": 20, "zones": [{"id": "a", "name": "A", "x": 0, "y": 0, "w": 30, "h": 20}], "nodes": []})
+	var h := w.add_helper(Vector2i(5, 5), Vector2i(5, 5))
+	h.pos = Vector2i(5, 5) * 64
+	h.move_target = Vector2i(5, 15) * 64   # nach unten
+	for i in 5:
+		h._move(w)
+	assert_true(h.aim.dot(Vector2.DOWN) > 0.95, "blickt nach unten, wenn es nach unten geht")
