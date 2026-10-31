@@ -6,6 +6,7 @@ extends RefCounted
 ## Freie Sichtlinie = direkter Weg ohne A* (häufigster Fall).
 
 const TILE := 64
+const BODY_HALF := 20.0   # halbe Bot-Breite für die Sichtlinie
 
 var _astar := AStarGrid2D.new()
 var _version := -1
@@ -52,17 +53,23 @@ func line_clear(w: SimWorld, a: Vector2i, b: Vector2i) -> bool:
 	var tb := Vector2i(floori(b.x / float(TILE)), floori(b.y / float(TILE)))
 	var d := Vector2(b - a)
 	var steps := int(d.length() / (TILE * 0.5)) + 1
-	for i in steps + 1:
-		var p := Vector2(a) + d * (float(i) / steps)
-		var t := Vector2i(floori(p.x / TILE), floori(p.y / TILE))
-		if t != ta and t != tb and is_obstacle(w, t) and not _is_target_footprint(w, t, tb):
-			return false
+	# Mit Körperbreite prüfen (MS70): Mittellinie und zwei Ränder, sonst schneiden Bots Ecken
+	var side := d.orthogonal().normalized() * BODY_HALF if d.length() > 0.0 else Vector2.ZERO
+	for off in [Vector2.ZERO, side, -side]:
+		for i in steps + 1:
+			var p: Vector2 = Vector2(a) + d * (float(i) / steps) + off
+			var t := Vector2i(floori(p.x / TILE), floori(p.y / TILE))
+			if t != ta and t != tb and is_obstacle(w, t) and not _is_target_footprint(w, t, tb):
+				return false
 	return true
 
 
 static func _is_target_footprint(w: SimWorld, t: Vector2i, target_tile: Vector2i) -> bool:
 	var id: int = w._node_tiles.get(target_tile, -1)
-	return id >= 0 and w.nodes.has(id) and (w.nodes[id] as ResourceNode).footprint().has(t)
+	if id >= 0 and w.nodes.has(id) and (w.nodes[id] as ResourceNode).footprint().has(t):
+		return true
+	var b := w.grid.at(target_tile)   # Ziel ist ein Gebäude (Schiff, Sammelstelle): seine Fläche zählt mit
+	return b != null and w.grid.at(t) == b
 
 
 ## Wegpunkte (Pixel, Kachelmitten) von a nach b um Hindernisse herum; letzter Punkt ist b selbst.
@@ -77,6 +84,9 @@ func path(w: SimWorld, a: Vector2i, b: Vector2i) -> Array[Vector2i]:
 	var target_id: int = w._node_tiles.get(to, -1)
 	if target_id >= 0 and w.nodes.has(target_id):
 		opened.append_array((w.nodes[target_id] as ResourceNode).footprint())
+	var tb := w.grid.at(to)
+	if tb != null:
+		opened.append_array(tb.cells())
 	var was: Array[bool] = []
 	for t in opened:
 		var inside := _astar.is_in_boundsv(t)

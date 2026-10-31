@@ -31,7 +31,8 @@ var _nav_goal := Vector2i(-999999, -999999)
 var _nav_path: Array[Vector2i] = []
 var _stuck_ticks := 0
 var _stuck_anchor := Vector2i.ZERO
-var _avoid: Dictionary = {}   # Kachel → Tick, bis zu dem dieses Ziel gemieden wird            # Boss, zu dem Rusty gerufen hat (-1 = keiner)
+var _avoid: Dictionary = {}
+var zone_avoid: Dictionary = {}   # Zone → Tick: dort gab es keinen Weg (Tor zu), so lange nicht wählen   # Kachel → Tick, bis zu dem dieses Ziel gemieden wird            # Boss, zu dem Rusty gerufen hat (-1 = keiner)
 
 
 func _init() -> void:
@@ -166,6 +167,11 @@ func _move(world: SimWorld) -> void:
 		_stuck_anchor = pos
 		if not world.nav.line_clear(world, pos, move_target):
 			_nav_path = world.nav.path(world, pos, move_target)
+			if _nav_path.is_empty():
+				# Kein Weg (Tor zu, Durchgang verstellt): nie geradeaus durch Zäune fahren (MS70).
+				# Ziel 30 s meiden; liegt es in einer anderen Zone, diese Zone ebenfalls meiden.
+				_give_up(world)
+				return
 	# Steht seit 3 s fast still (unter 16 px bewegt): dieses Ziel 30 s meiden, neu planen (MS61).
 	# Umwege sind erlaubt, gemessen wird nur, ob sich der Bot überhaupt bewegt.
 	if pos == move_target or Vector2(pos - _stuck_anchor).length() > 16.0:
@@ -174,11 +180,7 @@ func _move(world: SimWorld) -> void:
 	else:
 		_stuck_ticks += 1
 		if _stuck_ticks > 60:
-			_avoid[Vector2i(move_target.x / TILE, move_target.y / TILE)] = world.tick_count + 600
-			_stuck_ticks = 0
-			move_target = NONE_TARGET
-			tasks.stop(self)
-			request_replan()
+			_give_up(world)
 			return
 	var next := _nav_path[0] if not _nav_path.is_empty() else move_target
 	var d := Vector2(next - pos)
@@ -187,9 +189,31 @@ func _move(world: SimWorld) -> void:
 		if not _nav_path.is_empty():
 			_nav_path.remove_at(0)
 		return
-	pos += Vector2i((d.normalized() * speed_px_per_tick).round())
+	var step := Vector2i((d.normalized() * speed_px_per_tick).round())
+	# Sicherheitsnetz: nie auf eine Zaun-Kachel fahren (MS70)
+	if world.blocked_tiles.has(Vector2i(floori((pos.x + step.x) / float(TILE)), floori((pos.y + step.y) / float(TILE)))):
+		_stuck_ticks += 4
+		return
+	pos += step
 	if d.length() > 1.0:
-		aim = d.normalized()
+		aim = d.normalized()   # Blick in Fahrtrichtung (Ketten vorne/hinten)
+
+
+## Ziel aufgeben: 30 s meiden, bei fremder Zone auch die Zone, dann neu planen.
+func _give_up(world: SimWorld) -> void:
+	var t := Vector2i(move_target.x / TILE, move_target.y / TILE)
+	_avoid[t] = world.tick_count + 600
+	var tz := world.zones.zone_id_at(t)
+	var here := world.zones.zone_id_at(Vector2i(pos.x / TILE, pos.y / TILE))
+	if tz != "" and tz != here:
+		zone_avoid[tz] = world.tick_count + 600
+		if zone_id == tz and here != "":
+			zone_id = here
+	_stuck_ticks = 0
+	move_target = NONE_TARGET
+	_nav_goal = NONE_TARGET
+	tasks.stop(self)
+	request_replan()
 
 
 func pause_for_stuck(ticks: int) -> void:

@@ -2,6 +2,22 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.26.0] – 2026-10-31 – MS70 Bots: Zäune und Fahrtrichtung (Phase 2.5)
+
+### Behoben
+- **Bots fuhren durch die Zäune zwischen den Gebieten** (dritter Bericht, Ursache gefunden): Fand die Wegfindung keinen Weg (Tor noch zu, Durchgang verstellt), fuhr der Bot einfach geradeaus – mitten durch den Zaun. Jetzt: ohne Weg fährt kein Bot mehr los; er meidet dieses Ziel und die Zone dahinter 30 s und sucht sich neue Arbeit. Die automatische Zonenwahl überspringt solche Zonen. Sicherheitsnetz: Ein Bot betritt nie eine Zaun-Kachel. Messung mit voller Armee: vorher 2 977 Zaun-Berührungen, jetzt 0
+- **Ecken schneiden:** Die Sichtlinie prüft jetzt die Körperbreite, nicht nur die Mittellinie
+- **Bots fuhren seitwärts:** Die Ketten der neuen Bot-Figuren waren seitlich gezeichnet. Jetzt oben und unten wie bei Rusty, Blick und Ketten zeigen in Fahrtrichtung
+- Schiff und Sammelstellen gelten als Ziel nicht mehr als Hindernis (Bots liefern zuverlässig ab)
+
+### Technik
+- `Helper._give_up`, `Helper.zone_avoid`, `NavGrid.BODY_HALF`, Gebäudefläche als Ziel in `NavGrid.path`
+- 237 Unit-Tests (neu: Bot überquert keinen geschlossenen Zaun, Blick in Fahrtrichtung), 73 Gamepad-Prüfungen, Weiterspielen-Prüfungen grün
+
+### Ally-Testliste
+1. Bots an den Gebietsgrenzen beobachten: fahren sie nur noch durch offene Tore?
+2. Fahren Bots vorwärts (Ketten vorne/hinten), nicht seitwärts?
+
 ## [2.25.0] – 2026-10-29 – MS68 Optik: Schiffsstufen und Müll (Phase 2.4, Rest)
 
 ### Optik

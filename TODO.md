@@ -46,7 +46,7 @@
 - [x] MS67 Noch crazier (v2.24.0); Phase 2.4 abgeschlossen
 - [x] Müll-Look und Schiffsstufen (v2.25.0)
 - [ ] Danach: Steam-Technik
-- [ ] (alt) Phase 2.4: MS63 Sounds → MS64 Bündel/Leistung → MS65 Optik → MS66 Erklärungen → MS67 crazier → Steam-Technik
+ MS63 Sounds → MS64 Bündel/Leistung → MS65 Optik → MS66 Erklärungen → MS67 crazier → Steam-Technik
  MS57 Upgrades/Fusion → MS58 Spiellänge (Übersicht zuerst) → MS59 Humor (alle) → MS60 Secrets (alle)
 - [x] Phase 2.2: MS49 Bots sammeln alles (v2.9.0) ✓ → MS50 Wackeln (v2.10.0) ✓ → MS51 Sprechblasen (v2.11.0) ✓ → MS52 Musik (v2.12.0) ✓ → MS53 Menüs (Entwurf) Intro
 - [ ] Ally-Durchlauf mit Zeiten auswerten, Zahlen in JSON nachjustieren (siehe docs/OFFENE_PUNKTE.md)
@@ -188,3 +188,6 @@
 - Mehrere Spielstand-Slots
 - Echte Assets, eigene Schrift
 - Icon in der EXE einbetten (rcedit konfigurieren)
+
+- [x] MS70 Bots: Zäune, Fahrtrichtung (v2.26.0)
+- [ ] Phase 2.5: MS71 Gebietsanzeige → MS72 Secrets raus → MS73 Gewusel → MS74 Werkzeug-Leiter (Skizzen zuerst) → MS75 Rusty mit Werkzeug
