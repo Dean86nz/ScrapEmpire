@@ -2,6 +2,16 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.28.0] – 2026-10-31 – MS72 Secrets vorerst entfernt (Phase 2.5)
+
+### Entfernt
+- Alle Secrets und Easter Eggs: Secret-Objekte auf der Karte (rissige Wände, Gummienten, goldener Haufen, Toilette, Kaltholz-Kühlschrank, Entwicklerwand), Meldungen, Funkeln, Disco-Code, Glühwürmchen, Katzen-Bot, Statue, Medaille, Bolts-Bonus, Abschnitt im Ziele-Menü und der Erklär-Hinweis
+- Alles liegt im Archiv `docs/archiv/secrets/` (Code, Daten mit Steam-Erfolgs-IDs, Kartenplatzierung, Grafik) für einen späteren, sauberen Neueinbau
+- Alte Spielstände mit Secret-Objekten laden weiter (unbekannte Objekte werden übersprungen)
+
+### Ally-Testliste
+1. Neues Spiel: keine Geheimnis-Meldungen und -Objekte mehr?
+
 ## [2.27.0] – 2026-10-31 – MS71 Gebietsanzeige (Phase 2.5)
 
 ### Neu
