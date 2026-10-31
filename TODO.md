@@ -192,4 +192,5 @@
 - [x] MS70 Bots: Zäune, Fahrtrichtung (v2.26.0)
 - [x] MS71 Gebietsanzeige (v2.27.0)
 - [x] MS72 Secrets entfernt, archiviert (v2.28.0)
-- [ ] Phase 2.5: MS73 Gewusel → MS74 Werkzeug-Leiter (Skizzen zuerst) → MS75 Rusty mit Werkzeug
+- [x] MS73 Gewusel: kleine Bots, keine Fusion, bis 150 Bots (v2.29.0)
+- [ ] Phase 2.5: MS74 Werkzeug-Leiter (Skizzen zuerst) → MS75 Rusty mit Werkzeug

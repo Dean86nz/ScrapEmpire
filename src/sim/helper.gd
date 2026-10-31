@@ -25,7 +25,7 @@ var bored := ""               # "" = hat Arbeit; "empty" = nichts mehr da; "too_
 var zone_id := ""             # zugewiesene Zone (seit MS34); "" = alter Kreis um zone_tile
 var auto := true              # seit MS42 immer: sucht sich selbst die nächste Zone mit passendem Müll
 var rally_id := -1
-var power := 1               # Fusion (MS57): 1 = Bot, 5 = Super-Bot, 25 = Mega-Bot
+var power := 1               # nur noch für alte Spielstände mit verschmolzenen Bots (Fusion entfiel in MS73)
 var work_mult := 1.0         # power × (1 + Bot-Kraft)
 var _nav_goal := Vector2i(-999999, -999999)
 var _nav_path: Array[Vector2i] = []
@@ -48,7 +48,7 @@ func apply_modifiers(m: Dictionary, base_speed_px_per_s: int, base_slots: int, b
 	hammer_tier = int(m["helper_tier"])
 	speed_px_per_tick = maxi(int(round(base_speed_px_per_s * float(m["helper_speed_mult"]) / 20.0)), 1)
 	work_mult = float(power) * (1.0 + float(m["helper_power"]))
-	var stack := (base_stack + int(m["helper_capacity_add"])) * power
+	var stack := base_stack + int(m["helper_capacity_add"])
 	if inventory.slot_count != base_slots or inventory.stack_size != stack:
 		inventory.resize(base_slots, stack)
 

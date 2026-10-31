@@ -1,5 +1,5 @@
 {
-  "max_helpers": 40,
+  "max_helpers": 150,
   "reinforce_reach_px": 260,
   "cost_base_bolts": 150,
   "cost_growth": 1.05,

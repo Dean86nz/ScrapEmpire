@@ -26,7 +26,6 @@ var _drone_upgrade_cards: Dictionary = {}
 var _drone_cards: Dictionary = {}  # Button → drone id
 @onready var _helpers_tab: Control = $Center/Panel/VBox/Content/HelpersTab
 @onready var _buy_btn: Button = $Center/Panel/VBox/Content/HelpersTab/Left/BuyButton
-var _fuse_btn := Button.new()
 @onready var _helper_list: VBoxContainer = $Center/Panel/VBox/Content/HelpersTab/Left/HelperList
 @onready var _upgrade_list: VBoxContainer = $Center/Panel/VBox/Content/HelpersTab/Right/UpgradeList
 @onready var _upgrade_title: Label = $Center/Panel/VBox/Content/HelpersTab/Right/UpgradeTitle
@@ -99,13 +98,6 @@ func bind(world: SimWorld) -> void:
 	_build_skill_cards()
 	_map_view.zone_selected.connect(_on_zone_selected)
 	_buy_btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_helper"}))
-	# Fusion (MS57): 5 Bots → Super-Bot, 5 Super-Bots → Mega-Bot
-	_fuse_btn.custom_minimum_size = _buy_btn.custom_minimum_size
-	_buy_btn.get_parent().add_child(_fuse_btn)
-	_buy_btn.get_parent().move_child(_fuse_btn, _buy_btn.get_index() + 1)
-	_fuse_btn.pressed.connect(func() -> void:
-		var p := 25 if HelperSystem.can_fuse(SimClock.world, 25) else (5 if HelperSystem.can_fuse(SimClock.world, 5) else 1)  # höchste Fusion zuerst
-		SimClock.world.queue_command({"type": "fuse_helpers", "power": p}))
 	_upgrade_title.text = tr("HELPER_UPGRADES")
 	for u: Dictionary in _world.helper_cfg.get("upgrades", []):
 		var id := str(u["id"])
@@ -635,13 +627,7 @@ func _refresh_helpers() -> void:
 	var cost := int(w.next_helper_cost()["bolts"])
 	_buy_btn.text = "%s  –  %s" % [tr("BOT_BUILD"), _build_status(reason, cost, "BOT_LOCKED")]
 	_buy_btn.disabled = reason != ""
-	var fuse1 := HelperSystem.can_fuse(w, 1)
-	var fuse5 := HelperSystem.can_fuse(w, 5)
-	var fuse25 := HelperSystem.can_fuse(w, 25)
-	_fuse_btn.visible = w.unlocked_features.has("helpers")
-	_fuse_btn.disabled = not (fuse1 or fuse5 or fuse25)
-	_fuse_btn.text = tr("BOT_FUSE_GIGA") if fuse25 else (tr("BOT_FUSE_MEGA") if fuse5 else tr("BOT_FUSE"))
-	_fuse_btn.text += "  ·  " + tr("BOT_ARMY") % HelperSystem.army(w)
+	_buy_btn.text += "  ·  " + tr("BOT_ARMY") % HelperSystem.army(w)
 	var focused_bot := -1
 	var fb := get_viewport().gui_get_focus_owner()
 	if fb != null and _helper_cards.has(fb):

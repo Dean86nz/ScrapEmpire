@@ -186,9 +186,6 @@ func _build_steps() -> void:
 		func() -> bool: return progress._tab == progress.Tab.HELPERS, 6)
 	_step("Bot-Karte erscheint in der Liste", func() -> void: pass,
 		func() -> bool: return progress._helper_cards.size() == 1, 8, 700)
-	# MS57: unter „Bot bauen“ sitzt jetzt der Knopf „Verschmelzen“
-	_step("D-Pad runter auf „Verschmelzen“", func() -> void: _tap(JOY_BUTTON_DPAD_DOWN),
-		func() -> bool: return progress.get_viewport().gui_get_focus_owner() == progress._fuse_btn)
 	_step("D-Pad runter auf den Bot", func() -> void: _tap(JOY_BUTTON_DPAD_DOWN),
 		func() -> bool: return progress._helper_cards.has(progress.get_viewport().gui_get_focus_owner()))
 	_step("LT auf dem Bot baut ihn ab", func() -> void:
