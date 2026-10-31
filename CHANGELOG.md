@@ -2,6 +2,15 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.27.0] – 2026-10-31 – MS71 Gebietsanzeige (Phase 2.5)
+
+### Neu
+- **Dauerhafte Gebietsanzeige** links unter Bolts und Planet: „📍 Kabelsenke · 64 %“ (Name und Reinigungsgrad des Gebiets, in dem Rusty gerade ist). 24 px, leicht durchsichtig; beim Gebietswechsel leuchtet sie kurz auf. Screenshot `docs/screens/ms71_gebietsanzeige.png`
+
+### Ally-Testliste
+1. Ist die Anzeige auf dem Ally gut lesbar, aber unauffällig?
+2. Wechselt sie zuverlässig beim Fahren über eine Gebietsgrenze?
+
 ## [2.26.0] – 2026-10-31 – MS70 Bots: Zäune und Fahrtrichtung (Phase 2.5)
 
 ### Behoben

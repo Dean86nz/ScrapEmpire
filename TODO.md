@@ -190,4 +190,5 @@
 - Icon in der EXE einbetten (rcedit konfigurieren)
 
 - [x] MS70 Bots: Zäune, Fahrtrichtung (v2.26.0)
-- [ ] Phase 2.5: MS71 Gebietsanzeige → MS72 Secrets raus → MS73 Gewusel → MS74 Werkzeug-Leiter (Skizzen zuerst) → MS75 Rusty mit Werkzeug
+- [x] MS71 Gebietsanzeige (v2.27.0)
+- [ ] Phase 2.5: MS72 Secrets raus → MS73 Gewusel → MS74 Werkzeug-Leiter (Skizzen zuerst) → MS75 Rusty mit Werkzeug
