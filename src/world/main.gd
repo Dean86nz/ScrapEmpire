@@ -220,6 +220,12 @@ func _process(delta: float) -> void:
 		Sfx.music_zone(zid)  # eigenes Stück je Zone (MS46)
 	_hud.set_hint(_current_hint())
 	_tick_hints(delta)
+	_zone_hud_timer -= delta
+	if _zone_hud_timer <= 0.0:
+		_zone_hud_timer = 0.5
+		var hz := _world.zones.zone_id_at(_world.player_tile())
+		if hz != "":
+			_hud.set_zone(str(_world.zones.zone_by_id(hz).get("name", "")), _world.zones.cleanliness(hz, _world.nodes))
 	_chapter_timer -= delta
 	if _chapter_timer <= 0.0:
 		_chapter_timer = 1.0
@@ -548,6 +554,7 @@ const HINTS := {
 	"secrets": ["HINT_T_SECRETS", "HINT_D_SECRETS", "res://assets/sprites/ui/trophy.svg"],
 }
 var _hint_queue: Array[String] = []
+var _zone_hud_timer := 0.0
 var _hint_wait := 0.0
 var _hint_check := 0.0
 

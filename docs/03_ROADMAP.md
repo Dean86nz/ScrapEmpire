@@ -103,7 +103,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | MS | Inhalt | Version |
 |---|---|---|
 | **70** | Bots: Zäune zwischen Gebieten, Fahrtrichtung | v2.26.0 |
-| 71 | Gebietsanzeige „Kabelsenke · 64 %“ | v2.27.0 |
+| **71** | Gebietsanzeige „Kabelsenke · 64 %“ | v2.27.0 |
 | 72 | Secrets vorerst entfernen | v2.28.0 |
 | 73 | Gewusel: kleine Bots, kein Verschmelzen, viele Bots | v2.29.0 |
 | 74 | Werkzeug-Leiter statt Hammer (erst Skizzen) | v2.30.0 |

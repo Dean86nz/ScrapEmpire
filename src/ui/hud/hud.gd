@@ -74,6 +74,7 @@ func _ready() -> void:
 	add_to_group("hud")
 	add_child(stage_banner)
 	_build_goal_panel()
+	_build_zone_panel()
 	_build_courier_panel()
 	set_hint(tr("HUD_HINT_GAME"))
 	set_bolts(0)
@@ -205,6 +206,36 @@ func _build_goal_panel() -> void:
 	_goal_panel.add_child(row)
 	_goal_panel.visible = false
 	add_child(_goal_panel)
+
+
+# --- Gebietsanzeige (MS71): dezent links, „Kabelsenke · 64 %“ ---------------------------
+
+var _zone_panel := PanelContainer.new()
+var _zone_label := Label.new()
+var _zone_shown := ""
+
+
+func _build_zone_panel() -> void:
+	var sb: StyleBox = ($BoltsPanel as PanelContainer).get_theme_stylebox("panel").duplicate()
+	if sb is StyleBoxFlat:
+		(sb as StyleBoxFlat).bg_color.a *= 0.7
+	_zone_panel.add_theme_stylebox_override("panel", sb)
+	_zone_panel.position = Vector2(24, 192)
+	_zone_label.add_theme_font_size_override("font_size", 24)
+	_zone_label.add_theme_color_override("font_color", Color(1, 1, 1, 0.92))
+	_zone_panel.add_child(_zone_label)
+	_zone_panel.visible = false
+	add_child(_zone_panel)
+
+
+## Name und Reinigungsgrad des aktuellen Gebiets; beim Wechsel kurz aufleuchten.
+func set_zone(zone_name: String, clean: float) -> void:
+	_zone_panel.visible = zone_name != ""
+	_zone_label.text = "📍 %s · %d %%" % [zone_name, int(floor(clean * 100.0))]
+	if zone_name != _zone_shown:
+		_zone_shown = zone_name
+		_zone_panel.modulate = Color(1.6, 1.5, 1.0)
+		create_tween().tween_property(_zone_panel, "modulate", Color.WHITE, 0.8)
 
 
 ## Nächstes Ziel im HUD: Leistbares zuerst (grün), sonst ein freier Skillpunkt, sonst das
