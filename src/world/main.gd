@@ -539,6 +539,10 @@ const HINTS := {
 	"collection": ["HINT_T_COLLECTION", "HINT_D_COLLECTION", "res://assets/sprites/buildings/collection_point.svg"],
 	"drones": ["HINT_T_DRONES", "HINT_D_DRONES", "res://assets/sprites/robot/drone.svg"],
 	"courier": ["HINT_T_COURIER", "HINT_D_COURIER", "res://assets/sprites/robot/courier.svg"],
+	"tool2": ["HINT_T_TOOL2", "HINT_D_TOOL2", "res://assets/sprites/tools/tool_2.svg"],
+	"tool3": ["HINT_T_TOOL3", "HINT_D_TOOL3", "res://assets/sprites/tools/tool_3.svg"],
+	"tool4": ["HINT_T_TOOL4", "HINT_D_TOOL4", "res://assets/sprites/tools/tool_4.svg"],
+	"tool5": ["HINT_T_TOOL5", "HINT_D_TOOL5", "res://assets/sprites/tools/tool_5.svg"],
 }
 var _hint_queue: Array[String] = []
 var _zone_hud_timer := 0.0
@@ -558,6 +562,8 @@ func _tick_hints(delta: float) -> void:
 	if _hint_check <= 0.0:
 		_hint_check = 1.0
 		var f := _world.unlocked_features
+		if _world.player.hammer_tier >= 2:   # MS74: neues Werkzeug vorstellen
+			hint("tool%d" % mini(_world.player.hammer_tier, 5))
 		if f.has("helpers"):
 			hint("bots")
 		if f.has("collection"):

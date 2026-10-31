@@ -51,7 +51,11 @@ func bind(world: SimWorld, player: Node2D) -> void:
 	world.too_hard.connect(_on_too_hard)
 	world.hammer_impact.connect(func(n: ResourceNode, tier: int, one_hit: bool) -> void:
 		if _node_views.has(n.id):
-			_node_views[n.id].impact(tier, one_hit))
+			_node_views[n.id].impact(tier, one_hit)
+		# MS74: jedes Werkzeug hat Ton und Treffer-Effekt
+		Sfx.play(ToolLook.sound(tier), 0.06, -2.0)
+		var at := Vector2(n.center_px())
+		ToolLook.impact_fx(self, tier, at, _player.global_position + (at - _player.global_position).limit_length(60.0)))
 	world.boss_rally.connect(func(boss: ResourceNode, _c: int) -> void:
 		for h: Helper in world.helpers.values():
 			if h.rally_id == boss.id and _helper_views.has(h.id):

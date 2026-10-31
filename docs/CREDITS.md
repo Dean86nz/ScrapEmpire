@@ -31,6 +31,7 @@ Alle Soundeffekte in `assets/audio/sfx/` stammen von **Kenney** (www.kenney.nl),
 | repair_1 | jingles_STEEL02 | Music Jingles |
 | honk_1 (Touristen) | jingles_SAX04 | Music Jingles |
 | open_1, close_1, tab_1 (nur Menü, leise) | open_001, close_001, switch_002 | Interface Sounds 1.0 |
+| tool1_1 … tool5_1 (Werkzeuge, MS74) | mit ffmpeg bearbeitet (Tonhöhe, Schnitt, Filter) aus plop_1 + slurp_1, thud_1/thud_3, Bong-Kandidat, thud_2 + slurp_2, Piep-Kandidat | wie die Ausgangsdateien, CC0 |
 
 Quellen: https://kenney.nl/assets/impact-sounds, https://kenney.nl/assets/rpg-audio, https://kenney.nl/assets/music-jingles, https://kenney.nl/assets/interface-sounds
 

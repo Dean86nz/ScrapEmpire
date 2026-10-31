@@ -42,6 +42,20 @@ func test_rusty_alone_does_no_damage() -> void:
 	assert_eq(b.amount, before)
 
 
+func test_laser_damages_boss_alone() -> void:
+	# MS74: mit dem letzten Werkzeug (Laser) ist jeder Boss auch allein abbaubar, nur langsamer
+	var w := _world()
+	var b := _boss(w)
+	b.bots_needed = 3
+	w.player.hammer_tier = ToolSystem.LASER_TIER
+	w.player.pos = b.center_px() + Vector2i(-40, 0)
+	w.player.aim = Vector2.RIGHT
+	var before := b.amount
+	w.player.hammer_pressed = true
+	TestWorlds.run(w, 4)
+	assert_true(b.amount < before, "Laser: Schaden auch ohne Bots")
+	assert_true(before - b.amount < ResourceNode.items_per_hit(b, 5), "allein langsamer als im Team")
+
 func test_bots_come_and_boss_falls_together() -> void:
 	var w := _world()
 	var b := _boss(w)
