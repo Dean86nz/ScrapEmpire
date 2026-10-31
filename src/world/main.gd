@@ -87,10 +87,6 @@ func _ready() -> void:
 
 	SaveManager.log_step("Weltansicht aufbauen")
 	_world_view.bind(_world, _player)
-	var secrets := SecretsView.new()   # Secrets und Easter Eggs (MS60)
-	secrets.name = "Secrets"
-	add_child(secrets)
-	secrets.bind(self, _world, _player, _hud)
 	_player.setup_look(_world)
 	var events := EventView.new()
 	events.name = "Events"
@@ -551,7 +547,6 @@ const HINTS := {
 	"super": ["HINT_T_SUPER", "HINT_D_SUPER", "res://assets/sprites/robot/bot_super.svg"],
 	"mega": ["HINT_T_MEGA", "HINT_D_MEGA", "res://assets/sprites/robot/bot_mega.svg"],
 	"giga": ["HINT_T_GIGA", "HINT_D_GIGA", "res://assets/sprites/robot/bot_mega.svg"],
-	"secrets": ["HINT_T_SECRETS", "HINT_D_SECRETS", "res://assets/sprites/ui/trophy.svg"],
 }
 var _hint_queue: Array[String] = []
 var _zone_hud_timer := 0.0
@@ -581,8 +576,6 @@ func _tick_hints(delta: float) -> void:
 			hint("courier")
 		if HelperSystem.can_fuse(_world, 1) or HelperSystem.can_fuse(_world, 5):
 			hint("fusion")
-		if _world.zones.unlocked.size() >= 2:
-			hint("secrets")
 	_hint_wait -= delta
 	if _hint_wait > 0.0 or _hint_queue.is_empty() or _launching or InputRouter.context != InputRouter.Context.GAME:
 		return

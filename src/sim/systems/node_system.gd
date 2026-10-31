@@ -114,7 +114,6 @@ static func after_take(w: SimWorld, n: ResourceNode) -> void:
 
 
 static func _remove_node(w: SimWorld, n: ResourceNode) -> void:
-	SecretSystem.on_node_removed(w, n)
 	w.nodes.erase(n.id)
 	w._node_tiles.erase(n.tile)
 	_block(w, n, -1)

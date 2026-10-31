@@ -772,7 +772,7 @@ func _refresh_goals() -> void:
 	var w := _world
 	var q := w.quests
 	var sig := "%d|%s|%d|%d|%d|%s|%d" % [q.index, str(q.progress(w)), w.bolts, int(round(w.zones.planet_health(w.nodes) * 100.0)),
-		w.ship().stage if w.ship() != null else 0, str(w.milestones.done), int(_goals_show_done)] + "|%d|%d" % [SecretSystem.found_count(w), w.nodes.size()]
+		w.ship().stage if w.ship() != null else 0, str(w.milestones.done), int(_goals_show_done)]
 	if sig == _goals_sig and _goals_list.get_child_count() > 0:
 		return
 	_goals_sig = sig
@@ -861,30 +861,6 @@ func _refresh_goals() -> void:
 		mc.custom_minimum_size = Vector2(673, 112)
 		grid.add_child(mc)
 	_goals_list.add_child(grid)
-	# 4) Geheimnisse je Zone (MS66): anwählbare Karten wie die Meilensteine, „Kabelsenke: 1 von 3“
-	var sec_head := Label.new()
-	sec_head.text = tr("SECRETS_HEADER") % [SecretSystem.found_count(w), SecretSystem.defs.size()]
-	sec_head.add_theme_font_size_override("font_size", 30)
-	sec_head.add_theme_color_override("font_color", Color(0.95, 0.55, 0.16))
-	_goals_list.add_child(sec_head)
-	var sgrid := GridContainer.new()
-	sgrid.columns = 2
-	sgrid.add_theme_constant_override("h_separation", 16)
-	sgrid.add_theme_constant_override("v_separation", 12)
-	var rows: Array = []
-	for z in w.zones.zones:
-		var zid := str(z["id"])
-		var c := SecretSystem.zone_counts(w, zid)
-		if int(c[1]) > 0:
-			rows.append([str(z["name"]) if w.zones.is_unlocked(zid) else "???", c])
-	rows.append([tr("SECRETS_OTHER"), SecretSystem.global_counts(w)])
-	for r: Array in rows:
-		var c: Array = r[1]
-		var sc := _mini_card("res://assets/sprites/ui/trophy.svg", str(r[0]), tr("SECRETS_ZONE") % [int(c[0]), int(c[1])],
-			float(c[0]) / float(maxi(int(c[1]), 1)))
-		sc.custom_minimum_size = Vector2(673, 96)
-		sgrid.add_child(sc)
-	_goals_list.add_child(sgrid)
 	_restore_focus(_goals_list, focus_idx)
 
 
@@ -1081,7 +1057,7 @@ func _refresh_journal() -> void:
 	var focus_idx := _clear_keep_focus(_journal_list)
 	var found := _world.collectibles_found.size()
 	var total := _world.collectible_total()
-	var head := _make_card("📖 %s: %d / %d   ·   🔍 %s" % [tr("JOURNAL_HEADER"), found, total, tr("SECRETS_HEADER") % [SecretSystem.found_count(_world), SecretSystem.defs.size()]])
+	var head := _make_card("📖 %s: %d / %d" % [tr("JOURNAL_HEADER"), found, total])
 	head.custom_minimum_size = Vector2(1360, 72)
 	_part(head, "Detail").visible = false
 	_journal_list.add_child(head)
