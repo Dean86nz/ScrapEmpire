@@ -1,6 +1,7 @@
 extends Node2D
 ## Werkzeug (seit MS74 statt Hammer): LT/RMB löst einen Schlag aus (die Sim prüft Reichweite und
-## Cooldown). Zeigt das Werkzeug der aktuellen Stufe (Pömpel … Laser) mit eigener Animation.
+## Cooldown). Zeigt das Werkzeug der aktuellen Stufe (Pömpel … Laser) mit eigener Animation;
+## sonst trägt Rusty es seitlich (RustyLook).
 
 const REST := Vector2(52, 0)
 const SIZE := 0.3
@@ -12,7 +13,7 @@ var _hide_at := 0.0
 
 
 func _ready() -> void:
-	# Werkzeug vor Rusty, normalerweise unsichtbar; erscheint beim Benutzen (MS75: trägt er es)
+	# Werkzeug vor Rusty, nur beim Benutzen sichtbar; sonst trägt Rusty es seitlich (MS75)
 	_tool.visible = false
 	_tool.z_index = 1
 	add_child(_tool)
@@ -34,6 +35,11 @@ func _process(_delta: float) -> void:
 	_tool.flip_v = left and _tier >= 3
 	if _tool.visible and Time.get_ticks_msec() * 0.001 > _hide_at:
 		_tool.visible = false
+	# MS75: Rusty trägt das Werkzeug sonst seitlich; während der Benutzung nur vorne zeigen
+	var look := get_node_or_null("../../Sprite2D/RustyLook") as RustyLook
+	if look != null:
+		look.tool_in_use = _tool.visible
+		look.set_tool(_tier)
 
 
 func _swing() -> void:

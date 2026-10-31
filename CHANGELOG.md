@@ -2,6 +2,22 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.31.0] – 2026-10-31 – MS75 Rusty trägt Sauger und Werkzeug (Phase 2.5)
+
+### Neu
+- **Rusty trägt sein Werkzeug** seitlich an einer Halterung in Werkzeugfarbe, direkt neben der Kette. Mit jedem neuen Werkzeug sieht er sichtbar anders aus (Pömpel, Greifzange, Magnetkran, Schrottpresse, Laser). Beim Benutzen nimmt er es nach vorne, danach wandert es zurück in die Halterung
+- **Der Sauger ist immer vorne dran**, von Anfang an; Upgrades machen ihn wie bisher etwas größer
+- Aufrechte Werkzeuge stehen nie kopfüber, auch wenn Rusty nach links fährt
+- Screenshot aller 5 Stufen: `docs/screens/ms75_rusty_werkzeug.png`
+
+### Technik
+- `RustyLook.set_tool`, `RustyLook.tool_in_use`
+- 234 Unit-Tests, 72 Gamepad-Prüfungen, Weiterspielen-Prüfung grün
+
+### Ally-Testliste
+1. Rusty in jeder Werkzeugstufe ansehen: passt das Werkzeug zur Figur, stört es beim Fahren?
+2. Nach links fahren: steht das Werkzeug richtig herum?
+
 ## [2.30.0] – 2026-10-31 – MS74 Werkzeug-Leiter (Phase 2.5)
 
 ### Neu

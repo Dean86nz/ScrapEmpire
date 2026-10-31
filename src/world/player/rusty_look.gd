@@ -2,7 +2,8 @@ class_name RustyLook
 extends Node2D
 ## Rustys Ausbau sichtbar: Anbauteile je Skill, in drei Stufen (wenig, halb, voll ausgebaut).
 ## Hängt als Kind am Sprite und dreht sich mit. Zeichnet zwei Ebenen: unter dem Körper (breitere
-## Ketten, Tank, Auspuff) und darüber (Düse, Hammer, Lampen, Lackierung).
+## Ketten, Tank, Auspuff) und darüber (Düse, Lampen, Lackierung). Seit MS75 trägt Rusty immer
+## den Sauger vorne und sein aktuelles Werkzeug (Pömpel … Laser) seitlich in einer Halterung.
 ## Koordinaten: Sprite-Mitte = (0,0), Rusty blickt nach +X, Körper ca. ±24.
 
 const INK := Color(0.165, 0.165, 0.2)
@@ -17,6 +18,12 @@ var boosting := false
 var _under := Node2D.new()
 var _over := Node2D.new()
 var _t := 0.0
+var _tool := Sprite2D.new()     # getragenes Werkzeug (MS75)
+var _tool_tier := 0
+var tool_in_use := false        # während der Benutzung zeigt HammerTool das Werkzeug vorne
+
+const TOOL_MOUNT := Vector2(-2, 40)   # rechte Seite, außen neben der Kette
+const TOOL_LEN := 46.0                # längste Seite des getragenen Werkzeugs in Pixeln
 
 
 func _ready() -> void:
@@ -25,6 +32,22 @@ func _ready() -> void:
 	_over.draw.connect(_draw_over)
 	add_child(_under)
 	add_child(_over)
+	_tool.position = TOOL_MOUNT
+	add_child(_tool)
+
+
+## Werkzeugstufe 1–5 (Pömpel … Laser): Bild in der Halterung tauschen.
+func set_tool(p_tier: int) -> void:
+	if p_tier == _tool_tier:
+		return
+	_tool_tier = p_tier
+	_tool.texture = ToolLook.texture(p_tier)
+	var sz := _tool.texture.get_size()
+	var k := (TOOL_LEN if p_tier < 3 else TOOL_LEN * 0.8) / maxf(sz.x, sz.y)
+	_tool.scale = Vector2(k, k)
+	_tool.position = Vector2(TOOL_MOUNT.x, 28.0 + sz.y * k * 0.5)   # liegt direkt an der Kette an
+	_under.queue_redraw()
+	_over.queue_redraw()
 
 
 func set_levels(p_levels: Dictionary, p_max: Dictionary) -> void:
@@ -36,6 +59,9 @@ func set_levels(p_levels: Dictionary, p_max: Dictionary) -> void:
 
 func _process(delta: float) -> void:
 	_t += delta
+	_tool.visible = not tool_in_use
+	# aufrechte Werkzeuge (Kran, Presse, Laser) nie kopfüber, wenn Rusty nach links fährt
+	_tool.flip_v = _tool_tier >= 3 and absf(wrapf(global_rotation, -PI, PI)) > PI * 0.5
 	if tier("magnet") >= 3 or boosting:
 		_over.queue_redraw()
 		_under.queue_redraw()
@@ -91,6 +117,10 @@ func _draw_under() -> void:
 			for k in range(int(w / 10.0)):
 				var x := -w * 0.5 + 5.0 + k * 10.0
 				c.draw_line(Vector2(x, y + 3), Vector2(x, y + 10), INK, 2.0)
+	# Werkzeug-Halterung (MS75): Bügel in der Werkzeugfarbe, verbindet Werkzeug und Körper
+	if _tool_tier > 0:
+		var tc: Color = ToolLook.COLORS[ToolLook.tier_of(_tool_tier) - 1]
+		_box(c, Rect2(-14, 26, 20, 10), tc, 4, 3)
 	# Rucksack (Taschen): kompakt hinten, nie breiter als der Körper
 	var tb := tier("bags")
 	if tb >= 1:
@@ -117,17 +147,17 @@ func _draw_over() -> void:
 		_box(c, Rect2(-20, -12, 10, 24), STAGE_COLS[st], 4, 2)
 		for k in st:
 			c.draw_circle(Vector2(-15, -7 + k * 4.7), 1.6, INK)
-	# Saugtrichter vorne: kurz und fest, Ring in der Stufenfarbe
+	# Saugtrichter vorne: kurz und fest, Ring in der Stufenfarbe; seit MS75 immer da (Sauger
+	# gehört zur Grundausstattung), Ausbau macht ihn etwas größer
 	var ts := tier("suck")
-	if ts > 0:
-		var x0 := 22.0
-		var len := 9.0 + ts * 2.0
-		var mouth := 9.0 + ts * 2.5
-		var poly := PackedVector2Array([Vector2(x0, -6), Vector2(x0 + len, -mouth), Vector2(x0 + len, mouth), Vector2(x0, 6)])
-		c.draw_colored_polygon(poly, STEEL)
-		poly.append(poly[0])
-		c.draw_polyline(poly, INK, 2.5)
-		c.draw_line(Vector2(x0 + len, -mouth), Vector2(x0 + len, mouth), STAGE_COLS[st] if st > 0 else ORANGE, 4.0)
+	var x0 := 22.0
+	var len := 9.0 + ts * 2.0
+	var mouth := 9.0 + ts * 2.5
+	var poly := PackedVector2Array([Vector2(x0, -6), Vector2(x0 + len, -mouth), Vector2(x0 + len, mouth), Vector2(x0, 6)])
+	c.draw_colored_polygon(poly, STEEL)
+	poly.append(poly[0])
+	c.draw_polyline(poly, INK, 2.5)
+	c.draw_line(Vector2(x0 + len, -mouth), Vector2(x0 + len, mouth), STAGE_COLS[st] if st > 0 else ORANGE, 4.0)
 	# Scheinwerfer (Magnet): höchstens zwei kleine Lichter vorne
 	var tm := tier("magnet")
 	for i in mini(tm, 2):

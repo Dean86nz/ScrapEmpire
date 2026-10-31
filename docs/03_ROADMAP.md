@@ -107,7 +107,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **72** | Secrets vorerst entfernen (Archiv `docs/archiv/secrets/`) | v2.28.0 |
 | **73** | Gewusel: kleine Bots, kein Verschmelzen, viele Bots | v2.29.0 |
 | **74** | Werkzeug-Leiter statt Hammer (erst Skizzen) | v2.30.0 |
-| 75 | Rusty trägt Sauger und Werkzeug passend | v2.31.0 |
+| **75** | Rusty trägt Sauger und Werkzeug passend | v2.31.0 |
 
 ## Phase 2 nach dem vierten Praxistest (Go 2026-10-28)
 
