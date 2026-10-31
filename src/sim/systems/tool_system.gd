@@ -3,6 +3,8 @@ extends RefCounted
 ## Saugen, Hämmern, Magnet für Rusty und Helfer.
 ## Teilsystem von SimWorld: statische Funktionen, `w` ist die Welt (Daten und Signale bleiben dort).
 
+const LASER_TIER := 5   # letztes Werkzeug der Leiter (MS74)
+
 
 ## Saugen/Hämmern für einen Helfer (gleiche Regeln wie Rusty, aber ohne Kegel: Reichweite reicht).
 static func helper_work(w: SimWorld, h: Helper) -> void:
@@ -263,16 +265,22 @@ static func _tick_hammer(w: SimWorld) -> void:
 	if wreck == null:
 		return
 	w.player.hammer_cooldown = w.player.hammer_interval
+	var solo := false
 	if wreck.boss:
-		# Verstärkung rufen; Schaden nur gemeinsam
+		# Verstärkung rufen; Schaden nur gemeinsam – außer mit dem Laser (MS74): dann knackt Rusty
+		# jeden Boss auch allein, nur langsamer
 		BossSystem.rally(w, wreck)
 		if not BossSystem.can_damage(w, wreck):
-			w.boss_blocked.emit(wreck, BossSystem.helpers_at(w, wreck), wreck.bots_needed)
-			return
+			if w.player.hammer_tier < LASER_TIER:
+				w.boss_blocked.emit(wreck, BossSystem.helpers_at(w, wreck), wreck.bots_needed)
+				return
+			solo = true
 	elif wreck.tier > w.player.hammer_tier:
 		w._emit_too_hard(wreck, "hammer")
 		return
 	var per_hit := ceili(ResourceNode.items_per_hit(wreck, w.player.hammer_tier) * (1.0 + w.player.hammer_power))
+	if solo:
+		per_hit = maxi(1, ceili(per_hit * float(ResourceNode.hammer_cfg.get("laser_solo_factor", 0.25))))
 	var one_hit := per_hit >= wreck.amount
 	w.hammer_impact.emit(wreck, w.player.hammer_tier, one_hit)
 	NodeSystem.drop_bundles(w, wreck, per_hit)

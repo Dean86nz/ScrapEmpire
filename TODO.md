@@ -193,4 +193,5 @@
 - [x] MS71 Gebietsanzeige (v2.27.0)
 - [x] MS72 Secrets entfernt, archiviert (v2.28.0)
 - [x] MS73 Gewusel: kleine Bots, keine Fusion, bis 150 Bots (v2.29.0)
-- [ ] Phase 2.5: MS74 Werkzeug-Leiter (Skizzen zuerst) → MS75 Rusty mit Werkzeug
+- [x] MS74 Werkzeug-Leiter: Pömpel, Greifzange, Magnetkran, Schrottpresse, Laser (v2.30.0)
+- [ ] Phase 2.5: MS75 Rusty mit Werkzeug

@@ -2,6 +2,28 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.30.0] – 2026-10-31 – MS74 Werkzeug-Leiter (Phase 2.5)
+
+### Neu
+- **Fünf Werkzeuge statt Hammer:** Pömpel → Greifzange → Magnetkran → Schrottpresse → Laser (wie in der Skizze `docs/screens/ms74_werkzeug_skizze.png`). Jedes Werkzeug hat ein eigenes Bild, eine eigene Animation (vorstoßen, zukneifen, absenken, stampfen, Rückstoß), einen eigenen Treffer-Effekt (Plopp-Ringe, Zwick-Striche, Magnetfeld, Pressstriche, Laserstrahl) und einen eigenen Ton. Screenshot `docs/screens/ms74_werkzeuge.png`
+- **Bots tragen ihr Werkzeug** vorne in Blickrichtung (Stufe aus „Bot-Werkzeug“) und benutzen es sichtbar
+- **Laser knackt alles:** Mit dem Laser macht Rusty auch allein Schaden an jedem Boss (ein Viertel so schnell); Bots beschleunigen das. Am Boss steht dann „Laser: geht auch allein!“
+- Hinweis-Karte bei jedem neuen Werkzeug
+- Der Sauger bleibt unverändert, mit allen Upgrades
+
+### Geändert
+- Texte: „LT: Werkzeug“ statt „hämmern“, Tutorial mit dem Pömpel, Skill- und Bot-Upgrade-Beschreibungen nennen die Werkzeug-Leiter
+
+### Technik
+- `ToolLook` (Bild, Ton, Animation, Effekt je Stufe), `ToolSystem.LASER_TIER`, `laser_solo_factor` in `data/scrap_objects.json`
+- Töne `tool1`–`tool5`: aus vorhandenen CC0-Aufnahmen mit ffmpeg abgeleitet (siehe docs/CREDITS.md)
+- 234 Unit-Tests (neu: Laser schadet dem Boss auch allein), 72 Gamepad-Prüfungen, Weiterspielen-Prüfung grün
+
+### Ally-Testliste
+1. Jedes Werkzeug einmal benutzen (Skill „Werkzeug“): Animation, Effekt und Ton gut? Ist ein Ton störend?
+2. Sind die Werkzeuge an den kleinen Bots erkennbar?
+3. Mit Laser allein einen Boss knacken: fühlt sich das Tempo richtig an?
+
 ## [2.29.0] – 2026-10-31 – MS73 Gewusel (Phase 2.5)
 
 ### Geändert

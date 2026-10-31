@@ -140,7 +140,10 @@ func _process(_delta: float) -> void:
 	var at := BossSystem.helpers_at(w, _boss_node)
 	var coming := BossSystem.helpers_coming(w, _boss_node)
 	var missing := BossSystem.helpers_missing(w, _boss_node)
-	if missing > 0 and w.unlocked_features.has("helpers"):
+	if w.player.hammer_tier >= ToolSystem.LASER_TIER and at < _boss_node.bots_needed:
+		_boss_need.text = tr("BOSS_LASER")   # MS74: mit dem Laser geht es auch allein
+		_boss_need.add_theme_color_override("font_color", Color(1.0, 0.55, 0.9))
+	elif missing > 0 and w.unlocked_features.has("helpers"):
 		_boss_need.text = tr("BOSS_MISSING") % missing
 		_boss_need.add_theme_color_override("font_color", Color(1.0, 0.75, 0.3))
 	elif at + coming == 0 or missing > 0:

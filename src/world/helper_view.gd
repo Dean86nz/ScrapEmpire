@@ -5,6 +5,8 @@ extends Node2D
 
 const TEX := "res://assets/sprites/robot/bot.svg"
 const SIZE := 0.5   # MS73: kleine Bots, etwas kleiner als Rusty
+const TOOL_REST := Vector2(30, 6)
+const TOOL_SIZE := 0.13
 
 const TIER_TINT := [Color(1, 1, 1), Color(0.75, 1.0, 0.7), Color(0.7, 0.85, 1.25), Color(1.1, 0.8, 1.25), Color(1.3, 1.1, 0.55)]
 
@@ -88,7 +90,9 @@ func _process(delta: float) -> void:
 var _cone: Polygon2D
 var _load_bg: ColorRect
 var _load_fill: ColorRect
-var _hammer: Label
+var _tool_pivot := Node2D.new()   # MS74: Bot trägt sein Werkzeug vorne, dreht mit
+var _tool := Sprite2D.new()
+var _tool_tier := 0
 var _last_total := 0
 var _last_cd := 0
 var _t := 0.0
@@ -117,13 +121,10 @@ func _ensure_work_nodes() -> void:
 	_load_fill.size = Vector2(0, 5)
 	_load_fill.position = Vector2(-17, -35)
 	add_child(_load_fill)
-	_hammer = Label.new()
-	_hammer.text = "🔨"
-	_hammer.add_theme_font_size_override("font_size", 22)
-	_hammer.position = Vector2(8, -30)
-	_hammer.pivot_offset = Vector2(4, 30)
-	_hammer.visible = false
-	add_child(_hammer)
+	_tool.position = TOOL_REST
+	_tool.scale = Vector2(TOOL_SIZE, TOOL_SIZE)
+	_tool_pivot.add_child(_tool)
+	add_child(_tool_pivot)
 
 
 func _update_work_look(delta: float) -> void:
@@ -144,7 +145,13 @@ func _update_work_look(delta: float) -> void:
 	if total > _last_total:
 		_fly_in(mini(total - _last_total, 3))
 	_last_total = total
-	# Hammerschwung bei jedem Schlag
+	# Werkzeug der eigenen Stufe, zeigt in Blickrichtung (aufrechte Werkzeuge nie kopfüber)
+	if _helper.hammer_tier != _tool_tier:
+		_tool_tier = _helper.hammer_tier
+		_tool.texture = ToolLook.texture(_tool_tier)
+	_tool_pivot.rotation = _sprite.rotation
+	_tool.flip_v = _tool_tier >= 3 and absf(wrapf(_sprite.rotation, -PI, PI)) > PI * 0.5
+	# Werkzeug-Einsatz bei jedem Schlag
 	if _helper.hammer_cooldown > _last_cd:
 		_swing()
 	_last_cd = _helper.hammer_cooldown
@@ -176,12 +183,9 @@ func _fly_in(n: int) -> void:
 
 
 func _swing() -> void:
-	_hammer.visible = true
-	_hammer.rotation = -1.2
-	var tw := create_tween()
-	tw.tween_property(_hammer, "rotation", 0.6, 0.09)
-	tw.tween_property(_hammer, "rotation", -0.2, 0.12)
-	tw.tween_callback(func() -> void: _hammer.visible = false)
+	ToolLook.animate_use(_tool, _tool_tier, TOOL_REST, Vector2(TOOL_SIZE, TOOL_SIZE))
+	var dir := Vector2.RIGHT.rotated(_sprite.rotation)
+	ToolLook.impact_fx(get_parent(), _tool_tier, position + dir * 70.0, position + dir * 34.0, 0.45)
 	var bs := _sprite.scale
 	_swinging = true
 	var sq := create_tween()

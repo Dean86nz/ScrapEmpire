@@ -60,8 +60,8 @@ NODE_ROBOT_ARM,Vergrabener Roboter-Arm,Buried robot arm
 NODE_MONOLITH,Monolith „Warum steht der hier?“,"Monolith ""Why is this here?"""
 HUD_LEVEL,Lv %d,Lv %d
 HUD_SKILL_POINTS,Skillpunkte: %d,Skill points: %d
-QUIP_TOO_HARD_1,Zu hart! Mein Hammer weint.,Too hard! My hammer is crying.
-QUIP_TOO_HARD_2,Das braucht einen größeren Hammer.,That needs a bigger hammer.
+QUIP_TOO_HARD_1,Zu hart! Mein Werkzeug weint.,Too hard! My tool is crying.
+QUIP_TOO_HARD_2,Das braucht ein besseres Werkzeug.,That needs a better tool.
 QUIP_TOO_HEAVY_1,Zu schwer! Sauger sagt nein.,Too heavy! Vacuum says no.
 QUIP_TOO_HEAVY_2,Mehr Saugkraft. Weniger Reden.,More suction. Less talking.
 QUIP_LEVEL_UP_1,Level up! Ich fühle mich… schraubiger.,Level up! I feel… bolt-ier.
@@ -134,7 +134,7 @@ SKILL_CONNOISSEUR_DESC,"+10 % auf Kupfer, Plastik, Chrom und Produkte daraus","+
 SKILL_WHOLESALE,Großhändler,Wholesaler
 SKILL_WHOLESALE_DESC,+5 % wenn der Terminal-Puffer mindestens 20 Items hält,+5% when the terminal buffer holds at least 20 items
 SKILL_SMASH,Schlagkraft,Smash
-SKILL_SMASH_DESC,Hammer-Stufe +1 je Stufe,Hammer tier +1 per level
+SKILL_SMASH_DESC,Werkzeug-Stufe +1 je Stufe,Tool tier +1 per level
 SKILL_SUCTION_POWER,Saugkraft,Suction power
 SKILL_SUCTION_POWER_DESC,Sauger-Stufe +1 je Stufe,Vacuum tier +1 per level
 SKILL_TEMPO,Tempo,Tempo
@@ -177,7 +177,7 @@ TUT_2,Sauge 30 Schrott aus den grauen Haufen (RT).,Suck 30 scrap from the grey p
 TUT_2_DONE,Taschen voll Schrott. Reich bin ich nicht. Noch nicht.,Pockets full of scrap. Not rich. Yet.
 TUT_3,Baue ein Verkaufsterminal (Y) und lege Schrott ein (A).,Build a sell terminal (Y) and insert scrap (A).
 TUT_3_DONE,Erste Bolts! Und 20 extra. Bitte sehr.,First bolts! And 20 extra. You are welcome.
-TUT_4,Zerlege einen Rostigen Toaster mit dem Hammer (LT).,Smash a rusty toaster with the hammer (LT).
+TUT_4,Zerlege einen Rostigen Toaster mit dem Pömpel (LT).,Take apart a rusty toaster with the plunger (LT).
 TUT_4_DONE,Toaster besiegt. Er hatte es verdient.,Toaster defeated. It deserved it.
 TUT_5,Öffne den Fortschritt (Select) und erforsche den Schmelzofen.,Open progress (Select) and research the furnace.
 TUT_5_DONE,Das Tor ist offen. Da draußen liegt noch mehr Schrott. Viel mehr.,The gate is open. More scrap out there. Much more.
@@ -224,7 +224,7 @@ HELPER_UPG_SPEED_DESC,+5 % Tempo je Stufe,+5% speed per level
 HELPER_UPG_CAPACITY,Bot-Tragkraft,Bot capacity
 HELPER_UPG_CAPACITY_DESC,+2 Teile Last je Stufe,+2 parts load per level
 HELPER_UPG_TOOL,Bot-Werkzeug,Bot tools
-HELPER_UPG_TOOL_DESC,Knackt härteren Müll,Cracks tougher trash
+HELPER_UPG_TOOL_DESC,"Nächstes Werkzeug für alle Bots (Pömpel → … → Laser), knackt härteren Müll","Next tool for all bots (plunger → … → laser), cracks tougher trash"
 HELPER_UPG_LOCKED,Ab Schiffsstufe 4,From ship stage 4
 HELPER_UPG_BUY,A: Kaufen,A: Buy
 HELPER_HIRED_1,Hallo! Ich bin neu. Wo ist der Schrott?,Hello! I am new. Where is the scrap?
@@ -241,8 +241,8 @@ QUIP_HELPER_MAX,Mehr als sechs Helfer werden chaotisch. Nein.,More than six help
 QUIP_HELPER_NO_DEPOT,Das Lager muss ein Gebäude sein. Eine Kiste zum Beispiel.,The depot must be a building. A chest for example.
 END_TITLE,Das Schiff hebt ab!,The ship lifts off!
 END_CLOSE,Weiterspielen,Keep playing
-HUD_HINT_GAME,Stick: fahren   ·   RT: saugen   ·   LT: hämmern   ·   Select: Schiff und Ziele,Stick: drive   ·   RT: suck   ·   LT: hammer   ·   Select: ship and goals
-HUD_HINT_GAME_KB,WASD: fahren   ·   LMB: saugen   ·   RMB: hämmern   ·   T: Schiff und Ziele,WASD: drive   ·   LMB: suck   ·   RMB: hammer   ·   T: ship and goals
+HUD_HINT_GAME,Stick: fahren   ·   RT: saugen   ·   LT: Werkzeug   ·   Select: Schiff und Ziele,Stick: drive   ·   RT: suck   ·   LT: tool   ·   Select: ship and goals
+HUD_HINT_GAME_KB,WASD: fahren   ·   LMB: saugen   ·   RMB: Werkzeug   ·   T: Schiff und Ziele,WASD: drive   ·   LMB: suck   ·   RMB: tool   ·   T: ship and goals
 HINT_DEPOSIT_SHORT,A: %d %s einlegen,A: put %d %s in
 HINT_DEPOSIT_SHORT_KB,E: %d %s einlegen,E: put %d %s in
 HINT_WITHDRAW_SHORT,A: entnehmen (leerer Slot),A: take out (empty slot)
@@ -366,7 +366,7 @@ QUEST_MOVE,Fahr ein Stück mit dem linken Stick.,Drive a bit with the left stick
 QUEST_COLLECT,Sauge 20 Schrott aus den grauen Haufen (RT).,Suck 20 scrap from the grey piles (RT).
 QUEST_DELIVER,Fahr zum Schiff und liefere 20 Teile ab (A).,Drive to the ship and deliver 20 items (A).
 QUEST_BOLTS,Verdiene 30 Bolts. Das Schiff verkauft von allein.,Earn 30 bolts. The ship sells on its own.
-QUEST_HAMMER,Zerlege einen Rostigen Toaster mit dem Hammer (LT).,Smash a rusty toaster with the hammer (LT).
+QUEST_HAMMER,Zerlege einen Rostigen Toaster mit dem Pömpel (LT).,Take apart a rusty toaster with the plunger (LT).
 QUEST_RESEARCH_FURNACE,Erforsche den Schmelzofen (Select → Forschung).,Research the furnace (Select → Research).
 QUEST_BUILD_FURNACE,Baue einen Schmelzofen (Y).,Build a furnace (Y).
 QUEST_BARS,Schmelze 10 Eisenbarren (3 Schrott je Barren in den Ofen legen).,Smelt 10 iron bars (put 3 scrap per bar into the furnace).
@@ -485,7 +485,7 @@ SKILL_SUCK_DESC,"+10 % Tempo, mehr Teile je Zug, ab Stufe 10 Wirbel","+10% speed
 SKILL_BAGS,Taschen,Bags
 SKILL_BAGS_DESC,"+2 je Stapel, alle 5 Stufen ein Fach mehr","+2 per stack, one more slot every 5 levels"
 SKILL_TOOL,Werkzeug,Tools
-SKILL_TOOL_DESC,Härterer Müll,Tougher trash
+SKILL_TOOL_DESC,"Nächstes Werkzeug (Pömpel → Greifzange → Magnetkran → Schrottpresse → Laser), Sauger für härteren Müll","Next tool (plunger → gripper → magnet crane → scrap press → laser), suction for tougher trash"
 SKILL_COST_POINTS,%d Punkte,%d points
 QUEST_YIELD1,Kauf am Schiff das erste Ertrag-Upgrade (X).,Buy the first yield upgrade at the ship (X).
 QUEST_SKILL,Lerne deinen ersten Skill (Select → Skills).,Learn your first skill (Select → Skills).
@@ -628,7 +628,7 @@ BOSS_MISSING,Noch %d Bot(s) bauen: Schiff → Bots,Build %d more bot(s): ship �
 MENU_SHAKE_ON,Bildschirmwackeln: an,Screen shake: on
 MENU_SHAKE_OFF,Bildschirmwackeln: aus,Screen shake: off
 BOT_ARMY,Armee: %d,Army: %d
-SKILL_HAMMER,Hammer-Kraft,Hammer power
+SKILL_HAMMER,Werkzeug-Kraft,Tool power
 SKILL_HAMMER_DESC,+10 % Teile je Schlag,+10% parts per hit
 HELPER_UPG_POWER,Bot-Kraft,Bot power
 HELPER_UPG_POWER_DESC,+20 % Arbeit je Bot,+20% work per bot
@@ -692,3 +692,17 @@ HINT_T_SECRETS,Geheimnisse,Secrets
 HINT_D_SECRETS,"Auf dem Planeten sind Geheimnisse versteckt: rissige Wände, Gummienten und mehr.","Secrets are hidden on the planet: cracked walls, rubber ducks and more."
 SECRETS_ZONE,%d von %d,%d of %d
 SECRETS_OTHER,Ohne festen Ort,Anywhere
+TOOL_1,Pömpel,Plunger
+TOOL_2,Greifzange,Gripper tongs
+TOOL_3,Magnetkran,Magnet crane
+TOOL_4,Schrottpresse,Scrap press
+TOOL_5,Laser,Laser
+HINT_T_TOOL2,Neues Werkzeug: Greifzange,New tool: gripper tongs
+HINT_D_TOOL2,"Packt härteren Müll. Deine Bots bekommen ihre Werkzeuge im Bots-Menü.","Grabs tougher junk. Your bots get their tools in the bots menu."
+HINT_T_TOOL3,Neues Werkzeug: Magnetkran,New tool: magnet crane
+HINT_D_TOOL3,"Zieht Metall aus noch härterem Müll.","Pulls metal out of even tougher junk."
+HINT_T_TOOL4,Neues Werkzeug: Schrottpresse,New tool: scrap press
+HINT_D_TOOL4,"Presst fast alles platt.","Squashes almost anything flat."
+HINT_T_TOOL5,Neues Werkzeug: Laser,New tool: laser
+HINT_D_TOOL5,"Schneidet alles – auch Bosse, notfalls ganz allein (Bots helfen, schneller zu sein).","Cuts everything – even bosses, all alone if needed (bots make it faster)."
+BOSS_LASER,Laser: geht auch allein!,Laser: works solo too!

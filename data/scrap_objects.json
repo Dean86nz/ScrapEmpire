@@ -6,7 +6,8 @@
     "hits_per_tier": 1,
     "diff1_factor": 0.4,
     "one_hit_diff": 2,
-    "boss_hits": 30
+    "boss_hits": 30,
+    "laser_solo_factor": 0.25
   },
   "objects": [
     {

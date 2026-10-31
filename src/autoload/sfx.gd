@@ -12,6 +12,7 @@ const BUS_SFX := "SFX"
 const BUS_MUSIC := "Music"
 ## Grundlautstärke je Effekt (dB), damit alles leise unter der Musik liegt.
 const LEVEL_DB := {"buy": -8.0, "bot": -14.0, "slurp": -12.0, "plop": -14.0, "deliver": -5.0, "quest": -6.0, "milestone": -5.0, "cheer": -6.0, "hammer": -7.0,
+	"tool1": -8.0, "tool2": -8.0, "tool3": -9.0, "tool4": -8.0, "tool5": -10.0,
 	"repair": -6.0, "honk": -6.0, "thud": -6.0, "courier": -6.0, "open": -18.0, "close": -18.0, "tab": -20.0, "launch": -4.0}
 ## Standard-Tonhöhen-Variation je Effekt.
 const JITTER := 0.06

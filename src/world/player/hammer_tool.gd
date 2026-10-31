@@ -1,17 +1,21 @@
 extends Node2D
-## Hammer: LT/RMB löst einen Schlag aus (die Sim prüft Reichweite und Cooldown)
-## und spielt eine kurze Schwung-Animation am Hammerkopf.
+## Werkzeug (seit MS74 statt Hammer): LT/RMB löst einen Schlag aus (die Sim prüft Reichweite und
+## Cooldown). Zeigt das Werkzeug der aktuellen Stufe (Pömpel … Laser) mit eigener Animation.
 
-var _head := Polygon2D.new()
+const REST := Vector2(52, 0)
+const SIZE := 0.3
+
+var _tool := Sprite2D.new()
 var _tween: Tween
+var _tier := 0
+var _hide_at := 0.0
 
 
 func _ready() -> void:
-	# Hammerkopf vor Rusty, normalerweise unsichtbar; erscheint nur beim Schlag.
-	_head.polygon = PackedVector2Array([Vector2(40, -12), Vector2(64, -12), Vector2(64, 12), Vector2(40, 12)])
-	_head.color = Color(0.3, 0.3, 0.36, 1.0)
-	_head.visible = false
-	add_child(_head)
+	# Werkzeug vor Rusty, normalerweise unsichtbar; erscheint beim Benutzen (MS75: trägt er es)
+	_tool.visible = false
+	_tool.z_index = 1
+	add_child(_tool)
 
 
 func _physics_process(_delta: float) -> void:
@@ -20,12 +24,21 @@ func _physics_process(_delta: float) -> void:
 		_swing()
 
 
+func _process(_delta: float) -> void:
+	var tier := SimClock.world.player.hammer_tier if SimClock.world != null else 1
+	if tier != _tier:
+		_tier = tier
+		_tool.texture = ToolLook.texture(tier)
+	# Aufrechte Werkzeuge (Kran, Presse, Laser) nicht kopfüber zeigen, wenn Rusty nach links zielt
+	var left := absf(wrapf(global_rotation, -PI, PI)) > PI * 0.5
+	_tool.flip_v = left and _tier >= 3
+	if _tool.visible and Time.get_ticks_msec() * 0.001 > _hide_at:
+		_tool.visible = false
+
+
 func _swing() -> void:
 	if _tween and _tween.is_valid():
 		_tween.kill()
-	_head.visible = true
-	_head.rotation = -0.9
-	_tween = create_tween()
-	_tween.tween_property(_head, "rotation", 0.25, 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	_tween.tween_property(_head, "rotation", 0.0, 0.12)
-	_tween.tween_callback(func() -> void: _head.visible = false)
+	_tool.visible = true
+	_hide_at = Time.get_ticks_msec() * 0.001 + 0.6
+	_tween = ToolLook.animate_use(_tool, _tier, REST, Vector2(SIZE, SIZE))
