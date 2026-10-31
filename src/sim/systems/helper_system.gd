@@ -9,7 +9,7 @@ static func helper_count(w: SimWorld) -> int:
 
 
 static func next_helper_cost(w: SimWorld) -> Dictionary:
-	var a := army(w)  # nach Stärke, nicht Anzahl: Fusion macht Bots nicht billiger (MS57)
+	var a := army(w)
 	var n := float(a) if a <= 120 else 120.0 + (a - 120) * 0.2   # MS67: große Armeen bleiben bezahlbar
 	var base := float(w.helper_cfg.get("cost_base_bolts", 400))
 	var growth := float(w.helper_cfg.get("cost_growth", 1.5))
@@ -152,48 +152,11 @@ static func _tick_helpers(w: SimWorld) -> void:
 		w.helper_work(h)
 
 
-# --- Fusion (MS57): 5 Bots → Super-Bot (×5), 5 Super-Bots → Mega-Bot (×25) ---------------
+# --- Armee (seit MS73 ohne Fusion: viele kleine Bots) ----------------------------------
 
-const FUSE_COUNT := 5
-
-
-## Gesamtstärke der Armee (Bot 1, Super-Bot 5, Mega-Bot 25).
+## Gesamtstärke der Armee: Anzahl Bots (alte verschmolzene Bots aus Spielständen zählen weiter mehrfach).
 static func army(w: SimWorld) -> int:
 	var n := 0
 	for h: Helper in w.helpers.values():
 		n += h.power
 	return n
-
-
-## Kann aus 5 Bots der Stärke `power` einer mit ×5 werden?
-static func can_fuse(w: SimWorld, power: int) -> bool:
-	if power >= 125:
-		return false  # Giga-Bot (×125) ist die höchste Stufe (MS67)
-	var n := 0
-	for h: Helper in w.helpers.values():
-		if h.power == power:
-			n += 1
-	return n >= FUSE_COUNT
-
-
-static func _cmd_fuse(w: SimWorld, cmd: Dictionary) -> void:
-	var p := int(cmd.get("power", 1))
-	if not can_fuse(w, p):
-		w.helper_failed.emit("fuse")
-		return
-	var picked: Array[Helper] = []
-	for h: Helper in w.helpers.values():
-		if h.power == p and picked.size() < FUSE_COUNT:
-			picked.append(h)
-	var first := picked[0]
-	var pos := first.pos
-	var zone := first.zone_id
-	for h in picked:
-		w.helpers.erase(h.id)
-		w.helper_removed.emit(h.id)
-	var big := add_helper(w, first.zone_tile, first.depot_tile, first.name_index, first.color_index)
-	big.power = p * FUSE_COUNT
-	big.pos = pos
-	big.zone_id = zone
-	_apply_helper_mods(w, big)
-	w.helper_fused.emit(big)

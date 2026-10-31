@@ -29,7 +29,7 @@ Ziel: bunt, fröhlich, cartoonig (Geist von Dinkum), auf Screenshots neben Steam
 
 ## Figuren
 - **Rusty:** Größe fix, nie verzerrt. Reichweite nur über den Saugwirbel, nicht über die Rüssellänge. 5 Ausbaustufen über Plakette und Anbauteile (Ketten, Hammer, Lampen, Tank).
-- **Bot / Super-Bot / Mega-Bot:** eigene Silhouetten (rund mit einem Auge / Kuppel mit Visier und Düsen / goldener Panzer mit Krone), klar größer je Stufe.
+- **Bot (seit MS73):** immer dieselbe kleine Figur (rund mit einem Auge, etwas kleiner als Rusty). Bessere Werkzeugstufe = schönere Farbe (Türkis → Grün → Blau → Lila → Gold), nie größer. Keine Fusion mehr.
 - **Müll:** eindeutig Müll (Dellen, Risse, Klebeband), Farben passend zur Zone, immer mit Umriss und Schatten-Oval.
 
 ## UI

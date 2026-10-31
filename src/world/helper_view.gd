@@ -3,10 +3,12 @@ extends Node2D
 ## Darstellung eines Helfer-Roboters: Rusty-Sprite in eigener Farbe, Namensschild, kleine Symbole (seit MS44 kein Text).
 ## Folgt der Sim-Position weich.
 
-const TEX := ["res://assets/sprites/robot/bot.svg", "res://assets/sprites/robot/bot_super.svg", "res://assets/sprites/robot/bot_mega.svg"]
+const TEX := "res://assets/sprites/robot/bot.svg"
+const SIZE := 0.5   # MS73: kleine Bots, etwas kleiner als Rusty
+
+const TIER_TINT := [Color(1, 1, 1), Color(0.75, 1.0, 0.7), Color(0.7, 0.85, 1.25), Color(1.1, 0.8, 1.25), Color(1.3, 1.1, 0.55)]
 
 var helper_id: int = -1
-var _shown_power := 1
 var _helper: Helper
 var _sprite := Sprite2D.new()
 var _name := Label.new()
@@ -21,11 +23,21 @@ func setup(h: Helper, names: Array, colors: Array) -> void:
 	_colors = colors
 	position = Vector2(h.pos)
 	z_index = 4
-	_sprite.texture = load(TEX[0])
-	_sprite.scale = Vector2(0.85, 0.85)
-	var col := Color.html(str(colors[h.color_index % colors.size()])) if not colors.is_empty() else Color.WHITE
-	_sprite.modulate = col.lerp(Color.WHITE, 0.25)
+	_sprite.texture = load(TEX)
+	_sprite.scale = Vector2(SIZE, SIZE)
+	_sprite.modulate = TIER_TINT[clampi(h.hammer_tier, 1, 5) - 1]
 	add_child(_sprite)
+	# Leistung (MS73): außerhalb des Bildschirms nicht zeichnen und nicht animieren
+	var vis := VisibleOnScreenNotifier2D.new()
+	vis.rect = Rect2(-80, -120, 160, 200)
+	vis.screen_entered.connect(func() -> void:
+		visible = true
+		set_process(true)
+		position = Vector2(_helper.pos))
+	vis.screen_exited.connect(func() -> void:
+		visible = false
+		set_process(false))
+	add_child(vis)
 	_name.text = h.display_name(names)
 	_name.add_theme_font_size_override("font_size", 22)
 	_name.add_theme_color_override("font_color", Color.WHITE)
@@ -97,18 +109,18 @@ func _ensure_work_nodes() -> void:
 	add_child(_cone)
 	_load_bg = ColorRect.new()
 	_load_bg.color = Color(0.165, 0.165, 0.2, 0.75)
-	_load_bg.size = Vector2(56, 9)
-	_load_bg.position = Vector2(-28, -52)
+	_load_bg.size = Vector2(38, 7)
+	_load_bg.position = Vector2(-19, -36)
 	add_child(_load_bg)
 	_load_fill = ColorRect.new()
 	_load_fill.color = Color(0.45, 0.85, 0.4)
 	_load_fill.size = Vector2(0, 5)
-	_load_fill.position = Vector2(-26, -50)
+	_load_fill.position = Vector2(-17, -35)
 	add_child(_load_fill)
 	_hammer = Label.new()
 	_hammer.text = "🔨"
-	_hammer.add_theme_font_size_override("font_size", 30)
-	_hammer.position = Vector2(14, -40)
+	_hammer.add_theme_font_size_override("font_size", 22)
+	_hammer.position = Vector2(8, -30)
 	_hammer.pivot_offset = Vector2(4, 30)
 	_hammer.visible = false
 	add_child(_hammer)
@@ -119,7 +131,7 @@ func _update_work_look(delta: float) -> void:
 	_t += delta
 	var cap := maxi(_helper.inventory.slot_count * _helper.inventory.stack_size, 1)
 	var total := _helper.inventory.total()
-	_load_fill.size.x = 52.0 * clampf(float(total) / cap, 0.0, 1.0)
+	_load_fill.size.x = 34.0 * clampf(float(total) / cap, 0.0, 1.0)
 	_load_fill.color = Color(0.45, 0.85, 0.4) if total < cap else Color(1.0, 0.7, 0.25)
 	_load_bg.visible = total > 0
 	_load_fill.visible = total > 0
@@ -138,23 +150,15 @@ func _update_work_look(delta: float) -> void:
 	_last_cd = _helper.hammer_cooldown
 	# Leerlauf: grauer, langsam wippend; Arbeit: volle Farbe
 	var idle := _helper.bored != "" and total == 0 and not _helper.has_move_target()
-	# Eigene Figuren je Stufe (MS65): Bot, Super-Bot, Mega-Bot; nur der normale Bot trägt seine Farbe
-	if _helper.power != _shown_power:
-		_shown_power = _helper.power
-		_sprite.texture = load(TEX[2 if _helper.power >= 25 else (1 if _helper.power >= 5 else 0)])
-	var base := _base_modulate() if _helper.power < 5 else Color.WHITE
-	if _helper.power >= 125:
-		base = Color.from_hsv(fmod(_t * 0.25, 1.0), 0.35, 1.0)   # Giga-Bot: Regenbogen-Glanz (MS67)
-	var bs := 0.8 if _helper.power < 5 else (0.95 if _helper.power < 25 else (1.15 if _helper.power < 125 else 1.5))
+	# MS73: alle Bots bleiben klein; bessere Werkzeugstufe = schönere Farbe (Türkis → Grün →
+	# Blau → Lila → Gold), nie größer
+	var base: Color = TIER_TINT[clampi(_helper.hammer_tier, 1, 5) - 1]
+	var bs := SIZE
 	if not _swinging:
 		_sprite.scale = _sprite.scale.lerp(Vector2(bs, bs), minf(1.0, delta * 6.0))
 	_sprite.modulate = _sprite.modulate.lerp(base.lerp(Color(0.6, 0.6, 0.65), 0.6) if idle else base, minf(1.0, delta * 4.0))
 	_sprite.position.y = sin(_t * 1.6) * 3.0 if idle else 0.0
 
-
-func _base_modulate() -> Color:
-	var col := Color.html(str(_colors[_helper.color_index % _colors.size()])) if not _colors.is_empty() else Color.WHITE
-	return col.lerp(Color.WHITE, 0.65)   # leichte Eigenfarbe, die Figur bleibt erkennbar
 
 
 func _fly_in(n: int) -> void:

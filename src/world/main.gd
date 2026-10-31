@@ -123,10 +123,6 @@ func _ready() -> void:
 	_world.milestone_reached.connect(_on_milestone_reached)
 	_world.boss_defeated.connect(_on_boss_defeated)
 	_world.boss_rally.connect(_on_boss_rally)
-	_world.helper_fused.connect(func(h: Helper) -> void:
-		hint("giga" if h.power >= 125 else ("mega" if h.power >= 25 else "super"))
-		if h.power >= 25:
-			_shake(6.0, 0.3))
 	_world.hammer_impact.connect(func(_n: ResourceNode, tier: int, one_hit: bool) -> void:
 		if one_hit and tier >= 4:
 			_shake(2.5, 0.12)  # nur große Treffer, sanft (MS50)
@@ -543,10 +539,6 @@ const HINTS := {
 	"collection": ["HINT_T_COLLECTION", "HINT_D_COLLECTION", "res://assets/sprites/buildings/collection_point.svg"],
 	"drones": ["HINT_T_DRONES", "HINT_D_DRONES", "res://assets/sprites/robot/drone.svg"],
 	"courier": ["HINT_T_COURIER", "HINT_D_COURIER", "res://assets/sprites/robot/courier.svg"],
-	"fusion": ["HINT_T_FUSION", "HINT_D_FUSION", "res://assets/sprites/robot/bot_super.svg"],
-	"super": ["HINT_T_SUPER", "HINT_D_SUPER", "res://assets/sprites/robot/bot_super.svg"],
-	"mega": ["HINT_T_MEGA", "HINT_D_MEGA", "res://assets/sprites/robot/bot_mega.svg"],
-	"giga": ["HINT_T_GIGA", "HINT_D_GIGA", "res://assets/sprites/robot/bot_mega.svg"],
 }
 var _hint_queue: Array[String] = []
 var _zone_hud_timer := 0.0
@@ -574,8 +566,6 @@ func _tick_hints(delta: float) -> void:
 			hint("drones")
 		if f.has("courier"):
 			hint("courier")
-		if HelperSystem.can_fuse(_world, 1) or HelperSystem.can_fuse(_world, 5):
-			hint("fusion")
 	_hint_wait -= delta
 	if _hint_wait > 0.0 or _hint_queue.is_empty() or _launching or InputRouter.context != InputRouter.Context.GAME:
 		return

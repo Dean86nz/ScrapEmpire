@@ -2,6 +2,26 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.29.0] – 2026-10-31 – MS73 Gewusel (Phase 2.5)
+
+### Geändert
+- **Viele kleine Bots statt Riesen-Bots:** Verschmelzen (Super-, Mega-, Giga-Bot) entfällt samt Knopf, Hinweisen und Wackeln. Alle Bots bleiben klein (etwas kleiner als Rusty) und werden mit besseren Werkzeugen schneller, stärker und schöner (Farbe Türkis → Grün → Blau → Lila → Gold), aber nie größer
+- **Bis zu 150 Bots** statt 40; der Ladebalken über dem Bot ist mitgeschrumpft
+- Alte Spielstände mit verschmolzenen Bots laden weiter: diese Bots behalten ihre Stärke, sehen aber aus wie alle anderen
+- Screenshot `docs/screens/ms73_gewusel.png`
+
+### Leistung
+- Bots außerhalb des Bildschirms werden nicht gezeichnet und nicht animiert
+- Messung PC, ohne Bildratenbegrenzung, Szenario „army“ (150 Bots, 40 Drohnen): 208–231 FPS, Sim-Tick 3,5 ms
+
+### Technik
+- Entfernt: `HelperSystem.can_fuse/_cmd_fuse`, Befehl `fuse_helpers`, Signal `helper_fused`, Texte `BOT_FUSE*`, `HINT_*_FUSION/SUPER/MEGA/GIGA`
+- 233 Unit-Tests, 72 Gamepad-Prüfungen (Schritt „Verschmelzen“ entfällt), Weiterspielen-Prüfung grün
+
+### Ally-Testliste
+1. Viele Bots kaufen (Schiff-Menü → Bots): bleiben 60 FPS mit 100+ Bots?
+2. Sind die kleinen Bots gut erkennbar, und wirkt es wie ein Gewusel?
+
 ## [2.28.0] – 2026-10-31 – MS72 Secrets vorerst entfernt (Phase 2.5)
 
 ### Entfernt
