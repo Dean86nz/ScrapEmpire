@@ -106,6 +106,7 @@ func setup_look(world: SimWorld) -> void:
 	_look_world = world
 	if _look == null:
 		_look = RustyLook.new()
+		_look.name = "RustyLook"
 		_sprite.add_child(_look)
 	world.modifiers_changed.connect(func(_m: Dictionary) -> void: refresh_look())
 	refresh_look()

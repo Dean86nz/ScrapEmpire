@@ -194,4 +194,5 @@
 - [x] MS72 Secrets entfernt, archiviert (v2.28.0)
 - [x] MS73 Gewusel: kleine Bots, keine Fusion, bis 150 Bots (v2.29.0)
 - [x] MS74 Werkzeug-Leiter: Pömpel, Greifzange, Magnetkran, Schrottpresse, Laser (v2.30.0)
-- [ ] Phase 2.5: MS75 Rusty mit Werkzeug
+- [x] MS75 Rusty trägt Sauger und Werkzeug (v2.31.0)
+- [ ] Steam-Technik: wartet auf App-ID und Freigabe für GodotSteam
