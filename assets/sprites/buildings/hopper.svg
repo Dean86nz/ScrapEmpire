@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Fangtrichter (MS77): großer Auffangtrichter auf drei Beinen, Blick schräg von oben -->
+  <ellipse cx="64" cy="118" rx="50" ry="7" fill="#2A2A33" opacity="0.2"/>
+  <path d="M40 92 L30 116 M88 92 L98 116 M64 96 L64 118" stroke="#2A2A33" stroke-width="6" stroke-linecap="round"/>
+  <rect x="48" y="78" width="32" height="22" rx="6" fill="#8E9499" stroke="#2A2A33" stroke-width="5"/>
+  <path d="M10 30 L118 30 L80 82 L48 82 Z" fill="#F28C28" stroke="#2A2A33" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M26 42 L102 42" stroke="#FFC83C" stroke-width="7" stroke-linecap="round" stroke-dasharray="12 10"/>
+  <ellipse cx="64" cy="30" rx="56" ry="16" fill="#5B8CFF" stroke="#2A2A33" stroke-width="6"/>
+  <ellipse cx="64" cy="30" rx="42" ry="10" fill="#2E3A66"/>
+  <path d="M30 24 Q50 16 76 18" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.6"/>
+</svg>

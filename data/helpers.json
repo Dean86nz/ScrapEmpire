@@ -117,5 +117,14 @@
         }
       ]
     }
-  ]
+  ],
+  "roamer": {
+    "_comment": "Streuner (MS77): frei fahrende Bots, Freischaltung roamers (Schiffsstufe 4). Kosten base * growth^Anzahl. Würfel fliegen höchstens throw_range_px weit.",
+    "cost_base_bolts": 20000,
+    "cost_growth": 1.02,
+    "max": 300,
+    "throw_range_px": 1600,
+    "throw_speed_px_s": 900,
+    "hopper_capacity": 120
+  }
 }

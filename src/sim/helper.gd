@@ -25,6 +25,8 @@ var bored := ""               # "" = hat Arbeit; "empty" = nichts mehr da; "too_
 var zone_id := ""             # zugewiesene Zone (seit MS34); "" = alter Kreis um zone_tile
 var auto := true              # seit MS42 immer: sucht sich selbst die nächste Zone mit passendem Müll
 var rally_id := -1
+var kind := ""               # "" = Zonen-Bot, "roamer" = Streuner ohne Zone (MS77)
+var claim_tile := Vector2i(-1, -1)   # Ziel, das dieser Streuner gerade belegt
 var power := 1               # nur noch für alte Spielstände mit verschmolzenen Bots (Fusion entfiel in MS73)
 var work_mult := 1.0         # power × (1 + Bot-Kraft)
 var _nav_goal := Vector2i(-999999, -999999)
@@ -78,7 +80,7 @@ func tick(world: SimWorld) -> void:
 		_plan_cooldown -= 1
 	# Neu planen, wenn keine Schritte vorliegen oder die Liste einmal durchlaufen wurde.
 	if tasks.steps.is_empty() or tasks.loops != _last_loops:
-		if _plan_cooldown == 0 and world.plan_budget > 0:
+		if _plan_cooldown == 0 and world.plan_budget > 0 and (kind == "" or world.roamer_budget > 0):
 			world.plan_budget -= 1   # MS76: höchstens wenige Bots planen im selben Tick (Ruckler)
 			_plan(world)
 	tasks.tick(world, self)
@@ -107,6 +109,9 @@ func _plan(world: SimWorld) -> void:
 			tasks.start(self)
 			return
 		rally_id = -1
+	if kind == RoamerSystem.KIND:
+		_plan_roamer(world)
+		return
 	# Lose Teile in der Zone (Hammer-Reste, Touristensäcke, Meteoritenreste) haben Vorrang (MS49)
 	if not inventory.is_full():
 		var loose_best: LooseItem = null
@@ -157,11 +162,38 @@ func _plan(world: SimWorld) -> void:
 		_plan_cooldown = 100
 
 
+## Streuner (MS77): volle Ladung als Würfel zum Trichter schießen, dann den nächsten Müll
+## irgendwo auf dem Planeten suchen. Ohne Trichter in Reichweite wartet er mit Symbol.
+func _plan_roamer(world: SimWorld) -> void:
+	world.roamer_budget -= 1
+	RoamerSystem.release(world, self)
+	var cap := inventory.slot_count * inventory.stack_size
+	if inventory.total() > 0 and (inventory.is_full() or inventory.total() * 10 >= cap * 7):
+		if not RoamerSystem.throw_cube(world, self):
+			bored = "no_hopper"
+			_plan_cooldown = 40
+			return
+	var best := RoamerSystem.find_target(world, self)
+	if best == null:
+		bored = "too_hard" if RoamerSystem.last_too_hard else "empty"
+		if inventory.total() > 0 and not RoamerSystem.throw_cube(world, self):
+			bored = "no_hopper"
+		_plan_cooldown = 100
+		return
+	bored = ""
+	RoamerSystem.claim(world, self, best.tile)
+	tasks.add_step(TaskList.Type.HAMMER if best.uses_hammer() else TaskList.Type.COLLECT, best.tile)
+	tasks.start(self)
+
+
 func _move(world: SimWorld) -> void:
 	if not has_move_target():
 		return
 	# Wegfindung um alle Hindernisse (MS48/61): bei neuem Ziel ohne freie Sichtlinie A*-Wegpunkte holen
 	if move_target != _nav_goal:
+		if world.path_budget <= 0:
+			return   # MS77: Wegberechnungen je Tick begrenzt, nächster Tick
+		world.path_budget -= 1
 		_nav_goal = move_target
 		_nav_path.clear()
 		_stuck_ticks = 0
@@ -228,7 +260,7 @@ func to_dict() -> Dictionary:
 		"name_index": name_index, "color_index": color_index,
 		"pos": [pos.x, pos.y], "zone": [zone_tile.x, zone_tile.y], "radius": radius_tiles,
 		"depot": [depot_tile.x, depot_tile.y], "inventory": inventory.to_dict(),
-		"stuck_timer": stuck_timer, "zone_id": zone_id, "rally": rally_id, "power": power,
+		"stuck_timer": stuck_timer, "zone_id": zone_id, "rally": rally_id, "power": power, "kind": kind,
 	}
 
 
@@ -244,3 +276,4 @@ func from_dict(d: Dictionary) -> void:
 	zone_id = str(d.get("zone_id", ""))
 	rally_id = int(d.get("rally", -1))
 	power = maxi(1, int(d.get("power", 1)))
+	kind = str(d.get("kind", ""))

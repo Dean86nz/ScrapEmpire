@@ -105,7 +105,7 @@ TECH_HELPER_TOOLS_DESC,Helfer bauen bis Stufe 2 ab.,Helpers mine up to tier 2.
 TECH_DONE,Erforscht,Researched
 TECH_RESEARCHING,Wird erforscht,Researching
 TECH_NEEDS,Braucht: %s,Needs: %s
-TECH_MISSING_BOLTS,Es fehlen %d Bolts,Missing %d bolts
+TECH_MISSING_BOLTS,Es fehlen %s Bolts,Missing %s bolts
 TECH_MISSING_ITEMS,Material fehlt,Missing material
 TECH_BUSY,Andere Forschung läuft,Other research running
 TECH_READY,A: Forschen,A: Research
@@ -706,3 +706,9 @@ HINT_D_TOOL4,"Presst fast alles platt.","Squashes almost anything flat."
 HINT_T_TOOL5,Neues Werkzeug: Laser,New tool: laser
 HINT_D_TOOL5,"Schneidet alles – auch Bosse, notfalls ganz allein (Bots helfen, schneller zu sein).","Cuts everything – even bosses, all alone if needed (bots make it faster)."
 BOSS_LASER,Laser: geht auch allein!,Laser: works solo too!
+ROAMER_BUILD,Streuner bauen,Build rover
+HOPPER_PLACE,Fangtrichter hier abstellen,Place catch funnel here
+BLD_HOPPER,Fangtrichter,Catch funnel
+HINT_T_ROAMERS,Neu: Streuner,New: rovers
+HINT_D_ROAMERS,"Fahren frei über den Planeten und schießen Müllwürfel in Fangtrichter. Bots-Menü: Streuner bauen, Trichter abstellen.","Roam the whole planet and shoot trash cubes into catch funnels. Bots menu: build rovers, place funnels."
+ROAMER_NAME,Streuner,Rover

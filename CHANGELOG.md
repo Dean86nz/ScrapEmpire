@@ -2,6 +2,38 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.33.0] – 2026-11-02 – MS77 Streuner, Müllwürfel, Fangtrichter (Phase 3)
+
+### Neu
+- **Streuner:** neuer Bot ohne Zone. Er sucht sich selbst den nächsten Müll auf dem ganzen Planeten, den sein Werkzeug schafft (nur offene Zonen), putzt ihn weg und fährt weiter. Höchstens 2 Streuner je Objekt (große Objekte 4), damit sie sich verteilen statt zu klumpen. Eigene Figur (heller Körper, oranger Presskasten, lila Wimpel)
+- **Müllwürfel:** Ist der Behälter voll, presst der Streuner die Ladung zu einem Würfel und schießt ihn in hohem Bogen (drehend, mit Schatten und Plopp) zum nächsten Fangtrichter mit Platz, höchstens 25 Kacheln weit. Er arbeitet sofort weiter
+- **Fangtrichter:** baubares Gebäude (Bots-Menü: „Fangtrichter hier abstellen“, neben Rusty), fasst 120 Teile, zeigt den Füllstand, blinkt rot, wenn voll. Würfel fliegen dann zum nächsten freien Trichter. Jeder Trichter bringt eine Drohne mit
+- **Drohnen** holen den Inhalt am Trichter ab und fliegen ihn zum Schiff, dort werden daraus Bolts
+- **Kein Trichter in Reichweite:** Der Streuner wartet und zeigt ein Symbol (durchgestrichener Trichter)
+- **Freischaltung:** Schiffsstufe 4 („roamers“), danach im Bots-Menü „Streuner bauen“ (teuer, Preis steigt je Streuner). Hinweis-Karte beim Freischalten
+- Screenshot `docs/screens/ms77_streuner.png`
+
+### Geändert
+- Sammel-Bots kosten wieder nach ihrer eigenen Anzahl (Streuner zählen nicht mit)
+- „Es fehlen …“ im Menü mit lesbarer Zahl (z. B. 2,1M statt 2062446955)
+
+### Leistung
+- Zielsuche über ein Raster (8×8 Kacheln): belegte Felder nach Entfernung, Felder mit nur zu hartem Müll werden übersprungen
+- Je Tick höchstens 3 Streuner-Suchen und 8 neue Wege
+- Messung PC, 150 Streuner, 30 Drohnen, Szenario „roamers“: Sim-Tick 5,6 ms, längstes Bild 33 ms, 4 Bilder über 25 ms in 2 400 Bildern
+- Messung genauer: Beim Messen schreibt das Test-Skript keine Sprüche mehr in die Konsole (das kostete selbst 10–25 ms und sah aus wie Ruckler beim Level-Up)
+
+### Technik
+- `Hopper` (erbt von `CollectionPoint`), `TrashCube`, `RoamerSystem`, `Helper.kind`, Befehle `buy_roamer`, `place_hopper`, Szenario `scenario=roamers`; Werte in `data/helpers.json` („roamer“)
+- 242 Unit-Tests (neu: Zielsuche über Zonen, geschlossene Zone, voller Trichter leitet um, Symbol ohne Trichter, Trichter → Drohne → Bolts, Spielstand mit Würfel im Flug), 72 Gamepad-Prüfungen, Weiterspielen-Prüfung grün
+
+### Ally-Testliste
+1. Schiffsstufe 4 erreichen (oder Debug-Szenario „roamers“): Streuner bauen, Fangtrichter abstellen
+2. Sieht man den Würfel-Bogen gut? Ist das Plopp angenehm?
+3. Trichter voll: blinkt er deutlich, fliegen Würfel zum nächsten?
+4. Ohne Trichter: ist das Symbol über dem Streuner verständlich?
+5. Viele Streuner: bleibt es bei 60 FPS?
+
 ## [2.32.0] – 2026-11-02 – MS76 Stabilisierung: verschwindende Bots, Ruckeln
 
 ### Behoben

@@ -75,6 +75,7 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		"milestones": world.milestones.to_dict(),
 		"events": world.events_state.duplicate(true),
 		"couriers": _couriers(world),
+		"cubes": RoamerSystem.cubes_to_list(world),
 		"courier_cooldown": world.courier_cooldown,
 		"bonus_nodes": _bonus_ids(world),
 		"dirt": world.dirt.to_dict(),
@@ -217,6 +218,7 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 		c.from_dict(cd)
 		world.couriers[c.id] = c
 	world.courier_cooldown = int(data.get("courier_cooldown", 0))
+	RoamerSystem.cubes_from_list(world, data.get("cubes", []))
 	if data.has("events"):
 		world.events_state = _events_from(data["events"])
 	for t in data.get("bonus_nodes", []):
@@ -256,5 +258,7 @@ static func _restore_building(b: Building, st: Dictionary, world: SimWorld) -> v
 		ShipSystem.apply_stage(world, s)
 		s.clean_radius = int(st.get("clean_radius", ShipSystem.clean_target(world, s)))
 	elif b is CollectionPoint:
+		if b is Hopper:
+			(b as Hopper).capacity = int(RoamerSystem.cfg(world).get("hopper_capacity", 120))
 		for k in st.get("store", {}):
 			(b as CollectionPoint).store[str(k)] = int(st["store"][k])

@@ -98,6 +98,17 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **67** | Noch crazier: Giga-Bot, Riesen-Wirbel, Druckwelle | v2.24.0 |
 | **68** | Optik-Rest: Schiffsstufen neu, Müll-Look | v2.25.0 |
 
+## Phase 3 (Go 2026-11-02): Bot-Armee
+
+| MS | Inhalt | Version |
+|---|---|---|
+| **76** | Stabilisierung: verschwindende Bots, Ruckeln | v2.32.0 |
+| **77** | Streuner, Müllwürfel, Fangtrichter | v2.33.0 |
+| 78 | Stations-Bots (Sammelstellen werden Trichter + Station) | v2.34.0 |
+| 79 | Leistungsanzeige (Müll/min, Bolts/min, Engpässe) | v2.35.0 |
+| 80 | Planetengröße und Balancing (Übersicht vorher) | v2.36.0 |
+| 81 | Fortschritt im Hintergrund (Hochrechnung, max. 8 h) | v2.37.0 |
+
 ## Phase 2.5 (Go 2026-10-31): Werkzeuge, Gewusel, Übersicht
 
 | MS | Inhalt | Version |

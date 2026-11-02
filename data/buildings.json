@@ -28,6 +28,21 @@
       "ports": [],
       "requires_feature": "collection",
       "max_per_zone": 1
+    },
+    {
+      "id": "hopper",
+      "name_key": "BLD_HOPPER",
+      "size": [
+        2,
+        2
+      ],
+      "cost": {
+        "bolts": 5000
+      },
+      "cost_growth": 1.25,
+      "sprite": "res://assets/sprites/buildings/hopper.svg",
+      "ports": [],
+      "requires_feature": "roamers"
     }
   ]
 }

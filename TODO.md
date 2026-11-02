@@ -196,5 +196,6 @@
 - [x] MS74 Werkzeug-Leiter: Pömpel, Greifzange, Magnetkran, Schrottpresse, Laser (v2.30.0)
 - [x] MS75 Rusty trägt Sauger und Werkzeug (v2.31.0)
 - [x] MS76 Stabilisierung: verschwindende Bots, Ruckeln (v2.32.0)
-- [ ] Phase 3 Bot-Armee: Plan vorgelegt, wartet auf Go
+- [x] MS77 Streuner, Müllwürfel, Fangtrichter (v2.33.0)
+- [ ] Phase 3: MS78 Stations-Bots → MS79 Leistungsanzeige → MS80 Planet/Balancing (Übersicht zuerst) → MS81 Hintergrund
 - [ ] Steam-Technik: wartet auf App-ID und Freigabe für GodotSteam

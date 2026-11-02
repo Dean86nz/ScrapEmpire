@@ -19,6 +19,7 @@ var _status: Label
 var _buffer_root := Node2D.new()
 var _half_h := 64.0
 var ship_fx: ShipFx   # nur beim Schiff
+var _blink: Tween     # Fangtrichter voll (MS77)
 
 
 
@@ -71,6 +72,20 @@ func refresh(b: Building) -> void:
 			ship_fx.set_stage(sh.stage)
 		_label.visible = false
 		return
+	if s.has("capacity"):
+		# Fangtrichter (MS77): Füllstand; voll = rot blinkend
+		var full := int(s["stored"]) >= int(s["capacity"])
+		_label.text = "%d / %d" % [int(s["stored"]), int(s["capacity"])]
+		_label.visible = true
+		_label.add_theme_color_override("font_color", Color(1.0, 0.45, 0.4) if full else Color.WHITE)
+		if full and (_blink == null or not _blink.is_valid()):
+			_blink = create_tween().set_loops()
+			_blink.tween_property(_sprite, "modulate", Color(1.0, 0.45, 0.45), 0.35)
+			_blink.tween_property(_sprite, "modulate", Color.WHITE, 0.35)
+		elif not full and _blink != null and _blink.is_valid():
+			_blink.kill()
+			_sprite.modulate = Color.WHITE
+		return
 	if s.has("stored"):
 		_label.text = "♻ %d" % int(s["stored"])
 		_label.visible = int(s["stored"]) > 0
@@ -85,6 +100,13 @@ func refresh(b: Building) -> void:
 		_label.visible = s["total"] > 0
 	else:
 		_label.visible = false
+
+
+## Fangtrichter fängt einen Würfel: kurz einfedern.
+func catch_bounce() -> void:
+	var tw := create_tween()
+	tw.tween_property(_sprite, "scale", Vector2(1.1, 0.85), 0.06)
+	tw.tween_property(_sprite, "scale", Vector2.ONE, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 ## Fliegender Betrag über dem Gebäude. `big`: Rustys Abgabe (groß, springt auf, bleibt länger).

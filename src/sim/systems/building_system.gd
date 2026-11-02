@@ -71,6 +71,8 @@ static func _cmd_place(w: SimWorld, cmd: Dictionary) -> void:
 	w.grid.place(b)
 	w.buildings[b.id] = b
 	w.progression.on_build()
+	if b is Hopper:
+		(b as Hopper).capacity = int(RoamerSystem.cfg(w).get("hopper_capacity", 120))
 	w.building_placed.emit(b)
 	if b is CollectionPoint:
 		NetworkSystem.on_point_built(w, b as CollectionPoint)

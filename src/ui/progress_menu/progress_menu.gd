@@ -26,6 +26,8 @@ var _drone_upgrade_cards: Dictionary = {}
 var _drone_cards: Dictionary = {}  # Button → drone id
 @onready var _helpers_tab: Control = $Center/Panel/VBox/Content/HelpersTab
 @onready var _buy_btn: Button = $Center/Panel/VBox/Content/HelpersTab/Left/BuyButton
+var _roamer_btn := Button.new()   # Streuner bauen (MS77)
+var _hopper_btn := Button.new()   # Fangtrichter neben Rusty abstellen (MS77)
 @onready var _helper_list: VBoxContainer = $Center/Panel/VBox/Content/HelpersTab/Left/HelperList
 @onready var _upgrade_list: VBoxContainer = $Center/Panel/VBox/Content/HelpersTab/Right/UpgradeList
 @onready var _upgrade_title: Label = $Center/Panel/VBox/Content/HelpersTab/Right/UpgradeTitle
@@ -98,6 +100,15 @@ func bind(world: SimWorld) -> void:
 	_build_skill_cards()
 	_map_view.zone_selected.connect(_on_zone_selected)
 	_buy_btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_helper"}))
+	for b: Button in [_roamer_btn, _hopper_btn]:
+		b.custom_minimum_size = _buy_btn.custom_minimum_size
+		b.size_flags_horizontal = _buy_btn.size_flags_horizontal
+		b.visible = false
+		_buy_btn.get_parent().add_child(b)
+	_buy_btn.get_parent().move_child(_roamer_btn, _buy_btn.get_index() + 1)
+	_buy_btn.get_parent().move_child(_hopper_btn, _buy_btn.get_index() + 2)
+	_roamer_btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_roamer"}))
+	_hopper_btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "place_hopper"}))
 	_upgrade_title.text = tr("HELPER_UPGRADES")
 	for u: Dictionary in _world.helper_cfg.get("upgrades", []):
 		var id := str(u["id"])
@@ -523,7 +534,7 @@ func _bolts_text(n: int) -> String:
 
 
 func _missing_text(cost: int) -> String:
-	return tr("TECH_MISSING_BOLTS") % (cost - _world.bolts)
+	return tr("TECH_MISSING_BOLTS") % Fmt.short(cost - _world.bolts)
 
 
 func _refresh_ship() -> void:
@@ -628,6 +639,17 @@ func _refresh_helpers() -> void:
 	_buy_btn.text = "%s  –  %s" % [tr("BOT_BUILD"), _build_status(reason, cost, "BOT_LOCKED")]
 	_buy_btn.disabled = reason != ""
 	_buy_btn.text += "  ·  " + tr("BOT_ARMY") % HelperSystem.army(w)
+	# Streuner und Fangtrichter (MS77), sobald freigeschaltet
+	var roam := w.unlocked_features.has("roamers")
+	_roamer_btn.visible = roam
+	_hopper_btn.visible = roam
+	if roam:
+		var rr := RoamerSystem.can_buy(w)
+		_roamer_btn.text = "%s  –  %s  ·  %d" % [tr("ROAMER_BUILD"), _build_status(rr, RoamerSystem.next_cost(w), "BOT_LOCKED"), RoamerSystem.count(w)]
+		_roamer_btn.disabled = rr != ""
+		var hc := int(w.next_cost(w.defs[RoamerSystem.HOPPER_DEF]).get("bolts", 0))
+		_hopper_btn.text = "%s  –  %s  ·  %d" % [tr("HOPPER_PLACE"), _build_status("" if w.bolts >= hc else "bolts", hc, "BOT_LOCKED"), RoamerSystem.hoppers(w).size()]
+		_hopper_btn.disabled = w.bolts < hc
 	var focused_bot := -1
 	var fb := get_viewport().gui_get_focus_owner()
 	if fb != null and _helper_cards.has(fb):
@@ -649,7 +671,7 @@ func _refresh_helpers() -> void:
 		var state := tr("HELPER_STATE_WAIT") if h.tasks.wait_ticks > 0 else (tr("HELPER_STATE_WORK") if h.tasks.active else tr("HELPER_STATE_IDLE"))
 		if h.bored != "" and h.inventory.total() == 0:
 			state = tr("HELPER_STATE_BORED_HARD") if h.bored == "too_hard" else tr("HELPER_STATE_BORED")
-		var zone_name: String = str(w.zones.zone_by_id(h.zone_id if h.zone_id != "" else w.zones.zone_id_at(h.zone_tile)).get("name", "?"))
+		var zone_name: String = tr("ROAMER_NAME") if h.kind == RoamerSystem.KIND else str(w.zones.zone_by_id(h.zone_id if h.zone_id != "" else w.zones.zone_id_at(h.zone_tile)).get("name", "?"))
 		_set_card(card, "%s · %s · %s %d/%d" % [state, zone_name, tr("HELPER_LOAD"), h.inventory.total(), h.inventory.slot_count * h.inventory.stack_size], Color.WHITE)
 		_helper_list.add_child(card)
 		_helper_cards.append(card)

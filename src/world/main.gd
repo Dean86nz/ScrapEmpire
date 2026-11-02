@@ -335,6 +335,23 @@ func debug_scenario(name: String) -> void:
 			var inv := _world.player.inventory
 			for i in inv.slot_count:
 				inv.add("scrap", inv.stack_size)
+		"roamers":
+			# Streuner-Test (MS77): Schiffsstufe-4-Freischaltung, Trichter in jeder Zone, viele Streuner
+			for f in ["collection", "helpers", "drones", "roamers"]:
+				_world.unlocked_features[f] = true
+			for z: Dictionary in _world.zones.zones:
+				_world.zones.unlocked[str(z["id"])] = true
+			_world.bolts += 1000000
+			for z: Dictionary in _world.zones.zones:
+				var r: Rect2i = z["rect"]
+				_world.place_free("hopper", r.get_center() + Vector2i(3, 3), 0)
+			_world.place_free("hopper", _world.player_tile() + Vector2i(4, 3), 0)
+			while _world.drones.size() < 30:
+				_world.add_drone()
+			for i in int(_world.helper_cfg.get("roamer", {}).get("max", 300)) / 2:
+				var hh := HelperSystem.add_helper(_world, _world.ship().tile, _world.ship().tile)
+				hh.kind = RoamerSystem.KIND
+				hh.zone_id = ""
 		"army":
 			# 40 Bots in allen Zonen, Sammelstellen, 12 Drohnen: Leistungstest
 			for f in ["collection", "helpers", "drones", "courier", "helper_tools"]:
@@ -539,6 +556,7 @@ const HINTS := {
 	"collection": ["HINT_T_COLLECTION", "HINT_D_COLLECTION", "res://assets/sprites/buildings/collection_point.svg"],
 	"drones": ["HINT_T_DRONES", "HINT_D_DRONES", "res://assets/sprites/robot/drone.svg"],
 	"courier": ["HINT_T_COURIER", "HINT_D_COURIER", "res://assets/sprites/robot/courier.svg"],
+	"roamers": ["HINT_T_ROAMERS", "HINT_D_ROAMERS", "res://assets/sprites/robot/roamer.svg"],
 	"tool2": ["HINT_T_TOOL2", "HINT_D_TOOL2", "res://assets/sprites/tools/tool_2.svg"],
 	"tool3": ["HINT_T_TOOL3", "HINT_D_TOOL3", "res://assets/sprites/tools/tool_3.svg"],
 	"tool4": ["HINT_T_TOOL4", "HINT_D_TOOL4", "res://assets/sprites/tools/tool_4.svg"],
@@ -562,6 +580,8 @@ func _tick_hints(delta: float) -> void:
 	if _hint_check <= 0.0:
 		_hint_check = 1.0
 		var f := _world.unlocked_features
+		if f.has("roamers"):
+			hint("roamers")
 		if _world.player.hammer_tier >= 2:   # MS74: neues Werkzeug vorstellen
 			hint("tool%d" % mini(_world.player.hammer_tier, 5))
 		if f.has("helpers"):

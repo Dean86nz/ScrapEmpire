@@ -19,7 +19,7 @@ static func points(w: SimWorld) -> Array[CollectionPoint]:
 
 static func point_in_zone(w: SimWorld, zone_id: String) -> CollectionPoint:
 	for p in points(w):
-		if w.zones.zone_id_at(p.tile) == zone_id:
+		if not (p is Hopper) and w.zones.zone_id_at(p.tile) == zone_id:
 			return p
 	return null
 
@@ -37,6 +37,8 @@ static func nearest_depot(w: SimWorld, pos: Vector2i) -> Building:
 	var best: Building = ShipSystem.ship(w)
 	var best_d := INF if best == null else Vector2(pos).distance_to(Vector2(best.center_px()))
 	for p in points(w):
+		if p is Hopper:
+			continue   # Trichter fangen nur Würfel (MS77)
 		var d := Vector2(pos).distance_to(Vector2(p.center_px()))
 		if d < best_d:
 			best_d = d
@@ -127,7 +129,7 @@ static func _tick_auto(w: SimWorld) -> void:
 	if w.tick_count % 20 != 7:
 		return
 	for h: Helper in w.helpers.values():
-		if h.bored != "" and h.inventory.total() == 0 and h.rally_id < 0:
+		if h.kind == "" and h.bored != "" and h.inventory.total() == 0 and h.rally_id < 0:
 			_auto_pick(w, h)
 
 
