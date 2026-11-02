@@ -27,6 +27,8 @@ var _drone_cards: Dictionary = {}  # Button → drone id
 @onready var _helpers_tab: Control = $Center/Panel/VBox/Content/HelpersTab
 @onready var _buy_btn: Button = $Center/Panel/VBox/Content/HelpersTab/Left/BuyButton
 var _station_btn := Button.new()  # Station neben Rusty bauen (MS78)
+var _army_label := Label.new()     # Übersicht je Bot-Art (MS79)
+var _issue_label := Label.new()    # Engpässe, orange (MS79)
 var _roamer_btn := Button.new()   # Streuner bauen (MS77)
 var _hopper_btn := Button.new()   # Fangtrichter neben Rusty abstellen (MS77)
 @onready var _helper_list: VBoxContainer = $Center/Panel/VBox/Content/HelpersTab/Left/HelperList
@@ -110,6 +112,17 @@ func bind(world: SimWorld) -> void:
 	_buy_btn.get_parent().move_child(_roamer_btn, _buy_btn.get_index() + 1)
 	_buy_btn.get_parent().move_child(_hopper_btn, _buy_btn.get_index() + 2)
 	_station_btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "build_station"}))
+	_army_label.add_theme_font_size_override("font_size", 22)
+	_army_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_army_label.custom_minimum_size = Vector2(0, 0)
+	_issue_label.add_theme_font_size_override("font_size", 22)
+	_issue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_issue_label.add_theme_color_override("font_color", Color(0.85, 0.42, 0.1))
+	_army_label.add_theme_color_override("font_color", Color(0.3, 0.3, 0.36))
+	_buy_btn.get_parent().add_child(_army_label)
+	_buy_btn.get_parent().move_child(_army_label, 0)
+	_buy_btn.get_parent().add_child(_issue_label)
+	_buy_btn.get_parent().move_child(_issue_label, 1)
 	_roamer_btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_roamer"}))
 	_hopper_btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "place_hopper"}))
 	_upgrade_title.text = tr("HELPER_UPGRADES")
@@ -641,7 +654,20 @@ func _refresh_helpers() -> void:
 	var cost := int(w.next_helper_cost()["bolts"])
 	_buy_btn.text = "%s  –  %s" % [tr("BOT_BUILD"), tr("BOT_NO_STATION") if reason == "no_station" else _build_status(reason, cost, "BOT_LOCKED")]
 	_buy_btn.disabled = reason != ""
-	_buy_btn.text += "  ·  " + tr("BOT_ARMY") % HelperSystem.army(w)
+	_buy_btn.text += "  ·  " + tr("BOT_ARMY") % HelperSystem.helper_count(w)
+	# Übersicht (MS79): Anzahl und Leistung je Bot-Art, darunter Engpässe
+	var rep := ArmyReport.summary(w)
+	var lines: Array[String] = []
+	lines.append(tr("ARMY_STATION") % [int(rep["station"][0]), Fmt.short(int(round(float(rep["station"][1]))))])
+	if w.unlocked_features.has("roamers"):
+		lines.append(tr("ARMY_ROAMER") % [int(rep["roamer"][0]), Fmt.short(int(round(float(rep["roamer"][1]))))])
+	_army_label.text = "   ·   ".join(lines)
+	_army_label.visible = w.unlocked_features.has("helpers")
+	var issues: Array[String] = []
+	for key: String in rep["issues"]:
+		issues.append("⚠ " + tr("ISSUE_" + key.to_upper()))
+	_issue_label.text = "\n".join(issues)
+	_issue_label.visible = not issues.is_empty()
 	# Station bauen (MS78): Bots brauchen einen Platz an einer Station
 	_station_btn.visible = w.unlocked_features.has("helpers")
 	if _station_btn.visible:

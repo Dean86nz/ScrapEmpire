@@ -105,7 +105,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **76** | Stabilisierung: verschwindende Bots, Ruckeln | v2.32.0 |
 | **77** | Streuner, Müllwürfel, Fangtrichter | v2.33.0 |
 | **78** | Stations-Bots (Sammelstellen werden Trichter + Station) | v2.34.0 |
-| 79 | Leistungsanzeige (Müll/min, Bolts/min, Engpässe) | v2.35.0 |
+| **79** | Leistungsanzeige (Müll/min, Bolts/min, Engpässe) | v2.35.0 |
 | 80 | Planetengröße und Balancing (Übersicht vorher) | v2.36.0 |
 | 81 | Fortschritt im Hintergrund (Hochrechnung, max. 8 h) | v2.37.0 |
 

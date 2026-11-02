@@ -196,6 +196,7 @@ static func throw_cube(w: SimWorld, h: Helper) -> bool:
 	for item in items:
 		h.inventory.remove(str(item), int(items[item]))
 	launch_cube(w, items, h.pos, hop)
+	w.perf.add("roamer", n, w.tick_count)   # MS79
 	return true
 
 

@@ -76,6 +76,7 @@ static func encode(world: SimWorld, map_name: String, player_pos: Vector2, selec
 		"events": world.events_state.duplicate(true),
 		"couriers": _couriers(world),
 		"cubes": RoamerSystem.cubes_to_list(world),
+		"perf": world.perf.to_dict(),
 		"courier_cooldown": world.courier_cooldown,
 		"bonus_nodes": _bonus_ids(world),
 		"dirt": world.dirt.to_dict(),
@@ -219,6 +220,7 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 		world.couriers[c.id] = c
 	world.courier_cooldown = int(data.get("courier_cooldown", 0))
 	RoamerSystem.cubes_from_list(world, data.get("cubes", []))
+	world.perf.from_dict(data.get("perf", {}))
 	StationSystem.migrate(world)   # MS78: Sammelstellen → Trichter + Station, Bots an Stationen
 	if data.has("events"):
 		world.events_state = _events_from(data["events"])

@@ -31,6 +31,7 @@ static func _cmd_deliver_all(w: SimWorld, cmd: Dictionary) -> void:
 				continue
 			var took := to.accept_stack(str(slot["item"]), int(slot["count"]))
 			stored += took
+			w.perf.add("rusty", took, w.tick_count)
 			w.player.inventory.remove(str(slot["item"]), took)   # voller Trichter: Rest bleibt in der Tasche
 		if stored == 0:
 			w.ship_failed.emit("empty")
@@ -49,6 +50,7 @@ static func _cmd_deliver_all(w: SimWorld, cmd: Dictionary) -> void:
 		var n := s.accept_stack(str(slot["item"]), int(slot["count"]))
 		w.player.inventory.remove(str(slot["item"]), n)
 		moved += n
+		w.perf.add("rusty", n, w.tick_count)
 	if moved == 0:
 		w.ship_failed.emit("empty")
 		return
@@ -66,8 +68,10 @@ static func credit(w: SimWorld, s: Ship) -> void:
 		var n := int(p[item])
 		var value := int(round(float(w.item_values.get(item, 0)) * n * float(w.mods["sell_mult"]) * (float(w.mods["rare_mult"]) if w.rare_items.has(item) else 1.0)))
 		total += value
+		w.perf.add("trash", n, w.tick_count)   # MS79: Müll pro Minute = was am Schiff ankommt
 		w.ship_received.emit(str(item), n)
 		w.item_sold.emit(str(item), value, s.center_px())
+	w.perf.add("bolts", total, w.tick_count)
 	if total <= 0:
 		return
 	w.bolts += total

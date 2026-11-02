@@ -75,6 +75,7 @@ func _ready() -> void:
 	add_child(stage_banner)
 	_build_goal_panel()
 	_build_zone_panel()
+	_build_rate_panel()
 	_build_courier_panel()
 	set_hint(tr("HUD_HINT_GAME"))
 	set_bolts(0)
@@ -211,6 +212,8 @@ func _build_goal_panel() -> void:
 # --- Gebietsanzeige (MS71): dezent links, „Kabelsenke · 64 %“ ---------------------------
 
 var _zone_panel := PanelContainer.new()
+var _rate_panel := PanelContainer.new()   # Müll/min, Bolts/min (MS79)
+var _rate_label := Label.new()
 var _zone_label := Label.new()
 var _zone_shown := ""
 
@@ -226,6 +229,26 @@ func _build_zone_panel() -> void:
 	_zone_panel.add_child(_zone_label)
 	_zone_panel.visible = false
 	add_child(_zone_panel)
+
+
+## Leistung (MS79): Müll und Bolts pro Minute, dezent unter der Gebietsanzeige.
+func _build_rate_panel() -> void:
+	var sb: StyleBox = ($BoltsPanel as PanelContainer).get_theme_stylebox("panel").duplicate()
+	if sb is StyleBoxFlat:
+		(sb as StyleBoxFlat).bg_color.a *= 0.55
+	_rate_panel.add_theme_stylebox_override("panel", sb)
+	_rate_panel.position = Vector2(24, 246)
+	_rate_label.add_theme_font_size_override("font_size", 22)
+	_rate_label.add_theme_color_override("font_color", Color(1, 1, 1, 0.85))
+	_rate_panel.add_child(_rate_label)
+	_rate_panel.visible = false
+	add_child(_rate_panel)
+
+
+func set_rates(trash_per_min: float, bolts_per_min: float) -> void:
+	_rate_panel.visible = trash_per_min > 0.0 or bolts_per_min > 0.0
+	_rate_label.text = tr("HUD_RATES") % [Fmt.short(int(round(trash_per_min))), Fmt.short(int(round(bolts_per_min)))]
+	_rate_panel.reset_size()
 
 
 ## Name und Reinigungsgrad des aktuellen Gebiets; beim Wechsel kurz aufleuchten.
