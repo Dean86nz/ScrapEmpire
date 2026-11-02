@@ -68,20 +68,7 @@ static func _cmd_buy(w: SimWorld, _cmd: Dictionary) -> void:
 
 ## Fangtrichter in Rustys Nähe abstellen: nächster freier Platz um ihn herum.
 static func _cmd_place_hopper(w: SimWorld, _cmd: Dictionary) -> void:
-	var def: BuildingDef = w.defs.get(HOPPER_DEF, null)
-	if def == null:
-		return
-	var center := w.player_tile() + Vector2i(1, -1)
-	for r in range(0, 6):
-		for dy in range(-r, r + 1):
-			for dx in range(-r, r + 1):
-				if maxi(absi(dx), absi(dy)) != r:
-					continue
-				var t := center + Vector2i(dx, dy)
-				if BuildingSystem.can_place_def(w, def, t, 0) and BuildingSystem.in_build_range(w, t, def.rotated_size(0)):
-					BuildingSystem._cmd_place(w, {"def_id": HOPPER_DEF, "tile": t, "rot": 0})
-					return
-	w.place_failed.emit("blocked")
+	BuildingSystem.place_near_player(w, HOPPER_DEF)
 
 
 # --- Zielsuche über das Raster ----------------------------------------------------------
@@ -202,22 +189,31 @@ static func throw_cube(w: SimWorld, h: Helper) -> bool:
 	var hop := nearest_hopper(w, h.pos, n)
 	if hop == null:
 		return false
+	var items := {}
+	for sl: Dictionary in h.inventory.slots:
+		if str(sl["item"]) != "" and int(sl["count"]) > 0:
+			items[str(sl["item"])] = int(items.get(str(sl["item"]), 0)) + int(sl["count"])
+	for item in items:
+		h.inventory.remove(str(item), int(items[item]))
+	launch_cube(w, items, h.pos, hop)
+	return true
+
+
+## Würfel mit `items` von `from` zum Gebäude `target` schießen (Trichter oder Schiff).
+static func launch_cube(w: SimWorld, items: Dictionary, from: Vector2i, target: Building) -> TrashCube:
 	var cube := TrashCube.new()
 	cube.id = w.next_id()
-	for s: Dictionary in h.inventory.slots:
-		if str(s["item"]) != "" and int(s["count"]) > 0:
-			cube.items[str(s["item"])] = int(cube.items.get(str(s["item"]), 0)) + int(s["count"])
-	for item in cube.items:
-		h.inventory.remove(str(item), int(cube.items[item]))
-	cube.from = h.pos
-	cube.to = hop.center_px()
-	cube.hopper_id = hop.id
+	cube.items = items.duplicate()
+	cube.from = from
+	cube.to = target.center_px()
+	cube.hopper_id = target.id
 	var speed := float(cfg(w).get("throw_speed_px_s", 900)) / 20.0
 	cube.dur = maxi(10, int(Vector2(cube.to - cube.from).length() / speed))
-	hop.incoming += n
+	if target is Hopper:
+		(target as Hopper).incoming += cube.count()
 	w.cubes[cube.id] = cube
 	w.cube_thrown.emit(cube)
-	return true
+	return cube
 
 
 static func _tick_cubes(w: SimWorld) -> void:
@@ -226,10 +222,11 @@ static func _tick_cubes(w: SimWorld) -> void:
 		if cube.t < cube.dur:
 			continue
 		w.cubes.erase(cube.id)
-		var hop := w.buildings.get(cube.hopper_id) as Hopper
+		var hop: Building = w.buildings.get(cube.hopper_id)
 		var left := cube.items.duplicate()
 		if hop != null:
-			hop.incoming = maxi(0, hop.incoming - cube.count())
+			if hop is Hopper:
+				(hop as Hopper).incoming = maxi(0, (hop as Hopper).incoming - cube.count())
 			for item in cube.items:
 				left[item] = int(left[item]) - hop.accept_stack(str(item), int(cube.items[item]))
 			w.building_changed.emit(hop)

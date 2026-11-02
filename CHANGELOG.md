@@ -2,6 +2,31 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.34.0] – 2026-11-02 – MS78 Stations-Bots (Phase 3)
+
+### Neu
+- **Bot-Stationen:** Bots gehören jetzt zu einer kleinen Station (Bots-Menü: „Station hier bauen“, neben Rusty, 300 Bolts, jede weitere etwas teurer). Je Station 3 Bots. Sie arbeiten nur im Umkreis von 7 Kacheln und liefern an der Station ab; den Umkreis zeigt ein gestrichelter Ring, wenn Rusty in der Nähe ist
+- **Weitergabe:** Steht die Station nah am Schiff (etwa 14 Kacheln), schießt sie ihre Ladung selbst als Würfel hinüber. Weiter weg holt eine Drohne ab; jede Station bringt eine Drohne mit
+- „Sammel-Bot bauen“ braucht eine Station mit freiem Platz (sonst: „Erst eine Station mit freiem Platz bauen“); Sammel-Bots bleiben günstig (150 Bolts für den ersten)
+- Rusty kann an Station und Fangtrichter abladen (A)
+
+### Geändert
+- **Sammelstellen und feste Bauplätze entfallen.** Alte Spielstände werden beim Laden umgebaut: Jede Sammelstelle wird zum Fangtrichter (Inhalt bleibt) plus Station daneben; jeder Bot bekommt einen freien Platz in seiner Zone, sonst eine neue Station dort, wo er gerade arbeitet. Geprüft mit einer Kopie deines Spielstands (69 Bots → 35 Stationen, alle Bots im Umkreis, längster Tick 8 ms)
+- Bots wechseln nicht mehr selbst die Zone (nur noch, wenn Rusty sie zum Boss ruft)
+
+### Behoben
+- Abladen an einem vollen Fangtrichter: Teile, die nicht mehr passen, bleiben jetzt in der Tasche (vorher gingen sie verloren)
+
+### Technik
+- `Station`, `StationSystem` (bauen, binden, Weitergabe, Umbau), `BuildingSystem.place_near_player/place_free_near/remove_free`, `RoamerSystem.launch_cube` (Würfel zu jedem Gebäude), Befehl `build_station`; Werte in `data/helpers.json` („station“)
+- 242 Unit-Tests (Sammelstellen-Tests ersetzt durch: Station kostet und bringt Drohne, Drohne leert ferne Station, nahe Station schießt zum Schiff, Bot bleibt im Umkreis, Kauf braucht freien Platz, Umbau alter Sammelstelle), 72 Gamepad-Prüfungen (Station über das Bots-Menü bauen), Weiterspielen-Prüfung grün
+- ARCHITECTURE 10m und GDD 23d beschreiben die Bot-Armee
+
+### Ally-Testliste
+1. Deinen Spielstand laden: Wo stehen die neuen Stationen, arbeiten alle Bots?
+2. Neues Spiel bis Schiffsstufe 2: Station bauen, Bots kaufen. Ist der Ablauf klar?
+3. Station weit weg vom Schiff: holt die Drohne ab? Nah am Schiff: fliegen Würfel hinüber?
+
 ## [2.33.0] – 2026-11-02 – MS77 Streuner, Müllwürfel, Fangtrichter (Phase 3)
 
 ### Neu

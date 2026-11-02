@@ -52,7 +52,8 @@ func test_roundtrip_restores_everything() -> void:
 func test_roundtrip_is_deterministic() -> void:
 	var w := _populated()
 	w.unlocked_features["helpers"] = true
-	w.add_helper(Vector2i(6, 5), w.ship().tile)
+	var st := w.place_free(StationSystem.DEF, Vector2i(6, 5)) as Station
+	StationSystem.bind(w.add_helper(Vector2i(6, 5), st.tile), st)
 	var data := SaveCodec.encode(w, "main", Vector2(320, 96), 0)
 	var w2 := TestWorlds.make()
 	SaveCodec.decode(JSON.parse_string(JSON.stringify(data)), w2)

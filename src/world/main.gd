@@ -325,8 +325,9 @@ func debug_scenario(name: String) -> void:
 				_world.unlocked_features[f] = true
 			_world.bolts += 5000
 			_world.bolts_changed.emit(_world.bolts)
-			var pt := _world.place_free("collection_point", _world.player_tile() + Vector2i(5, -4), 0)
+			var pt := BuildingSystem.place_free_near(_world, StationSystem.DEF, _world.player_tile() + Vector2i(5, -4))
 			if pt != null:
+				StationSystem.apply(_world, pt as Station)
 				NetworkSystem.on_point_built(_world, pt as CollectionPoint)
 				(pt as CollectionPoint).accept_stack("scrap", 30)
 				_world.building_changed.emit(pt)
@@ -353,24 +354,31 @@ func debug_scenario(name: String) -> void:
 				hh.kind = RoamerSystem.KIND
 				hh.zone_id = ""
 		"army":
-			# 40 Bots in allen Zonen, Sammelstellen, 12 Drohnen: Leistungstest
+			# Stations-Bots in allen Zonen (je Zone Stationen bis alle Bots Platz haben), Drohnen: Leistungstest
 			for f in ["collection", "helpers", "drones", "courier", "helper_tools"]:
 				_world.unlocked_features[f] = true
 			for z: Dictionary in _world.zones.zones:
 				_world.zones.unlocked[str(z["id"])] = true
 			_world.bolts += 1000000
-			for z: Dictionary in _world.zones.zones:
-				var r: Rect2i = z["rect"]
-				var pt := _world.place_free("collection_point", r.get_center(), 0)
-				if pt != null:
-					(pt as CollectionPoint).accept_stack("scrap", 60)
 			while _world.drones.size() < int(_world.drone_cfg.get("max_drones", 12)):
 				_world.add_drone()
 			var zs: Array = _world.zones.zones
+			var sts: Array[Station] = []
 			for i in int(_world.helper_cfg.get("max_helpers", 40)):
 				var zr: Rect2i = zs[i % zs.size()]["rect"]
+				var k := i / zs.size()
+				if i % (zs.size() * 3) < zs.size():   # alle 3 Bots einer Zone eine neue Station
+					var off := Vector2i((k / 3) % 5 * 6 - 12, (k / 15) * 6 - 6)
+					var st := BuildingSystem.place_free_near(_world, StationSystem.DEF, zr.get_center() + off) as Station
+					if st != null:
+						StationSystem.apply(_world, st)
+						st.accept_stack("scrap", 20)
+						sts.append(st)
 				var hh := HelperSystem.add_helper(_world, zr.get_center(), _world.ship().tile)
-				hh.zone_id = str(zs[i % zs.size()]["id"])
+				var near := StationSystem.free_station_near(_world, zr.get_center() * SimWorld.TILE)
+				if near != null:
+					StationSystem.bind(hh, near)
+					hh.pos = near.center_px() + Vector2i(0, 48)
 		"endgame":
 			_world.bolts += 100000
 			_world.bolts_changed.emit(_world.bolts)
@@ -553,7 +561,7 @@ func _small_purchase() -> void:
 
 const HINTS := {
 	"bots": ["HINT_T_BOTS", "HINT_D_BOTS", "res://assets/sprites/robot/bot.svg"],
-	"collection": ["HINT_T_COLLECTION", "HINT_D_COLLECTION", "res://assets/sprites/buildings/collection_point.svg"],
+	"collection": ["HINT_T_COLLECTION", "HINT_D_COLLECTION", "res://assets/sprites/buildings/station.svg"],
 	"drones": ["HINT_T_DRONES", "HINT_D_DRONES", "res://assets/sprites/robot/drone.svg"],
 	"courier": ["HINT_T_COURIER", "HINT_D_COURIER", "res://assets/sprites/robot/courier.svg"],
 	"roamers": ["HINT_T_ROAMERS", "HINT_D_ROAMERS", "res://assets/sprites/robot/roamer.svg"],
@@ -836,14 +844,9 @@ func _current_hint() -> String:
 	var b := _player.nearby_building()
 	if b != null and b is Ship:
 		return _ship_hint(b as Ship, kb)
-	var site := NetworkSystem.site_near_player(_world)
-	if b == null and site != "":
-		if not _world.is_building_unlocked(NetworkSystem.POINT_DEF):
-			return tr("HINT_SITE_LOCKED")
-		var cost := int(_world.next_cost(_world.defs[NetworkSystem.POINT_DEF]).get("bolts", 0))
-		return tr("HINT_SITE" + kb) % Fmt.int_str(cost)
 	if b != null and b is CollectionPoint:
-		return tr("HINT_POINT" + kb) % [(b as CollectionPoint).total(), _world.player.inventory.total()]
+		var key := "HINT_STATION" if b is Station else ("HINT_HOPPER" if b is Hopper else "HINT_POINT")
+		return tr(key + kb) % [(b as CollectionPoint).total(), _world.player.inventory.total()]
 	if b != null:
 		var slot: Dictionary = _world.player.inventory.slots[_player.selected_slot]
 		if slot["item"] != "":

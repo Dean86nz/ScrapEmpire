@@ -26,6 +26,7 @@ var _drone_upgrade_cards: Dictionary = {}
 var _drone_cards: Dictionary = {}  # Button → drone id
 @onready var _helpers_tab: Control = $Center/Panel/VBox/Content/HelpersTab
 @onready var _buy_btn: Button = $Center/Panel/VBox/Content/HelpersTab/Left/BuyButton
+var _station_btn := Button.new()  # Station neben Rusty bauen (MS78)
 var _roamer_btn := Button.new()   # Streuner bauen (MS77)
 var _hopper_btn := Button.new()   # Fangtrichter neben Rusty abstellen (MS77)
 @onready var _helper_list: VBoxContainer = $Center/Panel/VBox/Content/HelpersTab/Left/HelperList
@@ -100,13 +101,15 @@ func bind(world: SimWorld) -> void:
 	_build_skill_cards()
 	_map_view.zone_selected.connect(_on_zone_selected)
 	_buy_btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_helper"}))
-	for b: Button in [_roamer_btn, _hopper_btn]:
+	for b: Button in [_station_btn, _roamer_btn, _hopper_btn]:
 		b.custom_minimum_size = _buy_btn.custom_minimum_size
 		b.size_flags_horizontal = _buy_btn.size_flags_horizontal
 		b.visible = false
 		_buy_btn.get_parent().add_child(b)
+	_buy_btn.get_parent().move_child(_station_btn, _buy_btn.get_index())
 	_buy_btn.get_parent().move_child(_roamer_btn, _buy_btn.get_index() + 1)
 	_buy_btn.get_parent().move_child(_hopper_btn, _buy_btn.get_index() + 2)
+	_station_btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "build_station"}))
 	_roamer_btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "buy_roamer"}))
 	_hopper_btn.pressed.connect(func() -> void: SimClock.world.queue_command({"type": "place_hopper"}))
 	_upgrade_title.text = tr("HELPER_UPGRADES")
@@ -636,9 +639,18 @@ func _refresh_helpers() -> void:
 	var w := _world
 	var reason := w.can_buy_helper()
 	var cost := int(w.next_helper_cost()["bolts"])
-	_buy_btn.text = "%s  –  %s" % [tr("BOT_BUILD"), _build_status(reason, cost, "BOT_LOCKED")]
+	_buy_btn.text = "%s  –  %s" % [tr("BOT_BUILD"), tr("BOT_NO_STATION") if reason == "no_station" else _build_status(reason, cost, "BOT_LOCKED")]
 	_buy_btn.disabled = reason != ""
 	_buy_btn.text += "  ·  " + tr("BOT_ARMY") % HelperSystem.army(w)
+	# Station bauen (MS78): Bots brauchen einen Platz an einer Station
+	_station_btn.visible = w.unlocked_features.has("helpers")
+	if _station_btn.visible:
+		var sc := int(w.next_cost(w.defs[StationSystem.DEF]).get("bolts", 0))
+		var free := 0
+		for st in StationSystem.stations(w):
+			free += maxi(0, st.slots - StationSystem.bots_of(w, st))
+		_station_btn.text = "%s  –  %s  ·  %s" % [tr("STATION_BUILD"), _build_status("" if w.bolts >= sc else "bolts", sc, "BOT_LOCKED"), tr("STATION_FREE") % free]
+		_station_btn.disabled = w.bolts < sc
 	# Streuner und Fangtrichter (MS77), sobald freigeschaltet
 	var roam := w.unlocked_features.has("roamers")
 	_roamer_btn.visible = roam

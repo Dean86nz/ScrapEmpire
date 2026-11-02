@@ -32,6 +32,8 @@ static func can_buy_helper(w: SimWorld) -> String:
 		return "bolts"
 	if ShipSystem.ship(w) == null:
 		return "no_ship"
+	if StationSystem.free_station_near(w, w.player.pos) == null:
+		return "no_station"   # MS78: jeder Bot braucht einen Platz an einer Station
 	return ""
 
 
@@ -73,9 +75,11 @@ static func _cmd_buy_helper(w: SimWorld, cmd: Dictionary) -> void:
 	var zone_tile: Vector2i = cmd.get("zone", w.player_tile())
 	w.bolts -= int(next_helper_cost(w)["bolts"])
 	w.bolts_changed.emit(w.bolts)
-	var h := add_helper(w, zone_tile, ShipSystem.ship(w).tile)
-	h.zone_id = w.zones.zone_id_at(zone_tile)   # arbeitet in der ganzen Zone, in der Rusty steht
+	var st := StationSystem.free_station_near(w, w.player.pos)
+	var h := add_helper(w, zone_tile, st.tile)
 	h._zones = w.zones
+	StationSystem.bind(h, st)   # MS78: arbeitet rund um die nächste Station mit Platz
+	h.pos = st.center_px() + Vector2i(0, 48)
 	var hired: Array = w.helper_cfg.get("quips_hired", [])
 	if not hired.is_empty():
 		w.helper_quip.emit(h, str(hired[h.id % hired.size()]))

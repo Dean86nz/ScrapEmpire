@@ -10,6 +10,12 @@ func _world() -> SimWorld:
 
 func _unlock(w: SimWorld) -> void:
 	w.unlocked_features["helpers"] = true
+	# MS78: Bots brauchen eine Station; hier eine große, damit die alten Tests wie bisher laufen
+	if StationSystem.stations(w).is_empty():
+		var st := w.place_free(StationSystem.DEF, Vector2i(12, 4)) as Station
+		StationSystem.apply(w, st)
+		st.slots = 999
+		st.radius_tiles = 99
 
 
 func test_cost_curve() -> void:
@@ -42,8 +48,9 @@ func test_buy_requirements() -> void:
 	assert_eq(w.helpers.size(), 1)
 	assert_eq(w.bolts, 50)
 	var h: Helper = w.helpers.values()[0]
-	assert_eq(h.zone_tile, Vector2i(14, 6))
-	assert_eq(h.depot_tile, w.ship().tile, "Bots liefern immer ans Schiff")
+	var st: Station = StationSystem.stations(w)[0]
+	assert_eq(h.station_id, st.id, "MS78: Bot gehört zur Station")
+	assert_eq(h.depot_tile, st.tile, "und liefert dort ab")
 	assert_eq(h.display_name(w.helper_cfg["names"]), "Bolte")
 
 
@@ -55,7 +62,7 @@ func test_bot_works_where_rusty_is_by_default() -> void:
 	w.queue_command({"type": "buy_helper"})
 	w.tick()
 	var h: Helper = w.helpers.values()[0]
-	assert_eq(h.zone_tile, Vector2i(20, 5))
+	assert_eq(h.zone_tile, StationSystem.stations(w)[0].tile, "MS78: arbeitet rund um seine Station")
 
 
 func test_max_helpers() -> void:
@@ -170,6 +177,7 @@ func test_save_roundtrip_with_helpers() -> void:
 	var w := _world()
 	_unlock(w)
 	var h := w.add_helper(Vector2i(10, 6), w.ship().tile)
+	StationSystem.bind(h, StationSystem.stations(w)[0])
 	h.inventory.add("scrap", 7)
 	w.helper_upgrades["helper_speed"] = 2
 	w.recompute_modifiers()
@@ -178,8 +186,9 @@ func test_save_roundtrip_with_helpers() -> void:
 	SaveCodec.decode(JSON.parse_string(JSON.stringify(data)), w2)
 	assert_eq(w2.helpers.size(), 1)
 	var h2: Helper = w2.helpers.values()[0]
-	assert_eq(h2.zone_tile, Vector2i(10, 6))
-	assert_eq(h2.depot_tile, Vector2i(9, 9))
+	assert_eq(h2.zone_tile, Vector2i(12, 4))
+	assert_eq(h2.depot_tile, Vector2i(12, 4))
+	assert_eq(h2.station_id, h.station_id, "Station bleibt nach dem Laden")
 	assert_eq(h2.inventory.count_of("scrap"), 7)
 	assert_eq(int(w2.helper_upgrades["helper_speed"]), 2)
 	assert_eq(h2.speed_px_per_tick, h.speed_px_per_tick)
@@ -187,7 +196,7 @@ func test_save_roundtrip_with_helpers() -> void:
 
 func test_bored_bot_says_why() -> void:
 	var w := _world()
-	w.unlocked_features["helpers"] = true
+	_unlock(w)
 	w.bolts = 1000
 	w.queue_command({"type": "buy_helper", "zone": Vector2i(20, 20)})
 	w.tick()

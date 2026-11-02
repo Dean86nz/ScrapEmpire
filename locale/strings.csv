@@ -681,9 +681,9 @@ TOILET_5,„Ich habe viel gesehen. Zu viel.“,"""I have seen a lot. Too much.""
 KALTHOLZ_RECIPE,"Rezept: Schrottsuppe – 1 Schraube, 2 Kabel, viel Liebe","Recipe: junk soup – 1 bolt, 2 cables, lots of love"
 DEV_ROOM,Hier war der Entwickler. Danke fürs Spielen!,The developer was here. Thanks for playing!
 HINT_T_BOTS,Neu: Sammel-Bots,New: collector bots
-HINT_D_BOTS,"Bots arbeiten von selbst in Zonen mit Müll. Bauen: Schiff-Menü → Bots.","Bots work on their own in zones with junk. Build: ship menu → bots."
-HINT_T_COLLECTION,Neu: Sammelstellen,New: collection points
-HINT_D_COLLECTION,"Jede Zone hat einen Bauplatz. Hinfahren, A: Bots und du liefern dort ab.","Each zone has a site. Drive there, press A: bots and you deliver there."
+HINT_D_BOTS,"Bots arbeiten rund um ihre Station und liefern dort ab. Bots-Menü: erst Station bauen, dann Bots.","Bots work around their station and deliver there. Bots menu: build a station first, then bots."
+HINT_T_COLLECTION,Neu: Bot-Stationen,New: bot stations
+HINT_D_COLLECTION,"Je Station 3 Bots im Umkreis. Nah am Schiff schießt sie die Ladung selbst hinüber, sonst holt eine Drohne ab.","3 bots per station work around it. Near the ship it shoots the load over itself, otherwise a drone picks it up."
 HINT_T_DRONES,Neu: Drohnen,New: drones
 HINT_D_DRONES,"Drohnen bringen Material von den Sammelstellen zum Schiff. Erst dort gibt es Bolts.","Drones carry material from collection points to the ship. Bolts only come there."
 HINT_T_COURIER,Neu: Kurier,New: courier
@@ -712,3 +712,11 @@ BLD_HOPPER,Fangtrichter,Catch funnel
 HINT_T_ROAMERS,Neu: Streuner,New: rovers
 HINT_D_ROAMERS,"Fahren frei über den Planeten und schießen Müllwürfel in Fangtrichter. Bots-Menü: Streuner bauen, Trichter abstellen.","Roam the whole planet and shoot trash cubes into catch funnels. Bots menu: build rovers, place funnels."
 ROAMER_NAME,Streuner,Rover
+STATION_BUILD,Station hier bauen,Build station here
+STATION_FREE,%d Plätze frei,%d slots free
+BOT_NO_STATION,Erst eine Station mit freiem Platz bauen,Build a station with a free slot first
+BLD_STATION,Bot-Station,Bot station
+HINT_STATION,Bot-Station (%d eingelagert)   ·   A: %d Teile abladen,Bot station (%d stored)   ·   A: unload %d
+HINT_STATION_KB,Bot-Station (%d eingelagert)   ·   E: %d Teile abladen,Bot station (%d stored)   ·   E: unload %d
+HINT_HOPPER,Fangtrichter (%d eingelagert)   ·   A: %d Teile abladen,Catch funnel (%d stored)   ·   A: unload %d
+HINT_HOPPER_KB,Fangtrichter (%d eingelagert)   ·   E: %d Teile abladen,Catch funnel (%d stored)   ·   E: unload %d

@@ -127,15 +127,6 @@ func _build_steps() -> void:
 				_world.unlocked_features[f] = true,
 		func() -> bool: return _world.player.inventory.count_of("wood") >= 20 and _world.ship() != null)
 
-	# Fester Bauplatz (MS41): hinfahren, A, Sammelstelle steht
-	_step("Rusty fährt zum Bauplatz der Startzone", func() -> void:
-			var site := NetworkSystem.site_of(_world, _world.zones.zone_id_at(_world.player_tile()))
-			player.global_position = Vector2(site * 64 + Vector2i(64, 64 + 110)),
-		func() -> bool: return NetworkSystem.site_near_player(_world) != "", 4, 100)
-	_step("A baut die Sammelstelle", func() -> void: _tap(JOY_BUTTON_A),
-		func() -> bool: return NetworkSystem.points(_world).size() == 1 and _world.bolts < 5000, 6, 200)
-	_step("Nach dem Bau-Jubel: Steuerung zurück", func() -> void: pass,
-		func() -> bool: return router.context == router.Context.GAME, 4, 1000)
 	_step("Bolts zurücksetzen", func() -> void: _world.bolts = 5000, func() -> bool: return _world.bolts == 5000)
 
 	# Am Schiff: A liefert ab, X öffnet das Schiff-Menü
@@ -175,6 +166,13 @@ func _build_steps() -> void:
 			for n in 4:
 				_tap(JOY_BUTTON_RIGHT_SHOULDER),
 		func() -> bool: return progress._tab == progress.Tab.HELPERS, 6)
+	# MS78: erst eine Station (Knopf über „Sammel-Bot bauen“), dann den Bot
+	_step("D-Pad hoch auf „Station hier bauen“", func() -> void: _tap(JOY_BUTTON_DPAD_UP),
+		func() -> bool: return progress.get_viewport().gui_get_focus_owner() == progress._station_btn)
+	_step("A baut die Station neben Rusty", func() -> void: _tap(JOY_BUTTON_A),
+		func() -> bool: return StationSystem.stations(_world).size() == 1, 8, 200)
+	_step("D-Pad runter auf „Sammel-Bot bauen“", func() -> void: _tap(JOY_BUTTON_DPAD_DOWN),
+		func() -> bool: return progress.get_viewport().gui_get_focus_owner() == progress._buy_btn, 6, 200)
 	_step("A auf „Sammel-Bot bauen“ baut einen Bot", func() -> void: _tap(JOY_BUTTON_A),
 		func() -> bool: return _world.helpers.size() == 1, 8, 200)
 	_step("Bot gebaut: Menü bleibt offen, B schließt", func() -> void: _tap(JOY_BUTTON_B),
@@ -238,7 +236,7 @@ func _build_steps() -> void:
 				_tap(JOY_BUTTON_RIGHT_SHOULDER),
 		func() -> bool: return progress._tab == progress.Tab.DRONES, 6)
 	_step("A auf „Drohne bauen“ baut eine Drohne", func() -> void: _tap(JOY_BUTTON_A),
-		func() -> bool: return _world.drones.size() == 2, 8, 200)  # 1 kam mit der Sammelstelle
+		func() -> bool: return _world.drones.size() == 2, 8, 200)  # 1 kam mit der Station
 	_step("Drohne gebaut: Menü bleibt offen, B schließt", func() -> void: _tap(JOY_BUTTON_B),
 		func() -> bool: return not progress.visible and router.context == router.Context.GAME, 6)
 

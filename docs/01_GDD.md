@@ -403,6 +403,12 @@ Schiffsstufen: 2 (500) Sammel-Bot, 3 (3.000) Drohne und Deko, 4 (12.000) bessere
 - **Hauptziel sichtbar:** Planeten-Heilungsbalken im HUD (weggeräumter Müll über alle Zonen, 0 bis 100 %).
 - **Aufgabenkette:** `data/quests.json`, immer genau eine Aufgabe mit Kästchen im HUD, Zähler, Haken-Moment; führt durch das ganze bisherige Spiel bis „Planet geheilt“. Ersetzt Tutorial und Tipps.
 
+### 23d. Bot-Armee (Phase 3, ab v2.33.0)
+Kern: vom mühsamen Selbstputzen zu einer Bot-Armee, die den Planeten reinigt, und das Optimieren dieser Armee.
+- **Stations-Bots** (Schiffsstufe 2): günstig, je 3 an einer kleinen Station, arbeiten nur in ihrem Umkreis und liefern dort ab. Nah am Schiff schießt die Station die Ladung selbst hinüber, sonst holt eine Drohne ab. Erste Entlastung im frühen Spiel.
+- **Streuner** (Schiffsstufe 4): teuer, fahren frei über alle offenen Zonen, suchen selbst den nächsten passenden Müll, pressen volle Ladung zu Müllwürfeln und schießen sie in **Fangtrichter** (baubar, 120 Teile). Drohnen bringen den Inhalt zum Schiff. Ohne Trichter in Reichweite: Symbol über dem Streuner.
+- Geplant: Leistungsanzeige (MS79), größerer Planet und Balancing (MS80), Fortschritt im Hintergrund (MS81).
+
 ## 24. Minimap und Karte
 
 - **Minimap:** unten rechts, 280 × 200 px, mit Select-lang oder im Pause-Menü ausblendbar. Zeigt Zonen in ihrer Stufenfarbe (braun → grau → hellgrün → grün), Rusty als Punkt mit Richtung, Gebäude als kleine Quadrate, Müll-Objekte als Punkte.

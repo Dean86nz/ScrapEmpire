@@ -26,6 +26,7 @@ var zone_id := ""             # zugewiesene Zone (seit MS34); "" = alter Kreis u
 var auto := true              # seit MS42 immer: sucht sich selbst die nächste Zone mit passendem Müll
 var rally_id := -1
 var kind := ""               # "" = Zonen-Bot, "roamer" = Streuner ohne Zone (MS77)
+var station_id := -1         # Bot-Station (MS78): arbeitet nur in ihrem Umkreis
 var claim_tile := Vector2i(-1, -1)   # Ziel, das dieser Streuner gerade belegt
 var power := 1               # nur noch für alte Spielstände mit verschmolzenen Bots (Fusion entfiel in MS73)
 var work_mult := 1.0         # power × (1 + Bot-Kraft)
@@ -92,7 +93,7 @@ func tick(world: SimWorld) -> void:
 ## Sucht das nächste abbaubare Objekt in der Zone; ohne Ziel: nur abliefern oder warten.
 func _plan(world: SimWorld) -> void:
 	_zones = world.zones
-	var depot := NetworkSystem.depot_for(world, zone_id if zone_id != "" else world.zones.zone_id_at(zone_tile))
+	var depot: Building = world.buildings.get(station_id) if station_id >= 0 else NetworkSystem.depot_for(world, zone_id if zone_id != "" else world.zones.zone_id_at(zone_tile))
 	if depot != null:
 		depot_tile = depot.tile
 	tasks.stop(self)
@@ -133,7 +134,7 @@ func _plan(world: SimWorld) -> void:
 	var best: ResourceNode = null
 	var best_d := INF
 	var too_hard := false
-	var candidates: Array = world.zone_nodes(zone_id) if zone_id != "" else world.nodes.values()
+	var candidates: Array = world.zone_nodes(zone_id) if zone_id != "" else ToolSystem.nodes_near(world, zone_center_px(), (radius_tiles + 1) * SimWorld.TILE)
 	for n: ResourceNode in candidates:
 		if n.is_depleted() or (zone_id == "" and not in_zone(n.tile)):
 			continue
@@ -260,7 +261,7 @@ func to_dict() -> Dictionary:
 		"name_index": name_index, "color_index": color_index,
 		"pos": [pos.x, pos.y], "zone": [zone_tile.x, zone_tile.y], "radius": radius_tiles,
 		"depot": [depot_tile.x, depot_tile.y], "inventory": inventory.to_dict(),
-		"stuck_timer": stuck_timer, "zone_id": zone_id, "rally": rally_id, "power": power, "kind": kind,
+		"stuck_timer": stuck_timer, "zone_id": zone_id, "rally": rally_id, "power": power, "kind": kind, "station": station_id,
 	}
 
 
@@ -277,3 +278,4 @@ func from_dict(d: Dictionary) -> void:
 	rally_id = int(d.get("rally", -1))
 	power = maxi(1, int(d.get("power", 1)))
 	kind = str(d.get("kind", ""))
+	station_id = int(d.get("station", -1))

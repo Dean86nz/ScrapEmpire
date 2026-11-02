@@ -213,11 +213,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		var b := nearby_building()
 		var w := SimClock.world
 		if b == null:
-			# Fester Bauplatz in der Nähe: A baut die Sammelstelle (MS41)
-			var site := NetworkSystem.site_near_player(w)
-			if site != "":
-				w.queue_command({"type": "build_point", "zone": site})
-				get_viewport().set_input_as_handled()
 			return
 		if b is Ship:
 			w.queue_command({"type": "deliver_all"})
