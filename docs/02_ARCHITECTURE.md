@@ -364,6 +364,7 @@ Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers �
 - **Stationen** (`StationSystem`, `Station` erbt von `CollectionPoint`): Bot mit `station_id` arbeitet im Kreis `radius_tiles` um die Station (`zone_id = ""`, Kandidaten über `ToolSystem.nodes_near`). Stationen nah am Schiff (`ship_link_px`) schießen ihren Inhalt als Würfel hinüber, sonst holen Drohnen ab (wie früher an der Sammelstelle). `StationSystem.migrate` baut alte Spielstände um (Sammelstelle → Trichter + Station, Bots auf freie Plätze, sonst neue Station am Bot).
 - **Lastbudgets je Tick** (`HelperSystem`): `PLAN_BUDGET` (Bot-Planungen, Drohnen-Suchen bekommen eine eigene Reserve), `ROAMER_BUDGET` (Streuner-Zielsuchen), `PATH_BUDGET` (neue Wege). Wer kein Budget mehr bekommt, ist einen Tick später dran.
 - Feste Bauplätze (10k) und `SiteView` entfielen in MS78.
+- **Hintergrund** (`OfflineSystem`, MS81): `apply(world, sekunden)` rechnet mit den PerfStats-Raten (ohne „rusty“) hoch, höchstens 8 h, baut Müll nahe Stationen/Trichtern ab und schreibt Bolts gut. Die echte Zeit (Speicherzeit, `offline_claim_unix` in den Einstellungen) liest nur `Main`.
 - **Leistung** (`PerfStats` in `SimWorld.perf`, MS79): Zähler je Schlüssel in 30 Fächern à 10 s; `per_min` über die letzten 5 Minuten. `ArmyReport.summary` liefert Anzahl/Leistung je Bot-Art und Engpass-Schlüssel für das Bots-Menü.
 
 ## 11. Neue Darstellung und UI

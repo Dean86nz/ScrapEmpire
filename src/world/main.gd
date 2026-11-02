@@ -63,6 +63,7 @@ func _ready() -> void:
 			_world.milestones.check(_world, true)   # alte Stände: Erreichtes still nachtragen
 		_world.flags["milestones_v1"] = true
 		_loaded_from_save = true
+		_offline = _apply_offline(save_data)
 	else:
 		SaveManager.log_step("Neues Spiel")
 		start_px = Vector2(MapLoader.apply(_world, _map_data))
@@ -108,6 +109,10 @@ func _ready() -> void:
 	_world.helper_failed.connect(func(reason: String) -> void: Quips.say("helper_fail_" + reason, true))
 	_world.helper_added.connect(func(_h: Helper) -> void: _player.celebrate())
 	_hud.bind_minimap(_player)
+	if not _offline.is_empty():
+		var summary := OfflineSummary.new()
+		add_child(summary)
+		summary.show_summary(_offline)
 	_progress_menu.bind_player(_player)
 	_progress_menu.set_dirt_texture(_world_view.dirt_view.map_texture)
 	_world.zones.stage_changed.connect(_on_zone_stage_changed)
@@ -380,6 +385,16 @@ func debug_scenario(name: String) -> void:
 				if near != null:
 					StationSystem.bind(hh, near)
 					hh.pos = near.center_px() + Vector2i(0, 48)
+		"offline":
+			# MS81: Armee wie „army“, gemessene Rate vortäuschen, 3 h 20 min hochrechnen, Übersicht zeigen
+			debug_scenario("army")
+			_world.perf.add("trash", 900, _world.tick_count)
+			_world.perf.add("bolts", 2400, _world.tick_count)
+			var r := OfflineSystem.apply(_world, 3 * 3600 + 20 * 60)
+			if not r.is_empty():
+				var summary := OfflineSummary.new()
+				add_child(summary)
+				summary.show_summary(r)
 		"endgame":
 			_world.bolts += 100000
 			_world.bolts_changed.emit(_world.bolts)
@@ -573,6 +588,22 @@ const HINTS := {
 }
 var _hint_queue: Array[String] = []
 var _zone_hud_timer := 0.0
+var _offline: Dictionary = {}   # Ergebnis der Hochrechnung beim Laden (MS81)
+
+
+## Fortschritt im Hintergrund (MS81): Zeit seit dem Speichern (echte Uhr), höchstens 8 h. Jede
+## Abwesenheit zählt nur einmal: Der zuletzt gutgeschriebene Zeitpunkt steht in den Einstellungen,
+## so bringt erneutes Laden desselben Spielstands nichts. Uhr zurückgestellt: nichts.
+func _apply_offline(save_data: Dictionary) -> Dictionary:
+	var now := int(Time.get_unix_time_from_system())
+	var settings := SaveManager.load_settings()
+	var since := maxi(int(save_data.get("saved_at_unix", now)), int(settings.get("offline_claim_unix", 0)))
+	var r := OfflineSystem.apply(_world, now - since)
+	if not r.is_empty():
+		settings["offline_claim_unix"] = now
+		SaveManager.save_settings(settings)
+		SaveManager.log_step("Hintergrund: %d s, %d Müll, %d Bolts" % [int(r["seconds"]), int(r["trash"]), int(r["bolts"])])
+	return r
 var _hint_wait := 0.0
 var _hint_check := 0.0
 

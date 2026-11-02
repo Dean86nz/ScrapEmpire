@@ -2,6 +2,24 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.36.0] – 2026-11-02 – MS81 Fortschritt im Hintergrund (Phase 3)
+
+Hinweis: MS80 (Planetengröße und Balancing) wartet auf deine Freigabe der Zahlen-Übersicht; MS81 hing nicht daran und ist deshalb schon fertig. Die Versionsnummern folgen der Reihenfolge der Fertigstellung.
+
+### Neu
+- **Die Bot-Armee arbeitet weiter, wenn das Spiel zu ist:** Beim Laden wird die Zeit seit dem Speichern hochgerechnet, höchstens 8 Stunden. Grundlage ist die gemessene Leistung der Bots der letzten 5 Minuten vor dem Speichern (Rustys eigener Anteil zählt nicht), begrenzt durch den Müll, den die Bots mit ihrem Werkzeug in offenen Zonen schaffen. Abgeräumt wird zuerst Müll nahe an Stationen und Trichtern, der Boden drumherum wird sauber
+- **„Willkommen zurück!“-Karte** beim Start: wie lange, wie viel Müll, wie viele Bolts, welche Gebiete jetzt wie sauber sind. A oder B schließt. Screenshot `docs/screens/ms81_willkommen.png`
+- **Kein Ausnutzen:** Jede Abwesenheit zählt nur einmal (erneutes Laden desselben Spielstands bringt nichts), Uhr zurückgestellt bringt nichts, mehr als 8 Stunden zählen nicht
+- Erst ab dem ersten Speichern mit dieser Version: ältere Spielstände haben noch keine gemessene Leistung
+
+### Technik
+- `OfflineSystem.apply(world, sekunden)` (deterministisch, die echte Uhr liest nur `Main._apply_offline`), `OfflineSummary`, Debug-Szenario `scenario=offline`; zuletzt gutgeschriebener Zeitpunkt in den Einstellungen (`offline_claim_unix`)
+- 250 Unit-Tests (neu: kurze/negative Zeit, Deckel 8 h, deterministisch und durch Müll begrenzt, Rustys Anteil zählt nicht), 72 Gamepad-Prüfungen, Weiterspielen-Prüfung grün
+
+### Ally-Testliste
+1. Mit Bots spielen, speichern, Spiel schließen, nach einer Stunde starten: Karte da, Zahlen plausibel?
+2. Gleich danach nochmal laden: keine zweite Gutschrift?
+
 ## [2.35.0] – 2026-11-02 – MS79 Leistungsanzeige (Phase 3)
 
 ### Neu

@@ -199,5 +199,6 @@
 - [x] MS77 Streuner, Müllwürfel, Fangtrichter (v2.33.0)
 - [x] MS78 Stations-Bots (v2.34.0)
 - [x] MS79 Leistungsanzeige (v2.35.0)
-- [ ] Phase 3: MS80 Planet/Balancing (Übersicht zuerst) → MS81 Hintergrund
+- [x] MS81 Fortschritt im Hintergrund (v2.36.0)
+- [ ] Phase 3: MS80 Planet/Balancing: Übersicht vorgelegt, wartet auf Freigabe
 - [ ] Steam-Technik: wartet auf App-ID und Freigabe für GodotSteam
