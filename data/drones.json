@@ -1,6 +1,6 @@
 {
   "_comment": "Drohnen (seit MS34 vor allem Transport): fliegen zu Sammelstellen mit Material, laden bis zur Tragkraft und bringen es zum Schiff (dort entstehen die Bolts). Ohne Transportauftrag sammeln sie lose Teile und Haufen. Jede Sammelstelle bringt free_per_point Drohnen mit.",
-  "max_drones": 40,
+  "max_drones": 80,
   "cost_base_bolts": 100,
   "cost_growth": 1.2891,
   "base_speed_px_per_s": 300,

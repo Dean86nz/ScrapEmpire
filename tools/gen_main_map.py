@@ -2,12 +2,16 @@
 Reihenfolge als Schlange: unten links (Schiff) → unten Mitte → unten rechts → oben rechts → oben Mitte
 → oben links (Endzone direkt über dem Start). Jede Zone füllt sich mit ihren Müll-Objekten, bis ihr
 Zielwert in Bolts erreicht ist, plus Haufen und einem Boss. Deterministisch (fester Seed).
-Aufruf: python -I tools/gen_main_map.py
+Aufruf: python -I tools/gen_main_map.py          → data/maps/main.json (120×90, alte Spielstände)
+        python -I tools/gen_main_map.py big      → data/maps/main2.json (MS80: 180×134, 2,25× Fläche,
+                                                    2,25× Müll; neue Spiele)
 """
-import json, random, os
+import json, random, os, sys
 
-W, H = 120, 90
-ZW, ZH = 40, 45
+BIG = len(sys.argv) > 1 and sys.argv[1] == "big"
+SCALE = 2.25 if BIG else 1.0
+W, H = (180, 134) if BIG else (120, 90)
+ZW, ZH = W // 3, H // 2
 rng = random.Random(20261028)
 HERE = os.path.dirname(__file__)
 objs = {o["id"]: o for o in json.load(open(os.path.join(HERE, "..", "data", "scrap_objects.json"), encoding="utf-8"))["objects"]}
@@ -22,8 +26,8 @@ ZONES = [
     ((1, 0), "ZONE_SATELLITES", "satellites", 400000, {"satellite": 3, "ship_part": 3, "robot_arm": 2, "satellite_big": 1, "solar_panel": 2}, {"copper_tangle": 2, "scrap_pile": 2}, "mega_dish"),
     ((0, 0), "ZONE_MONOLITHS", "monoliths", 1100000, {"monolith": 3, "stardust_crystal": 3, "mystery_cube": 2, "monolith_dark": 1, "crystal_cluster": 2}, {"rubble_field": 2, "scrap_pile": 2}, "ur_heap"),
 ]
-SHIP = (16, 64)          # 3×3, Zone unten links
-START = (20, 66)
+SHIP = (24, 97) if BIG else (16, 64)          # 3×3, Zone unten links
+START = (28, 99) if BIG else (20, 66)
 
 occupied = set()
 nodes = []
@@ -80,7 +84,7 @@ for (zx, zy), name_key, theme, target, table, piles, boss in ZONES:
     kinds = [k for k, wgt in table.items() for _ in range(wgt)]
     pile_kinds = [k for k, wgt in piles.items() for _ in range(wgt)]
     guard = 0
-    while total < target and guard < 6000:
+    while total < target * SCALE and guard < 20000:
         guard += 1
         if rng.random() < 0.35:
             kind = rng.choice(pile_kinds)
@@ -93,7 +97,7 @@ for (zx, zy), name_key, theme, target, table, piles, boss in ZONES:
             total += value_of(kind, amount)
 
 data = {
-    "name": "main",
+    "name": "main2" if BIG else "main",
     "width": W,
     "height": H,
     "seed": 4712,
@@ -105,7 +109,7 @@ data = {
     "zones": zone_list,
     "nodes": nodes,
 }
-out = os.path.join(HERE, "..", "data", "maps", "main.json")
+out = os.path.join(HERE, "..", "data", "maps", "main2.json" if BIG else "main.json")
 with open(out, "w", encoding="utf-8", newline="\n") as f:
     json.dump(data, f, indent=1, ensure_ascii=False)
 base = sum(value_of(n["kind"], n.get("amount")) for n in nodes)

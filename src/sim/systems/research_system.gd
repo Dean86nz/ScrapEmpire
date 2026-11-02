@@ -29,6 +29,7 @@ static func recompute_modifiers(w: SimWorld) -> void:
 		w._apply_helper_mods(h)
 	for d: Drone in w.drones.values():
 		w._apply_drone_mods(d)
+	StationSystem.reapply_all(w)   # MS80: Station- und Trichter-Upgrades
 	w.modifiers_changed.emit(w.mods)
 
 

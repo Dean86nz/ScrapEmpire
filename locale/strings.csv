@@ -735,3 +735,11 @@ OFFLINE_BOLTS,⬡ %s Bolts verdient,⬡ %s bolts earned
 OFFLINE_ZONE,%s jetzt %d %% sauber,%s now %d %% clean
 OFFLINE_CAP,(höchstens 8 Stunden werden gezählt),(at most 8 hours count)
 OFFLINE_CLOSE,A: weiter,A: continue
+UPG_STATION_SLOTS,Station: mehr Plätze,Station: more slots
+UPG_STATION_SLOTS_DESC,+1 Bot je Station und Stufe,+1 bot per station per level
+UPG_STATION_RADIUS,Station: größerer Umkreis,Station: bigger radius
+UPG_STATION_RADIUS_DESC,+1 Kachel Arbeitsumkreis je Stufe,+1 tile work radius per level
+UPG_HOPPER_SIZE,Fangtrichter: größer,Catch funnel: bigger
+UPG_HOPPER_SIZE_DESC,+60 Teile je Trichter und Stufe,+60 parts per funnel per level
+UPG_THROW_RANGE,Streuner: Wurfweite,Rovers: throw range
+UPG_THROW_RANGE_DESC,+4 Kacheln Wurfweite je Stufe,+4 tiles throw range per level

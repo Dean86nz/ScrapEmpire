@@ -208,13 +208,24 @@ func refresh(nodes: Dictionary) -> void:
 ## Übersicht für Karte/Minimap: {id, name, rect, cleanliness, stage, trash_by_tier}
 func summary(nodes: Dictionary) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
-	var trash_now := current_trash(nodes)
+	# Ein Durchlauf über alle Objekte statt einer je Zone (MS80: großer Planet, sonst 14 ms)
+	var trash_now: Dictionary = {}
+	var tiers: Dictionary = {}
+	for z in zones:
+		trash_now[z["id"]] = 0
+		tiers[z["id"]] = {}
+	for n: ResourceNode in nodes.values():
+		if not n.is_wreck() or n.is_resource():
+			continue
+		var zid := zone_id_at(n.tile)
+		if zid == "":
+			continue
+		trash_now[zid] = int(trash_now[zid]) + n.amount
+		var bt: Dictionary = tiers[zid]
+		bt[n.tier] = int(bt.get(n.tier, 0)) + 1
 	for z in zones:
 		var id: String = z["id"]
-		var by_tier: Dictionary = {}
-		for n: ResourceNode in nodes.values():
-			if n.is_wreck() and not n.is_resource() and zone_id_at(n.tile) == id:
-				by_tier[n.tier] = int(by_tier.get(n.tier, 0)) + 1
+		var by_tier: Dictionary = tiers[id]
 		var c := cleanliness(id, nodes)
 		result.append({"id": id, "name": z["name"], "rect": z["rect"], "cleanliness": c, "stage": stage_for(c),
 			"trash_now": int(trash_now.get(id, 0)), "trash_start": int(start_trash.get(id, 0)), "trash_by_tier": by_tier, "tutorial": z["tutorial"]})

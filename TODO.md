@@ -200,5 +200,6 @@
 - [x] MS78 Stations-Bots (v2.34.0)
 - [x] MS79 Leistungsanzeige (v2.35.0)
 - [x] MS81 Fortschritt im Hintergrund (v2.36.0)
-- [ ] Phase 3: MS80 Planet/Balancing: Übersicht vorgelegt, wartet auf Freigabe
+- [x] MS80 Großer Planet und Ausbau (v2.37.0)
+- [ ] Ally: 300 Streuner messen, ggf. Obergrenze anheben
 - [ ] Steam-Technik: wartet auf App-ID und Freigabe für GodotSteam

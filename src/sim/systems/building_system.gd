@@ -68,7 +68,7 @@ static func _cmd_place(w: SimWorld, cmd: Dictionary) -> void:
 	w.buildings[b.id] = b
 	w.progression.on_build()
 	if b is Hopper:
-		(b as Hopper).capacity = int(RoamerSystem.cfg(w).get("hopper_capacity", 120))
+		(b as Hopper).capacity = RoamerSystem.hopper_capacity(w)
 	if b is Station:
 		StationSystem.apply(w, b as Station)
 	w.building_placed.emit(b)

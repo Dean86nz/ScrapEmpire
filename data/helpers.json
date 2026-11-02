@@ -116,6 +116,70 @@
           "per_level": 0.2
         }
       ]
+    },
+    {
+      "id": "station_slots",
+      "name_key": "UPG_STATION_SLOTS",
+      "desc_key": "UPG_STATION_SLOTS_DESC",
+      "max_level": 5,
+      "requires_feature": "helpers",
+      "effects": [
+        {
+          "key": "station_slots_add",
+          "op": "add",
+          "per_level": 1
+        }
+      ],
+      "cost_base": 500,
+      "cost_growth": 1.8
+    },
+    {
+      "id": "station_radius",
+      "name_key": "UPG_STATION_RADIUS",
+      "desc_key": "UPG_STATION_RADIUS_DESC",
+      "max_level": 5,
+      "requires_feature": "helpers",
+      "effects": [
+        {
+          "key": "station_radius_add",
+          "op": "add",
+          "per_level": 1
+        }
+      ],
+      "cost_base": 400,
+      "cost_growth": 1.7
+    },
+    {
+      "id": "hopper_size",
+      "name_key": "UPG_HOPPER_SIZE",
+      "desc_key": "UPG_HOPPER_SIZE_DESC",
+      "max_level": 10,
+      "requires_feature": "roamers",
+      "effects": [
+        {
+          "key": "hopper_capacity_add",
+          "op": "add",
+          "per_level": 60
+        }
+      ],
+      "cost_base": 8000,
+      "cost_growth": 1.5
+    },
+    {
+      "id": "throw_range",
+      "name_key": "UPG_THROW_RANGE",
+      "desc_key": "UPG_THROW_RANGE_DESC",
+      "max_level": 5,
+      "requires_feature": "roamers",
+      "effects": [
+        {
+          "key": "throw_range_add",
+          "op": "add",
+          "per_level": 256
+        }
+      ],
+      "cost_base": 10000,
+      "cost_growth": 1.8
     }
   ],
   "roamer": {
