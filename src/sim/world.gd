@@ -128,6 +128,7 @@ var events_cfg: Dictionary = {}            # data/events.json (MS30)
 var events_state: Dictionary = {}          # nächste Termine, Vorwarnungen, Abwürfe
 var couriers: Dictionary = {}              # id → Courier (MS34)
 var cubes: Dictionary = {}                 # id → TrashCube im Flug (MS77)
+var perf := PerfStats.new()                # Durchsatz der letzten 5 Minuten (MS79)
 var _chunk_nodes: Dictionary = {}          # Rasterfeld → Objekte (Zielsuche der Streuner, MS77)
 var _chunks_dirty := true
 var _chunk_min_tier: Dictionary = {}       # Rasterfeld → leichteste Stufe darin

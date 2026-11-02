@@ -239,6 +239,8 @@ func _tick_transfer(world: SimWorld, body: WorkerBody, step: Dictionary, deposit
 			var accepted := b.accept_stack(s["item"], int(s["count"]))
 			if accepted > 0:
 				body.inventory.remove(s["item"], accepted)
+				if body is Helper:
+					world.perf.add("station", accepted, world.tick_count)   # MS79
 				world.building_changed.emit(b)
 				moved = true
 				if body is Helper and body.inventory.total() == 0:

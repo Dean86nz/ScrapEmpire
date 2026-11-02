@@ -720,3 +720,11 @@ HINT_STATION,Bot-Station (%d eingelagert)   ·   A: %d Teile abladen,Bot station
 HINT_STATION_KB,Bot-Station (%d eingelagert)   ·   E: %d Teile abladen,Bot station (%d stored)   ·   E: unload %d
 HINT_HOPPER,Fangtrichter (%d eingelagert)   ·   A: %d Teile abladen,Catch funnel (%d stored)   ·   A: unload %d
 HINT_HOPPER_KB,Fangtrichter (%d eingelagert)   ·   E: %d Teile abladen,Catch funnel (%d stored)   ·   E: unload %d
+HUD_RATES,♻ %s Müll/min  ·  %s Bolts/min,♻ %s trash/min  ·  %s bolts/min
+ARMY_STATION,Stations-Bots: %d  ·  %s Teile/min,Station bots: %d  ·  %s parts/min
+ARMY_ROAMER,Streuner: %d  ·  %s Teile/min,Rovers: %d  ·  %s parts/min
+ISSUE_HOPPER_FULL,Fangtrichter voll: mehr Trichter oder Drohnen,Catch funnel full: more funnels or drones
+ISSUE_NO_HOPPER,Streuner ohne Trichter in Reichweite: Trichter näher abstellen,Rovers without a funnel in range: place one closer
+ISSUE_FEW_DRONES,Zu wenige Drohnen: Material wartet an Stationen und Trichtern,Too few drones: material is waiting at stations and funnels
+ISSUE_TOO_HARD,Müll zu hart: Bot-Werkzeug verbessern,Trash too hard: upgrade bot tools
+ISSUE_STATION_EMPTY,Stationen leergeräumt: neue Station woanders bauen,Stations cleared out: build a new one elsewhere

@@ -223,6 +223,7 @@ func _process(delta: float) -> void:
 		_chapter_timer = 1.0
 		_refresh_chapter_hud()
 		_hud.set_planet(_world.zones.planet_health(_world.nodes))
+		_hud.set_rates(_world.perf.per_min("trash", _world.tick_count), _world.perf.per_min("bolts", _world.tick_count))
 	# Kurz/Lang-Erkennung per Zustandsabfrage (funktioniert auch mit simulierten Eingaben).
 	if _tech_press_time >= 0.0:
 		_tech_press_time += delta

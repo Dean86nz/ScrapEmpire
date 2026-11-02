@@ -2,6 +2,29 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.35.0] – 2026-11-02 – MS79 Leistungsanzeige (Phase 3)
+
+### Neu
+- **HUD:** dezent unter der Gebietsanzeige „♻ 804 Müll/min · 1.304 Bolts/min“, gemittelt über die letzten 5 Minuten (Müll = was am Schiff ankommt). Erscheint, sobald etwas ankommt
+- **Bots-Menü, oben:** je Bot-Art Anzahl und Leistung („Stations-Bots: 12 · 85 Teile/min · Streuner: 40 · 300 Teile/min“), darunter orange die Engpässe mit Tipp:
+  - Fangtrichter voll: mehr Trichter oder Drohnen
+  - Streuner ohne Trichter in Reichweite: Trichter näher abstellen
+  - Zu wenige Drohnen: Material wartet an Stationen und Trichtern
+  - Müll zu hart: Bot-Werkzeug verbessern
+  - Stationen leergeräumt: neue Station woanders bauen
+- Screenshot `docs/screens/ms79_leistung.png`
+
+### Geändert
+- „Armee“ auf dem Sammel-Bot-Knopf zählt nur Stations-Bots
+
+### Technik
+- `PerfStats` (30 Fächer à 10 s, im Spielstand), `ArmyReport` (Übersicht und Engpässe); gezählt am Schiff, beim Abliefern an Stationen, bei Würfelwürfen und Rustys Abgaben
+- 246 Unit-Tests (neu: Rate pro Minute, alte Fächer verfallen, Zählung am Schiff, Engpässe), 72 Gamepad-Prüfungen, Weiterspielen-Prüfung grün
+
+### Ally-Testliste
+1. Ist die HUD-Zeile lesbar, aber unauffällig genug?
+2. Stimmen die Engpass-Hinweise mit dem, was du siehst?
+
 ## [2.34.0] – 2026-11-02 – MS78 Stations-Bots (Phase 3)
 
 ### Neu
