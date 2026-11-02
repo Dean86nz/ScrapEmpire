@@ -9,7 +9,9 @@ const CARD_SCENE_MIN := Vector2(440, 150)
 const SHIP_CARD_MIN := Vector2(670, 160)
 const COST_OK := Color(0.18, 0.55, 0.24)
 const COST_NO := Color(0.75, 0.25, 0.2)
-const UPG_ICONS := {"speed": "res://assets/sprites/ui/upg_speed.svg", "capacity": "res://assets/sprites/ui/upg_cargo.svg", "tool": "res://assets/sprites/ui/upg_tool.svg"}
+const UPG_ICONS := {"speed": "res://assets/sprites/ui/upg_speed.svg", "capacity": "res://assets/sprites/ui/upg_cargo.svg", "tool": "res://assets/sprites/ui/upg_tool.svg",
+	"_slots": "res://assets/sprites/buildings/station.svg", "_radius": "res://assets/sprites/buildings/station.svg",
+	"_size": "res://assets/sprites/buildings/hopper.svg", "_range": "res://assets/sprites/robot/cube.svg"}
 const TAB_ICONS := ["res://assets/sprites/buildings/ship_2.svg", "res://assets/sprites/ui/tab_goals.svg", "res://assets/sprites/ui/tab_skills.svg",
 	"res://assets/sprites/ui/tab_map.svg", "res://assets/sprites/robot/rusty.svg", "res://assets/sprites/robot/drone.svg", "res://assets/sprites/ui/tab_journal.svg"]
 const REFRESH_SECONDS := 0.5

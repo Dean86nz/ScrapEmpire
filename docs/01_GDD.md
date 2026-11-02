@@ -407,7 +407,10 @@ Schiffsstufen: 2 (500) Sammel-Bot, 3 (3.000) Drohne und Deko, 4 (12.000) bessere
 Kern: vom mühsamen Selbstputzen zu einer Bot-Armee, die den Planeten reinigt, und das Optimieren dieser Armee.
 - **Stations-Bots** (Schiffsstufe 2): günstig, je 3 an einer kleinen Station, arbeiten nur in ihrem Umkreis und liefern dort ab. Nah am Schiff schießt die Station die Ladung selbst hinüber, sonst holt eine Drohne ab. Erste Entlastung im frühen Spiel.
 - **Streuner** (Schiffsstufe 4): teuer, fahren frei über alle offenen Zonen, suchen selbst den nächsten passenden Müll, pressen volle Ladung zu Müllwürfeln und schießen sie in **Fangtrichter** (baubar, 120 Teile). Drohnen bringen den Inhalt zum Schiff. Ohne Trichter in Reichweite: Symbol über dem Streuner.
-- Geplant: Leistungsanzeige (MS79), größerer Planet und Balancing (MS80), Fortschritt im Hintergrund (MS81).
+- **Leistungsanzeige** (MS79): Müll/min und Bolts/min im HUD, im Bots-Menü Leistung je Bot-Art und Engpässe.
+- **Großer Planet** (MS80, neue Spiele): 180×134 Kacheln, 6 Zonen, ~22 600 Teile Müll; Ausbau-Upgrades für Stationen (Plätze, Umkreis) und Trichter (Größe, Wurfweite), bis 80 Drohnen, bis 300 Streuner.
+- **Hintergrund** (MS81): bis 8 Stunden Hochrechnung beim Laden, „Willkommen zurück“-Karte.
+- Ablauf-Ziel 3–4 h: 0–15 min allein (Stufe 2 für 2 000), bis 60 min Stationen und ~30 Bots (Stufe 3 für 50 000), bis 120 min Streuner und Trichter (Stufe 4 für 1,5 Mio.), danach optimieren bis Stufe 5 (20 Mio., Abflug).
 
 ## 24. Minimap und Karte
 

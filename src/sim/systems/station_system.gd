@@ -49,8 +49,20 @@ static func linked_to_ship(w: SimWorld, st: Station) -> bool:
 
 
 static func apply(w: SimWorld, st: Station) -> void:
-	st.radius_tiles = int(cfg(w).get("radius_tiles", 7))
-	st.slots = int(cfg(w).get("slots", 3))
+	st.radius_tiles = int(cfg(w).get("radius_tiles", 7)) + int(w.mods.get("station_radius_add", 0))
+	st.slots = int(cfg(w).get("slots", 3)) + int(w.mods.get("station_slots_add", 0))
+
+
+## Nach einem Upgrade (MS80): alle Stationen und ihre Bots und alle Trichter neu einstellen.
+static func reapply_all(w: SimWorld) -> void:
+	for st in stations(w):
+		apply(w, st)
+	for h: Helper in w.helpers.values():
+		var st: Building = w.buildings.get(h.station_id)
+		if st is Station:
+			h.radius_tiles = (st as Station).radius_tiles
+	for hop in RoamerSystem.hoppers(w):
+		hop.capacity = RoamerSystem.hopper_capacity(w)
 
 
 ## Bot an seine Station binden: arbeitet im Kreis um sie, liefert dort ab.
@@ -92,7 +104,7 @@ static func migrate(w: SimWorld) -> void:
 		BuildingSystem.remove_free(w, b)
 		var hop := w.place_free(RoamerSystem.HOPPER_DEF, tile, 0) as Hopper
 		if hop != null:
-			hop.capacity = int(RoamerSystem.cfg(w).get("hopper_capacity", 120))
+			hop.capacity = RoamerSystem.hopper_capacity(w)
 			hop.store = store
 		var st := BuildingSystem.place_free_near(w, DEF, tile + Vector2i(2, 0)) as Station
 		if st != null:

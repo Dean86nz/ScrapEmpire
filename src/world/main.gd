@@ -2,8 +2,8 @@ extends Node2D
 ## Hauptszene: lädt die Karte in die Simulation, baut Boden und Wände,
 ## verbindet Darstellung, HUD, Baumenü und Bau-Cursor mit der SimWorld.
 
-const MAP_PATH := "res://data/maps/main.json"
-const MAP_NAME := "main"
+const MAP_DIR := "res://data/maps/"
+const NEW_GAME_MAP := "main2"   # MS80: großer Planet (180×134) für neue Spiele; alte Stände bleiben auf "main"
 const AUTOSAVE_SECONDS := 60.0
 const LONG_PRESS_SECONDS := 0.45
 
@@ -22,6 +22,7 @@ var _music_zone := ""
 
 var _world: SimWorld
 var _map_data: Dictionary = {}
+var _map_name := NEW_GAME_MAP
 var _zone_gates: Dictionary = {}  # "a|b" → Array[Node]
 var _nature: NatureView
 var _sky: DayLight
@@ -51,7 +52,11 @@ func _ready() -> void:
 	var start_px: Vector2
 	SaveManager.log_step("Spielszene startet (Version %s)" % str(ProjectSettings.get_setting("application/config/version", "?")))
 	var save_data := SaveManager.read()
-	_map_data = MapLoader.read(MAP_PATH)
+	if not save_data.is_empty():
+		_map_name = str(save_data.get("map", "main"))
+		if not FileAccess.file_exists(MAP_DIR + _map_name + ".json"):
+			_map_name = "main"
+	_map_data = MapLoader.read(MAP_DIR + _map_name + ".json")
 	if not save_data.is_empty():
 		SaveManager.begin_load(SaveManager.last_read_file)
 		SaveCodec.log_steps = true
@@ -254,7 +259,7 @@ func _notification(what: int) -> void:
 
 ## Speichert den kompletten Stand (Autosave, Pause, Beenden, F5).
 func save_game() -> bool:
-	var data := SaveCodec.encode(_world, MAP_NAME, _player.global_position, _player.selected_slot)
+	var data := SaveCodec.encode(_world, _map_name, _player.global_position, _player.selected_slot)
 	var ok := SaveManager.write(data)
 	if ok:
 		EventBus.quip.emit("HUD_SAVED")
@@ -342,7 +347,7 @@ func debug_scenario(name: String) -> void:
 			var inv := _world.player.inventory
 			for i in inv.slot_count:
 				inv.add("scrap", inv.stack_size)
-		"roamers":
+		"roamers", "roamers_max":
 			# Streuner-Test (MS77): Schiffsstufe-4-Freischaltung, Trichter in jeder Zone, viele Streuner
 			for f in ["collection", "helpers", "drones", "roamers"]:
 				_world.unlocked_features[f] = true
@@ -355,7 +360,8 @@ func debug_scenario(name: String) -> void:
 			_world.place_free("hopper", _world.player_tile() + Vector2i(4, 3), 0)
 			while _world.drones.size() < 30:
 				_world.add_drone()
-			for i in int(_world.helper_cfg.get("roamer", {}).get("max", 300)) / 2:
+			var n_roam := int(_world.helper_cfg.get("roamer", {}).get("max", 300))
+			for i in (n_roam if name == "roamers_max" else n_roam / 2):
 				var hh := HelperSystem.add_helper(_world, _world.ship().tile, _world.ship().tile)
 				hh.kind = RoamerSystem.KIND
 				hh.zone_id = ""

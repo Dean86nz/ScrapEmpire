@@ -17,6 +17,14 @@ static func cfg(w: SimWorld) -> Dictionary:
 	return w.helper_cfg.get("roamer", {})
 
 
+static func hopper_capacity(w: SimWorld) -> int:
+	return int(cfg(w).get("hopper_capacity", 120)) + int(w.mods.get("hopper_capacity_add", 0))
+
+
+static func throw_range(w: SimWorld) -> float:
+	return float(cfg(w).get("throw_range_px", 1600)) + float(w.mods.get("throw_range_add", 0))
+
+
 static func count(w: SimWorld) -> int:
 	var n := 0
 	for h: Helper in w.helpers.values():
@@ -100,50 +108,69 @@ static func on_node_removed(w: SimWorld, n: ResourceNode) -> void:
 		(w._chunk_nodes.get(chunk_of(n.tile), []) as Array).erase(n)
 
 
-## Nächstes Objekt, das der Streuner schafft, in einer offenen Zone. Geht die belegten
-## Rasterfelder nach Entfernung durch und hört auf, sobald kein näheres Ziel mehr möglich ist.
+## Nächstes Objekt, das der Streuner schafft, in einer offenen Zone. Erst in der Nähe (Ringe
+## bis NEAR_RINGS Felder), nur wenn dort nichts ist, über alle belegten Felder nach Entfernung
+## (MS80: der große Planet hat ~390 Felder, alle zu sortieren kostete je Suche mehrere ms).
+const NEAR_RINGS := 4
+
+
 static func find_target(w: SimWorld, h: Helper) -> ResourceNode:
 	_ensure_chunks(w)
 	last_too_hard = false
 	var hp := Vector2(h.pos)
-	var max_tier := maxi(h.hammer_tier, h.suction_tier)
+	var c := chunk_of(h.pos / SimWorld.TILE)
+	var state := {"best": null, "d": INF, "open": {}}
+	for r in range(0, NEAR_RINGS + 1):
+		if state["best"] != null and float((r - 1) * CHUNK * SimWorld.TILE) > float(state["d"]):
+			break
+		for dy in range(-r, r + 1):
+			for dx in range(-r, r + 1):
+				if maxi(absi(dx), absi(dy)) == r:
+					_scan_chunk(w, h, hp, c + Vector2i(dx, dy), state)
+	if state["best"] != null:
+		return state["best"]
+	# Fallback: alle belegten Felder außerhalb der Nähe, nach Entfernung
 	var size := float(CHUNK * SimWorld.TILE)
 	var order: Array = []
 	for cc: Vector2i in w._chunk_nodes:
-		if (w._chunk_nodes[cc] as Array).is_empty():
-			continue
-		# Ganzes Feld zu hart (leichteste Stufe darin): überspringen (bleibt beim Abbau gültig)
-		if int(w._chunk_min_tier.get(cc, 1)) > max_tier:
-			last_too_hard = true
+		if maxi(absi(cc.x - c.x), absi(cc.y - c.y)) <= NEAR_RINGS or (w._chunk_nodes[cc] as Array).is_empty():
 			continue
 		var lo := Vector2(cc) * size
-		var q := hp.clamp(lo, lo + Vector2(size, size))
-		order.append([hp.distance_to(q), cc])
+		order.append([hp.distance_to(hp.clamp(lo, lo + Vector2(size, size))), cc])
 	order.sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0])
-	var best: ResourceNode = null
-	var best_d := INF
-	var open := {}
 	for e: Array in order:
-		if float(e[0]) >= best_d:
+		if float(e[0]) >= float(state["d"]):
 			break
-		for n: ResourceNode in w._chunk_nodes[e[1]]:
-			if n.is_depleted() or int(h._avoid.get(n.tile, 0)) > w.tick_count:
-				continue
-			if int(w._roamer_claims.get(n.tile, 0)) >= (2 if n.nav_size <= 1 else 4):
-				continue   # schon genug Streuner dort: verteilen statt klumpen
-			if n.tier > (h.hammer_tier if n.uses_hammer() else h.suction_tier):
-				last_too_hard = true
-				continue
-			var d := hp.distance_to(Vector2(n.center_px()))
-			if d >= best_d:
-				continue
-			var zid := w.zones.zone_id_at(n.tile)
-			if not open.has(zid):
-				open[zid] = (zid == "" or w.zones.is_unlocked(zid)) and int(h.zone_avoid.get(zid, 0)) <= w.tick_count
-			if open[zid]:
-				best_d = d
-				best = n
-	return best
+		_scan_chunk(w, h, hp, e[1], state)
+	return state["best"]
+
+
+static func _scan_chunk(w: SimWorld, h: Helper, hp: Vector2, cc: Vector2i, state: Dictionary) -> void:
+	var list: Array = w._chunk_nodes.get(cc, [])
+	if list.is_empty():
+		return
+	# Ganzes Feld zu hart (leichteste Stufe darin): überspringen (bleibt beim Abbau gültig)
+	if int(w._chunk_min_tier.get(cc, 1)) > maxi(h.hammer_tier, h.suction_tier):
+		last_too_hard = true
+		return
+	var open: Dictionary = state["open"]
+	for n: ResourceNode in list:
+		if n.is_depleted() or int(h._avoid.get(n.tile, 0)) > w.tick_count:
+			continue
+		if int(w._roamer_claims.get(n.tile, 0)) >= (2 if n.nav_size <= 1 else 4):
+			continue   # schon genug Streuner dort: verteilen statt klumpen
+		if n.tier > (h.hammer_tier if n.uses_hammer() else h.suction_tier):
+			last_too_hard = true
+			continue
+		var d := hp.distance_to(Vector2(n.center_px()))
+		if d >= float(state["d"]):
+			continue
+		var zid := w.zones.zone_id_at(n.tile)
+		if not open.has(zid):
+			open[zid] = (zid == "" or w.zones.is_unlocked(zid)) and int(h.zone_avoid.get(zid, 0)) <= w.tick_count
+		if open[zid]:
+			state["d"] = d
+			state["best"] = n
 
 
 ## Ziel belegen bzw. freigeben (Verteilung der Streuner, nicht gespeichert).
@@ -168,7 +195,7 @@ static func release(w: SimWorld, h: Helper) -> void:
 
 ## Nächster Fangtrichter in Wurfweite, in den `n` Teile noch passen.
 static func nearest_hopper(w: SimWorld, pos: Vector2i, n: int) -> Hopper:
-	var reach := float(cfg(w).get("throw_range_px", 1600))
+	var reach := throw_range(w)
 	var best: Hopper = null
 	var best_d := INF
 	for hop in hoppers(w):

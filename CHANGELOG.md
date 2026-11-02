@@ -2,6 +2,37 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.37.0] – 2026-11-02 – MS80 Großer Planet und Ausbau (Phase 3)
+
+### Neu
+- **Großer Planet für neue Spiele:** 180×134 statt 120×90 Kacheln (2,25× Fläche), dieselben 6 Zonen mit ihren Bossen, je Zone 2,25× so viel Müll (2 436 Objekte, ~22 600 Teile). Allein mit Rusty kaum zu schaffen, die Bot-Armee wird zum Hauptteil. Karte `data/maps/main2.json` (Generator: `python -I tools/gen_main_map.py big`)
+- **Alte Spielstände bleiben auf ihrer Karte** (der Spielstand merkt sich die Karte); dein Spielstand lädt wie bisher
+- **Neue Upgrades im Bots-Menü:**
+  - Station: mehr Plätze (+1 Bot je Station, 5 Stufen, ab 500 Bolts)
+  - Station: größerer Umkreis (+1 Kachel, 5 Stufen, ab 400 Bolts)
+  - Fangtrichter: größer (+60 Teile, 10 Stufen, ab 8 000 Bolts, ab Streunern)
+  - Streuner: Wurfweite (+4 Kacheln, 5 Stufen, ab 10 000 Bolts, ab Streunern)
+
+### Geändert
+- Stationen werden langsamer teurer (×1,08 statt ×1,3 je Station; die 35. kostete vorher über 2 Mio.)
+- Fangtrichter ×1,15 statt ×1,25 je Trichter
+- Bis zu 80 Drohnen statt 40
+
+### Leistung
+- **Zonen-Übersicht** (Minimap, Gebietsanzeige) in einem Durchlauf statt einem je Zone: auf dem großen Planeten 14 ms → ein Bruchteil; das war die Hauptursache neuer Ruckler
+- Müll-Objekte ohne Boss und Gebäude ohne Ring laufen nicht mehr jedes Bild mit
+- Streuner suchen erst in der Nähe (bis 32 Kacheln), nur wenn dort nichts ist über die ganze Karte
+- Messung PC, großer Planet: 150 Stations-Bots + 80 Drohnen: 2 Ruckler in 1 440 Bildern, 175 FPS; 150 Streuner: 1 Ruckler in 2 340 Bildern, 219 FPS; **300 Streuner: 3 Ruckler in 2 340 Bildern, 204 FPS**, Sim-Tick 8,9 ms
+
+### Technik
+- Kartenwahl: neue Spiele `main2`, Spielstände ihre gespeicherte Karte (`Main._map_name`); `StationSystem.reapply_all` nach Upgrades; `RoamerSystem.hopper_capacity/throw_range`; Modifikatoren `station_slots_add`, `station_radius_add`, `hopper_capacity_add`, `throw_range_add`; Debug-Szenario `scenario=roamers_max` (300 Streuner)
+- 253 Unit-Tests (neu: große Karte lädt mit Schiff, Station-Upgrades, Trichter-Upgrades), 72 Gamepad-Prüfungen, Weiterspielen-Prüfung grün
+
+### Ally-Testliste
+1. Neues Spiel: Fühlt sich der Planet groß genug an, ist der Weg zu den Bots klar?
+2. Debug-Szenario „roamers_max“ (300 Streuner): bleibt es auf dem Ally bei 60 FPS? Wenn ja, kann die Obergrenze höher
+3. Deinen alten Spielstand laden: alles wie vorher?
+
 ## [2.36.0] – 2026-11-02 – MS81 Fortschritt im Hintergrund (Phase 3)
 
 Hinweis: MS80 (Planetengröße und Balancing) wartet auf deine Freigabe der Zahlen-Übersicht; MS81 hing nicht daran und ist deshalb schon fertig. Die Versionsnummern folgen der Reihenfolge der Fertigstellung.

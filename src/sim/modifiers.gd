@@ -31,6 +31,10 @@ const DEFAULTS := {
 	"drone_capacity_add": 0,
 	"hammer_power": 0.0,         # +Anteil Teile je Hammerschlag (Skill Hammer-Kraft, MS57)
 	"helper_power": 0.0,         # +Anteil Arbeit je Bot (Upgrade Bot-Kraft, MS57)
+	"station_slots_add": 0,      # +Bots je Station (MS80)
+	"station_radius_add": 0,     # +Kacheln Umkreis je Station (MS80)
+	"hopper_capacity_add": 0,    # +Teile je Fangtrichter (MS80)
+	"throw_range_add": 0,        # +Pixel Wurfweite der Streuner (MS80)
 }
 
 

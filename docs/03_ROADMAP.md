@@ -106,7 +106,7 @@ Jeder Meilenstein endet mit einem lauffähigen Stand, einer Testanleitung und ei
 | **77** | Streuner, Müllwürfel, Fangtrichter | v2.33.0 |
 | **78** | Stations-Bots (Sammelstellen werden Trichter + Station) | v2.34.0 |
 | **79** | Leistungsanzeige (Müll/min, Bolts/min, Engpässe) | v2.35.0 |
-| 80 | Planetengröße und Balancing (Übersicht vorher, wartet auf Freigabe) | v2.37.0 |
+| **80** | Großer Planet (180×134, 6 Zonen) und Ausbau-Upgrades | v2.37.0 |
 | **81** | Fortschritt im Hintergrund (Hochrechnung, max. 8 h) | v2.36.0 |
 
 ## Phase 2.5 (Go 2026-10-31): Werkzeuge, Gewusel, Übersicht

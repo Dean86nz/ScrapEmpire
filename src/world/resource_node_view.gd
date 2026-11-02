@@ -52,6 +52,7 @@ var _boss_bar: ProgressBar
 
 func setup(node: ResourceNode) -> void:
 	node_id = node.id
+	set_process(node.boss)   # MS80: nur Bosse brauchen ein Bild-für-Bild-Update (Bot-Anzeige)
 	var path := str(ResourceNode.defs.get(node.kind, {}).get("sprite", FALLBACK_TEXTURES.get(node.kind, "")))
 	if path != "" and ResourceLoader.exists(path):
 		_sprite.texture = load(path)

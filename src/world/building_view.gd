@@ -68,6 +68,7 @@ func setup(b: Building) -> void:
 			_ring.add_child(seg)
 		_ring.visible = false
 		add_child(_ring)
+	set_process(_ring != null)   # MS80: nur Stationen (Ring) brauchen ein Bild-für-Bild-Update
 	if b is Ship:
 		ship_fx = ShipFx.new()
 		add_child(ship_fx)

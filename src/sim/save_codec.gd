@@ -262,6 +262,6 @@ static func _restore_building(b: Building, st: Dictionary, world: SimWorld) -> v
 		s.clean_radius = int(st.get("clean_radius", ShipSystem.clean_target(world, s)))
 	elif b is CollectionPoint:
 		if b is Hopper:
-			(b as Hopper).capacity = int(RoamerSystem.cfg(world).get("hopper_capacity", 120))
+			(b as Hopper).capacity = RoamerSystem.hopper_capacity(world)
 		for k in st.get("store", {}):
 			(b as CollectionPoint).store[str(k)] = int(st["store"][k])
