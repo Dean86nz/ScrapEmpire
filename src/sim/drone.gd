@@ -57,7 +57,9 @@ func tick(world: SimWorld) -> void:
 			if _idle <= 0:
 				state = State.SEEK
 		State.SEEK:
-			_seek(world)
+			if world.plan_budget > 0:   # MS76: Suchen teilen sich das Planungs-Budget mit den Bots
+				world.plan_budget -= 1
+				_seek(world)
 		State.COLLECT:
 			_collect(world)
 		State.FETCH:
@@ -94,9 +96,9 @@ func _seek(world: SimWorld) -> void:
 	target_loose = -1
 	target_node = -1
 	for item: LooseItem in world.loose.values():
-		if _claimed_by_other(world, item.id) or not _reachable(world, item.pos):
-			continue
 		var d := Vector2(item.pos - pos).length()
+		if d >= best_d or _claimed_by_other(world, item.id) or not _reachable(world, item.pos):
+			continue   # erst die billige Entfernung prüfen (MS76)
 		if d < best_d:
 			best_d = d
 			target_loose = item.id
@@ -104,9 +106,9 @@ func _seek(world: SimWorld) -> void:
 	if target_loose < 0:
 		best_d = float(search_radius_px)
 		for n: ResourceNode in world.nodes.values():
-			if not n.is_pile() or n.is_depleted() or n.tier > tier or not _reachable(world, n.center_px()):
-				continue
 			var d2 := Vector2(n.center_px() - pos).length()
+			if d2 >= best_d or not n.is_pile() or n.is_depleted() or n.tier > tier or not _reachable(world, n.center_px()):
+				continue
 			if d2 < best_d:
 				best_d = d2
 				target_node = n.id

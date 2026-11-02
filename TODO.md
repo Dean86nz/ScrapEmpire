@@ -195,4 +195,6 @@
 - [x] MS73 Gewusel: kleine Bots, keine Fusion, bis 150 Bots (v2.29.0)
 - [x] MS74 Werkzeug-Leiter: Pömpel, Greifzange, Magnetkran, Schrottpresse, Laser (v2.30.0)
 - [x] MS75 Rusty trägt Sauger und Werkzeug (v2.31.0)
+- [x] MS76 Stabilisierung: verschwindende Bots, Ruckeln (v2.32.0)
+- [ ] Phase 3 Bot-Armee: Plan vorgelegt, wartet auf Go
 - [ ] Steam-Technik: wartet auf App-ID und Freigabe für GodotSteam
