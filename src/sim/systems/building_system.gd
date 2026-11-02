@@ -54,10 +54,6 @@ static func _cmd_place(w: SimWorld, cmd: Dictionary) -> void:
 		w.place_failed.emit("blocked")
 		return
 	var zr := NetworkSystem.zone_check(w, def, tile)
-	if zr == "" and def.id == NetworkSystem.POINT_DEF:
-		var site := NetworkSystem.site_of(w, w.zones.zone_id_at(tile))
-		if site.x >= 0 and tile != site:
-			zr = "site"  # Karten mit Bauplätzen: Sammelstelle nur dort (MS41)
 	if zr != "":
 		w.place_failed.emit(zr)
 		return
@@ -73,6 +69,8 @@ static func _cmd_place(w: SimWorld, cmd: Dictionary) -> void:
 	w.progression.on_build()
 	if b is Hopper:
 		(b as Hopper).capacity = int(RoamerSystem.cfg(w).get("hopper_capacity", 120))
+	if b is Station:
+		StationSystem.apply(w, b as Station)
 	w.building_placed.emit(b)
 	if b is CollectionPoint:
 		NetworkSystem.on_point_built(w, b as CollectionPoint)
@@ -88,6 +86,42 @@ static func place_free(w: SimWorld, def_id: String, tile: Vector2i, rot: int = 0
 	w.buildings[b.id] = b
 	w.building_placed.emit(b)
 	return b
+
+
+## Nächster freier Platz um `center` (Spirale bis 6 Kacheln), ohne Kosten (Spielstand, Umbau).
+static func place_free_near(w: SimWorld, def_id: String, center: Vector2i) -> Building:
+	var def: BuildingDef = w.defs[def_id]
+	for r in range(0, 7):
+		for dy in range(-r, r + 1):
+			for dx in range(-r, r + 1):
+				if maxi(absi(dx), absi(dy)) == r and can_place_def(w, def, center + Vector2i(dx, dy), 0):
+					return place_free(w, def_id, center + Vector2i(dx, dy), 0)
+	return null
+
+
+## Gebäude neben Rusty bauen (mit Kosten): nächster freier Platz in Reichweite (MS77/78).
+static func place_near_player(w: SimWorld, def_id: String) -> void:
+	var def: BuildingDef = w.defs.get(def_id, null)
+	if def == null:
+		return
+	var center := w.player_tile() + Vector2i(1, -1)
+	for r in range(0, 6):
+		for dy in range(-r, r + 1):
+			for dx in range(-r, r + 1):
+				if maxi(absi(dx), absi(dy)) != r:
+					continue
+				var t := center + Vector2i(dx, dy)
+				if can_place_def(w, def, t, 0) and in_build_range(w, t, def.rotated_size(0)):
+					_cmd_place(w, {"def_id": def_id, "tile": t, "rot": 0})
+					return
+	w.place_failed.emit("blocked")
+
+
+## Entfernt ohne Rückgabe (Umbau alter Spielstände).
+static func remove_free(w: SimWorld, b: Building) -> void:
+	w.grid.remove(b)
+	w.buildings.erase(b.id)
+	w.building_removed.emit(b.id)
 
 
 static func _cmd_remove(w: SimWorld, cmd: Dictionary) -> void:

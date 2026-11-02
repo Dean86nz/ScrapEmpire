@@ -1,5 +1,5 @@
 extends TestCase
-## Sammelstellen, Drohnen-Transport, Bot-Zuweisung und Kurier (MS34).
+## Bot-Stationen (MS78), Drohnen-Transport, Umbau alter Sammelstellen und Kurier (MS34).
 
 
 func _world() -> SimWorld:
@@ -13,69 +13,122 @@ func _world() -> SimWorld:
 	return w
 
 
-func _place_point(w: SimWorld, tile: Vector2i) -> CollectionPoint:
-	w.unlocked_features["collection"] = true
-	w.player.pos = tile * 64 + Vector2i(-100, 32)
-	w.queue_command({"type": "place", "def_id": "collection_point", "tile": tile, "rot": 0})
-	w.tick()
-	for b: Building in w.buildings.values():
-		if b is CollectionPoint and b.tile == tile:
-			return b
-	return null
+func _station(w: SimWorld, tile: Vector2i) -> Station:
+	var st := w.place_free(StationSystem.DEF, tile) as Station
+	StationSystem.apply(w, st)
+	return st
 
 
-func test_point_costs_bolts_one_per_zone_and_brings_a_drone() -> void:
+func test_station_costs_bolts_and_brings_a_drone() -> void:
 	var w := _world()
+	w.unlocked_features["helpers"] = true
 	w.bolts = 2000
-	var p := _place_point(w, Vector2i(40, 10))
-	assert_true(p != null, "Sammelstelle gebaut")
+	w.player.pos = Vector2i(40, 10) * 64
+	w.queue_command({"type": "build_station"})
+	w.tick()
+	assert_eq(StationSystem.stations(w).size(), 1, "Station neben Rusty gebaut")
 	assert_eq(w.bolts, 2000 - 300)
 	assert_eq(w.drones.size(), 1, "bringt eine Drohne mit")
-	var fails := []
-	w.place_failed.connect(func(r: String) -> void: fails.append(r))
-	_place_point(w, Vector2i(45, 20))
-	assert_eq(fails, ["zone_full"], "nur eine je Zone")
 
 
-func test_bolts_only_when_material_reaches_the_ship() -> void:
+func test_far_station_is_emptied_by_drone() -> void:
 	var w := _world()
-	w.bolts = 300
-	var p := _place_point(w, Vector2i(40, 10))
-	assert_eq(w.bolts, 0)
+	var st := _station(w, Vector2i(40, 10))
+	w.player.pos = st.center_px()
 	w.player.inventory.add("copper", 20)
-	w.queue_command({"type": "deliver_all", "to": p.id})
+	w.queue_command({"type": "deliver_all", "to": st.id})
 	w.tick()
-	assert_eq(p.total(), 20, "eingelagert")
-	assert_eq(w.player.inventory.total(), 0)
-	assert_eq(w.bolts, 0, "noch keine Bolts")
+	assert_eq(st.total(), 20, "Rusty lädt an der Station ab")
+	assert_false(StationSystem.linked_to_ship(w, st))
+	w.add_drone()
 	TestWorlds.run(w, 20 * 20)
-	assert_eq(p.total(), 0, "Drohne hat abgeholt")
+	assert_eq(st.total(), 0, "Drohne hat abgeholt")
 	assert_eq(w.bolts, 60, "20 Kupfer à 3 am Schiff")
 
 
-func test_bot_delivers_to_point_of_its_zone() -> void:
+func test_near_station_shoots_cube_to_ship() -> void:
+	var w := _world()
+	var st := _station(w, Vector2i(7, 13))
+	assert_true(StationSystem.linked_to_ship(w, st))
+	st.accept_stack("scrap", 10)
+	TestWorlds.run(w, 20 * 4)
+	assert_eq(st.total(), 0, "Station gibt selbst ans Schiff weiter")
+	assert_eq(w.bolts, 10)
+
+
+func test_station_bot_stays_in_radius() -> void:
 	var w := _world()
 	w.unlocked_features["helpers"] = true
-	w.bolts = 1300
-	var p := _place_point(w, Vector2i(40, 10))
-	w.drones.clear()
+	w.bolts = 5000
+	var st := _station(w, Vector2i(40, 10))
 	w.add_pile("scrap_pile", Vector2i(44, 12), 6)
-	w.queue_command({"type": "buy_helper", "zone": Vector2i(42, 12)})
-	TestWorlds.run(w, 20 * 40)
-	assert_true(p.total() > 0, "Bot lädt an der Sammelstelle ab: %d" % p.total())
-
-
-func test_bots_always_find_work_themselves() -> void:
-	var w := _world()
-	w.unlocked_features["helpers"] = true
-	w.bolts = 1000
-	w.add_pile("scrap_pile", Vector2i(45, 20), 5)
-	w.queue_command({"type": "buy_helper", "zone": Vector2i(5, 5)})
+	var far := w.add_pile("scrap_pile", Vector2i(55, 25), 6)
+	w.player.pos = st.center_px()
+	w.queue_command({"type": "buy_helper"})
 	w.tick()
 	var h: Helper = w.helpers.values()[0]
-	assert_true(h.auto, "Bots arbeiten immer automatisch")
-	TestWorlds.run(w, 20 * 10)
-	assert_eq(h.zone_id, "b", "leere Zone A: Bot zieht selbst in Zone B mit Müll")
+	assert_eq(h.station_id, st.id)
+	var limit := float((st.radius_tiles + 2) * 64)
+	var max_d := 0.0
+	for i in 20 * 40:
+		w.tick()
+		max_d = maxf(max_d, Vector2(h.pos).distance_to(Vector2(st.center_px())))
+	assert_true(max_d <= limit, "bleibt im Umkreis: %d > %d" % [max_d, limit])
+	assert_eq(far.amount, 6, "Müll außerhalb bleibt liegen")
+	assert_true(st.total() > 0 or h.inventory.total() > 0, "arbeitet und liefert an die Station")
+
+
+func test_buy_needs_free_station() -> void:
+	var w := _world()
+	w.unlocked_features["helpers"] = true
+	w.bolts = 100000
+	var fails := []
+	w.helper_failed.connect(func(r: String) -> void: fails.append(r))
+	w.queue_command({"type": "buy_helper"})
+	w.tick()
+	assert_eq(fails, ["no_station"])
+	var st := _station(w, Vector2i(10, 20))
+	for i in st.slots + 1:
+		w.queue_command({"type": "buy_helper"})
+		w.tick()
+	assert_eq(StationSystem.bots_of(w, st), st.slots, "Station voll")
+	assert_eq(fails.back(), "no_station")
+
+
+func test_old_collection_point_becomes_hopper_and_station() -> void:
+	var w := _world()
+	var p := w.place_free("collection_point", Vector2i(40, 10)) as CollectionPoint
+	p.accept_stack("chrome", 7)
+	var h := w.add_helper(Vector2i(42, 12), p.tile)
+	h.zone_id = "b"
+	var data := SaveCodec.encode(w, "test", Vector2(32, 32), 0)
+	var w2 := _world()
+	SaveCodec.decode(JSON.parse_string(JSON.stringify(data)), w2)
+	assert_eq(NetworkSystem.points(w2).filter(func(b: CollectionPoint) -> bool: return b.def.id == "collection_point").size(), 0, "keine Sammelstelle mehr")
+	var hops := RoamerSystem.hoppers(w2)
+	assert_eq(hops.size(), 1)
+	assert_eq(hops[0].store, {"chrome": 7}, "Inhalt bleibt")
+	var sts := StationSystem.stations(w2)
+	assert_eq(sts.size(), 1, "dazu eine Station")
+	assert_eq((w2.helpers.values()[0] as Helper).station_id, sts[0].id, "Bot gehört zur neuen Station")
+
+
+func test_store_and_courier_survive_save() -> void:
+	var w := _world()
+	var st := _station(w, Vector2i(40, 10))
+	st.accept_stack("chrome", 7)
+	w.unlocked_features["courier"] = true
+	w.player.inventory.add("scrap", 4)
+	w.queue_command({"type": "call_courier"})
+	w.tick()
+	var data := SaveCodec.encode(w, "test", Vector2(32, 32), 0)
+	var w2 := TestWorlds.make(60, 30)
+	SaveCodec.decode(JSON.parse_string(JSON.stringify(data)), w2)
+	var sts := StationSystem.stations(w2)
+	assert_eq(sts.size(), 1)
+	assert_eq(sts[0].store, {"chrome": 7})
+	assert_eq(w2.couriers.size(), 1)
+	assert_true(w2.courier_cooldown > 0)
 
 
 func test_courier_locked_then_picks_up_and_delivers() -> void:
@@ -134,61 +187,3 @@ func test_courier_upgrade_raises_load_and_count() -> void:
 	assert_eq(int(NetworkSystem.courier_stats(w)["count"]), int(levels[-1]["count"]))
 	assert_true(int(NetworkSystem.courier_stats(w)["count"]) > 1, "mehrere Kuriere")
 	assert_eq(int(NetworkSystem.courier_stats(w)["load"]), 0, "alles")
-
-
-func test_store_and_courier_survive_save() -> void:
-	var w := _world()
-	w.bolts = 300
-	var p := _place_point(w, Vector2i(40, 10))
-	w.drones.clear()
-	p.accept_stack("chrome", 7)
-	w.unlocked_features["courier"] = true
-	w.player.inventory.add("scrap", 4)
-	w.queue_command({"type": "call_courier"})
-	w.tick()
-	var data := SaveCodec.encode(w, "test", Vector2(32, 32), 0)
-	var w2 := TestWorlds.make(60, 30)
-	SaveCodec.decode(JSON.parse_string(JSON.stringify(data)), w2)
-	var p2: CollectionPoint = null
-	for b: Building in w2.buildings.values():
-		if b is CollectionPoint:
-			p2 = b
-	assert_true(p2 != null)
-	assert_eq(p2.store, {"chrome": 7})
-	assert_eq(w2.couriers.size(), 1)
-	assert_true(w2.courier_cooldown > 0)
-
-
-func _site_world() -> SimWorld:
-	var w := TestWorlds.make(60, 30)
-	MapLoader.apply(w, {"width": 60, "height": 30, "seed": 2, "zone_order": ["a", "b"], "unlock_cleanliness": 0.5,
-		"player_start": {"x": 5, "y": 15}, "ship": {"x": 2, "y": 13},
-		"zones": [{"id": "a", "name": "A", "x": 0, "y": 0, "w": 30, "h": 30, "site": {"x": 12, "y": 20}},
-			{"id": "b", "name": "B", "x": 30, "y": 0, "w": 30, "h": 30, "site": {"x": 40, "y": 20}}],
-		"nodes": []})
-	w.unlocked_features["collection"] = true
-	w.bolts = 2000
-	return w
-
-
-func test_point_only_on_fixed_site() -> void:
-	var w := _site_world()
-	var failed := []
-	w.place_failed.connect(func(r: String) -> void: failed.append(r))
-	w.player.pos = Vector2i(8, 24) * 64
-	w.queue_command({"type": "place", "def_id": "collection_point", "tile": Vector2i(8, 20), "rot": 0})
-	w.tick()
-	assert_eq(failed, ["site"], "frei platzieren geht nicht mehr")
-
-
-func test_a_at_site_builds_point() -> void:
-	var w := _site_world()
-	assert_eq(NetworkSystem.site_near_player(w), "", "weit weg: kein Bauplatz")
-	w.player.pos = Vector2i(12, 20) * 64 + Vector2i(64, 64 + 90)
-	assert_eq(NetworkSystem.site_near_player(w), "a")
-	w.queue_command({"type": "build_point", "zone": "a"})
-	w.tick()
-	assert_eq(NetworkSystem.points(w).size(), 1)
-	assert_eq(NetworkSystem.points(w)[0].tile, Vector2i(12, 20))
-	assert_eq(NetworkSystem.site_near_player(w), "", "Bauplatz belegt")
-	assert_true(w.bolts < 2000, "kostet Bolts")

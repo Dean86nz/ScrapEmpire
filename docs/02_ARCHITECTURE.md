@@ -359,6 +359,12 @@ Tick-Reihenfolge wird erweitert: Nodes → Buildings → Conveyors → Helpers �
 - `BossSystem`: Rustys Hammer auf einen Boss → `rally` setzt `Helper.rally_id` aller Bots im Umkreis; `Helper._plan` plant dann nur den HAMMER-Schritt auf den Boss. `ToolSystem` zieht beim Boss nur Material ab, wenn `can_damage` (genug Bots in `reinforce_reach_px`). `NodeSystem._remove_node` ruft `release`.
 - Bots sind immer automatisch (`NetworkSystem._tick_auto`), kein Zuweisen mehr.
 
+## 10m. Bot-Armee (Phase 3, seit v2.33.0)
+- **Streuner** (`RoamerSystem`, `Helper.kind = "roamer"`): Zielsuche über `SimWorld._chunk_nodes` (8×8-Kachel-Raster, belegte Felder nach Entfernung sortiert, `_chunk_min_tier` überspringt zu harte Felder), Verteilung über `_roamer_claims`. Volle Ladung → `TrashCube` (Start, Ziel, Flugzeit) zum nächsten `Hopper` mit Platz (`free_space` abzüglich `incoming`). Würfel landen in `_tick_cubes`; Ziel kann jedes Gebäude sein (auch das Schiff).
+- **Stationen** (`StationSystem`, `Station` erbt von `CollectionPoint`): Bot mit `station_id` arbeitet im Kreis `radius_tiles` um die Station (`zone_id = ""`, Kandidaten über `ToolSystem.nodes_near`). Stationen nah am Schiff (`ship_link_px`) schießen ihren Inhalt als Würfel hinüber, sonst holen Drohnen ab (wie früher an der Sammelstelle). `StationSystem.migrate` baut alte Spielstände um (Sammelstelle → Trichter + Station, Bots auf freie Plätze, sonst neue Station am Bot).
+- **Lastbudgets je Tick** (`HelperSystem`): `PLAN_BUDGET` (Bot-Planungen, Drohnen-Suchen bekommen eine eigene Reserve), `ROAMER_BUDGET` (Streuner-Zielsuchen), `PATH_BUDGET` (neue Wege). Wer kein Budget mehr bekommt, ist einen Tick später dran.
+- Feste Bauplätze (10k) und `SiteView` entfielen in MS78.
+
 ## 11. Neue Darstellung und UI
 
 - HUD: XP-Leiste (`src/ui/hud/xp_bar.tscn`), Level-Up-Konfetti (`CPUParticles2D` über Rusty), Funken-Partikel bei „Zu hart“.

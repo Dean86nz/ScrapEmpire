@@ -27,7 +27,9 @@
       "sprite": "res://assets/sprites/buildings/collection_point.svg",
       "ports": [],
       "requires_feature": "collection",
-      "max_per_zone": 1
+      "max_per_zone": 1,
+      "buildable": false,
+      "_comment": "Alte Sammelstelle (bis MS77): nur noch für alte Spielstände, wird beim Laden zu Fangtrichter + Station"
     },
     {
       "id": "hopper",
@@ -43,6 +45,21 @@
       "sprite": "res://assets/sprites/buildings/hopper.svg",
       "ports": [],
       "requires_feature": "roamers"
+    },
+    {
+      "id": "station",
+      "name_key": "BLD_STATION",
+      "size": [
+        1,
+        1
+      ],
+      "cost": {
+        "bolts": 300
+      },
+      "cost_growth": 1.3,
+      "sprite": "res://assets/sprites/buildings/station.svg",
+      "ports": [],
+      "requires_feature": "helpers"
     }
   ]
 }

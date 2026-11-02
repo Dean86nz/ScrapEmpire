@@ -87,9 +87,9 @@ func test_world_grants_xp_for_collect_build_deliver() -> void:
 	w.tick()
 	w.player.suck_held = false
 	assert_eq(w.progression.total_xp, 1)
-	w.unlocked_features["collection"] = true
-	w.bolts = int(w.next_cost(w.defs["collection_point"]).get("bolts", 0))
-	w.queue_command({"type": "place", "def_id": "collection_point", "tile": Vector2i(7, 7)})
+	w.unlocked_features["helpers"] = true
+	w.bolts = int(w.next_cost(w.defs["station"]).get("bolts", 0))
+	w.queue_command({"type": "place", "def_id": "station", "tile": Vector2i(7, 7)})
 	w.tick()
 	assert_eq(w.progression.total_xp, 6, "Bauen gibt 5 XP")
 	TestWorlds.with_ship(w, Vector2i(10, 2))

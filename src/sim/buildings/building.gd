@@ -22,6 +22,8 @@ static func create(p_id: int, p_def: BuildingDef, p_tile: Vector2i, p_rot: int) 
 			b = CollectionPoint.new()
 		"hopper":
 			b = Hopper.new()   # Fangtrichter (MS77)
+		"station":
+			b = Station.new()  # Bot-Station (MS78)
 		_:
 			b = Building.new()
 	b.id = p_id

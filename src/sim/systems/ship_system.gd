@@ -29,8 +29,9 @@ static func _cmd_deliver_all(w: SimWorld, cmd: Dictionary) -> void:
 		for slot: Dictionary in w.player.inventory.slots.duplicate(true):
 			if slot["item"] == "":
 				continue
-			stored += to.accept_stack(str(slot["item"]), int(slot["count"]))
-			w.player.inventory.remove(str(slot["item"]), int(slot["count"]))
+			var took := to.accept_stack(str(slot["item"]), int(slot["count"]))
+			stored += took
+			w.player.inventory.remove(str(slot["item"]), took)   # voller Trichter: Rest bleibt in der Tasche
 		if stored == 0:
 			w.ship_failed.emit("empty")
 			return

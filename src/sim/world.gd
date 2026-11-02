@@ -268,6 +268,7 @@ func tick() -> void:
 	NetworkSystem._tick_auto(self)
 	NetworkSystem._tick_couriers(self)
 	RoamerSystem._tick_cubes(self)
+	StationSystem._tick(self)
 	if tick_count % 20 == 0:
 		zones.check_unlocks(nodes)
 		if dirt.is_active():
@@ -307,8 +308,8 @@ func _apply(cmd: Dictionary) -> void:
 			HelperSystem._cmd_buy_helper_upgrade(self, cmd)
 		"remove_helper":
 			HelperSystem._cmd_remove_helper(self, cmd)
-		"build_point":
-			NetworkSystem._cmd_build_point(self, cmd)
+		"build_station":
+			StationSystem._cmd_build(self, cmd)
 		"call_courier":
 			NetworkSystem._cmd_call_courier(self, cmd)
 		"buy_drone":

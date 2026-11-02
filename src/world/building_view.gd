@@ -20,6 +20,13 @@ var _buffer_root := Node2D.new()
 var _half_h := 64.0
 var ship_fx: ShipFx   # nur beim Schiff
 var _blink: Tween     # Fangtrichter voll (MS77)
+var _ring: Node2D     # Umkreis der Station (MS78)
+var _ring_r := 0.0
+
+
+func _process(_delta: float) -> void:
+	if _ring != null and SimClock.world != null:
+		_ring.visible = Vector2(SimClock.world.player.pos).distance_to(position) <= _ring_r + 192.0
 
 
 
@@ -45,6 +52,22 @@ func setup(b: Building) -> void:
 	_label.size = Vector2(160, 30)
 	add_child(_label)
 
+	if b is Station:
+		# Umkreis der Station (MS78): gestrichelter Ring, sichtbar wenn Rusty in der Nähe ist
+		_ring = Node2D.new()
+		_ring.z_index = -1
+		var r := float((b as Station).radius_tiles * Building.TILE)
+		_ring_r = r
+		for i in 36:
+			if i % 2 == 1:
+				continue
+			var seg := Line2D.new()
+			seg.points = PackedVector2Array([Vector2.RIGHT.rotated(i * TAU / 36.0) * r, Vector2.RIGHT.rotated((i + 1) * TAU / 36.0) * r])
+			seg.width = 5.0
+			seg.default_color = Color(0.31, 0.76, 0.69, 0.55)
+			_ring.add_child(seg)
+		_ring.visible = false
+		add_child(_ring)
 	if b is Ship:
 		ship_fx = ShipFx.new()
 		add_child(ship_fx)

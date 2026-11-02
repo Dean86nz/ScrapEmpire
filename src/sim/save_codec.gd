@@ -219,6 +219,7 @@ static func decode(data: Dictionary, world: SimWorld) -> Vector2:
 		world.couriers[c.id] = c
 	world.courier_cooldown = int(data.get("courier_cooldown", 0))
 	RoamerSystem.cubes_from_list(world, data.get("cubes", []))
+	StationSystem.migrate(world)   # MS78: Sammelstellen → Trichter + Station, Bots an Stationen
 	if data.has("events"):
 		world.events_state = _events_from(data["events"])
 	for t in data.get("bonus_nodes", []):

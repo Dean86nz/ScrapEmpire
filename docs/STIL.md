@@ -30,6 +30,7 @@ Ziel: bunt, fröhlich, cartoonig (Geist von Dinkum), auf Screenshots neben Steam
 ## Figuren
 - **Rusty:** Größe fix, nie verzerrt. Reichweite nur über den Saugwirbel, nicht über die Rüssellänge. 5 Ausbaustufen über Plakette und Anbauteile (Ketten, Hammer, Lampen, Tank).
 - **Werkzeuge (MS74, ersetzen den Hammer):** 1 Pömpel (Rot), 2 Greifzange (Grün), 3 Magnetkran (Orange), 4 Schrottpresse (Blau), 5 Laser (Lila/Pink). Je eigenes Bild (`assets/sprites/tools/`), Animation, Ton und Treffer-Effekt (`ToolLook`). Bots tragen ihr Werkzeug vorne. Rusty trägt den Sauger immer vorne und das Werkzeug seitlich in einer Halterung in Werkzeugfarbe; beim Benutzen hält er es vor sich (MS75). Der Sauger bleibt unverändert.
+- **Bot-Station (MS78):** kleine graue Ladeplattform mit türkiser Platte, drei gelben Platz-Lichtern und orangem Funkmast; Umkreis als gestrichelter türkiser Ring.
 - **Streuner (MS77):** heller Körper, oranger Presskasten hinten, lila Wimpel; Werkzeugfarbe tönt ihn wie die Bots. **Fangtrichter:** oranger Trichter mit blauem Rand auf drei Beinen. **Müllwürfel:** grauer gepresster Würfel mit rotem Band, fliegt in hohem Bogen.
 - **Bot (seit MS73):** immer dieselbe kleine Figur (rund mit einem Auge, etwas kleiner als Rusty). Bessere Werkzeugstufe = schönere Farbe (Türkis → Grün → Blau → Lila → Gold), nie größer. Keine Fusion mehr.
 - **Müll:** eindeutig Müll (Dellen, Risse, Klebeband), Farben passend zur Zone, immer mit Umriss und Schatten-Oval.

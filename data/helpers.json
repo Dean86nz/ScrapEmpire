@@ -126,5 +126,12 @@
     "throw_range_px": 1600,
     "throw_speed_px_s": 900,
     "hopper_capacity": 120
+  },
+  "station": {
+    "_comment": "Bot-Station (MS78): Bots arbeiten im Umkreis radius_tiles, je Station slots Bots. Nah am Schiff (ship_link_px) schießt sie ab send_min Teilen selbst hinüber, sonst holt eine Drohne ab.",
+    "radius_tiles": 7,
+    "slots": 3,
+    "ship_link_px": 900,
+    "send_min": 6
   }
 }
