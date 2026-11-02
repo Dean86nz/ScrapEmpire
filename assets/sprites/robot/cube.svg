@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <!-- Müllwürfel (MS77): gepresster Schrott mit Band -->
+  <path d="M8 16 L24 8 L40 16 L40 34 L24 42 L8 34 Z" fill="#8E9499" stroke="#2A2A33" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M8 16 L24 24 L40 16 M24 24 L24 42" fill="none" stroke="#2A2A33" stroke-width="3"/>
+  <path d="M8 16 L24 8 L40 16 L24 24 Z" fill="#B8C0CA"/>
+  <path d="M8 16 L24 8 L40 16 L24 24 Z" fill="none" stroke="#2A2A33" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M14 28 l6 3 M28 31 l6 -3 M13 21 l6 -3" stroke="#F28C28" stroke-width="3" stroke-linecap="round"/>
+  <path d="M16 12 L32 20" stroke="#E8453C" stroke-width="4"/>
+</svg>

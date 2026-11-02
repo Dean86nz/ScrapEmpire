@@ -7,7 +7,8 @@ func test_only_ship_and_collection_point_remain() -> void:
 	for gone in ["sell_terminal", "furnace", "press", "conveyor", "extractor", "chest",
 			"lantern", "bench", "planter", "sculpture", "sign", "stone_ring", "museum"]:
 		assert_false(defs.has(gone), "entfernt: " + gone)
-	assert_eq(defs.keys().size(), 2)
+	assert_eq(defs.keys().size(), 3)   # + Fangtrichter (MS77)
+	assert_eq(defs["hopper"].requires_feature, "roamers")
 	assert_true(defs.has("ship"))
 	assert_false(defs["ship"].buildable)
 	assert_eq(defs["collection_point"].requires_feature, "collection")

@@ -6,6 +6,7 @@ extends Node2D
 const TEX := "res://assets/sprites/robot/bot.svg"
 const SIZE := 0.5   # MS73: kleine Bots, etwas kleiner als Rusty
 const TOOL_REST := Vector2(30, 6)
+const ROAMER_TEX := "res://assets/sprites/robot/roamer.svg"
 const TOOL_SIZE := 0.13
 
 const TIER_TINT := [Color(1, 1, 1), Color(0.75, 1.0, 0.7), Color(0.7, 0.85, 1.25), Color(1.1, 0.8, 1.25), Color(1.3, 1.1, 0.55)]
@@ -53,6 +54,8 @@ func _set_onscreen(on: bool) -> void:
 	set_process(on)
 	_sprite.visible = on
 	_tool_pivot.visible = on
+	if _no_hopper != null and not on:
+		_no_hopper.visible = false
 	if not on and _cone != null:
 		_cone.visible = false
 		_load_bg.visible = false
@@ -102,6 +105,8 @@ var _load_fill: ColorRect
 var _tool_pivot := Node2D.new()   # MS74: Bot trägt sein Werkzeug vorne, dreht mit
 var _tool := Sprite2D.new()
 var _tool_tier := 0
+var _shown_kind := ""
+var _no_hopper: Node2D           # Symbol „kann nicht abliefern“ (Streuner ohne Trichter, MS77)
 var _last_total := 0
 var _last_cd := 0
 var _t := 0.0
@@ -159,6 +164,18 @@ func _update_work_look(delta: float) -> void:
 		_tool_tier = _helper.hammer_tier
 		_tool.texture = ToolLook.texture(_tool_tier)
 	_tool_pivot.rotation = _sprite.rotation
+	# Streuner: eigene Figur und Symbol, wenn kein Fangtrichter erreichbar ist (MS77)
+	if _helper.kind != _shown_kind:
+		_shown_kind = _helper.kind
+		_sprite.texture = load(ROAMER_TEX if _shown_kind == RoamerSystem.KIND else TEX)
+	var stuck := _helper.bored == "no_hopper"
+	if stuck and _no_hopper == null:
+		_no_hopper = _make_no_hopper()
+		add_child(_no_hopper)
+	if _no_hopper != null:
+		_no_hopper.visible = stuck
+		if stuck:
+			_no_hopper.scale = Vector2.ONE * (1.0 + 0.08 * sin(_t * 6.0))
 	_tool.flip_v = _tool_tier >= 3 and absf(wrapf(_sprite.rotation, -PI, PI)) > PI * 0.5
 	# Werkzeug-Einsatz bei jedem Schlag
 	if _helper.hammer_cooldown > _last_cd:
@@ -175,6 +192,35 @@ func _update_work_look(delta: float) -> void:
 	_sprite.modulate = _sprite.modulate.lerp(base.lerp(Color(0.6, 0.6, 0.65), 0.6) if idle else base, minf(1.0, delta * 4.0))
 	_sprite.position.y = sin(_t * 1.6) * 3.0 if idle else 0.0
 
+
+
+func _make_no_hopper() -> Node2D:
+	var root := Node2D.new()
+	root.position = Vector2(0, -58)
+	root.z_index = 20
+	var bg := Polygon2D.new()
+	var pts := PackedVector2Array()
+	for i in 16:
+		pts.append(Vector2(cos(i * TAU / 16.0), sin(i * TAU / 16.0)) * 22.0)
+	bg.polygon = pts
+	bg.color = Color(1.0, 0.98, 0.92)
+	root.add_child(bg)
+	var ring := Line2D.new()
+	pts.append(pts[0])
+	ring.points = pts
+	ring.width = 4.0
+	ring.default_color = Color(0.9, 0.27, 0.24)
+	root.add_child(ring)
+	var icon := Sprite2D.new()
+	icon.texture = load("res://assets/sprites/buildings/hopper.svg")
+	icon.scale = Vector2(0.26, 0.26)
+	root.add_child(icon)
+	var slash := Line2D.new()
+	slash.points = PackedVector2Array([Vector2(-15, -15), Vector2(15, 15)])
+	slash.width = 5.0
+	slash.default_color = Color(0.9, 0.27, 0.24)
+	root.add_child(slash)
+	return root
 
 
 func _fly_in(n: int) -> void:

@@ -29,6 +29,8 @@ signal skill_failed(reason: String)
 signal modifiers_changed(mods: Dictionary)
 signal inventory_resized()
 signal helper_added(helper: Helper)
+signal cube_thrown(cube: TrashCube)                        # Streuner schießt einen Müllwürfel (MS77)
+signal cube_landed(cube: TrashCube, hopper: Building)      # Würfel kommt an (hopper null: daneben)
 signal helper_removed(id: int)
 signal helper_failed(reason: String)
 signal helper_quip(helper: Helper, key: String)
@@ -109,6 +111,7 @@ var nav := NavGrid.new()
 var nav_changes: Array[Vector2i] = []
 var _node_block: Dictionary = {}           # Kachel → Anzahl Objekte, deren Grundfläche sie belegt
 var _zone_nodes_cache: Dictionary = {}    # Zonen-ID → Array[ResourceNode] (Leistung, MS64)
+var path_budget := 999
 var plan_budget := 999                # Bot-Neuplanungen, die in diesem Tick noch erlaubt sind (MS76)
 var _zone_nodes_dirty := true   # Kacheln mit neuen/entfernten Objekten (Wegfindung, MS61)
 var drones: Dictionary = {}          # id → Drone
@@ -124,6 +127,12 @@ var milestones := MilestoneState.new()     # Meilensteine (MS23)
 var events_cfg: Dictionary = {}            # data/events.json (MS30)
 var events_state: Dictionary = {}          # nächste Termine, Vorwarnungen, Abwürfe
 var couriers: Dictionary = {}              # id → Courier (MS34)
+var cubes: Dictionary = {}                 # id → TrashCube im Flug (MS77)
+var _chunk_nodes: Dictionary = {}          # Rasterfeld → Objekte (Zielsuche der Streuner, MS77)
+var _chunks_dirty := true
+var _chunk_min_tier: Dictionary = {}       # Rasterfeld → leichteste Stufe darin
+var roamer_budget := 999                   # Streuner-Zielsuchen, die in diesem Tick noch erlaubt sind
+var _roamer_claims: Dictionary = {}        # Kachel → Zahl der Streuner, die dorthin wollen
 var courier_cooldown := 0                  # Ticks bis zum nächsten Kurier
 var dirt := DirtMap.new()                  # Schmutz je Kachel (MS21)
 var dirt_cfg: Dictionary = {}              # data/dirt.json
@@ -258,6 +267,7 @@ func tick() -> void:
 	EventSystem._tick(self)
 	NetworkSystem._tick_auto(self)
 	NetworkSystem._tick_couriers(self)
+	RoamerSystem._tick_cubes(self)
 	if tick_count % 20 == 0:
 		zones.check_unlocks(nodes)
 		if dirt.is_active():
@@ -287,6 +297,10 @@ func _apply(cmd: Dictionary) -> void:
 			ShipSystem._cmd_upgrade_ship(self, cmd)
 		"buy_skill":
 			ResearchSystem._cmd_buy_skill(self, cmd)
+		"buy_roamer":
+			RoamerSystem._cmd_buy(self, cmd)
+		"place_hopper":
+			RoamerSystem._cmd_place_hopper(self, cmd)
 		"buy_helper":
 			HelperSystem._cmd_buy_helper(self, cmd)
 		"buy_helper_upgrade":

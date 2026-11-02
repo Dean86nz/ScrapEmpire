@@ -14,7 +14,16 @@ var paid_cost: Dictionary = {}
 
 
 static func create(p_id: int, p_def: BuildingDef, p_tile: Vector2i, p_rot: int) -> Building:
-	var b: Building = Ship.new() if p_def.id == "ship" else (CollectionPoint.new() if p_def.id == "collection_point" else Building.new())
+	var b: Building
+	match p_def.id:
+		"ship":
+			b = Ship.new()
+		"collection_point":
+			b = CollectionPoint.new()
+		"hopper":
+			b = Hopper.new()   # Fangtrichter (MS77)
+		_:
+			b = Building.new()
 	b.id = p_id
 	b.def = p_def
 	b.tile = p_tile

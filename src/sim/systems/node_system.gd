@@ -11,6 +11,7 @@ static func add_object(w: SimWorld, kind: String, tile: Vector2i, amount_overrid
 	w._node_tiles[tile] = n.id
 	_block(w, n, 1)
 	w._zone_nodes_dirty = true
+	w._chunks_dirty = true
 	w.node_added.emit(n)
 	return n
 
@@ -37,6 +38,7 @@ static func add_wreck(w: SimWorld, tile: Vector2i, loot: Dictionary, kind: Strin
 	w._node_tiles[tile] = n.id
 	_block(w, n, 1)
 	w._zone_nodes_dirty = true
+	w._chunks_dirty = true
 	w.node_added.emit(n)
 	return n
 
@@ -117,6 +119,7 @@ static func _remove_node(w: SimWorld, n: ResourceNode) -> void:
 	w.nodes.erase(n.id)
 	w._node_tiles.erase(n.tile)
 	_block(w, n, -1)
+	RoamerSystem.on_node_removed(w, n)
 	# Nur aus der Zonenliste streichen statt den ganzen Cache neu aufzubauen (MS76: Ruckler)
 	if not w._zone_nodes_dirty:
 		(w._zone_nodes_cache.get(w.zones.zone_id_at(n.tile), []) as Array).erase(n)

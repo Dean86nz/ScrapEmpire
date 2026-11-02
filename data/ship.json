@@ -70,7 +70,9 @@
       "name_key": "SHIP_STAGE_4",
       "sprite": "res://assets/sprites/buildings/ship_4.svg",
       "cost_bolts": 1500000,
-      "unlocks": [],
+      "unlocks": [
+        "roamers"
+      ],
       "clean_radius": 13
     },
     {

@@ -4,14 +4,17 @@ extends RefCounted
 ## Teilsystem von SimWorld: statische Funktionen, `w` ist die Welt (Daten und Signale bleiben dort).
 
 const PLAN_BUDGET := 6   # neue Pläne je Tick für alle Bots zusammen (MS76: verteilt Lastspitzen)
+const ROAMER_BUDGET := 3   # Streuner-Zielsuchen je Tick (MS77)
+const PATH_BUDGET := 8   # neue Wege (Sichtlinie/A*) je Tick für alle Bots zusammen (MS77)
 
 
+## Zonen-Bots (ohne Streuner, die haben eigene Kosten und Obergrenze).
 static func helper_count(w: SimWorld) -> int:
-	return w.helpers.size()
+	return w.helpers.size() - RoamerSystem.count(w)
 
 
 static func next_helper_cost(w: SimWorld) -> Dictionary:
-	var a := army(w)
+	var a := helper_count(w)   # MS77: nur Zonen-Bots, Streuner haben eigene Kosten
 	var n := float(a) if a <= 120 else 120.0 + (a - 120) * 0.2   # MS67: große Armeen bleiben bezahlbar
 	var base := float(w.helper_cfg.get("cost_base_bolts", 400))
 	var growth := float(w.helper_cfg.get("cost_growth", 1.5))
@@ -83,6 +86,7 @@ static func _cmd_remove_helper(w: SimWorld, cmd: Dictionary) -> void:
 	if not w.helpers.has(id):
 		return
 	var h: Helper = w.helpers[id]
+	RoamerSystem.release(w, h)
 	# Inhalt fällt als lose Items am Standort
 	for s: Dictionary in h.inventory.slots:
 		for i in int(s["count"]):
@@ -132,6 +136,8 @@ static func _cmd_buy_helper_upgrade(w: SimWorld, cmd: Dictionary) -> void:
 
 static func _tick_helpers(w: SimWorld) -> void:
 	w.plan_budget = PLAN_BUDGET
+	w.path_budget = PATH_BUDGET
+	w.roamer_budget = ROAMER_BUDGET
 	for h: Helper in w.helpers.values():
 		h.idle_quip_timer -= 1
 		if h.idle_quip_timer <= 0:

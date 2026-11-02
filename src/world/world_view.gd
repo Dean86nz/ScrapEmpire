@@ -85,6 +85,12 @@ func bind(world: SimWorld, player: Node2D) -> void:
 	world.zones.stage_changed.connect(func(_id: String, _st: int) -> void: _refresh_zone_tints())
 	world.zone_unlocked.connect(func(_id: String) -> void: _refresh_zone_tints())
 	world.helper_added.connect(_on_helper_added)
+	world.cube_thrown.connect(_on_cube_thrown)
+	world.cube_landed.connect(func(c: TrashCube, hop: Building) -> void:
+		if hop != null and Vector2(c.to).distance_to(_player.global_position) < 900.0:
+			Sfx.play_throttled("thud", 0.08, 0.1)
+			if _building_views.has(hop.id):
+				_building_views[hop.id].catch_bounce())
 	world.helper_removed.connect(_on_helper_removed)
 	for d: Drone in world.drones.values():
 		_on_drone_added(d)
@@ -128,6 +134,15 @@ func _refresh_zone_tints(animate: bool = true) -> void:
 			create_tween().tween_property(poly, "color", target, 1.2)
 		else:
 			poly.color = target
+
+
+## Streuner schießt einen Müllwürfel (MS77): Bogen mit Plopp, wenn in Rustys Nähe.
+func _on_cube_thrown(c: TrashCube) -> void:
+	var v := CubeView.new()
+	v.setup(c)
+	add_child(v)
+	if Vector2(c.from).distance_to(_player.global_position) < 900.0:
+		Sfx.play_throttled("plop", 0.1, 0.08)
 
 
 func _on_helper_added(h: Helper) -> void:
