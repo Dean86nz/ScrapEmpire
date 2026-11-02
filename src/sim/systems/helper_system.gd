@@ -3,6 +3,8 @@ extends RefCounted
 ## Helfer-Roboter: Kauf, Upgrades, Steckenbleiben, Tick.
 ## Teilsystem von SimWorld: statische Funktionen, `w` ist die Welt (Daten und Signale bleiben dort).
 
+const PLAN_BUDGET := 6   # neue Pläne je Tick für alle Bots zusammen (MS76: verteilt Lastspitzen)
+
 
 static func helper_count(w: SimWorld) -> int:
 	return w.helpers.size()
@@ -129,6 +131,7 @@ static func _cmd_buy_helper_upgrade(w: SimWorld, cmd: Dictionary) -> void:
 
 
 static func _tick_helpers(w: SimWorld) -> void:
+	w.plan_budget = PLAN_BUDGET
 	for h: Helper in w.helpers.values():
 		h.idle_quip_timer -= 1
 		if h.idle_quip_timer <= 0:

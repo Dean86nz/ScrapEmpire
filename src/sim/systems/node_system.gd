@@ -117,7 +117,9 @@ static func _remove_node(w: SimWorld, n: ResourceNode) -> void:
 	w.nodes.erase(n.id)
 	w._node_tiles.erase(n.tile)
 	_block(w, n, -1)
-	w._zone_nodes_dirty = true
+	# Nur aus der Zonenliste streichen statt den ganzen Cache neu aufzubauen (MS76: Ruckler)
+	if not w._zone_nodes_dirty:
+		(w._zone_nodes_cache.get(w.zones.zone_id_at(n.tile), []) as Array).erase(n)
 	w.node_removed.emit(n.id)
 	if w.dirt.is_active() and not n.is_resource() and not n.bonus:
 		var r := int(w.dirt_cfg.get("removed_trash_clean_radius", 1))

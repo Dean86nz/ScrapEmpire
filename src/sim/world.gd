@@ -109,6 +109,7 @@ var nav := NavGrid.new()
 var nav_changes: Array[Vector2i] = []
 var _node_block: Dictionary = {}           # Kachel → Anzahl Objekte, deren Grundfläche sie belegt
 var _zone_nodes_cache: Dictionary = {}    # Zonen-ID → Array[ResourceNode] (Leistung, MS64)
+var plan_budget := 999                # Bot-Neuplanungen, die in diesem Tick noch erlaubt sind (MS76)
 var _zone_nodes_dirty := true   # Kacheln mit neuen/entfernten Objekten (Wegfindung, MS61)
 var drones: Dictionary = {}          # id → Drone
 var drone_cfg: Dictionary = {}
@@ -240,6 +241,7 @@ func tick() -> void:
 		_too_hard_cooldown -= 1
 
 	HelperSystem._tick_helpers(self)
+	plan_budget += HelperSystem.PLAN_BUDGET / 2   # eigene Reserve für Drohnen-Suchen
 	DroneSystem._tick_drones(self)
 	CollectibleSystem._tick_collectibles(self)
 	quests.tick_move(player.pos)

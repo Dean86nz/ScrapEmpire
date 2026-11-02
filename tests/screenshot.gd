@@ -13,6 +13,10 @@ var _hold_actions: PackedStringArray = []
 var _sequence: Array = []  # [{frame, action, pressed}]
 var _cheat := ""
 var _measure := false
+var _m_last := 0
+var _m_max := 0.0
+var _m_spikes := 0
+var _m_sim_max := 0.0
 var _m_sim := 0.0
 var _m_nodes := 0
 var _m_frames := 0
@@ -157,8 +161,18 @@ func _process(_delta: float) -> bool:
 		_m_proc += Performance.get_monitor(Performance.TIME_PROCESS) + Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS)
 		_m_sim += float(root.get_node("/root/SimClock").last_tick_ms)
 		_m_nodes = Performance.get_monitor(Performance.OBJECT_NODE_COUNT)
+		# Ruckler (MS76): Bildabstände über 25 ms und längster Sim-Tick
+		var now := Time.get_ticks_usec()
+		if _m_last > 0:
+			var dt := (now - _m_last) / 1000.0
+			_m_max = maxf(_m_max, dt)
+			if dt > 25.0:
+				_m_spikes += 1
+		_m_last = now
+		_m_sim_max = maxf(_m_sim_max, float(root.get_node("/root/SimClock").last_tick_ms))
 	if _frames == _target_frames and _measure and _m_frames > 0:
 		print("measure: Sim-Tick %.2f ms, Nodes %d" % [_m_sim / _m_frames, _m_nodes])
+		print("measure: Ruckler >25 ms: %d, längstes Bild %.1f ms, längster Sim-Tick %.1f ms" % [_m_spikes, _m_max, _m_sim_max])
 		print("measure: frames %d, mittlere CPU-Zeit je Bild %.2f ms, FPS %d, Bots %d, Drohnen %d" % [_m_frames, _m_proc / _m_frames * 1000.0, Engine.get_frames_per_second(), root.get_node("/root/SimClock").world.helpers.size(), root.get_node("/root/SimClock").world.drones.size()])
 	if _frames == _target_frames:
 		for a in _hold_actions:

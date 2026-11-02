@@ -29,16 +29,13 @@ func setup(h: Helper, names: Array, colors: Array) -> void:
 	_sprite.scale = Vector2(SIZE, SIZE)
 	_sprite.modulate = TIER_TINT[clampi(h.hammer_tier, 1, 5) - 1]
 	add_child(_sprite)
-	# Leistung (MS73): außerhalb des Bildschirms nicht zeichnen und nicht animieren
+	# Leistung (MS73): außerhalb des Bildschirms nicht zeichnen und nicht animieren. Nur die Teile
+	# ausblenden, nie den Knoten selbst: ein unsichtbarer Melder meldet nie wieder „sichtbar“
+	# (MS76, Ursache für verschwindende Bots)
 	var vis := VisibleOnScreenNotifier2D.new()
 	vis.rect = Rect2(-80, -120, 160, 200)
-	vis.screen_entered.connect(func() -> void:
-		visible = true
-		set_process(true)
-		position = Vector2(_helper.pos))
-	vis.screen_exited.connect(func() -> void:
-		visible = false
-		set_process(false))
+	vis.screen_entered.connect(_set_onscreen.bind(true))
+	vis.screen_exited.connect(_set_onscreen.bind(false))
 	add_child(vis)
 	_name.text = h.display_name(names)
 	_name.add_theme_font_size_override("font_size", 22)
@@ -50,6 +47,18 @@ func setup(h: Helper, names: Array, colors: Array) -> void:
 	_name.size = Vector2(160, 28)
 	_name.visible = false   # MS65: keine Namensschilder über Bots (überlappten sich), Name steht im Bots-Menü
 	add_child(_name)
+
+
+func _set_onscreen(on: bool) -> void:
+	set_process(on)
+	_sprite.visible = on
+	_tool_pivot.visible = on
+	if not on and _cone != null:
+		_cone.visible = false
+		_load_bg.visible = false
+		_load_fill.visible = false
+	if on:
+		position = Vector2(_helper.pos)
 
 
 ## Kleines Symbol über dem Bot (z. B. „!“ bei Verstärkung): hüpft auf, verblasst.

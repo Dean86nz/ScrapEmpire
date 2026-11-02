@@ -2,6 +2,21 @@
 
 Format: [Keep a Changelog](https://keepachangelog.com/de/1.1.0/). Versionen folgen den Meilensteinen aus docs/03_ROADMAP.md (0.MS.Schritt).
 
+## [2.32.0] – 2026-11-02 – MS76 Stabilisierung: verschwindende Bots, Ruckeln
+
+### Behoben
+- **Bots verschwanden für immer**, sobald sie einmal außerhalb des Bildschirms waren (Fehler aus MS73): Der Bot blendete sich samt seinem Sichtbarkeits-Melder aus, und ein unsichtbarer Melder meldet in Godot nie wieder „sichtbar“. Jetzt werden nur Bild und Werkzeug ausgeblendet; kommt der Bot zurück ins Bild, ist er sofort wieder da
+- **Ruckeln mit vielen Bots:** Einzelne Sim-Ticks dauerten bis zu 47 ms statt 4–5 ms. Ursachen: (1) viele Bots planten im selben Tick neu, (2) nach jedem abgebauten Objekt wurde der Objekt-Cache aller Zonen neu aufgebaut, (3) viele Drohnen durchsuchten gleichzeitig die ganze Karte. Jetzt: höchstens 6 Bot-Planungen und 3 Drohnen-Suchen je Tick (die anderen kommen einen Tick später dran), der Cache wird nur noch angepasst, Drohnen prüfen zuerst die Entfernung
+- Messung PC, Szenario „army“ (150 Bots, 40 Drohnen, Fahrt über die Karte): Ruckler über 25 ms von 34 auf 10, längster Sim-Tick von 47 auf 38 ms (der Rest sind Level-Ups und der einmalige Aufbau der Wegfindung beim Start)
+
+### Technik
+- `HelperSystem.PLAN_BUDGET`, `SimWorld.plan_budget`; Mess-Cheat `measure=1` zeigt jetzt Ruckler und längsten Sim-Tick
+- 236 Unit-Tests (neu: Planungs-Budget, Zonen-Cache), 72 Gamepad-Prüfungen, Weiterspielen-Prüfung grün
+
+### Ally-Testliste
+1. Weit wegfahren und zurück: sind alle Bots wieder da?
+2. Mit vielen Bots spielen: ruckelt es noch spürbar?
+
 ## [2.31.0] – 2026-10-31 – MS75 Rusty trägt Sauger und Werkzeug (Phase 2.5)
 
 ### Neu

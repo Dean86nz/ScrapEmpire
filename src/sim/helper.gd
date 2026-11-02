@@ -78,7 +78,8 @@ func tick(world: SimWorld) -> void:
 		_plan_cooldown -= 1
 	# Neu planen, wenn keine Schritte vorliegen oder die Liste einmal durchlaufen wurde.
 	if tasks.steps.is_empty() or tasks.loops != _last_loops:
-		if _plan_cooldown == 0:
+		if _plan_cooldown == 0 and world.plan_budget > 0:
+			world.plan_budget -= 1   # MS76: höchstens wenige Bots planen im selben Tick (Ruckler)
 			_plan(world)
 	tasks.tick(world, self)
 	_move(world)

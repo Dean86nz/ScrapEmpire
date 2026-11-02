@@ -212,3 +212,31 @@ func test_bots_pick_up_loose_items_first() -> void:
 	var id := item.id
 	TestWorlds.run(w, 20 * 15)
 	assert_false(w.loose.has(id), "loses Teil wurde eingesammelt")
+
+
+func test_plan_budget_spreads_replans() -> void:
+	# MS76: viele Bots planen nie alle im selben Tick (Ruckler)
+	var w := _world()
+	_unlock(w)
+	for i in 20:
+		w.add_helper(Vector2i(10, 6), w.ship().tile)
+	var planned := 0
+	w.tick()
+	for h: Helper in w.helpers.values():
+		if not h.tasks.steps.is_empty() or h.bored != "":
+			planned += 1
+	assert_true(planned <= HelperSystem.PLAN_BUDGET, "höchstens %d Pläne im ersten Tick, waren %d" % [HelperSystem.PLAN_BUDGET, planned])
+	TestWorlds.run(w, 10)
+	for h: Helper in w.helpers.values():
+		assert_true(not h.tasks.steps.is_empty() or h.bored != "", "nach 10 Ticks hat jeder Bot geplant")
+
+
+func test_zone_cache_drops_removed_node() -> void:
+	# MS76: Entfernen streicht das Objekt aus dem Zonen-Cache, ohne alles neu aufzubauen
+	var w := _world()
+	var n := w.add_object("scrap_pile", Vector2i(4, 4))
+	var zid := w.zones.zone_id_at(n.tile)
+	assert_true(w.zone_nodes(zid).has(n))
+	w._remove_node(n)
+	assert_false(w._zone_nodes_dirty, "kein Neuaufbau nötig")
+	assert_false(w.zone_nodes(zid).has(n))
