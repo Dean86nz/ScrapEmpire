@@ -728,3 +728,10 @@ ISSUE_NO_HOPPER,Streuner ohne Trichter in Reichweite: Trichter näher abstellen,
 ISSUE_FEW_DRONES,Zu wenige Drohnen: Material wartet an Stationen und Trichtern,Too few drones: material is waiting at stations and funnels
 ISSUE_TOO_HARD,Müll zu hart: Bot-Werkzeug verbessern,Trash too hard: upgrade bot tools
 ISSUE_STATION_EMPTY,Stationen leergeräumt: neue Station woanders bauen,Stations cleared out: build a new one elsewhere
+OFFLINE_TITLE,Willkommen zurück!,Welcome back!
+OFFLINE_TIME,"Deine Bots haben %d h %02d min weitergearbeitet:","Your bots kept working for %d h %02d min:"
+OFFLINE_TRASH,♻ %s Teile Müll weggeräumt,♻ %s pieces of trash cleared
+OFFLINE_BOLTS,⬡ %s Bolts verdient,⬡ %s bolts earned
+OFFLINE_ZONE,%s jetzt %d %% sauber,%s now %d %% clean
+OFFLINE_CAP,(höchstens 8 Stunden werden gezählt),(at most 8 hours count)
+OFFLINE_CLOSE,A: weiter,A: continue
